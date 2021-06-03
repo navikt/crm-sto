@@ -2,11 +2,22 @@
     "packageDirectories": [
         {
             "path": "force-app",
-            "default": true
+            "default": true,
+            "versionName": "ver 0.1",
+            "versionNumber": "0.114.0.NEXT",
+            "package": "crm-sto",
+            "dependencies": [
+                {
+                    "package": "crm-messaging",
+                    "versionNumber": "0.0.0.LATEST"
+                }
+            ]
         }
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "47.0",
-    "packageAliases": {}
+    "packageAliases": {
+        "crm-messaging": "04t2o000000ySCLAA2"
+    }
 }
