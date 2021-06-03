@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Skriv_til_oss_headline</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Skriv til oss headline</shortDescription>
+        <value>Write to use</value>
+    </labels>
+    <labels>
+        <fullName>Skriv_til_oss_intro_text</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Skriv til oss intro text</shortDescription>
+        <value>Send bare beskjeder som kan ha betydning for saken din. Husk å få med alle relevante opplysninger. Du kan skrive maksimalt 1000 tegn, det er cirka en halv A4-side.</value>
+    </labels>
+</CustomLabels>
