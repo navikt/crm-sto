@@ -8,7 +8,7 @@ import welcomlabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
 import headline from '@salesforce/label/c.Skriv_til_oss_headline';
 export default class StoComponent extends NavigationMixin(LightningElement) {
     fillform = logos + '/FillForms.svg';
-    dialog = navlogos + '/dialog.svg'
+
     themes = [];
     selectedTheme;
     accepterterms = false;

@@ -3,7 +3,7 @@ import { LightningElement, wire } from 'lwc';
 import getThreads from '@salesforce/apex/stoHelperClass.getThreads';
 
 export default class StoMessageInbox extends LightningElement {
-    dialog = navlogos + '/dialog.svg'
+    // dialog = navlogos + '/dialog.svg'
     threads;
 
     @wire(getThreads, {})
@@ -14,7 +14,7 @@ export default class StoMessageInbox extends LightningElement {
         }
         else if (result.data) {
             console.log(result.data);
-        
+
             this.threads = result.data;
         }
     }
