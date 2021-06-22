@@ -1,5 +1,6 @@
 .header {
     text-align: center;
+    width: 100%;
 }
 .text-center {
     text-align: center;
@@ -11,4 +12,12 @@
 .ficon {
     margin: 1em;
     height: 2em;
+}
+.johnny {
+    width: 25%;
+    float: right;
+    margin-top: 1em;
+}
+.headlineholder {
+    display: flow-root;
 }

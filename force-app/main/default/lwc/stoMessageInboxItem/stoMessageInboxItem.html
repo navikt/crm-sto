@@ -13,11 +13,9 @@
                 <lightning-layout-item size="11">
                     <p class="typo-normal blokk-xxxs">
                         <lightning-formatted-date-time
-                            value={thread.Messaging_Sent_date__c}
+                            value={thread.Latest_Message_Datetime__c}
                             month="numeric"
                             day="numeric"
-                            hour="2-digit"
-                            minute="2-digit"
                         ></lightning-formatted-date-time>
                     </p>
                     <h3 class="typo-undertittel">{thread.Name}<span class="vekk"></span></h3>

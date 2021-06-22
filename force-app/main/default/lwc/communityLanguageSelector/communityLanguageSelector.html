@@ -1,0 +1,17 @@
+<template>
+    <div class="container slds-size_1-of-1">
+        <div class="holder slds-size_1-of-4 slds-float_right">
+            <c-picklist
+                master-label=""
+                choices={languages}
+                onpicklistvaluechange={handlePicklist}
+                disabled={selectDisable}
+                multiple={selectMultiple}
+                required={selectRequired}
+                size="1"
+                aria-label="Språk"
+            >
+            </c-picklist>
+        </div>
+    </div>
+</template>

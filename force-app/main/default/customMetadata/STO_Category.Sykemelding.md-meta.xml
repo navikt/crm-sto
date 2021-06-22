@@ -7,6 +7,10 @@
         <value xsi:type="xsd:string">Sykmeldt, sykepenger, arbeidsavklaringspenger, yrkesskade/ménerstatning, grunn- og hjelpestønad.</value>
     </values>
     <values>
+        <field>STOLanguage__c</field>
+        <value xsi:type="xsd:string">Norwegian</value>
+    </values>
+    <values>
         <field>STOSort_Order__c</field>
         <value xsi:type="xsd:double">2.0</value>
     </values>
