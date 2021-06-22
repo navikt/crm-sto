@@ -109,6 +109,7 @@ public with sharing class stoHelperClass {
     }
     /**
      * Get all threads. Utilize sharing sets to filter the correct messages
+     * @Author Lars Petter
      */
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreads() {
