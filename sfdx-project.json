@@ -9,7 +9,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.104.0"
+                    "versionNumber": "0.104.0.LATEST"
                 },
                 {
                     "package": "crm-journal-utilities",
