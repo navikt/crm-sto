@@ -45,6 +45,7 @@
         "crm-community-base": "04t2o000000ySHpAAM",
         "crm-journal-utilities": "04t2o000000ySTgAAM",
         "crm-platform-base": "0Ho2o0000008ORmCAM",
-        "crm-platform-access-control": "04t2o000000ySEMAA2"
+        "crm-platform-access-control": "04t2o000000ySEMAA2",
+        "crm-sto": "0Ho2o000000fxXpCAI"
     }
 }
