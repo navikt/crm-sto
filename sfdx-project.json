@@ -8,16 +8,44 @@
             "package": "crm-sto",
             "dependencies": [
                 {
-                    "package": "crm-messaging",
-                    "versionNumber": "0.0.0.LATEST"
+                    "package": "crm-platform-base",
+                    "versionNumber": "0.104.0"
+                },
+                {
+                    "package": "crm-journal-utilities",
+                    "versionNumber": "0.1.0.LATEST"
+                },
+                {
+                    "package": "crm-platform-access-control",
+                    "versionNumber": "0.68.0.LATEST"
+                },
+                {
+                    "package": "crm-platform-henvendelse",
+                    "versionNumber": "0.1.0.LATEST"
+                },
+                {
+                    "package": "crm-community-base",
+                    "versionNumber": "0.20.0.LATEST"
                 }
             ]
+        },
+        {
+            "path": "force-app",
+            "package": "skrivtiloss",
+            "versionName": "ver 0.1",
+            "versionNumber": "0.1.0.NEXT",
+            "default": false
         }
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "47.0",
     "packageAliases": {
-        "crm-messaging": "04t2o000000ySCLAA2"
+        "crm-platform-henvendelse": "04t2o000000ySSdAAM",
+        "crm-community-base": "04t2o000000ySHpAAM",
+        "crm-journal-utilities": "04t2o000000ySSYAA2",
+        "crm-platform-base": "04t2o000000ySSOAA2",
+        "crm-platform-access-control": "04t2o000000ySEMAA2",
+        "skrivtiloss": "0Ho2o000000fxXaCAI"
     }
 }
