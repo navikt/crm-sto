@@ -1,0 +1,28 @@
+<template>
+    <div class="decorator-wrapper">
+        <nav class="brodsmulesti" aria-label="Brødsmulesti" itemprop="breadcrumb">
+            <a href="https://www.nav.no" class="lenke brodsmulesti__home"
+                ><img src={homelogo} alt="" class="homeicon" /><span>nav.no</span
+                ><span class="nav-frontend-chevron chevronboks chevron--hoyre"></span
+            ></a>
+            <template if:true={firstLevel}>
+                <a href={firstLevelLink} class="lenke"
+                    ><span>{firstLevel}</span><span class="nav-frontend-chevron chevronboks chevron--hoyre"></span
+                ></a>
+            </template>
+            <template if:true={secondLevel}>
+                <a href={secondLevelLink} class="lenke brodsmulesti__transform"
+                    ><span>{secondLevel}</span><span class="nav-frontend-chevron chevronboks chevron--hoyre"></span
+                ></a>
+            </template>
+            <template if:true={thirdLevel}>
+                <a href={thirdLevelLink} class="lenke brodsmulesti__transform"
+                    ><span>{thirdLevel}</span><span class="nav-frontend-chevron chevronboks chevron--hoyre"></span
+                ></a>
+            </template>
+            <template if:true={leafnode}>
+                <span class="brodsmulesti__transform">{leafnode}</span>
+            </template>
+        </nav>
+    </div>
+</template>

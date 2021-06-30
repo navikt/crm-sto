@@ -15,6 +15,7 @@ import showtermstext from '@salesforce/label/c.Skriv_til_oss_Show_terms';
 import textareadescription from '@salesforce/label/c.Skriv_til_oss_text_area_description';
 
 export default class StoComponent extends NavigationMixin(LightningElement) {
+
     fillform = logos + '/FillForms.svg';
 
     //Picklist setup

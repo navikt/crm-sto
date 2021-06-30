@@ -17,7 +17,7 @@
                         name="input1"
                         onchange={nameChange}
                         variant="label-hidden"
-                        label="Enter some text"
+                        label="Skriv din melding her"
                         maxlength="32000"
                     ></lightning-textarea>
                     <template if:true={showerror}>
@@ -51,12 +51,7 @@
         <!-- Start list of all items-->
         <template if:false={shownewmessage}>
             <template for:each={themes} for:item="theme">
-                <c-sto-Theme-Item
-                    theme={theme}
-                    onthemeselected={handleselectedtheme}
-                    key={theme.Id}
-                    tabindex="0"
-                ></c-sto-Theme-Item>
+                <c-sto-Theme-Item theme={theme} onthemeselected={handleselectedtheme} key={theme.Id}></c-sto-Theme-Item>
             </template>
         </template>
         <!-- End list of all items-->

@@ -1,6 +1,8 @@
 import { LightningElement, api, wire } from 'lwc';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 import getLatest from '@salesforce/apex/stoHelperClass.getLatestMessage';
+import basepath from '@salesforce/community/basePath';
+
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
@@ -15,7 +17,7 @@ export default class StoMessageInboxItem extends LightningElement {
 
 
     connectedCallback() {
-        this.linkUrl = '/s/thread/' + this.thread.Id; //Implement onclick navigation
+        this.linkUrl = basepath + '/thread/' + this.thread.Id; //Implement onclick navigation
         this.threadId = this.thread.Id;
         if (Number(this.thread.Messaging_Number_of_unread_Messages__c) > 0) {
             this.hasunread = true;
