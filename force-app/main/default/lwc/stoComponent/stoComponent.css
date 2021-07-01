@@ -1,0 +1,23 @@
+.header {
+    text-align: center;
+    width: 100%;
+}
+.text-center {
+    text-align: center;
+}
+.inputarea {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+.ficon {
+    margin: 1em;
+    height: 2em;
+}
+.johnny {
+    width: 25%;
+    float: right;
+    margin-top: 1em;
+}
+.headlineholder {
+    display: flow-root;
+}

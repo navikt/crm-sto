@@ -1,0 +1,27 @@
+<template>
+    <a class="lenkepanel dialog flere-meldinger .slds-size_1-of-1" href={linkUrl} key={thread.Id}>
+        <span class="typo-undertittel lenkepanel__heading">
+            <lightning-layout>
+                <lightning-layout-item size="1" padding="around-medium">
+                    <template if:false={hasunread}>
+                        <img src={readLogo} alt="read-message" class="" />
+                    </template>
+                    <template if:true={hasunread}>
+                        <img src={messageLogo} alt="unread-message" class="" />
+                    </template>
+                </lightning-layout-item>
+                <lightning-layout-item size="11">
+                    <p class="typo-normal blokk-xxxs">
+                        <lightning-formatted-date-time
+                            value={thread.CRM_Latest_Message_Datetime__c}
+                            month="numeric"
+                            day="numeric"
+                        ></lightning-formatted-date-time>
+                    </p>
+                    <h3 class="typo-undertittel">{thread.Name}<span class="vekk"></span></h3>
+                    <p class="typo-normal tema-avsnitt slds-truncate">{latestText}</p>
+                </lightning-layout-item>
+            </lightning-layout>
+        </span></a
+    >
+</template>

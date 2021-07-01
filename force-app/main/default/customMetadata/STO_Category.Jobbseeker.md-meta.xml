@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Jobbseeker</label>
+    <protected>false</protected>
+    <values>
+        <field>STODescription__c</field>
+        <value xsi:type="xsd:string">Write to us about work assessment allowance (arbeidsavklaringspenger, AAP), salary loss compensation (lønnskompensasjon), unemployment benefit (dagpenger), benefits while participating in employment schemes (tiltakspenger), registering and guidance for jo</value>
+    </values>
+    <values>
+        <field>STOLanguage__c</field>
+        <value xsi:type="xsd:string">English</value>
+    </values>
+    <values>
+        <field>STOSort_Order__c</field>
+        <value xsi:type="xsd:double">1.0</value>
+    </values>
+</CustomMetadata>

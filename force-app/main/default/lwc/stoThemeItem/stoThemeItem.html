@@ -1,0 +1,20 @@
+<template>
+    <div
+        style="flex: 33"
+        data-portal-region="dynamic-1"
+        class="region region__dynamic-1"
+        key={theme.Id}
+        onclick={handleclick}
+    >
+        <div>
+            <a class="lenkepanel link-panel vertical lenkepanel--border" role="button">
+                <div class="link-panel__innhold">
+                    <div class="link-panel__header">
+                        <h2 class="typo-undertittel link-panel__title">{theme.Label}</h2>
+                    </div>
+                    <div class="link-panel__ingress">{theme.STODescription__c}</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</template>

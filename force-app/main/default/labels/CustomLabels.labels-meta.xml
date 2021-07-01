@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Skriv_til_oss_Accept_terms_error_message</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Accept terms error message</shortDescription>
+        <value>You have to accept the terms in order to send this message</value>
+    </labels>
+    <labels>
+        <fullName>Skriv_til_oss_Accept_terms_text</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Accept terms text</shortDescription>
+        <value>I Accept the terms and conditions</value>
+    </labels>
+    <labels>
+        <fullName>Skriv_til_oss_Show_terms</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Show terms text</shortDescription>
+        <value>Show terms</value>
+    </labels>
+    <labels>
+        <fullName>Skriv_til_oss_Text_area_empty_error_message</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Text area empty error message</shortDescription>
+        <value>Textarea is empty</value>
+    </labels>
+    <labels>
+        <fullName>Skriv_til_oss_headline</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Skriv til oss headline</shortDescription>
+        <value>Write to us</value>
+    </labels>
+    <labels>
+        <fullName>Skriv_til_oss_intro_text</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Skriv til oss intro text</shortDescription>
+        <value>Send bare beskjeder som kan ha betydning for saken din. Husk å få med alle relevante opplysninger. Du kan skrive maksimalt 1000 tegn, det er cirka en halv A4-side.</value>
+    </labels>
+    <labels>
+        <fullName>Skriv_til_oss_text_area_description</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Input text area description</shortDescription>
+        <value>Only send information relevant to your case</value>
+    </labels>
+</CustomLabels>

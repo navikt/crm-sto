@@ -1,0 +1,12 @@
+<template>
+    <div class="decorator-wrapper">
+        <div class="header">
+            <h1 class="typo-sidetittel">Innboks</h1>
+            <!-- Replace with Label-->
+        </div>
+        <template for:each={threads} for:item="thread">
+            <c-sto-Message-Inbox-Item thread={thread} key={thread.Id}></c-sto-Message-Inbox-Item>
+        </template>
+        <!-- Start of write new message-->
+    </div>
+</template>
