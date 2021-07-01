@@ -77,9 +77,9 @@ public with sharing class stoHelperClass {
     private static Thread__c createThread(Case c, String theme){
         
         Thread__c thread = new Thread__c();
-        thread.Messaging_Related_Object__c = c.Id;
-        thread.Messaging_isPublic__c = true;
-        thread.Messaging_From__c = UserInfo.getUserId();
+        thread.CRM_Related_Object__c = c.Id;
+        thread.CRM_isPublic__c = true;
+        thread.CRM_From__c = UserInfo.getUserId();
         thread.Name = 'Skriv til oss - ' + theme;
         try{
             insert thread;
@@ -95,9 +95,9 @@ public with sharing class stoHelperClass {
     private static void createMessage(Thread__c t, String msgText){
         
         Message__c msg = new Message__c();
-        msg.Messaging_Message_Text__c = msgText;
-        msg.Messaging_From__c = UserInfo.getUserId();
-        msg.Messaging_Thread__c = t.Id;
+        msg.CRM_Message_Text__c = msgText;
+        msg.CRM_From__c = UserInfo.getUserId();
+        msg.CRM_Thread__c = t.Id;
         try{
             insert msg;
         }
@@ -114,7 +114,7 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreads() {
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, Messaging_Number_of_unread_Messages__c, Latest_Message_Datetime__c
+            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c
             FROM Thread__c
             ORDER BY Latest_Message_Datetime__c DESC
         ];
@@ -123,9 +123,9 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static Message__c getLatestMessage(Id threadId) {
         List<Message__c> messageList = [
-            SELECT Id, Messaging_Message_Text__c, Messaging_From__c
+            SELECT Id, CRM_Message_Text__c, CRM_From__c
             FROM Message__c
-            WHERE Messaging_Thread__c = :threadId
+            WHERE CRM_Thread__c = :threadId
             ORDER BY CreatedDate DESC
         ];
 

@@ -26,7 +26,7 @@ public with sharing class stoHelperClass_Test {
         Test.startTest();
         Thread__c t = stoHelperClass.createThread(c, 'Jobbsøker');
         Test.stopTest();
-        System.assertEquals(t.Messaging_Related_Object__c, c.Id, 'Thread creation test failure, check thread');
+        System.assertEquals(t.CRM_Related_Object__c, c.Id, 'Thread creation test failure, check thread');
     }
     @isTest
     static void createMessageTest(){
@@ -35,8 +35,8 @@ public with sharing class stoHelperClass_Test {
         Test.startTest();
         stoHelperClass.createMessage(t, 'this is a test message');
         Test.stopTest();
-        List<Message__c> m = [SELECT Messaging_Message_Text__c FROM Message__c WHERE Messaging_Thread__c =: t.Id];
-        System.assertEquals('this is a test message', m.get(0).Messaging_Message_Text__c);
+        List<Message__c> m = [SELECT CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c =: t.Id];
+        System.assertEquals('this is a test message', m.get(0).CRM_Message_Text__c);
     }
     @isTest
     static void getThreadsTest(){
@@ -55,14 +55,14 @@ public with sharing class stoHelperClass_Test {
         Test.startTest();
         Message__c m = stoHelperClass.getLatestMessage(t.Id);
         Test.stopTest();
-        System.assertEquals('this is a test message again', m.Messaging_Message_Text__c);
+        System.assertEquals('this is a test message again', m.CRM_Message_Text__c);
     }
     @isTest
     static void createRequestTest(){
         Test.startTest();
         Id threadId = stoHelperClass.createRequest('Jobbsøker', 'This is the message');
         Test.stopTest();
-        List<Message__c> msgList = [SELECT Id FROM Message__c WHERE Messaging_Thread__c =: threadId];
+        List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c =: threadId];
         System.assertEquals(1, msgList.size());
         
     }
