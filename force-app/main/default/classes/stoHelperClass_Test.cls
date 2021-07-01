@@ -5,14 +5,15 @@ public with sharing class stoHelperClass_Test {
     static void makeData(){
         
     }
-    /**
+
     @isTest
     static void getThemesTest(){
         Test.startTest();
-        List<STO_Category__mdt> themes = stoHelperClass.getThemes();
+        List<STO_Category__mdt> themes = stoHelperClass.getThemes('no');
+        List<STO_Category__mdt> themesen = stoHelperClass.getThemes('en-US');
         Test.stopTest();
         System.assertEquals(themes.isEmpty(), false, 'Missing metadata setup - initiate STO Category Themes');
-    } */
+    } 
     @isTest
     static void createCaseTest(){
         Test.startTest();
