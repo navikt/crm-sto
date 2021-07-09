@@ -3,6 +3,6 @@
     <apiVersion>52.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <description>Default experiences self registration confirmation page</description>
-    <label>CommunitiesSelfRegConfirm</label>
+    <description>Default Lightning Platform home page for Answers sites</description>
+    <label>AnswersHome</label>
 </ApexPage>

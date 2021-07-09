@@ -1,0 +1,37 @@
+{
+    "appPageId": "d147dfb8-aa44-4d6d-8ca2-80c1e9e5f13a",
+    "componentName": "community_layout:sldsFlexibleLayout",
+    "id": "d08e90b6-c1fb-4748-a4a4-84dea64a27b1",
+    "label": "Thread List",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "sectionConfig": "{\"UUID\":\"5beb4f31-37ab-4695-b728-b37f6f35cb51\",\"columns\":[{\"UUID\":\"9d1ae21e-970e-4845-94aa-42f242b48e17\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "5beb4f31-37ab-4695-b728-b37f6f35cb51",
+                    "regions": [
+                        {
+                            "id": "9d1ae21e-970e-4845-94aa-42f242b48e17",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "36df058d-b4e9-439c-a30d-9ae992efebe2",
+            "regionName": "content",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "list-a0M"
+}

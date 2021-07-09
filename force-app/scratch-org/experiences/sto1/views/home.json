@@ -1,0 +1,67 @@
+{
+    "appPageId": "d147dfb8-aa44-4d6d-8ca2-80c1e9e5f13a",
+    "componentName": "community_layout:sldsFlexibleLayout",
+    "id": "df167f69-8823-4cc9-b1b2-0502593750bf",
+    "label": "Home",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "sectionConfig": "{\"UUID\":\"376ef211-c8e0-4120-a7a7-c84def64f11b\",\"columns\":[{\"UUID\":\"4631f979-5a8c-4fed-8c8a-fa5862da89e9\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "376ef211-c8e0-4120-a7a7-c84def64f11b",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:stoComponent",
+                                    "id": "87f95705-ae8c-4fa3-a2b6-b086e31c34e7",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "4631f979-5a8c-4fed-8c8a-fa5862da89e9",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "7dca9389-09a3-4b21-818f-d98f4ef2651e",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "pageTitle": "Home",
+                        "recordId": "{!recordId}"
+                    },
+                    "componentName": "community_builder:seoAssistant",
+                    "id": "35276e64-2965-4856-ba07-8885804a83a8",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "648fbd15-b891-471f-86c1-ab175e028038",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "home"
+}
