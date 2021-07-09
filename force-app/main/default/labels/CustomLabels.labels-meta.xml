@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
+        <fullName>STO_Skriv_til_oss_Accept_Terms_Button</fullName>
+        <categories>STO</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Skriv til oss Accept Terms Button</shortDescription>
+        <value>I accept the terms</value>
+    </labels>
+    <labels>
+        <fullName>STO_Skriv_til_oss_Deny_Terms_Button</fullName>
+        <categories>STO</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Skriv til oss Deny Terms Button</shortDescription>
+        <value>I do not accept the terms</value>
+    </labels>
+    <labels>
+        <fullName>STO_Skriv_til_oss_terms_og_use_text</fullName>
+        <categories>STO</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Skriv til oss terms og use text</shortDescription>
+        <value>&lt;div style=&quot;font-family: sans-serif&quot;&gt;
+&lt;strong&gt;Henvendelsen gjelder deg&lt;/strong&gt; Denne tjenesten gjelder deg som privatperson. Du kan ikke bruke den på vegne av andre. Det du informerer om deg selv vil kunne få betydning for rettighetene dine hos NAV.
+&lt;/br&gt;&lt;/br&gt;
+Skal du sende inn en søknad, dokumenter eller klage på vedtak, må du bruke &lt;a href=&quot;https://www.nav.no/soknader/nb/person&quot;&gt;skjemaveilederen&lt;/a&gt;.
+&lt;/br&gt;&lt;/br&gt;
+For søknader eller informasjon om økonomisk sosialhjelp kan du bruke &lt;a href=&quot;https://www.nav.no/no/person/flere-tema/sosiale-tjenester&quot;&gt;veileder sosialhjelp&lt;/a&gt;
+&lt;/br&gt;&lt;/br&gt;
+Opplysningene er bare tilgjengelige for ansatte i NAV som skal svare på henvendelsen din, og som skal hjelpe deg hvis du kontakter oss en annen gang.
+&lt;/div&gt;</value>
+    </labels>
+    <labels>
         <fullName>Skriv_til_oss_Accept_terms_error_message</fullName>
         <categories>Skriv til oss</categories>
         <language>en_US</language>
@@ -14,7 +46,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Accept terms text</shortDescription>
-        <value>I Accept the terms and conditions</value>
+        <value>I accept the terms for using this service.</value>
     </labels>
     <labels>
         <fullName>Skriv_til_oss_Show_terms</fullName>

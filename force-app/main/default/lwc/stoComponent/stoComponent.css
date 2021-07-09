@@ -21,3 +21,13 @@
 .headlineholder {
     display: flow-root;
 }
+.betingelser {
+    max-width: calc(992px - 2rem);
+    padding: 3em;
+    color: #3e3832;
+}
+.lukknapp-positioning {
+    position: absolute !important;
+    top: 1rem;
+    right: 1rem;
+}
