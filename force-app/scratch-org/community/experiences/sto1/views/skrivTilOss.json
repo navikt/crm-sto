@@ -1,0 +1,223 @@
+{
+    "appPageId": "86679453-8f4d-4ea0-b541-6804762565c8",
+    "componentName": "siteforce:dynamicLayout",
+    "id": "d108e3ad-ec2f-4a4b-9d22-cafed563f6d6",
+    "label": "skriv-til-oss",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "background": "background: rgba(0,0,0,0)",
+                        "backgroundOverlay": "rgba(0,0,0,0.5)",
+                        "contentAreaWidth": 100,
+                        "sectionConfig": {
+                            "UUID": "9fee12c4-d776-470a-814e-d545d60f32d5",
+                            "columns": [
+                                {
+                                    "UUID": "27da60d0-b824-4357-aee4-2457070b79a8",
+                                    "columnKey": "1",
+                                    "columnName": "Column 1",
+                                    "columnWidth": "12",
+                                    "seedComponents": []
+                                }
+                            ]
+                        },
+                        "sectionHeight": 300
+                    },
+                    "componentName": "forceCommunity:section",
+                    "id": "9fee12c4-d776-470a-814e-d545d60f32d5",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {
+                                        "NAVarea": "Privatperson"
+                                    },
+                                    "componentName": "c:globalCommunityHeader",
+                                    "id": "2fa3ca8e-0896-49f9-bb13-c2a5d7b479bb",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:communityLanguageSelector",
+                                    "id": "990f4cb9-9bb7-44fe-a623-35a62fc7ab58",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "27da60d0-b824-4357-aee4-2457070b79a8",
+                            "regionLabel": "Column 1",
+                            "regionName": "1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "background": "background: rgba(0,0,0,0)",
+                        "backgroundOverlay": "rgba(0,0,0,0.5)",
+                        "contentAreaWidth": 100,
+                        "sectionConfig": {
+                            "UUID": "6e831acc-17a0-48cb-bb74-43a063839d65",
+                            "columns": [
+                                {
+                                    "UUID": "fd49f41c-462e-48b8-b878-fafbebfa87ce",
+                                    "columnKey": "1",
+                                    "columnName": "Column 1",
+                                    "columnWidth": "3",
+                                    "seedComponents": []
+                                },
+                                {
+                                    "UUID": "1573e157-6f39-4caa-b559-c7a44509a3ae",
+                                    "columnKey": "a5e5b",
+                                    "columnName": "Column 2",
+                                    "columnWidth": "4",
+                                    "seedComponents": []
+                                },
+                                {
+                                    "UUID": "acb8f938-33e4-4ade-85de-8bf5f12c5358",
+                                    "columnKey": "c6cd9",
+                                    "columnName": "Column 3",
+                                    "columnWidth": "2",
+                                    "seedComponents": []
+                                },
+                                {
+                                    "UUID": "d0198d69-2a23-4da3-8f35-1c78c0393c48",
+                                    "columnKey": "1b0b8",
+                                    "columnName": "Column 4",
+                                    "columnWidth": "3",
+                                    "seedComponents": []
+                                }
+                            ]
+                        },
+                        "sectionHeight": 300
+                    },
+                    "componentName": "forceCommunity:section",
+                    "id": "6e831acc-17a0-48cb-bb74-43a063839d65",
+                    "regions": [
+                        {
+                            "id": "fd49f41c-462e-48b8-b878-fafbebfa87ce",
+                            "regionLabel": "Column 1",
+                            "regionName": "1",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:stoComponent",
+                                    "id": "3cae4d0e-08eb-4c9b-bf90-07916c370f42",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "1573e157-6f39-4caa-b559-c7a44509a3ae",
+                            "regionLabel": "Column 2",
+                            "regionName": "a5e5b",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "id": "acb8f938-33e4-4ade-85de-8bf5f12c5358",
+                            "regionLabel": "Column 3",
+                            "regionName": "c6cd9",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "id": "d0198d69-2a23-4da3-8f35-1c78c0393c48",
+                            "regionLabel": "Column 4",
+                            "regionName": "1b0b8",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "background": "background: rgba(0,0,0,0)",
+                        "backgroundOverlay": "rgba(0,0,0,0.5)",
+                        "contentAreaWidth": 100,
+                        "sectionConfig": {
+                            "UUID": "216c1673-6fa5-48d9-9328-e77e8ec60df6",
+                            "columns": [
+                                {
+                                    "UUID": "c16de0fe-8460-478f-84ef-760be1fefcf6",
+                                    "columnKey": "1",
+                                    "columnName": "Column 1",
+                                    "columnWidth": "12",
+                                    "seedComponents": []
+                                }
+                            ]
+                        },
+                        "sectionHeight": 300
+                    },
+                    "componentName": "forceCommunity:section",
+                    "id": "216c1673-6fa5-48d9-9328-e77e8ec60df6",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {
+                                        "NAVarea": "Privatperson"
+                                    },
+                                    "componentName": "c:globalCommunityFooter",
+                                    "id": "db0d1015-1d05-4ce3-96b0-c93cf0be4b42",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "c16de0fe-8460-478f-84ef-760be1fefcf6",
+                            "regionLabel": "Column 1",
+                            "regionName": "1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "e6fbd291-e190-4c7b-a9a8-156563ffac76",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Home"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "2143644b-1af2-4a2e-84d1-b3edf2e74f23",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "1b0a14bb-062f-4c40-8568-252b9affba12",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "home"
+}

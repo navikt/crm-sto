@@ -1,0 +1,8 @@
+{
+    "appPageId": "86679453-8f4d-4ea0-b541-6804762565c8",
+    "id": "f2e5563e-6a6c-4e77-b641-e64ec65bbabf",
+    "label": "Record Detail",
+    "routeType": "detail",
+    "type": "route",
+    "urlPrefix": "detail"
+}

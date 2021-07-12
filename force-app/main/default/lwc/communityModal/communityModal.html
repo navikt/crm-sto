@@ -1,0 +1,17 @@
+<template>
+    <div if:true={showModal} class="modal__overlay">
+        <div class="modal modalpadding" aria-modal="true">
+            <slot name="modalHeader"></slot>
+            <slot name="modalContent"></slot>
+            <hr class="blokk-m" />
+            <slot name="modalFooter"></slot>
+            <button
+                class="lukknapp lukknapp-positioning modal__lukkknapp--shake"
+                aria-label="Lukk"
+                onclick={closeModal}
+            >
+                <span class="text-hide">Lukk</span>
+            </button>
+        </div>
+    </div>
+</template>

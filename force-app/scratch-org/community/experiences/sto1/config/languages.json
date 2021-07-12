@@ -1,0 +1,17 @@
+{
+    "defaultCode": "no",
+    "defaultLabel": "Norsk",
+    "id": "c7d7bf75-e697-463e-bd86-00c4e92223b0",
+    "languages": [
+        {
+            "countryCode": "US",
+            "fallbackLanguageId": null,
+            "id": "0c1e3820-c67b-43d3-b4cf-d07e52ef9d55",
+            "isActive": true,
+            "label": "Engelsk (US)",
+            "languageCode": "en",
+            "type": "language"
+        }
+    ],
+    "type": "languageContainer"
+}

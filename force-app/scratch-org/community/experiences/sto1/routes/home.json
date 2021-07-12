@@ -1,0 +1,9 @@
+{
+    "appPageId": "86679453-8f4d-4ea0-b541-6804762565c8",
+    "id": "128e4fed-f667-4dd7-9459-9c4f59f2ef5e",
+    "label": "Home",
+    "pageAccess": "UseParent",
+    "routeType": "home",
+    "type": "route",
+    "urlPrefix": ""
+}
