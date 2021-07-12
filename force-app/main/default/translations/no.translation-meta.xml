@@ -45,11 +45,11 @@
         <name>Errors_InvalidSettingConfiguration</name>
     </customLabels>
     <customLabels>
-        <label><!-- STO Skriv til oss Accept Terms Button --></label>
+        <label>Jeg godkjenner vilkårene</label>
         <name>STO_Skriv_til_oss_Accept_Terms_Button</name>
     </customLabels>
     <customLabels>
-        <label><!-- STO Skriv til oss Deny Terms Button --></label>
+        <label>Jeg godkjenner ikke vilkårene</label>
         <name>STO_Skriv_til_oss_Deny_Terms_Button</name>
     </customLabels>
     <customLabels>
@@ -57,7 +57,7 @@
         <name>STO_Skriv_til_oss_terms_og_use_text</name>
     </customLabels>
     <customLabels>
-        <label><!-- Accept terms error message --></label>
+        <label>Du må godkjenne vilkårene for å sende denne meldingen</label>
         <name>Skriv_til_oss_Accept_terms_error_message</name>
     </customLabels>
     <customLabels>
@@ -65,19 +65,19 @@
         <name>Skriv_til_oss_Accept_terms_text</name>
     </customLabels>
     <customLabels>
-        <label><!-- Show terms text --></label>
+        <label>Vis vilkår</label>
         <name>Skriv_til_oss_Show_terms</name>
     </customLabels>
     <customLabels>
-        <label><!-- Text area empty error message --></label>
+        <label>Tekstfeltet er tomt</label>
         <name>Skriv_til_oss_Text_area_empty_error_message</name>
     </customLabels>
     <customLabels>
-        <label><!-- Skriv til oss headline --></label>
+        <label>Skriv til oss</label>
         <name>Skriv_til_oss_headline</name>
     </customLabels>
     <customLabels>
-        <label><!-- Skriv til oss intro text --></label>
+        <label>Send bare beskjeder som kan ha betydning for saken din. Husk å få med alle relevante opplysninger. Du kan skrive maksimalt 1000 tegn, det er cirka en halv A4-side.</label>
         <name>Skriv_til_oss_intro_text</name>
     </customLabels>
     <customLabels>
@@ -181,10 +181,6 @@
         <fullName>TAG_Update_NavUnit_in_NavTask</fullName>
     </flowDefinitions>
     <quickActions>
-        <label><!-- Guest Community Case --></label>
-        <name>GuestCommunityCase</name>
-    </quickActions>
-    <quickActions>
         <label><!-- LogACall --></label>
         <name>LogACall</name>
     </quickActions>
@@ -195,10 +191,6 @@
     <quickActions>
         <label><!-- NewCase --></label>
         <name>NewCase</name>
-    </quickActions>
-    <quickActions>
-        <label><!-- New Community Case --></label>
-        <name>NewCommunityCase</name>
     </quickActions>
     <quickActions>
         <label><!-- NewContact --></label>

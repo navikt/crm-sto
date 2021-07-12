@@ -24,7 +24,9 @@
         {
             "components": [
                 {
-                    "componentAttributes": {},
+                    "componentAttributes": {
+                        "recordId": "{!recordId}"
+                    },
                     "componentName": "c:crmMessagingCommunityThreadViewer",
                     "id": "a826ac90-c9b7-4464-a2e4-f5fcef86002d",
                     "renderPriority": "NEUTRAL",

@@ -78,7 +78,7 @@ Opplysningene er bare tilgjengelige for ansatte i NAV som skal svare på henvend
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Skriv til oss intro text</shortDescription>
-        <value>Send bare beskjeder som kan ha betydning for saken din. Husk å få med alle relevante opplysninger. Du kan skrive maksimalt 1000 tegn, det er cirka en halv A4-side.</value>
+        <value>Send only messages that can be relevant for your case. Remember to include all relevant information. You can write a maximum of 1000 characters.</value>
     </labels>
     <labels>
         <fullName>Skriv_til_oss_text_area_description</fullName>
