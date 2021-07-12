@@ -1,9 +1,0 @@
-{
-    "appPageId": "d147dfb8-aa44-4d6d-8ca2-80c1e9e5f13a",
-    "id": "cd58a0a6-03b9-407d-aee0-bd97de099e22",
-    "label": "Thread Related List",
-    "objectApiName": "Thread__c",
-    "routeType": "relatedlist-a0M",
-    "type": "route",
-    "urlPrefix": "thread"
-}

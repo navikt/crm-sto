@@ -1,0 +1,79 @@
+{
+    "appPageId": "86679453-8f4d-4ea0-b541-6804762565c8",
+    "componentName": "siteforce:sldsOneColLayout",
+    "id": "e62c5586-0997-49b4-aa4f-2a5c6f686b06",
+    "label": "Thread Detaljer",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "NAVarea": "Privatperson"
+                    },
+                    "componentName": "c:globalCommunityHeader",
+                    "id": "cb8b6608-7bde-4f9d-877c-08749bd9e000",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "e5a9677f-c5d4-44d1-b861-54051149985e",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:crmMessagingCommunityThreadViewer",
+                    "id": "a826ac90-c9b7-4464-a2e4-f5fcef86002d",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "554c6fdd-c66f-43f8-b7cc-72cb69cfdcc0",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "NAVarea": "Privatperson"
+                    },
+                    "componentName": "c:globalCommunityFooter",
+                    "id": "553e0ddf-0344-4f9d-93be-b746cced6748",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "c22a9acf-254b-4bef-be85-baf2fb1b7d8e",
+            "regionName": "footer",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "{!Record._Object}: {!Record._Title}"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "04863150-206a-4c73-8eed-4bb9eb9ebd3f",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "3ab77724-b4b8-42e6-ba3d-c6af13806436",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "detail-a0M"
+}

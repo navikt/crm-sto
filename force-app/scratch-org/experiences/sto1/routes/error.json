@@ -1,8 +1,0 @@
-{
-    "appPageId": "d147dfb8-aa44-4d6d-8ca2-80c1e9e5f13a",
-    "id": "b9e38b2a-84d4-400d-ad41-e44f913fbc89",
-    "label": "Error",
-    "routeType": "error",
-    "type": "route",
-    "urlPrefix": "error"
-}

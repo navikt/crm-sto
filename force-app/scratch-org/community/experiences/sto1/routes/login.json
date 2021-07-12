@@ -1,0 +1,8 @@
+{
+    "appPageId": "91ee2c21-640e-4174-bdc5-8c1c9c4bf4a7",
+    "id": "c40376f0-20d3-4e0e-9ea4-f5616d56fba0",
+    "label": "Login",
+    "routeType": "login-home",
+    "type": "route",
+    "urlPrefix": ""
+}

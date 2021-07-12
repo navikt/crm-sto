@@ -81,7 +81,7 @@
         <name>Skriv_til_oss_intro_text</name>
     </customLabels>
     <customLabels>
-        <label><!-- Input text area description --></label>
+        <label>Send kun saksrelevant informasjon</label>
         <name>Skriv_til_oss_text_area_description</name>
     </customLabels>
     <customLabels>
@@ -181,6 +181,10 @@
         <fullName>TAG_Update_NavUnit_in_NavTask</fullName>
     </flowDefinitions>
     <quickActions>
+        <label><!-- Guest Community Case --></label>
+        <name>GuestCommunityCase</name>
+    </quickActions>
+    <quickActions>
         <label><!-- LogACall --></label>
         <name>LogACall</name>
     </quickActions>
@@ -191,6 +195,10 @@
     <quickActions>
         <label><!-- NewCase --></label>
         <name>NewCase</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- New Community Case --></label>
+        <name>NewCommunityCase</name>
     </quickActions>
     <quickActions>
         <label><!-- NewContact --></label>

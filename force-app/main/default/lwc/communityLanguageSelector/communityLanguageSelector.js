@@ -5,24 +5,21 @@ import getLanguage from '@salesforce/apex/CommunityLanguageSelectorUtility.getLa
 import locale from '@salesforce/i18n/lang';
 
 export default class CommunityLanguageSelector extends LightningElement {
-
-    @track clickhere = 'Velg Språk';
-    @track norwegiandescriptior = 'Norsk (Bokmål)';
-    @track englishdescriptior = 'English';
+    clickhere = 'Velg Språk';
+    norwegiandescriptior = 'Norsk (Bokmål)';
+    englishdescriptior = 'English';
     @track languages = [
         { name: 'Velg Språk', label: this.clickhere, selected: true },
         { name: 'Norwegian', label: this.norwegiandescriptior, selected: false },
         { name: 'English', label: this.englishdescriptior, selected: false }
-    ]
+    ];
 
     handlePicklist(event) {
         if (event.detail != 'Velg Språk') {
-            setLanguage({ language: event.detail })
-                .then((result) => {
-                    console.log(result);
-                    location.reload()
-                })
+            setLanguage({ language: event.detail }).then((result) => {
+                console.log(result);
+                window.location.reload();
+            });
         }
     }
-
 }
