@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
+        <fullName>Community_Language_Selector_English</fullName>
+        <categories>Community Language Selector</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Community Language Selector English</shortDescription>
+        <value>English</value>
+    </labels>
+    <labels>
+        <fullName>Community_Language_Selector_Norwegian</fullName>
+        <categories>Community Language Selector</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Community Language Selector Norwegian</shortDescription>
+        <value>Norwegian (nb)</value>
+    </labels>
+    <labels>
+        <fullName>Community_Language_Selector_Placeholder</fullName>
+        <categories>Community Language Selector</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Community Language Selector Placeholder</shortDescription>
+        <value>Choose Language</value>
+    </labels>
+    <labels>
         <fullName>STO_Skriv_til_oss_Accept_Terms_Button</fullName>
         <categories>STO</categories>
         <language>en_US</language>
@@ -17,6 +41,14 @@
         <value>I do not accept the terms</value>
     </labels>
     <labels>
+        <fullName>STO_Skriv_til_oss_terms_header</fullName>
+        <categories>STO</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Skriv til oss terms header</shortDescription>
+        <value>Terms of service</value>
+    </labels>
+    <labels>
         <fullName>STO_Skriv_til_oss_terms_og_use_text</fullName>
         <categories>STO</categories>
         <language>en_US</language>
@@ -31,6 +63,14 @@ For søknader eller informasjon om økonomisk sosialhjelp kan du bruke &lt;a hre
 &lt;/br&gt;&lt;/br&gt;
 Opplysningene er bare tilgjengelige for ansatte i NAV som skal svare på henvendelsen din, og som skal hjelpe deg hvis du kontakter oss en annen gang.
 &lt;/div&gt;</value>
+    </labels>
+    <labels>
+        <fullName>STO_Skriv_til_oss_text_field_empty_error</fullName>
+        <categories>STO</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Skriv til oss text field empty error</shortDescription>
+        <value>Text field is empty</value>
     </labels>
     <labels>
         <fullName>Skriv_til_oss_Accept_terms_error_message</fullName>
