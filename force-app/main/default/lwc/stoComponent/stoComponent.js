@@ -111,7 +111,7 @@ export default class StoComponent extends NavigationMixin(LightningElement) {
 
     submitrequest() {
         if (this.acceptedTerms == true && this.message && this.message.length != null) {
-            createRecords({ theme: this.selectedTheme.Label, msgText: this.message }).then((result) => {
+            createRecords({ theme: this.selectedTheme.STO_Category__c, msgText: this.message }).then((result) => {
                 this[NavigationMixin.Navigate]({
                     type: 'standard__recordPage',
                     attributes: {

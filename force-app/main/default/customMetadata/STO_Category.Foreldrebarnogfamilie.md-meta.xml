@@ -3,6 +3,10 @@
     <label>Foreldre, barn og familie</label>
     <protected>false</protected>
     <values>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Familie</value>
+    </values>
+    <values>
         <field>STO_Description__c</field>
         <value xsi:type="xsd:string">Foreldrepenger, overgangsstønad, kontantstøtte, svangerskapspenger, barnetrygd, barnebidrag, pleiepenger, omsorgspenger.</value>
     </values>

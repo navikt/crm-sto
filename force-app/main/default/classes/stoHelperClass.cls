@@ -14,7 +14,7 @@ public with sharing class stoHelperClass {
         }
 
         return [
-            SELECT Id, Label, STO_Description__c, STO_Sort_Order__c
+            SELECT Id, Label, STO_Description__c, STO_Sort_Order__c, STO_Category__c
             FROM STO_Category__mdt
             WHERE STO_Language__c = :lang
             ORDER BY STO_Sort_Order__c ASC
@@ -47,7 +47,8 @@ public with sharing class stoHelperClass {
         dmlOpts.assignmentRuleHeader.UseDefaultRule = true;
 
         Case c = new Case();
-        c.Subject = 'Skriv til oss - ' + theme; //TODO: Handle Language changes
+        c.Subject = 'Skriv til oss - ' + theme;
+        c.STO_Category__c = theme;
         c.Origin = 'Web';
 
         List<User> uList = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
