@@ -14,10 +14,10 @@ public with sharing class stoHelperClass {
         }
 
         return [
-            SELECT Id, Label, STODescription__c, STOSort_Order__c
+            SELECT Id, Label, STO_Description__c, STO_Sort_Order__c
             FROM STO_Category__mdt
-            WHERE STOLanguage__c = :lang
-            ORDER BY STOSort_Order__c ASC
+            WHERE STO_Language__c = :lang
+            ORDER BY STO_Sort_Order__c ASC
         ];
     }
     /**
