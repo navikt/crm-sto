@@ -58,6 +58,16 @@ public with sharing class stoHelperClass {
      **/
     private static Boolean isCaseRouting(User usr) {
         Boolean caseRouting = true;
+        String confidentiality = String.isNotBlank(usr.Account.CRM_Person__r.INT_Confidential__c)
+            ? usr.Account.CRM_Person__r.INT_Confidential__c
+            : '';
+
+        if (
+            confidentiality.equalsIgnoreCase('STRENGT_FORTROLIG') ||
+            confidentiality.equalsIgnoreCase('STRENGT_FORTROLIG_UTLAND')
+        ) {
+            caseRouting = false;
+        }
 
         //Do necessary checks on confidential and NAV employee to determine the outcome
         return caseRouting;
