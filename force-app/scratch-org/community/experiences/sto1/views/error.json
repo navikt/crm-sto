@@ -1,11 +1,11 @@
 {
-    "appPageId": "86679453-8f4d-4ea0-b541-6804762565c8",
+    "appPageId": "ee1c8800-f047-4d93-bad5-52814afdf7cf",
     "componentName": "siteforce:sldsOneColLayout",
-    "id": "3680f0fc-fcf9-4716-bb2b-0a6c72fe6c9d",
+    "id": "287454b6-f670-4e4a-98f3-89c8ad5aa28c",
     "label": "Error",
     "regions": [
         {
-            "id": "27fd9a3e-81e8-4cad-969d-b8c6848ba6ab",
+            "id": "450d3e30-0266-4625-8e4a-b5f810374a85",
             "regionName": "header",
             "type": "region"
         },
@@ -16,18 +16,18 @@
                         "richTextValue": "<div style='text-align: center;'>Invalid Page</div>"
                     },
                     "componentName": "forceCommunity:richTextInline",
-                    "id": "4e400ab2-2ede-4219-997d-5a64ea6496a8",
+                    "id": "4b7b335d-c1fc-4bc8-bee9-5a4d62d52146",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
                 }
             ],
-            "id": "b9ffe2cc-8d08-4158-85a2-533013606fb5",
+            "id": "bcd9929a-fccf-4ebd-9f21-b6753fcc28c9",
             "regionName": "content",
             "type": "region"
         },
         {
-            "id": "e57102fe-e503-4a7b-8f52-e57827f61cf8",
+            "id": "0bd9dc8c-30f8-45bc-a0a9-5dad2f508eed",
             "regionName": "footer",
             "type": "region"
         },
@@ -40,13 +40,12 @@
                         "title": "Error"
                     },
                     "componentName": "forceCommunity:seoAssistant",
-                    "id": "47f27a11-98a6-4e8f-9734-d9598f9b4b6c",
-                    "renderPriority": "NEUTRAL",
+                    "id": "4407f7f7-79d9-4227-a96b-10c56c9a8ae2",
                     "renditionMap": {},
                     "type": "component"
                 }
             ],
-            "id": "9ab4cd5d-f5b6-4ff6-92f9-abc776455399",
+            "id": "906688aa-ab00-4cee-9675-74ebb483747e",
             "regionName": "sfdcHiddenRegion",
             "type": "region"
         }

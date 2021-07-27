@@ -1,8 +1,8 @@
 {
-    "appPageId": "86679453-8f4d-4ea0-b541-6804762565c8",
+    "appPageId": "ee1c8800-f047-4d93-bad5-52814afdf7cf",
     "componentName": "siteforce:sldsOneColLayout",
-    "id": "e62c5586-0997-49b4-aa4f-2a5c6f686b06",
-    "label": "Thread Detaljer",
+    "id": "fbe8929a-f57c-429d-9f67-ad50806c025b",
+    "label": "Thread Detail",
     "regions": [
         {
             "components": [
@@ -11,13 +11,13 @@
                         "NAVarea": "Privatperson"
                     },
                     "componentName": "c:globalCommunityHeader",
-                    "id": "cb8b6608-7bde-4f9d-877c-08749bd9e000",
+                    "id": "42aa1510-df21-4f6d-949e-cecd754ebdc7",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
                 }
             ],
-            "id": "e5a9677f-c5d4-44d1-b861-54051149985e",
+            "id": "cc2bd7c5-21e8-407a-8e43-5a4298669eea",
             "regionName": "header",
             "type": "region"
         },
@@ -28,13 +28,13 @@
                         "recordId": "{!recordId}"
                     },
                     "componentName": "c:crmMessagingCommunityThreadViewer",
-                    "id": "a826ac90-c9b7-4464-a2e4-f5fcef86002d",
+                    "id": "6b826609-dbe7-45f7-8059-235b87b01f29",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
                 }
             ],
-            "id": "554c6fdd-c66f-43f8-b7cc-72cb69cfdcc0",
+            "id": "60894bbe-7121-45e9-b2fa-a24ccc34ad61",
             "regionName": "content",
             "type": "region"
         },
@@ -45,13 +45,13 @@
                         "NAVarea": "Privatperson"
                     },
                     "componentName": "c:globalCommunityFooter",
-                    "id": "553e0ddf-0344-4f9d-93be-b746cced6748",
+                    "id": "d33b42ef-aef8-41ad-8e31-7929968251e4",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
                 }
             ],
-            "id": "c22a9acf-254b-4bef-be85-baf2fb1b7d8e",
+            "id": "991ab777-6454-49d0-811f-c5d0bcf3025f",
             "regionName": "footer",
             "type": "region"
         },
@@ -64,18 +64,17 @@
                         "title": "{!Record._Object}: {!Record._Title}"
                     },
                     "componentName": "forceCommunity:seoAssistant",
-                    "id": "04863150-206a-4c73-8eed-4bb9eb9ebd3f",
-                    "renderPriority": "NEUTRAL",
+                    "id": "34801832-b0d8-480d-995b-8bed802e7a2c",
                     "renditionMap": {},
                     "type": "component"
                 }
             ],
-            "id": "3ab77724-b4b8-42e6-ba3d-c6af13806436",
+            "id": "cee38bf6-ed69-44dd-a5c8-4426fc0f36d1",
             "regionName": "sfdcHiddenRegion",
             "type": "region"
         }
     ],
     "themeLayoutType": "Inner",
     "type": "view",
-    "viewType": "detail-a0M"
+    "viewType": "detail-a0P"
 }

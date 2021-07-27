@@ -1,9 +1,0 @@
-{
-    "appPageId": "86679453-8f4d-4ea0-b541-6804762565c8",
-    "id": "3a8423f8-ac33-41d9-83d8-08168eed3279",
-    "label": "Thread Detaljer",
-    "objectApiName": "Thread__c",
-    "routeType": "detail-a0M",
-    "type": "route",
-    "urlPrefix": "thread"
-}

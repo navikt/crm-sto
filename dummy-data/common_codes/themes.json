@@ -1,0 +1,15 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "Common_Code__c",
+                "referenceId": "KNAref"
+            },
+            "Name": "Kontakt NAV",
+            "CRM_Code__c": "KNA",
+            "CRM_Active__c": true,
+            "CRM_Archive_Theme__c": false,
+            "CRM_Code_Set__c": "Tema"
+        }
+    ]
+}

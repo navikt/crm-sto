@@ -3,6 +3,25 @@ public with sharing class stoHelperClass {
         .get('STO_Case')
         .getRecordTypeId();
     private static final LoggerUtility logger = new LoggerUtility('Skriv til oss');
+
+    private static Map<String, Id> commonCodeMap {
+        get {
+            if (commonCodeMap == null) {
+                commonCodeMap = new Map<String, Id>();
+                for (Common_Code__c comCode : [
+                    SELECT Id, CRM_Code__c
+                    FROM Common_Code__c
+                    WHERE CRM_Code_Set__c IN ('Tema', 'Temagrupper', 'Oppgavetyper')
+                ]) {
+                    commonCodeMap.put(comCode.CRM_Code__c, comCode.Id);
+                }
+            }
+
+            return commonCodeMap;
+        }
+        set {
+        }
+    }
     /**
      * Get themes from custom metadata
      * @Author Lars Petter Johnsen
@@ -108,6 +127,12 @@ public with sharing class stoHelperClass {
         //TODO expand with needed information for correct routing
         NavTask__c newTask = new NavTask__c();
         newTask.CRM_Account__c = accountId;
+        newTask.NKS_Theme__c = commonCodeMap.get('KNA');
+        newTask.NKS_TaskType__c = commonCodeMap.get('SPM_OG_SVR');
+        newTask.NKS_Comments__c = 'DEFAULT COMMENTS?';
+        newTask.CRM_Priority__c = 'NORM';
+        //newTask.NKS_Henvendelse_BehandlingsId__c = Reference to the thread used for oppgave -> Modia functionality
+
         return newTask;
     }
 

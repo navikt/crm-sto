@@ -1,0 +1,14 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "Common_Code__c",
+                "referenceId": "SPMref"
+            },
+            "Name": "Behandle henvendelse",
+            "CRM_Code__c": "SPM_OG_SVR",
+            "CRM_Active__c": true,
+            "CRM_Code_Set__c": "Oppgavetyper"
+        }
+    ]
+}
