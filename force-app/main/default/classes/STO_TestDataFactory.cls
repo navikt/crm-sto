@@ -247,7 +247,6 @@ public class STO_TestDataFactory {
                 'TimeZoneSidKey' => 'Europe/Paris',
                 'LocaleSidKey' => 'no_NO',
                 'EmailEncodingKey' => 'UTF-8',
-                'Department' => '1',
                 'ProfileId' => [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1]
                 .Id,
                 'Alias' => generateRandomString(8),

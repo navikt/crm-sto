@@ -51,6 +51,7 @@ public with sharing class stoHelperClass {
     @AuraEnabled
     public static Id createRequest(String theme, String msgText) {
         String relatedObjId;
+        Thread__c thread;
 
         User personUser = [
             SELECT Account.CRM_Person__r.INT_IsNavEmployee__c, Account.CRM_Person__r.INT_Confidential__c
@@ -61,10 +62,13 @@ public with sharing class stoHelperClass {
         if (isCaseRouting(personUser)) {
             //Create case Record and insert it
             relatedObjId = createCase(theme, personUser.AccountId).Id;
+            thread = createThread(relatedObjId, theme);
         } else {
-            relatedObjId = createNavTask(theme, personUser.AccountId).Id;
+            thread = createThread(null, theme);
+            relatedObjId = createNavTask(personUser.AccountId, thread.Id).Id;
+            //Updates the thread relation in future context as the Thread ID is needed on the NAV Task NKS_Henvendelse_BehandlingsId__c for accessability through Gosys/Modia
+            updateThreadRelation(thread.Id, relatedObjId);
         }
-        Thread__c thread = createThread(relatedObjId, theme);
         createMessage(thread, msgText);
 
         return thread.Id;
@@ -122,18 +126,34 @@ public with sharing class stoHelperClass {
         return casy;
     }
 
-    private static NavTask__c createNavTask(String theme, String accountId) {
+    @testVisible
+    private static NavTask__c createNavTask(String accountId, String threadId) {
         //Generate a NavTask that is to be routed via oppgave with the correct external reference to thread so that it can be viewed correctly in Modia
-        //TODO expand with needed information for correct routing
         NavTask__c newTask = new NavTask__c();
         newTask.CRM_Account__c = accountId;
         newTask.NKS_Theme__c = commonCodeMap.get('KNA');
         newTask.NKS_TaskType__c = commonCodeMap.get('SPM_OG_SVR');
         newTask.NKS_Comments__c = 'DEFAULT COMMENTS?';
         newTask.CRM_Priority__c = 'NORM';
-        //newTask.NKS_Henvendelse_BehandlingsId__c = Reference to the thread used for oppgave -> Modia functionality
+        newTask.CRM_NavUnit__c = null; // Setting to null to trigger default task distribution
+        newTask.NKS_Subtheme__c = null; // Need to include as flow fails if field is not defined
+        newTask.NKS_Henvendelse_BehandlingsId__c = threadId;
 
-        return newTask;
+        Map<String, Object> flowInputs = new Map<String, Object>{
+            'NAV_Task' => newTask,
+            'Created_By_Unit_Number' => null
+        };
+
+        //Performs the outbound call for submitting task to oppgave
+        Flow.Interview taskFlow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
+        taskFlow.start();
+
+        return (NavTask__c) taskFlow.getVariableValue('NAV_Task');
+    }
+
+    @future
+    private static void updateThreadRelation(String threadId, String relatedObjId) {
+        update new Thread__c(Id = threadId, CRM_Related_Object__c = relatedObjId);
     }
 
     /**
