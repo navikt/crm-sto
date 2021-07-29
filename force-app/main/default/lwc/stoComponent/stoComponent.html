@@ -1,10 +1,8 @@
 <template>
     <div class="decorator-wrapper">
         <div class="header">
-            <!--  <c-community-picklist fielddescriptor="Språk/Language"></c-community-picklist>-->
             <div class="headlineholder"></div>
             <h2 class="typo-sidetittel">{label.headline}</h2>
-            <!-- Replace with Label-->
         </div>
         <!-- Start of write new message-->
         <template if:true={shownewmessage}>
@@ -15,13 +13,13 @@
                 <div class="inputarea">
                     <lightning-textarea
                         name="input1"
-                        onchange={nameChange}
+                        onchange={inputChange}
                         variant="label-hidden"
                         label="Skriv din melding her"
                         maxlength="32000"
                     ></lightning-textarea>
-                    <template if:true={showerror}>
-                        <p class="typo-feilmelding">{errormessage}</p>
+                    <template if:true={showErrorNoMessage}>
+                        <p class="typo-feilmelding">{label.EMPTY_TEXT_FIELD_ERROR}</p>
                     </template>
                     <div class="skjemaelement checkbox">
                         <input
@@ -38,8 +36,8 @@
                         ><a onclick={showTerms} class="slds-var-p-left_small lenke vilkar-link"
                             >{label.showtermstext}</a
                         >
-                        <template if:true={showerror}>
-                            <p class="typo-feilmelding">{label.accepterrmessage}</p>
+                        <template if:true={showError}>
+                            <p class="typo-feilmelding">{label.ACCEPT_TERMS_ERROR}</p>
                         </template>
                     </div>
                     <c-community-modal>
@@ -48,7 +46,7 @@
                             tabindex="0"
                             class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l"
                         >
-                            Vilkårene for å bruke denne tjenesten
+                            {label.SERVICE_TERMS_HEADER}
                         </h1>
                         <div slot="modalContent">
                             <section>

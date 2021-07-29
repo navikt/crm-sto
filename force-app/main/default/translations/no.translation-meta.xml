@@ -33,6 +33,18 @@
         <name>CRM_Theme_Categorization_Validation_Error</name>
     </customLabels>
     <customLabels>
+        <label>Engelsk</label>
+        <name>Community_Language_Selector_English</name>
+    </customLabels>
+    <customLabels>
+        <label>Norsk (Bokmål)</label>
+        <name>Community_Language_Selector_Norwegian</name>
+    </customLabels>
+    <customLabels>
+        <label>Velg Språk</label>
+        <name>Community_Language_Selector_Placeholder</name>
+    </customLabels>
+    <customLabels>
         <label><!-- Errors_CannotFindTriggerHandlerClass --></label>
         <name>Errors_CannotFindTriggerHandlerClass</name>
     </customLabels>
@@ -53,8 +65,16 @@
         <name>STO_Skriv_til_oss_Deny_Terms_Button</name>
     </customLabels>
     <customLabels>
+        <label>Vilkårene for å bruke denne tjenesten</label>
+        <name>STO_Skriv_til_oss_terms_header</name>
+    </customLabels>
+    <customLabels>
         <label><!-- Skriv til oss terms og use text --></label>
         <name>STO_Skriv_til_oss_terms_og_use_text</name>
+    </customLabels>
+    <customLabels>
+        <label>Tekstfeltet er tomt</label>
+        <name>STO_Skriv_til_oss_text_field_empty_error</name>
     </customLabels>
     <customLabels>
         <label>Du må godkjenne vilkårene for å sende denne meldingen</label>
@@ -128,6 +148,30 @@
         <label><!-- fflib_security_error_object_not_updateable --></label>
         <name>fflib_security_error_object_not_updateable</name>
     </customLabels>
+    <customTabs>
+        <label><!-- API Transactions --></label>
+        <name>API_Transactions</name>
+    </customTabs>
+    <flowDefinitions>
+        <flows/>
+        <fullName>CRM_Conversation_Note_Office_Restriction_Activated</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>CRM_Create_Thread_Event</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>CRM_Journal_Conversation_Note</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>CRM_Journal_Message_Thread</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>CRM_Thread_Office_Restriction_Activated</fullName>
+    </flowDefinitions>
     <flowDefinitions>
         <flows>
             <screens>
@@ -160,6 +204,10 @@
         <fullName>NAVTask_Owner_Change</fullName>
     </flowDefinitions>
     <flowDefinitions>
+        <flows/>
+        <fullName>POST_JOURNAL_AUTO_TEMPLATE</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
         <flows>
             <screens>
                 <fields>
@@ -175,6 +223,10 @@
             </screens>
         </flows>
         <fullName>POST_JOURNAL_TEMPLATE</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Set_Thread_Close_Date</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows/>

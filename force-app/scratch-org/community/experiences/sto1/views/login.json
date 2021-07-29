@@ -1,7 +1,7 @@
 {
-    "appPageId": "91ee2c21-640e-4174-bdc5-8c1c9c4bf4a7",
+    "appPageId": "8006b1b8-fc23-46dd-aa32-6e342798cc2c",
     "componentName": "siteforce:sldsOneColLayout",
-    "id": "7ce515a0-7638-4ff2-a369-bf25115f5e92",
+    "id": "1e82e03d-072c-479e-9bc5-f6888c63c36e",
     "label": "Login",
     "regions": [
         {
@@ -9,7 +9,7 @@
                 {
                     "componentAttributes": {},
                     "componentName": "salesforceIdentity:communityLogo2",
-                    "id": "8fb17730-8565-4221-bcce-f6287a240218",
+                    "id": "f4cc88ef-d589-4be7-b77d-4b7c0e2624ab",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
@@ -26,7 +26,7 @@
                         "usernameLabel": "Username"
                     },
                     "componentName": "salesforceIdentity:loginForm2",
-                    "id": "efbd22f8-1370-4ff8-a0d8-e33615cdac29",
+                    "id": "24e1caa0-2769-4c0e-a110-94231ce5b95e",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
@@ -38,7 +38,7 @@
                         "useCommunityDomainSso": false
                     },
                     "componentName": "salesforceIdentity:socialLogin2",
-                    "id": "0fdce9a9-90c5-497e-8a1e-ad4ed0be8ea8",
+                    "id": "cd65dc9c-15e5-424e-b8ea-208055b23d76",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
@@ -48,13 +48,13 @@
                         "employeeLoginLinkLabel": "Are you an employee? Login here"
                     },
                     "componentName": "salesforceIdentity:employeeLoginLink2",
-                    "id": "28bd5bb5-7bc3-48c3-8092-e4051a1d0a3d",
+                    "id": "137b634a-0497-4029-ba2b-517419bfa2ec",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
                 }
             ],
-            "id": "ac9d9084-ea7a-4096-b6f1-350e4f24b9ee",
+            "id": "9172ed90-f7c9-4d90-a663-d411c25cab07",
             "regionName": "content",
             "type": "region"
         },
@@ -67,13 +67,12 @@
                         "title": "Login"
                     },
                     "componentName": "forceCommunity:seoAssistant",
-                    "id": "efaa8033-c474-48a5-a5aa-f97125587a2c",
-                    "renderPriority": "NEUTRAL",
+                    "id": "8a9e27e4-cc57-49f7-aaf3-1a96ed004426",
                     "renditionMap": {},
                     "type": "component"
                 }
             ],
-            "id": "dd50f501-6d45-49b6-aa4a-74bad3514646",
+            "id": "8a70ec0a-74fe-4c32-b15e-a0e7ee38ec8d",
             "regionName": "sfdcHiddenRegion",
             "type": "region"
         }

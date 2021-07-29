@@ -1,6 +1,8 @@
 {
-    "appPageId": "86679453-8f4d-4ea0-b541-6804762565c8",
-    "id": "4273dcda-d91d-4a09-9297-b3f766949945",
+    "activeViewId": "287454b6-f670-4e4a-98f3-89c8ad5aa28c",
+    "appPageId": "ee1c8800-f047-4d93-bad5-52814afdf7cf",
+    "configurationTags": [],
+    "id": "badeeb0b-4f34-4ad6-9eb2-2dac195c3460",
     "label": "Error",
     "pageAccess": "UseParent",
     "routeType": "error",

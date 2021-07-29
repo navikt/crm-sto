@@ -3,15 +3,19 @@
     <label>Jobbsøker</label>
     <protected>false</protected>
     <values>
-        <field>STODescription__c</field>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Arbeid</value>
+    </values>
+    <values>
+        <field>STO_Description__c</field>
         <value xsi:type="xsd:string">Jobbsøker description</value>
     </values>
     <values>
-        <field>STOLanguage__c</field>
+        <field>STO_Language__c</field>
         <value xsi:type="xsd:string">Norwegian</value>
     </values>
     <values>
-        <field>STOSort_Order__c</field>
+        <field>STO_Sort_Order__c</field>
         <value xsi:type="xsd:double">1.0</value>
     </values>
 </CustomMetadata>

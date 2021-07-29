@@ -3,15 +3,19 @@
     <label>Jobbseeker</label>
     <protected>false</protected>
     <values>
-        <field>STODescription__c</field>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Arbeid</value>
+    </values>
+    <values>
+        <field>STO_Description__c</field>
         <value xsi:type="xsd:string">Write to us about work assessment allowance (arbeidsavklaringspenger, AAP), salary loss compensation (lønnskompensasjon), unemployment benefit (dagpenger), benefits while participating in employment schemes (tiltakspenger), registering and guidance for jo</value>
     </values>
     <values>
-        <field>STOLanguage__c</field>
+        <field>STO_Language__c</field>
         <value xsi:type="xsd:string">English</value>
     </values>
     <values>
-        <field>STOSort_Order__c</field>
+        <field>STO_Sort_Order__c</field>
         <value xsi:type="xsd:double">1.0</value>
     </values>
 </CustomMetadata>
