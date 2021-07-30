@@ -525,7 +525,7 @@
             <inputParameters>
                 <name>taskType</name>
                 <value>
-                    <stringValue>KNA</stringValue>
+                    <stringValue>SPM_OG_SVR</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -542,6 +542,12 @@
             </inputParameters>
             <inputParameters>
                 <name>hideDelegateToSelf</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>disableConditionalRendering</name>
                 <value>
                     <booleanValue>true</booleanValue>
                 </value>

@@ -5,15 +5,44 @@ export default class CrmStoMessaging extends LightningElement {
     @api objectApiName;
     @api singleThread;
 
-    startTransferFlow() {
-        this.dispatchToolbarAction('NKS_STO_transfer');
+    connectedCallback() {
+        this.template.addEventListener('toolbaraction', (event) => {
+            let flowInputs = [];
+            //logic to validate and create correct flowInputs for the flow to be triggered
+            switch (event.detail.flowName) {
+                case 'CRM_Case_Journal_STO_Thread':
+                    flowInputs = [
+                        {
+                            name: 'Thread_ID',
+                            type: 'String',
+                            value: event.detail.threadId
+                        }
+                    ];
+                    //Adding the flowInputs parameters to the event
+                    event.detail.flowInputs = flowInputs;
+                    break;
+                case 'CRM_STO_transfer':
+                    flowInputs = [
+                        {
+                            name: 'recordId',
+                            type: 'String',
+                            value: this.recordId
+                        }
+                    ];
+                    break;
+                default:
+                    break;
+            }
+            //Adding the flowInputs parameters to the event
+            event.detail.flowInputs = flowInputs;
+
+            this.dispatchToolbarAction(event); //Forwards the event to parent
+        });
     }
 
-    dispatchToolbarAction(flowName) {
+    dispatchToolbarAction(event) {
         //Sending event to parent to initialize flow
-        const toolbarActionEvent = new CustomEvent('toolbaraction', {
-            detail: { flowName }
-        });
+        const toolbarActionEvent = new CustomEvent('toolbaraction', event);
 
         this.dispatchEvent(toolbarActionEvent);
     }
