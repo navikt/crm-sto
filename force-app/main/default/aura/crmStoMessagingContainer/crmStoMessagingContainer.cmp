@@ -6,7 +6,7 @@
         recordId="{!v.recordId}"
         objectApiName="{!v.sObjectName}"
         singleThread="{!v.singleThread}"
-        ontoolbaraction="{!c.handleToolbarAction}"
+        onsto_toolbaraction="{!c.handleToolbarAction}"
     ></c:crmStoMessaging>
 
     <aura:if isTrue="{!v.showPanel}">

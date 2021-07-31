@@ -15,7 +15,7 @@ export default class CrmStoMessaging extends LightningElement {
                         {
                             name: 'Thread_ID',
                             type: 'String',
-                            value: event.detail.threadId
+                            value: event.threadId
                         }
                     ];
                     //Adding the flowInputs parameters to the event
@@ -36,18 +36,14 @@ export default class CrmStoMessaging extends LightningElement {
             //Adding the flowInputs parameters to the event
             event.detail.flowInputs = flowInputs;
 
-            this.dispatchToolbarAction(event); //Forwards the event to parent
+            this.dispatchStoToolbarAction(event); //Forwards the event to parent
         });
     }
 
-    dispatchToolbarAction(event) {
+    dispatchStoToolbarAction(event) {
         //Sending event to parent to initialize flow
-        const toolbarActionEvent = new CustomEvent('toolbaraction', event);
+        const toolbarActionEvent = new CustomEvent('sto_toolbaraction', event);
 
         this.dispatchEvent(toolbarActionEvent);
-    }
-
-    get isCase() {
-        return this.objectApiName === 'Case';
     }
 }
