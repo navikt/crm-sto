@@ -10,5 +10,11 @@
         "saveRefs": false,
         "resolveRefs": false,
         "files": ["cases.json"]
+    },
+    {
+        "sobject": "PushTopic",
+        "saveRefs": false,
+        "resolveRefs": false,
+        "files": ["pushtopics.json"]
     }
 ]
