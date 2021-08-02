@@ -45,6 +45,37 @@
     </recordLookups>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
+        <name>Journal_Success_Screen_0</name>
+        <label>Journal Success Screen</label>
+        <locationX>176</locationX>
+        <locationY>638</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Notify_Thread_Change_0</name>
+            <extensionName>c:crmRecordChangeNotifier</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>recordId</name>
+                <value>
+                    <elementReference>Thread_ID</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>autoFlowFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Thread_Journal_Screen</name>
         <label>Thread Journal Screen</label>
         <locationX>176</locationX>
@@ -81,10 +112,35 @@
     </start>
     <status>Active</status>
     <subflows>
+        <name>Create_Thread_Journal_Event</name>
+        <label>Create Thread Journal Event</label>
+        <locationX>176</locationX>
+        <locationY>518</locationY>
+        <connector>
+            <targetReference>Journal_Success_Screen_0</targetReference>
+        </connector>
+        <flowName>CRM_Create_Thread_Event</flowName>
+        <inputAssignments>
+            <name>Event_Message</name>
+            <value>
+                <stringValue>Tråden ble journalført.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Thread_ID</name>
+            <value>
+                <elementReference>Thread_ID</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
+    <subflows>
         <name>Journal_Thread</name>
         <label>Journal Thread</label>
         <locationX>176</locationX>
         <locationY>398</locationY>
+        <connector>
+            <targetReference>Create_Thread_Journal_Event</targetReference>
+        </connector>
         <flowName>CRM_Journal_Message_Thread</flowName>
         <inputAssignments>
             <name>Journal_Case_ID</name>
