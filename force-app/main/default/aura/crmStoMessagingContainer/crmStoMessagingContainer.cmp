@@ -31,7 +31,7 @@
                         </button>
                     </header>
                     <div
-                        class="slds-modal__content slds-p-around_medium"
+                        class="slds-modal__content slds-is-relative slds-p-around_medium"
                         style="border-radius: 0.3em"
                         id="modal-content-id-1"
                     >
