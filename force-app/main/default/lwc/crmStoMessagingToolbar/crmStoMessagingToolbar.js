@@ -13,7 +13,7 @@ export default class CrmStoMessagingToolbar extends LightningElement {
 
     dispatchToolbarAction(flowName) {
         //Sending event to parent to initialize flow
-        const toolbarActionEvent = new CustomEvent('sto_toolbaraction', {
+        const toolbarActionEvent = new CustomEvent('toolbaraction', {
             detail: { flowName },
             bubbles: true
         });
