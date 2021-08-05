@@ -32,7 +32,7 @@
                     </header>
                     <div
                         class="slds-modal__content slds-is-relative slds-p-around_medium"
-                        style="border-radius: 0.3em"
+                        style="border-radius: 0.3em; overflow: visible"
                         id="modal-content-id-1"
                     >
                         <lightning:flow aura:id="panelFlow" onstatuschange="{!c.handleFlowStatusChange}" />

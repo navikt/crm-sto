@@ -183,6 +183,13 @@
                 <stringValue>NORM</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>STO_NAV_TASK.NKS_Henvendelse_BehandlingsId__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Thread_ID</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Get_Task_due_date</targetReference>
         </connector>
@@ -391,10 +398,10 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>CRM_Related_Object__c</field>
+            <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>Thread_ID</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -681,5 +688,12 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>Group</objectType>
+    </variables>
+    <variables>
+        <name>Thread_ID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
     </variables>
 </Flow>

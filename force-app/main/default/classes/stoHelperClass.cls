@@ -54,7 +54,11 @@ public with sharing class stoHelperClass {
         Thread__c thread;
 
         User personUser = [
-            SELECT Account.CRM_Person__r.INT_IsNavEmployee__c, Account.CRM_Person__r.INT_Confidential__c
+            SELECT
+                AccountId,
+                ContactId,
+                Contact.Account.CRM_Person__r.INT_IsNavEmployee__c,
+                Contact.Account.CRM_Person__r.INT_Confidential__c
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];
@@ -62,14 +66,14 @@ public with sharing class stoHelperClass {
         if (isCaseRouting(personUser)) {
             //Create case Record and insert it
             relatedObjId = createCase(theme, personUser.AccountId).Id;
-            thread = createThread(relatedObjId, theme);
+            thread = createThread(relatedObjId, theme, personUser);
         } else {
-            thread = createThread(null, theme);
+            thread = createThread(null, theme, personUser);
             relatedObjId = createNavTask(personUser.AccountId, thread.Id).Id;
             //Updates the thread relation in future context as the Thread ID is needed on the NAV Task NKS_Henvendelse_BehandlingsId__c for accessability through Gosys/Modia
             updateThreadRelation(thread.Id, relatedObjId);
         }
-        createMessage(thread, msgText);
+        createMessage(thread, msgText, personUser.ContactId);
 
         return thread.Id;
     }
@@ -81,8 +85,8 @@ public with sharing class stoHelperClass {
      **/
     private static Boolean isCaseRouting(User usr) {
         Boolean caseRouting = true;
-        String confidentiality = String.isNotBlank(usr.Account.CRM_Person__r.INT_Confidential__c)
-            ? usr.Account.CRM_Person__r.INT_Confidential__c
+        String confidentiality = String.isNotBlank(usr.Contact.Account.CRM_Person__r.INT_Confidential__c)
+            ? usr.Contact.Account.CRM_Person__r.INT_Confidential__c
             : '';
 
         if (
@@ -156,17 +160,21 @@ public with sharing class stoHelperClass {
         update new Thread__c(Id = threadId, CRM_Related_Object__c = relatedObjId);
     }
 
+    private static Thread__c createThread(String relatedObjId, String theme, User personUser) {
+        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId);
+    }
+
     /**
      * Creates a thread to contain the STO conversation
      * @author Lars Petter Johnsen
      * @date 08.06.2021
      */
     @TestVisible
-    private static Thread__c createThread(String relatedObjId, String theme) {
+    private static Thread__c createThread(String relatedObjId, String theme, String accountId, String contactId) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = relatedObjId;
-        thread.CRM_isPublic__c = true;
-        thread.CRM_From__c = UserInfo.getUserId();
+        thread.CRM_Contact__c = contactId;
+        thread.CRM_Account__c = accountId;
         thread.Name = 'Skriv til oss - ' + theme;
         try {
             insert thread;
@@ -177,11 +185,11 @@ public with sharing class stoHelperClass {
         return thread;
     }
     @TestVisible
-    private static void createMessage(Thread__c t, String msgText) {
+    private static void createMessage(Thread__c thread, String msgText, String contactId) {
         Message__c msg = new Message__c();
         msg.CRM_Message_Text__c = msgText;
-        msg.CRM_From__c = UserInfo.getUserId();
-        msg.CRM_Thread__c = t.Id;
+        msg.CRM_From_Contact__c = contactId;
+        msg.CRM_Thread__c = thread.Id;
         try {
             insert msg;
         } catch (DmlException e) {
@@ -206,10 +214,10 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static Message__c getLatestMessage(Id threadId) {
         List<Message__c> messageList = [
-            SELECT Id, CRM_Message_Text__c, CRM_From__c
+            SELECT Id, CRM_Message_Text__c, CRM_From_Contact__c
             FROM Message__c
             WHERE CRM_Thread__c = :threadId
-            ORDER BY CreatedDate DESC
+            ORDER BY CRM_Sent_Datetime_Formula__c DESC
         ];
 
         return messageList.get(0);

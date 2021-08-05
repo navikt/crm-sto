@@ -31,26 +31,44 @@ public with sharing class stoHelperClass_Test {
     }
     @isTest
     static void createThreadCaseTest() {
+        Contact personContact = [
+            SELECT Id, AccountId
+            FROM Contact
+            WHERE Account.CRM_Person__r.Name = '12345678910'
+            LIMIT 1
+        ];
         Case c = stoHelperClass.createCase('Jobbsøker', null);
         Test.startTest();
-        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker');
+        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker', personContact.AccountId, personContact.Id);
         Test.stopTest();
         System.assertEquals(t.CRM_Related_Object__c, c.Id, 'Thread creation test failure, check thread');
     }
     @isTest
     static void createMessageTest() {
+        Contact personContact = [
+            SELECT Id, AccountId
+            FROM Contact
+            WHERE Account.CRM_Person__r.Name = '12345678910'
+            LIMIT 1
+        ];
         Case c = stoHelperClass.createCase('Jobbsøker', null);
-        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker');
+        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker', personContact.AccountId, personContact.Id);
         Test.startTest();
-        stoHelperClass.createMessage(t, 'this is a test message');
+        stoHelperClass.createMessage(t, 'this is a test message', personContact.Id);
         Test.stopTest();
         List<Message__c> m = [SELECT CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c = :t.Id];
         System.assertEquals('this is a test message', m.get(0).CRM_Message_Text__c);
     }
     @isTest
     static void getThreadsTest() {
+        Contact personContact = [
+            SELECT Id, AccountId
+            FROM Contact
+            WHERE Account.CRM_Person__r.Name = '12345678910'
+            LIMIT 1
+        ];
         Case c = stoHelperClass.createCase('Jobbsøker', null);
-        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker');
+        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker', personContact.AccountId, personContact.Id);
         Test.startTest();
         List<Thread__c> tList = stoHelperClass.getThreads();
         Test.stopTest();
@@ -58,9 +76,15 @@ public with sharing class stoHelperClass_Test {
     }
     @isTest
     static void getLatestMessageTest() {
+        Contact personContact = [
+            SELECT Id, AccountId
+            FROM Contact
+            WHERE Account.CRM_Person__r.Name = '12345678910'
+            LIMIT 1
+        ];
         Case c = stoHelperClass.createCase('Jobbsøker', null);
-        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker');
-        stoHelperClass.createMessage(t, 'this is a test message again');
+        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker', personContact.AccountId, personContact.Id);
+        stoHelperClass.createMessage(t, 'this is a test message again', personContact.Id);
         Test.startTest();
         Message__c m = stoHelperClass.getLatestMessage(t.Id);
         Test.stopTest();
