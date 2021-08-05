@@ -27,6 +27,11 @@ export default class CrmStoMessaging extends LightningElement {
                             name: 'recordId',
                             type: 'String',
                             value: this.recordId
+                        },
+                        {
+                            name: 'Thread_ID',
+                            type: 'String',
+                            value: event.threadId
                         }
                     ];
                     break;
