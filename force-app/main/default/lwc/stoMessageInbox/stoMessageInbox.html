@@ -1,12 +1,19 @@
 <template>
-    <div class="decorator-wrapper">
+    <div class="decorator-wrapper inboxwrapper">
         <div class="header">
-            <h1 class="typo-sidetittel">Innboks</h1>
-            <!-- Replace with Label-->
+            <h1 class="typo-sidetittel">{title}</h1>
+        </div>
+        <div class="subheader">
+            <h2 class="typo-undertittel">Siste meldinger</h2>
+        </div>
+        <template for:each={recentthreads} for:item="thread">
+            <c-sto-Message-Inbox-Item thread={thread} key={thread.Id}></c-sto-Message-Inbox-Item>
+        </template>
+        <div class="subheader">
+            <h2 class="typo-undertittel">Tidligere meldinger</h2>
         </div>
         <template for:each={threads} for:item="thread">
             <c-sto-Message-Inbox-Item thread={thread} key={thread.Id}></c-sto-Message-Inbox-Item>
         </template>
-        <!-- Start of write new message-->
     </div>
 </template>

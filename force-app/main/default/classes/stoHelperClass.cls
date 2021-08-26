@@ -205,12 +205,24 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreads() {
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c
+            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c 
             FROM Thread__c
+            WHERE (CRM_Number_of_unread_Messages__c = 0 AND CRM_Closed_Date__c != null )
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         return threadList;
     }
+    @AuraEnabled(cacheable=true)
+    public static List<Thread__c> getRecentThreads() {
+        List<Thread__c> threadList = [
+            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c 
+            FROM Thread__c 
+            WHERE (CRM_Number_of_unread_Messages__c > 0 OR CRM_Closed_Date__c = null)
+            ORDER BY CRM_Latest_Message_Datetime__c DESC
+        ];
+        return threadList; 
+    }
+
     @AuraEnabled(cacheable=true)
     public static Message__c getLatestMessage(Id threadId) {
         List<Message__c> messageList = [

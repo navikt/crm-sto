@@ -6,4 +6,9 @@
 }
 .dialog {
     width: 100%;
+    margin-bottom: 3px !important;
+}
+.unread {
+    border-style: hidden hidden hidden solid; 
+    border-color: #0067C5;
 }
