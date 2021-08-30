@@ -1,7 +1,16 @@
 .header {
-    text-align: center;
+    text-align: left;
+    margin-bottom: 3rem;
+    margin-top: 3rem;
 }
 .ficon {
     vertical-align: middle;
     margin: auto;
+}
+.subheader{
+    margin-bottom: 1rem;
+    margin-top: 3rem;
+}
+.inboxwrapper{
+    margin-bottom: 3rem;
 }
