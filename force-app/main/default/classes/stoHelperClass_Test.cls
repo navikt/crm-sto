@@ -69,8 +69,25 @@ public with sharing class stoHelperClass_Test {
         ];
         Case c = stoHelperClass.createCase('Jobbsøker', null);
         Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker', personContact.AccountId, personContact.Id);
+        t.CRM_Closed_Date__c = date.today(); 
+        update t; 
         Test.startTest();
         List<Thread__c> tList = stoHelperClass.getThreads();
+        Test.stopTest();
+        System.assertEquals(tList.isEmpty(), false);
+    }
+    @isTest
+    static void getRecentThreadsTest() {
+        Contact personContact = [
+            SELECT Id, AccountId
+            FROM Contact
+            WHERE Account.CRM_Person__r.Name = '12345678910'
+            LIMIT 1
+        ];
+        Case c = stoHelperClass.createCase('Jobbsøker', null);
+        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker', personContact.AccountId, personContact.Id);
+        Test.startTest();
+        List<Thread__c> tList = stoHelperClass.getRecentThreads();
         Test.stopTest();
         System.assertEquals(tList.isEmpty(), false);
     }
