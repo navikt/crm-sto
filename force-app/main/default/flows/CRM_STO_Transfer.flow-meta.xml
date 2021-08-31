@@ -271,6 +271,11 @@
         <dataType>String</dataType>
         <expression>&apos;Samtalen ble overført til &apos; + {!STO_Queue_Picklist.selectedLabel}</expression>
     </formulas>
+    <formulas>
+        <name>SelectedLabel</name>
+        <dataType>String</dataType>
+        <expression>TRIM(right({!STO_Queue_Picklist.selectedLabel}, (LEN( {!STO_Queue_Picklist.selectedLabel}) - 4)))</expression>
+    </formulas>
     <interviewLabel>STO transfer {!$Flow.CurrentDateTime}</interviewLabel>
     <label>STO transfer</label>
     <loops>
@@ -428,6 +433,12 @@
             <field>OwnerId</field>
             <value>
                 <elementReference>STO_Queue_Picklist.value</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>STO_Category__c</field>
+            <value>
+                <elementReference>SelectedLabel</elementReference>
             </value>
         </inputAssignments>
         <object>Case</object>
