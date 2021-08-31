@@ -55,6 +55,9 @@
         },
         "liveAgentSettings": {
             "enableLiveAgent": true
+        },
+        "omniChannelSettings": {
+            "enableOmniChannel": true
         }
     }
 }

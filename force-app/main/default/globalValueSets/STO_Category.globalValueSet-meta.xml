@@ -10,6 +10,26 @@
         <default>false</default>
         <label>Familie</label>
     </customValue>
+    <customValue>
+        <fullName>Helse</fullName>
+        <default>false</default>
+        <label>Helse</label>
+    </customValue>
+    <customValue>
+        <fullName>Internasjonal</fullName>
+        <default>false</default>
+        <label>Internasjonal</label>
+    </customValue>
+    <customValue>
+        <fullName>Pensjon</fullName>
+        <default>false</default>
+        <label>Pensjon</label>
+    </customValue>
+    <customValue>
+        <fullName>Ufør</fullName>
+        <default>false</default>
+        <label>Ufør</label>
+    </customValue>
     <description>Defines the categories available for STO. Should match the categories defines in custom metadata STO_Category__mdt</description>
     <masterLabel>STO Category</masterLabel>
     <sorted>false</sorted>
