@@ -57,7 +57,8 @@
             "enableLiveAgent": true
         },
         "omniChannelSettings": {
-            "enableOmniChannel": true
+            "enableOmniChannel": true,
+            "enableOmniSkillsRouting": true
         }
     }
 }
