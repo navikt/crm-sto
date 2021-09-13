@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <description>Automatically close the console tab after flow completion</description>
+        <name>Close_Workspace_Tab</name>
+        <label>Close Workspace Tab</label>
+        <locationX>182</locationX>
+        <locationY>734</locationY>
+        <actionName>c:crmTabCloser</actionName>
+        <actionType>component</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+    </actionCalls>
     <apiVersion>52.0</apiVersion>
     <decisions>
         <name>Journal_Decision</name>
         <label>Journal Decision</label>
         <locationX>182</locationX>
         <locationY>398</locationY>
+        <defaultConnector>
+            <targetReference>Close_Workspace_Tab</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>No Journal Entry</defaultConnectorLabel>
         <rules>
             <name>Do_Create_Journal_Entry</name>
@@ -188,6 +201,9 @@
         <label>Create Journal Entry</label>
         <locationX>50</locationX>
         <locationY>518</locationY>
+        <connector>
+            <targetReference>Close_Workspace_Tab</targetReference>
+        </connector>
         <flowName>CRM_Thread_Create_Journal_Entry</flowName>
         <inputAssignments>
             <name>Journal_Case_ID</name>
