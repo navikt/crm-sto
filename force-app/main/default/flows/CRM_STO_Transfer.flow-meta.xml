@@ -522,9 +522,9 @@
         </fields>
         <fields>
             <name>Task_Description</name>
-            <fieldText>Oppgavebeskrivelse</fieldText>
+            <fieldText>Oppgave</fieldText>
             <fieldType>LargeTextArea</fieldType>
-            <isRequired>true</isRequired>
+            <isRequired>false</isRequired>
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
