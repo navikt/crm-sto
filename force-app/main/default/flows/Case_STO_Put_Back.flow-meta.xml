@@ -100,6 +100,7 @@
                     <choiceReferences>Incompetent</choiceReferences>
                     <choiceReferences>Other</choiceReferences>
                     <dataType>String</dataType>
+                    <defaultSelectedChoiceReference>Incompetent</defaultSelectedChoiceReference>
                     <fieldType>RadioButtons</fieldType>
                     <isRequired>false</isRequired>
                 </fields>
