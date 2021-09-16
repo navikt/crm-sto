@@ -1,0 +1,94 @@
+<template>
+    <div class="decorator-wrapper">
+        <div class="panel text-center">
+            <template if:true={incorrectcategory}>
+                <div tabindex="0" role="region" class="feiloppsummering">
+                    <h2 class="typo-undertittel">{label.INCORRECT_CATEGORY}</h2>
+                </div>
+            </template>
+            <template if:false={incorrectcategory}>
+            <h2 class="typo-undertittel blokk-s">{selectedTheme}</h2>
+            <p class="typo-normal typo-normal blokk-xs">{label.textareadescription}</p>
+       
+        <div class="inputarea">
+            <lightning-textarea
+                name="input1"
+                onchange={inputChange}
+                variant="label-hidden"
+                label="Skriv din melding her"
+                maxlength="32000"
+            ></lightning-textarea>
+                <template if:true={showErrorNoMessage}>
+                    <p class="typo-feilmelding">{label.EMPTY_TEXT_FIELD_ERROR}</p>
+                </template>
+                <div class="skjemaelement checkbox">
+                    <input
+                        type="checkbox"
+                        class="skjemaelement__input checkboks"
+                        data-id="checkbox"
+                        id="godkjennVilkaar"
+                        aria-invalid="false"
+                        name="godkjennVilkaar"
+                        onchange={togglechecked}
+                        aria-describedby="checkbox-feilmelding"
+                        checked={acceptedTerms}
+                    /><label class="skjemaelement__label" for="godkjennVilkaar">{label.acceptermtext}</label
+                    ><a onclick={showTerms} class="slds-var-p-left_small lenke vilkar-link"
+                        >{label.showtermstext}</a
+                    >
+                    <template if:true={showError}>
+                        <p class="typo-feilmelding">{label.ACCEPT_TERMS_ERROR}</p>
+                    </template>
+                </div>
+                <c-community-modal>
+                    <h1
+                        slot="modalHeader"
+                        tabindex="0"
+                        class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l"
+                    >
+                        {label.SERVICE_TERMS_HEADER}
+                    </h1>
+                    <div slot="modalContent">
+                        <section>
+                            <form class="betingelser-panel panel side-innhold">
+                                <div class="blokk-m slds-var-m-top_medium" style="text-align: left">
+                                    <lightning-formatted-rich-text
+                                        value={label.SERVICE_TERMS}
+                                    ></lightning-formatted-rich-text>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                    <div slot="modalFooter">
+                        <div class="slds-var-p-bottom_x-large svar-godta text-center blokk-m">
+                            <button
+                                class="knapp knapp--hoved"
+                                aria-controls="betingelser"
+                                onclick={termsAccepted}
+                                type="submit"
+                                label="Godta"
+                            >
+                                {label.ACCEPT_TERMS_BUTTON}
+                            </button>
+                        </div>
+                        <div class="text-center">
+                            <button
+                                class="knapp knapp--flat"
+                                type="submit"
+                                aria-controls="betingelser"
+                                role="button"
+                                onclick={termsDenied}
+                            >
+                                {label.DENY_TERMS_BUTTON}
+                            </button>
+                        </div>
+                    </div>
+                </c-community-modal>
+                <button class=" sendbutton knapp  knapp--hoved " type="submit" aria-disabled="false" onclick={submitrequest}>
+                    Send
+                </button>
+            </div>
+        </template>
+        </div>
+    </div>
+</template>
