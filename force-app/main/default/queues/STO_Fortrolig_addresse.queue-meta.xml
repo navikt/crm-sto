@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
-    <name>STO Egen Ansatt</name>
-    <queueRoutingConfig>CRM_Egen_Ansatt</queueRoutingConfig>
+    <name>STO Fortrolig addresse</name>
+    <queueRoutingConfig>CRM_Fortrolig_Addresse</queueRoutingConfig>
     <queueSobject>
         <sobjectType>Case</sobjectType>
     </queueSobject>
