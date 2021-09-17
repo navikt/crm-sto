@@ -23,6 +23,13 @@
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Case_Record.CRM_Rerun_Case_Assignment__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Update_Case</targetReference>
         </connector>

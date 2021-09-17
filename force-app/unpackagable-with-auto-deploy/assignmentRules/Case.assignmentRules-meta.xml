@@ -4,6 +4,15 @@
         <fullName>STO Allocation</fullName>
         <active>true</active>
         <ruleEntry>
+            <assignedTo>STO_Sensitiv_Informasjon</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.STO_Sensitive_Information__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
             <assignedTo>STO_Arbeid</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
