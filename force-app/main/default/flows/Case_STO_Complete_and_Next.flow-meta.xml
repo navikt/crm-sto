@@ -5,19 +5,35 @@
         <name>Close_Workspace_Tab</name>
         <label>Close Workspace Tab</label>
         <locationX>182</locationX>
-        <locationY>734</locationY>
+        <locationY>1526</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
     </actionCalls>
     <apiVersion>52.0</apiVersion>
+    <assignments>
+        <name>Sensitive_Information_Assignment</name>
+        <label>Sensitive Information Assignment</label>
+        <locationX>50</locationX>
+        <locationY>854</locationY>
+        <assignmentItems>
+            <assignToReference>Case_Record.STO_Sensitive_Information__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Case</targetReference>
+        </connector>
+    </assignments>
     <decisions>
         <name>Journal_Decision</name>
         <label>Journal Decision</label>
         <locationX>182</locationX>
         <locationY>398</locationY>
         <defaultConnector>
-            <targetReference>Close_Workspace_Tab</targetReference>
+            <targetReference>Sensitive_Information_Check</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No Journal Entry</defaultConnectorLabel>
         <rules>
@@ -34,6 +50,63 @@
                 <targetReference>Create_Journal_Entry</targetReference>
             </connector>
             <label>Do Create Journal Entry</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Sensitive_Information_Check</name>
+        <label>Sensitive Information Check</label>
+        <locationX>182</locationX>
+        <locationY>734</locationY>
+        <defaultConnector>
+            <targetReference>Update_Case</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Sensitive</defaultConnectorLabel>
+        <rules>
+            <name>Has_Sensitive_Information</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Sensitive_Toggle.value</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Sensitive_Information_Assignment</targetReference>
+            </connector>
+            <label>Has Sensitive Information</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Thread_Update_Decision</name>
+        <label>Thread Update Decision</label>
+        <locationX>182</locationX>
+        <locationY>1190</locationY>
+        <defaultConnector>
+            <targetReference>Close_Workspace_Tab</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Thread Update</defaultConnectorLabel>
+        <rules>
+            <name>Do_Update_Thread</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Close_Thread</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Sensitive_Toggle.value</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Thread</targetReference>
+            </connector>
+            <label>Update Thread</label>
         </rules>
     </decisions>
     <interviewLabel>Case STO Complete and Next {!$Flow.CurrentDateTime}</interviewLabel>
@@ -79,6 +152,46 @@
         <object>Thread__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordUpdates>
+        <name>Update_Case</name>
+        <label>Update Case</label>
+        <locationX>182</locationX>
+        <locationY>1070</locationY>
+        <connector>
+            <targetReference>Thread_Update_Decision</targetReference>
+        </connector>
+        <inputReference>Case_Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Thread</name>
+        <label>Update Thread</label>
+        <locationX>50</locationX>
+        <locationY>1310</locationY>
+        <connector>
+            <targetReference>Close_Workspace_Tab</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Case_Thread.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>CRM_isActive__c</field>
+            <value>
+                <elementReference>Close_Thread</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>STO_Sensitive_Information__c</field>
+            <value>
+                <elementReference>Sensitive_Toggle.value</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Thread__c</object>
+    </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Case_Complete_Screen</name>
@@ -185,6 +298,31 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
+        <fields>
+            <name>Close_Thread</name>
+            <dataType>Boolean</dataType>
+            <defaultValue>
+                <booleanValue>false</booleanValue>
+            </defaultValue>
+            <fieldText>Avslutt samtaletråd</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>Close_Thread_Message</name>
+            <fieldText>&lt;p&gt;Brukeren kan ikke svare når samtalen av avsluttet.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Close_Thread</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
@@ -202,7 +340,7 @@
         <locationX>50</locationX>
         <locationY>518</locationY>
         <connector>
-            <targetReference>Close_Workspace_Tab</targetReference>
+            <targetReference>Sensitive_Information_Check</targetReference>
         </connector>
         <flowName>CRM_Thread_Create_Journal_Entry</flowName>
         <inputAssignments>
@@ -236,6 +374,14 @@
             </value>
         </inputAssignments>
     </subflows>
+    <variables>
+        <name>Case_Record</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Case</objectType>
+    </variables>
     <variables>
         <description>ID of the STO case to be completed</description>
         <name>recordId</name>
