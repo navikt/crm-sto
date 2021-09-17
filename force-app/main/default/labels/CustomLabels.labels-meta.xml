@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
+        <fullName>STO_Incorrect_Category</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO_Incorrect_Category</shortDescription>
+        <value>Vennligst prøv igjen</value>
+    </labels>
+     <labels>
         <fullName>Community_Language_Selector_English</fullName>
         <categories>Community Language Selector</categories>
         <language>en_US</language>
