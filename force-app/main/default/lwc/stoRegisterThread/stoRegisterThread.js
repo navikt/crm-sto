@@ -17,7 +17,7 @@ import ACCEPT_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Accept_Te
 import ACCEPT_TERMS_ERROR from '@salesforce/label/c.Skriv_til_oss_Accept_terms_error_message';
 import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_Button';
 import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
-import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Incorrect_Category';
+import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
 
 
@@ -38,7 +38,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         ACCEPT_TERMS_BUTTON,
         ACCEPT_TERMS_ERROR,
         DENY_TERMS_BUTTON,
-        EMPTY_TEXT_FIELD_ERROR
+        EMPTY_TEXT_FIELD_ERROR,
+        INCORRECT_CATEGORY
     };
 
     /**
