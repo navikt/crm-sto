@@ -22,6 +22,7 @@ import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
+    showspinner = false;
     incorrectcategory = false;
     acceptedcategories = ['Arbeid', 'Helse', 'Familie', 'Ufør', 'Pensjon', 'Internasjonal'];
     currentPageReference = null;
@@ -119,11 +120,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitrequest() {
-        console.log('Submitrequest ')
-        console.log(this.acceptedTerms);
-        console.log(this.message);
-
         if (this.acceptedTerms == true && this.message && this.message.length != null) {
+            this.showspinner = true;
+            this.incorrectcategory = false;
             createRecords({ theme: this.selectedTheme, msgText: this.message }).then((result) => {
                 this[NavigationMixin.Navigate]({
                     type: 'standard__recordPage',
