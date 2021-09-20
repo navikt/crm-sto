@@ -22,8 +22,8 @@ import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
+    validparameter;
     showspinner = false;
-    incorrectcategory = false;
     acceptedcategories = ['Arbeid', 'Helse', 'Familie', 'Ufør', 'Pensjon', 'Internasjonal'];
     currentPageReference = null;
     acceptedTerms = false;
@@ -59,9 +59,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     setParametersBasedOnUrl() {
         if (this.acceptedcategories.includes(this.urlStateParameters.category)) {
             this.selectedTheme = this.urlStateParameters.category;
-        }
-        else {
-            this.incorrectcategory = true;
+            this.validparameter = true;
         }
     }
 
@@ -87,6 +85,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showError = false;
         }
     }
+
     get termsModal() {
         return this.template.querySelector('c-community-modal');
     }
@@ -122,7 +121,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     submitrequest() {
         if (this.acceptedTerms == true && this.message && this.message.length != null) {
             this.showspinner = true;
-            this.incorrectcategory = false;
+
             createRecords({ theme: this.selectedTheme, msgText: this.message }).then((result) => {
                 this[NavigationMixin.Navigate]({
                     type: 'standard__recordPage',

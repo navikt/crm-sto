@@ -1,12 +1,7 @@
 <template>
     <div class="decorator-wrapper">
         <div class="panel text-center">
-            <template if:true={incorrectcategory}>
-                <div tabindex="0" role="region" class="feiloppsummering">
-                    <h2 class="typo-undertittel">{label.INCORRECT_CATEGORY}</h2>
-                </div>
-            </template>
-            <template if:false={incorrectcategory}>
+            <template if:true={validparameter}>
             <h2 class="typo-undertittel blokk-s">{selectedTheme}</h2>
             <p class="typo-normal typo-normal blokk-xs">{label.textareadescription}</p>
        
