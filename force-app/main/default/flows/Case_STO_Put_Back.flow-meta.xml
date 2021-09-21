@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Close_workspace_tab</name>
+        <label>Close workspace tab</label>
+        <locationX>176</locationX>
+        <locationY>614</locationY>
+        <actionName>c:crmTabCloser</actionName>
+        <actionType>component</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+    </actionCalls>
     <apiVersion>52.0</apiVersion>
     <choices>
         <name>Incompetent</name>
@@ -30,6 +39,9 @@
         <label>Check Put Back Decision</label>
         <locationX>176</locationX>
         <locationY>278</locationY>
+        <defaultConnector>
+            <targetReference>Update_Case</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Incompetent_Choice</name>
@@ -41,6 +53,9 @@
                     <elementReference>Incompetent</elementReference>
                 </rightValue>
             </conditions>
+            <connector>
+                <targetReference>Update_Case</targetReference>
+            </connector>
             <label>Incompetent</label>
         </rules>
         <rules>
@@ -53,6 +68,9 @@
                     <elementReference>Other</elementReference>
                 </rightValue>
             </conditions>
+            <connector>
+                <targetReference>Update_Case</targetReference>
+            </connector>
             <label>Other</label>
         </rules>
     </decisions>
@@ -77,6 +95,31 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordUpdates>
+        <description>Updates the case to retrigger assignment to be put back to queue.</description>
+        <name>Update_Case</name>
+        <label>Update Case</label>
+        <locationX>176</locationX>
+        <locationY>494</locationY>
+        <connector>
+            <targetReference>Close_workspace_tab</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>CRM_Rerun_Case_Assignment__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <object>Case</object>
+    </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Put_Back_Screen</name>
