@@ -4,7 +4,7 @@
         <fullName>STO Allocation</fullName>
         <active>true</active>
         <ruleEntry>
-            <assignedTo>STO_Sensitiv_Informasjon</assignedTo>
+            <assignedTo>STO_Arkiveringsavklaring</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
                 <field>Case.STO_Sensitive_Information__c</field>
