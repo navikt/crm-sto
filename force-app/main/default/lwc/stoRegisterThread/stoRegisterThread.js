@@ -62,7 +62,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.validparameter = true;
         }
         else {
-            window.location.replace("https://www.nav.no/404");
+            window.location.assign("https://www.nav.no/404");
         }
     }
 
