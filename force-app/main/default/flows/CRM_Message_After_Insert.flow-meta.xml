@@ -37,7 +37,7 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>RelatedCase.CRM_Rerun_Case_Assignment__c</assignToReference>
+            <assignToReference>RelatedCase.CRM_Run_Case_Assignment__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
