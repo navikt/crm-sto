@@ -113,7 +113,7 @@
             </value>
         </filters>
         <inputAssignments>
-            <field>CRM_Rerun_Case_Assignment__c</field>
+            <field>CRM_Run_Case_Assignment__c</field>
             <value>
                 <booleanValue>true</booleanValue>
             </value>
