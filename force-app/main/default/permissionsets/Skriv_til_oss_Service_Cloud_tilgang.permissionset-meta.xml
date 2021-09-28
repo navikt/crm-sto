@@ -9,5 +9,5 @@
         <enabled>true</enabled>
     </classAccesses>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Skriv til oss - Service Cloud tilgagn</label>
+    <label>Skriv til oss - Service Cloud tilgang</label>
 </PermissionSet>
