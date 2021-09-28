@@ -13,8 +13,8 @@
         <description>Call apex to calculate the due date for the NAV task</description>
         <name>Get_Task_due_date</name>
         <label>Get Task due date</label>
-        <locationX>666</locationX>
-        <locationY>1430</locationY>
+        <locationX>314</locationX>
+        <locationY>758</locationY>
         <actionName>CRM_DueDateUtility</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -34,42 +34,10 @@
     </actionCalls>
     <apiVersion>49.0</apiVersion>
     <assignments>
-        <name>Assign_NAV_Task_Task_Type</name>
-        <label>Assign NAV Task Task Type</label>
-        <locationX>1018</locationX>
-        <locationY>998</locationY>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.NKS_TaskType__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Common_Code_Loop.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Common_Code_Loop</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_NAV_Task_Theme_Code</name>
-        <label>Assign NAV Task Theme Code</label>
-        <locationX>754</locationX>
-        <locationY>998</locationY>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.NKS_Theme__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Common_Code_Loop.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Common_Code_Loop</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Assign_NAV_Task_Values</name>
         <label>Assign NAV Task Values</label>
-        <locationX>666</locationX>
-        <locationY>1310</locationY>
+        <locationX>314</locationX>
+        <locationY>638</locationY>
         <assignmentItems>
             <assignToReference>STO_NAV_TASK.CRM_NavUnit__c</assignToReference>
             <operator>Assign</operator>
@@ -112,6 +80,41 @@
                 <elementReference>Thread_ID</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>STO_NAV_TASK.NKS_Theme__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>NAV_Task_Categorization.theme</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>STO_NAV_TASK.NKS_Theme_Group__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>NAV_Task_Categorization.themeGroup</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>STO_NAV_TASK.NKS_Subtheme__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>NAV_Task_Categorization.subtheme</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>STO_NAV_TASK.NKS_TaskType__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Task_Type_Selection.selectedTaskTypeId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>STO_NAV_TASK.CRM_Subtype__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>NAV_Task_Categorization.subtype</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Get_Task_due_date</targetReference>
         </connector>
@@ -133,38 +136,13 @@
         </value>
     </choices>
     <decisions>
-        <name>Check_Common_Code_Type</name>
-        <label>Check Common Code Type</label>
-        <locationX>886</locationX>
-        <locationY>878</locationY>
-        <defaultConnector>
-            <targetReference>Assign_NAV_Task_Task_Type</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Is Task Type Code</defaultConnectorLabel>
-        <rules>
-            <name>Is_Theme_Code</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Common_Code_Loop.CRM_Code_Set__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Tema</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_NAV_Task_Theme_Code</targetReference>
-            </connector>
-            <label>Is Theme Code</label>
-        </rules>
-    </decisions>
-    <decisions>
         <description>Check if the inquiry should be transferred to a Salesforce queue or to another NAV unit (via NAV Task)</description>
         <name>Transfer_Decision</name>
         <label>Transfer Decision</label>
-        <locationX>358</locationX>
+        <locationX>182</locationX>
         <locationY>518</locationY>
         <defaultConnector>
-            <targetReference>Get_Theme_Common_Code</targetReference>
+            <targetReference>Assign_NAV_Task_Values</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Transfer to NAV Unit</defaultConnectorLabel>
         <rules>
@@ -203,20 +181,6 @@
     </formulas>
     <interviewLabel>STO transfer {!$Flow.CurrentDateTime}</interviewLabel>
     <label>STO transfer</label>
-    <loops>
-        <name>Common_Code_Loop</name>
-        <label>Common Code Loop</label>
-        <locationX>666</locationX>
-        <locationY>758</locationY>
-        <collectionReference>Get_Theme_Common_Code</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Check_Common_Code_Type</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Assign_NAV_Task_Values</targetReference>
-        </noMoreValuesConnector>
-    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -240,7 +204,7 @@
         <description>Query the case information</description>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>358</locationX>
+        <locationX>182</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -259,53 +223,10 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <description>Queries the correct theme and task type common codes for the NAV Task</description>
-        <name>Get_Theme_Common_Code</name>
-        <label>Get NAV Task Common Codes</label>
-        <locationX>666</locationX>
-        <locationY>638</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Common_Code_Loop</targetReference>
-        </connector>
-        <filterLogic>(1 OR 2) AND (3 OR 4)</filterLogic>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>KNA</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>SPM_OG_SVR</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code_Set__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Oppgavetyper</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code_Set__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Tema</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Common_Code__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <description>Get the STO Thread information</description>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>358</locationX>
+        <locationX>182</locationX>
         <locationY>278</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -358,7 +279,7 @@
         <description>Screen including transfer options.</description>
         <name>Transfer_Screen</name>
         <label>Transfer Screen</label>
-        <locationX>358</locationX>
+        <locationX>182</locationX>
         <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -398,6 +319,54 @@
             </visibilityRule>
         </fields>
         <fields>
+            <name>NAV_Task_Categorization</name>
+            <extensionName>c:crmThemeCategorization</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>themeGroup</name>
+                <value>
+                    <elementReference>Get_Thread.CRM_Theme_Group__c</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Transfer_to</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Transfer_to_NAV_Unit</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>Task_Type_Selection</name>
+            <extensionName>c:crmTaskTypePicklist</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showcomponent</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Transfer_to</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Transfer_to_NAV_Unit</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
             <name>Task_Description</name>
             <fieldText>Oppgave</fieldText>
             <fieldType>LargeTextArea</fieldType>
@@ -417,18 +386,6 @@
             <name>NAV_Unit_Allocator</name>
             <extensionName>c:crmNavTaskWorkAllocation</extensionName>
             <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>taskType</name>
-                <value>
-                    <stringValue>SPM_OG_SVR</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>theme</name>
-                <value>
-                    <stringValue>KNA</stringValue>
-                </value>
-            </inputParameters>
             <inputParameters>
                 <name>personId</name>
                 <value>
@@ -465,7 +422,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>232</locationX>
+        <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Case</targetReference>
@@ -475,8 +432,8 @@
     <subflows>
         <name>Send_NAV_Task</name>
         <label>Send NAV Task</label>
-        <locationX>666</locationX>
-        <locationY>1550</locationY>
+        <locationX>314</locationX>
+        <locationY>878</locationY>
         <connector>
             <targetReference>Submit_Transfer_Event_0</targetReference>
         </connector>
@@ -522,13 +479,13 @@
         <description>Add a transfer event message to the thread</description>
         <name>Submit_Transfer_Event_0</name>
         <label>Submit Transfer Event</label>
-        <locationX>666</locationX>
-        <locationY>1670</locationY>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>
             <name>Event_Message</name>
             <value>
-                <elementReference>Queue_Transfer_Text</elementReference>
+                <elementReference>NAV_Unit_Transfer_Text</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
