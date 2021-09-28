@@ -84,7 +84,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Journal_Thread</targetReference>
+            <targetReference>Create_Journal_Entry</targetReference>
         </connector>
         <fields>
             <name>NAV_Case_Overview</name>
@@ -112,36 +112,14 @@
     </start>
     <status>Active</status>
     <subflows>
-        <name>Create_Thread_Journal_Event</name>
-        <label>Create Thread Journal Event</label>
-        <locationX>176</locationX>
-        <locationY>518</locationY>
-        <connector>
-            <targetReference>Journal_Success_Screen_0</targetReference>
-        </connector>
-        <flowName>CRM_Create_Thread_Event</flowName>
-        <inputAssignments>
-            <name>Event_Message</name>
-            <value>
-                <stringValue>Tråden ble journalført.</stringValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Thread_ID</name>
-            <value>
-                <elementReference>Thread_ID</elementReference>
-            </value>
-        </inputAssignments>
-    </subflows>
-    <subflows>
-        <name>Journal_Thread</name>
-        <label>Journal Thread</label>
+        <name>Create_Journal_Entry</name>
+        <label>Create Journal Entry</label>
         <locationX>176</locationX>
         <locationY>398</locationY>
         <connector>
             <targetReference>Create_Thread_Journal_Event</targetReference>
         </connector>
-        <flowName>CRM_Journal_Message_Thread</flowName>
+        <flowName>CRM_Thread_Create_Journal_Entry</flowName>
         <inputAssignments>
             <name>Journal_Case_ID</name>
             <value>
@@ -168,6 +146,28 @@
         </inputAssignments>
         <inputAssignments>
             <name>recordId</name>
+            <value>
+                <elementReference>Thread_ID</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
+    <subflows>
+        <name>Create_Thread_Journal_Event</name>
+        <label>Create Thread Journal Event</label>
+        <locationX>176</locationX>
+        <locationY>518</locationY>
+        <connector>
+            <targetReference>Journal_Success_Screen_0</targetReference>
+        </connector>
+        <flowName>CRM_Create_Thread_Event</flowName>
+        <inputAssignments>
+            <name>Event_Message</name>
+            <value>
+                <stringValue>Tråden ble journalført.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Thread_ID</name>
             <value>
                 <elementReference>Thread_ID</elementReference>
             </value>
