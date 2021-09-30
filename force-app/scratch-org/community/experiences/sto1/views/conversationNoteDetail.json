@@ -1,0 +1,67 @@
+{
+  "appPageId" : "ee1c8800-f047-4d93-bad5-52814afdf7cf",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "5fd848c5-b09f-489a-b284-6f3bc66276bb",
+  "label" : "Conversation Note Detail",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityHeader",
+      "id" : "bbf8090f-6c7b-4b12-858d-22347fd6fa20",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "5befe28b-33ad-4b3c-b7c5-f3dd5033b17c",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "recordId" : "{!recordId}"
+      },
+      "componentName" : "forceCommunity:lwcRecordDetail",
+      "id" : "cc538489-9755-43d5-a783-e3849784b176",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "1b53ac72-de88-428a-9329-fc5ad7d4e69f",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "NAVarea" : "Privatperson"
+      },
+      "componentName" : "c:globalCommunityFooter",
+      "id" : "b32aba3b-fa4c-4fb4-b938-02e5560b93e9",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "b02b5de0-fc28-452a-86b1-8179f717fa51",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "{!Record._Object}: {!Record._Title}"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "814bc090-eae1-411a-a227-4a9fe2060cc6",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "56bff14d-f00c-4d1f-94ad-910fc091e76c",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "detail-a0N"
+}

@@ -3,17 +3,26 @@
         <div class="header">
             <h1 class="typo-sidetittel">{title}</h1>
         </div>
-        <div class="subheader">
-            <h2 class="typo-undertittel">Siste meldinger</h2>
+        <div>
+            <c-nav-Button url='https://www.nav.no' title='Skriv ny melding' ></c-nav-Button>
         </div>
-        <template for:each={recentthreads} for:item="thread">
-            <c-sto-Message-Inbox-Item thread={thread} key={thread.Id}></c-sto-Message-Inbox-Item>
+        <!-- TODO: FIX visibility -->
+        <template if:true={wirerecentthreads}>
+            <div class="subheader">
+                <h2 class="typo-undertittel">Siste meldinger</h2>
+            </div>
+            <template for:each={recentthreads} for:item="thread">
+                <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+            </template>
         </template>
-        <div class="subheader">
-            <h2 class="typo-undertittel">Tidligere meldinger</h2>
-        </div>
-        <template for:each={threads} for:item="thread">
-            <c-sto-Message-Inbox-Item thread={thread} key={thread.Id}></c-sto-Message-Inbox-Item>
+        <!-- TODO: FIX visibility -->
+        <template if:true={wirethreads}>
+            <div class="subheader">
+                <h2 class="typo-undertittel">Tidligere meldinger</h2>
+            </div>
+            <template for:each={threads} for:item="thread">
+                <c-sto-Message-Inbox-Item thread={thread} key={thread.Id}></c-sto-Message-Inbox-Item>
+            </template>
         </template>
     </div>
 </template>

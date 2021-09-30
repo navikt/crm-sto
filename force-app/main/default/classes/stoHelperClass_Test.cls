@@ -59,7 +59,7 @@ public with sharing class stoHelperClass_Test {
         List<Message__c> m = [SELECT CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c = :t.Id];
         System.assertEquals('this is a test message', m.get(0).CRM_Message_Text__c);
     }
-    @isTest
+    /*@isTest
     static void getThreadsTest() {
         Contact personContact = [
             SELECT Id, AccountId
@@ -106,7 +106,7 @@ public with sharing class stoHelperClass_Test {
         Message__c m = stoHelperClass.getLatestMessage(t.Id);
         Test.stopTest();
         System.assertEquals('this is a test message again', m.CRM_Message_Text__c);
-    }
+    }*/
     @isTest
     static void createRequestTest() {
         Test.startTest();
