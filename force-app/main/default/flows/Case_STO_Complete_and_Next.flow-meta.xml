@@ -287,7 +287,7 @@
             <inputParameters>
                 <name>label</name>
                 <value>
-                    <stringValue>Sensitiv/Kommunal informasjon?</stringValue>
+                    <stringValue>Samtalen skal vurderes for sladding</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>

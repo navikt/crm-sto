@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionCalls>
-        <name>Close_Case_Tab</name>
-        <label>Close Case Tab</label>
-        <locationX>50</locationX>
-        <locationY>878</locationY>
-        <actionName>c:crmTabCloser</actionName>
-        <actionType>component</actionType>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-    </actionCalls>
-    <actionCalls>
-        <name>Close_Workspace_Tab</name>
-        <label>Close Workspace Tab</label>
-        <locationX>314</locationX>
-        <locationY>1238</locationY>
-        <actionName>c:crmTabCloser</actionName>
-        <actionType>component</actionType>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-    </actionCalls>
-    <actionCalls>
         <description>Call apex to calculate the due date for the NAV task</description>
         <name>Get_Task_due_date</name>
         <label>Get Task due date</label>
@@ -288,9 +270,6 @@
         <label>Close Case</label>
         <locationX>314</locationX>
         <locationY>1118</locationY>
-        <connector>
-            <targetReference>Close_Workspace_Tab</targetReference>
-        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -491,9 +470,6 @@
         <label>Submit Transfer Event</label>
         <locationX>50</locationX>
         <locationY>758</locationY>
-        <connector>
-            <targetReference>Close_Case_Tab</targetReference>
-        </connector>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>
             <name>Event_Message</name>
