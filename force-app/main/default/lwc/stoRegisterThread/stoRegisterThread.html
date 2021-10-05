@@ -1,10 +1,15 @@
 <template>
     <div class="decorator-wrapper">
+        <div class="header">
+            <h2 class="typo-sidetittel">Skriv til oss</h2>
+        </div>
         <div class="panel text-center">
             <template if:true={validparameter}>
+               <img src={logopath} class="logo" />
             <h2 class="typo-undertittel blokk-s">{selectedTheme}</h2>
-            <p class="typo-normal typo-normal blokk-xs">{label.textareadescription}</p>
-       
+            <div class=descholder> 
+                <p class="typo-normal typo-normal blokk-xs description">{label.textareadescription}</p>
+            </div>
         <div class="inputarea">
             <template if:false={showspinner}>
                 <lightning-textarea
