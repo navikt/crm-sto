@@ -4,6 +4,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import dekoratoren from '@salesforce/resourceUrl/dekoratoren';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
+import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
 import welcomlabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
 import headline from '@salesforce/label/c.Skriv_til_oss_headline';
@@ -42,6 +43,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         EMPTY_TEXT_FIELD_ERROR,
         INCORRECT_CATEGORY
     };
+    logopath = navlogos + '/email.svg';
 
     /**
      * Sets the Selectedtheme based on the URL parameter.
@@ -62,7 +64,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.validparameter = true;
         }
         else {
-            window.location.assign("https://www.nav.no/404");
+            try {
+                console.log(window.location);
+                //  window.location.replace("https://www.google.no/404");
+            }
+            catch (e) {
+                console.log(e);
+            }
+
         }
     }
 
