@@ -1,5 +1,5 @@
 import { LightningElement, api } from 'lwc';
-import navlogos from '@salesforce/resourceUrl/navsvglogos';
+import navlogos from '@salesforce/resourceUrl/homelogo';
 
 export default class CommunityBreadCrumb extends LightningElement {
     @api firstLevel;
@@ -9,6 +9,6 @@ export default class CommunityBreadCrumb extends LightningElement {
     @api thirdLevel;
     @api thirdLevelLink;
     @api leafnode
-    homelogo = navlogos + '/home.svg';
+    homelogo = navlogos;
 
 }
