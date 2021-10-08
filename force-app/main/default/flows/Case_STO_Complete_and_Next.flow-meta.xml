@@ -34,7 +34,21 @@
             <assignToReference>Existing_Journal_Entries</assignToReference>
             <operator>Add</operator>
             <value>
+                <stringValue>&lt;strong&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
                 <elementReference>Loop_over_journal_entries.Theme__r.Name</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;/strong&gt;</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -565,7 +579,7 @@
             <targetReference>Get_Case_Thread</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <subflows>
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
