@@ -1,0 +1,54 @@
+.header {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1em;
+   
+}
+.text-center {
+    text-align: center;
+}
+.inputarea {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+.ficon {
+    margin: 1em;
+    height: 2em;
+}
+.johnny {
+    width: 25%;
+    float: right;
+    margin-top: 1em;
+}
+.headlineholder {
+    display: flow-root;
+}
+.betingelser {
+    max-width: calc(992px - 2rem);
+    padding: 3em;
+    color: #3e3832;
+}
+.lukknapp-positioning {
+    position: absolute !important;
+    top: 1rem;
+    right: 1rem;
+}
+.sendbutton{
+    margin-top: 1em;
+}
+.logo{
+    margin:1em;
+}
+.typo-undertittel{
+    color: #0067C5;
+    margin-bottom: 2em;
+}
+.descholder{
+    margin-top: 1em;
+}
+.skjemaelement{
+    margin-top: 1em;
+}
+:host {
+    --sds-c-textarea-sizing-min-height: 150px;
+ }

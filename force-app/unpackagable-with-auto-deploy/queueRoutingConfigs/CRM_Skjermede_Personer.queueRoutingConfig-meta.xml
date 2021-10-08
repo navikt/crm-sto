@@ -2,10 +2,10 @@
 <QueueRoutingConfig xmlns="http://soap.sforce.com/2006/04/metadata">
     <capacityWeight>1.0</capacityWeight>
     <isAttributeBased>true</isAttributeBased>
-    <label>Kode 7</label>
+    <label>Skjermede Personer</label>
     <routingModel>MOST_AVAILABLE</routingModel>
     <routingPriority>3</routingPriority>
     <skills>
-        <skill>Kode_7</skill>
+        <skill>Skjermede_personer</skill>
     </skills>
 </QueueRoutingConfig>
