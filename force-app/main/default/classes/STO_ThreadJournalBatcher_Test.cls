@@ -9,10 +9,23 @@ public class STO_ThreadJournalBatcher_Test {
         STO_TestDataFactory.createRecord(
             new Message__c(CRM_Message_Text__c = 'TEST MESSAGE', CRM_Thread__c = thread.Id)
         );
+
+        //FAGSAK
         STO_TestDataFactory.createRecord(
             new Journal_Entry__c(
                 CRM_Thread__c = thread.Id,
                 NAV_Case_Reference__c = '123BSHSF',
+                CRM_NAV_Case_Legacy_System__c = 'A01',
+                Theme__c = comCode.Id,
+                CRM_Created_By_NAV_Unit__c = '4100',
+                Journal_Entry_Status__c = 'In Progress'
+            )
+        );
+
+        //GENERELL_SAK
+        STO_TestDataFactory.createRecord(
+            new Journal_Entry__c(
+                CRM_Thread__c = thread.Id,
                 Theme__c = comCode.Id,
                 CRM_Created_By_NAV_Unit__c = '4100',
                 Journal_Entry_Status__c = 'In Progress'
@@ -28,7 +41,7 @@ public class STO_ThreadJournalBatcher_Test {
         STO_ThreadJournalBatcher.initThreadJournalBatcher();
         Test.stopTest();
 
-        System.assertEquals(1, [SELECT COUNT() FROM Journal_Entry__c WHERE Journal_Entry_Status__c = 'Completed']);
+        System.assertEquals(2, [SELECT COUNT() FROM Journal_Entry__c WHERE Journal_Entry_Status__c = 'Completed']);
         System.assertEquals(1, [SELECT COUNT() FROM Thread__c WHERE CRM_Journal_Status__c = 'Journal Completed']);
     }
 }

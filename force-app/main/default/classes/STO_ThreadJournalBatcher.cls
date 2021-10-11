@@ -19,8 +19,11 @@ public without sharing class STO_ThreadJournalBatcher implements Database.Batcha
     public void execute(Database.BatchableContext BC, List<sObject> scope) {
         List<Thread__c> threadsToUpdate = new List<Thread__c>();
         List<Journal_Entry__c> jEntriesToUpdate = new List<Journal_Entry__c>();
+        Set<Id> processedThreadIds = new Set<Id>();
 
         for (Journal_Entry__c jEntry : (List<Journal_Entry__c>) scope) {
+            jEntry.NAV_Case_Reference__c = jEntry.NAV_Case_Reference__c; //Self initialization for flow null handling
+            jEntry.CRM_NAV_Case_Legacy_System__c = jEntry.CRM_NAV_Case_Legacy_System__c; //Self initialization for flow null handling
             Map<String, Object> flowInputs = new Map<String, Object>{
                 'Journal_Entry_SF' => jEntry,
                 'PERFORM_DML' => false
@@ -29,7 +32,10 @@ public without sharing class STO_ThreadJournalBatcher implements Database.Batcha
             Flow.Interview journalFlow = Flow.Interview.createInterview('CRM_Journal_Message_Thread', flowInputs);
             journalFlow.start();
             jEntriesToUpdate.add((Journal_Entry__c) journalFlow.getVariableValue('Journal_Entry_SF'));
+            if (processedThreadIds.contains(jEntry.CRM_Thread__c))
+                continue; //Already added to list for update
             threadsToUpdate.add((Thread__c) journalFlow.getVariableValue('JOURNALED_THREAD'));
+            processedThreadIds.add(jEntry.CRM_Thread__c);
         }
 
         List<Database.SaveResult> jEntryUpdRes = Database.update(jEntriesToUpdate, false);
