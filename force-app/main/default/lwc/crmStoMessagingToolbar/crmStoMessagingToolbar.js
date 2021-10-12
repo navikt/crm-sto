@@ -3,9 +3,9 @@ import { LightningElement, api } from 'lwc';
 export default class CrmStoMessagingToolbar extends LightningElement {
     @api objectApiName;
 
-    startTransferFlow() {
-        this.dispatchToolbarAction('CRM_STO_transfer');
-    }
+    // startTransferFlow() {
+    //     this.dispatchToolbarAction('CRM_STO_transfer');
+    // }
 
     startJournalFlow() {
         this.dispatchToolbarAction('CRM_Case_Journal_STO_Thread');
