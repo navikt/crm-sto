@@ -5,17 +5,147 @@
         <name>Close_Workspace_Tab</name>
         <label>Close Workspace Tab</label>
         <locationX>182</locationX>
-        <locationY>1526</locationY>
+        <locationY>2438</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
     </actionCalls>
     <apiVersion>52.0</apiVersion>
     <assignments>
+        <name>Add_journal_entry_to_text</name>
+        <label>Add journal entry to text</label>
+        <locationX>138</locationX>
+        <locationY>758</locationY>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;li&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;p&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;strong&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Loop_over_journal_entries.Theme__r.Name</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;/strong&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>, </stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Loop_over_journal_entries.NAV_Case_Reference__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue> av </stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Loop_over_journal_entries.CRM_Created_By_Ident__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue> den </stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Loop_over_journal_entries.CRM_Journal_Date__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>.</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;/p&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;/li&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_over_journal_entries</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Close_List</name>
+        <label>Close List</label>
+        <locationX>50</locationX>
+        <locationY>974</locationY>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;/ol&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;br&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Case_Complete_Screen</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Sensitive_Information_Assignment</name>
         <label>Sensitive Information Assignment</label>
         <locationX>50</locationX>
-        <locationY>854</locationY>
+        <locationY>1766</locationY>
         <assignmentItems>
             <assignToReference>Case_Record.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -41,11 +171,66 @@
             <targetReference>Update_Case</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>Set_journal_entries_text</name>
+        <label>Set journal entries text</label>
+        <locationX>50</locationX>
+        <locationY>518</locationY>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Fremtidig journalført på:</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;br&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Existing_Journal_Entries</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>&lt;ul&gt;</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_over_journal_entries</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>How_many_journal_entries</name>
+        <label>How many journal entries</label>
+        <locationX>182</locationX>
+        <locationY>398</locationY>
+        <defaultConnector>
+            <targetReference>Case_Complete_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Has none</defaultConnectorLabel>
+        <rules>
+            <name>Has_any_amount</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Thread_Joural_entries</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_journal_entries_text</targetReference>
+            </connector>
+            <label>Has any amount</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>Journal_Decision</name>
         <label>Journal Decision</label>
         <locationX>182</locationX>
-        <locationY>398</locationY>
+        <locationY>1310</locationY>
         <defaultConnector>
             <targetReference>Sensitive_Information_Check</targetReference>
         </defaultConnector>
@@ -70,7 +255,7 @@
         <name>Sensitive_Information_Check</name>
         <label>Sensitive Information Check</label>
         <locationX>182</locationX>
-        <locationY>734</locationY>
+        <locationY>1646</locationY>
         <defaultConnector>
             <targetReference>Thread_Update_Decision</targetReference>
         </defaultConnector>
@@ -95,7 +280,7 @@
         <name>Thread_Update_Decision</name>
         <label>Thread Update Decision</label>
         <locationX>182</locationX>
-        <locationY>1190</locationY>
+        <locationY>2102</locationY>
         <defaultConnector>
             <targetReference>Close_Workspace_Tab</targetReference>
         </defaultConnector>
@@ -125,6 +310,21 @@
     </decisions>
     <interviewLabel>Case STO Complete and Next {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Complete and Next</label>
+    <loops>
+        <description>Loops through each journal entry</description>
+        <name>Loop_over_journal_entries</name>
+        <label>Loop over journal entries</label>
+        <locationX>50</locationX>
+        <locationY>638</locationY>
+        <collectionReference>Get_Thread_Joural_entries</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Add_journal_entry_to_text</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Close_List</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -152,7 +352,7 @@
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Case_Complete_Screen</targetReference>
+            <targetReference>Get_Thread_Joural_entries</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -166,11 +366,38 @@
         <object>Thread__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <description>Gets all registered journal entries for the case</description>
+        <name>Get_Thread_Joural_entries</name>
+        <label>Get Thread Joural entries</label>
+        <locationX>182</locationX>
+        <locationY>278</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>How_many_journal_entries</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Thread__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Case_Thread.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Journal_Entry__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>NAV_Case_Reference__c</queriedFields>
+        <queriedFields>CRM_Journal_Date__c</queriedFields>
+        <queriedFields>Theme__c</queriedFields>
+        <queriedFields>CRM_Created_By_Ident__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>Update_Case</name>
         <label>Update Case</label>
         <locationX>50</locationX>
-        <locationY>974</locationY>
+        <locationY>1886</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
@@ -180,7 +407,7 @@
         <name>Update_Thread</name>
         <label>Update Thread</label>
         <locationX>50</locationX>
-        <locationY>1310</locationY>
+        <locationY>2222</locationY>
         <connector>
             <targetReference>Close_Workspace_Tab</targetReference>
         </connector>
@@ -211,13 +438,18 @@
         <name>Case_Complete_Screen</name>
         <label>Case Complete Screen</label>
         <locationX>182</locationX>
-        <locationY>278</locationY>
+        <locationY>1190</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
             <targetReference>Journal_Decision</targetReference>
         </connector>
+        <fields>
+            <name>Existing_Journal_Entry_text</name>
+            <fieldText>&lt;p&gt;{!Existing_Journal_Entries}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Journal_Toggle</name>
             <extensionName>flowruntime:toggle</extensionName>
@@ -347,12 +579,12 @@
             <targetReference>Get_Case_Thread</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <subflows>
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>1430</locationY>
         <connector>
             <targetReference>Sensitive_Information_Check</targetReference>
         </connector>
@@ -395,6 +627,17 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>Case</objectType>
+    </variables>
+    <variables>
+        <description>Text to display all of the previous journal entries on a case.</description>
+        <name>Existing_Journal_Entries</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <stringValue>Denne saken er ikke journalført</stringValue>
+        </value>
     </variables>
     <variables>
         <description>ID of the STO case to be completed</description>
