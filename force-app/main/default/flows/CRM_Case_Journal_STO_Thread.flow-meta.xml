@@ -127,6 +127,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <name>Journal_Case_Legacy_System</name>
+            <value>
+                <elementReference>NAV_Case_Overview.selectedCaseLegacySystem</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <name>Journal_Entry_NAV_Ident</name>
             <value>
                 <elementReference>$User.CRM_NAV_Ident__c</elementReference>
