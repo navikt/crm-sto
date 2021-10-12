@@ -60,7 +60,7 @@ public with sharing class stoInboxHelperTest {
         Test.startTest();
         stoInboxHelper.message m = stoInboxHelper.getLatestMessage(t.Id);
         Test.stopTest();
-        System.assertEquals('this is a test message again', m.CRM_Message_Text__c);
+        System.assertEquals('this is a test message again', m.messageText);
     }
 }
 
