@@ -5,7 +5,7 @@
   "id" : "4024b795-6f73-4aa0-bd34-3450f45cb434",
   "label" : "Conversation Note Related List",
   "objectApiName" : "Conversation_Note__c",
-  "routeType" : "relatedlist-a0N",
+  "routeType" : "relatedlist-a0O",
   "type" : "route",
   "urlPrefix" : "conversation-note"
 }
