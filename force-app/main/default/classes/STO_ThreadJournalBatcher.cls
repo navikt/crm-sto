@@ -1,5 +1,5 @@
 public without sharing class STO_ThreadJournalBatcher implements Database.Batchable<SObject>, Database.AllowsCallouts, Database.Stateful {
-    private final String query = 'SELECT Id, CRM_Thread__c, NAV_Case_Reference__c, CRM_Theme_Code__c, CRM_Subtheme_Code__c, Subtheme__c, Theme__c, CRM_Created_By_NAV_Unit__c, CRM_NAV_Case_Legacy_System__c FROM Journal_Entry__c WHERE CRM_Thread__r.CRM_isActive__c = false AND Journal_Entry_Status__c = \'In Progress\'';
+    private final String query = 'SELECT Id, CRM_Thread__c, NAV_Case_Reference__c, CRM_Theme_Code__c, CRM_Subtheme_Code__c, Subtheme__c, Theme__c, CRM_Created_By_NAV_Unit__c, CRM_NAV_Case_Legacy_System__c FROM Journal_Entry__c WHERE CRM_Thread__r.CRM_isActive__c = false AND CRM_Thread__r.STO_Sensitive_Information__c = false AND Journal_Entry_Status__c = \'In Progress\'';
     private LoggerUtility logger = new LoggerUtility('Thread Journal Batch');
     private Boolean error = false;
 

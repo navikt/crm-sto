@@ -44,4 +44,18 @@ public class STO_ThreadJournalBatcher_Test {
         System.assertEquals(2, [SELECT COUNT() FROM Journal_Entry__c WHERE Journal_Entry_Status__c = 'Completed']);
         System.assertEquals(1, [SELECT COUNT() FROM Thread__c WHERE CRM_Journal_Status__c = 'Journal Completed']);
     }
+
+    @isTest
+    static void testJournalBatchWithSensitiveThread() {
+        Thread__c thread = [SELECT Id FROM Thread__c LIMIT 1];
+        thread.STO_Sensitive_Information__c = true; //Thread is awaiting "sladding"
+        update thread;
+
+        Test.startTest();
+        STO_ThreadJournalBatcher.initThreadJournalBatcher();
+        Test.stopTest();
+
+        //No journal entries should have been posted
+        System.assertEquals(0, [SELECT COUNT() FROM Journal_Entry__c WHERE Journal_Entry_Status__c = 'Completed']);
+    }
 }
