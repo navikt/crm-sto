@@ -59,54 +59,7 @@ public with sharing class stoHelperClass_Test {
         List<Message__c> m = [SELECT CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c = :t.Id];
         System.assertEquals('this is a test message', m.get(0).CRM_Message_Text__c);
     }
-    /*@isTest
-    static void getThreadsTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-        Case c = stoHelperClass.createCase('Jobbsøker', null);
-        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker', personContact.AccountId, personContact.Id);
-        t.CRM_Closed_Date__c = date.today(); 
-        update t; 
-        Test.startTest();
-        List<Thread__c> tList = stoHelperClass.getThreads();
-        Test.stopTest();
-        System.assertEquals(tList.isEmpty(), false);
-    }
-    @isTest
-    static void getRecentThreadsTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-        Case c = stoHelperClass.createCase('Jobbsøker', null);
-        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker', personContact.AccountId, personContact.Id);
-        Test.startTest();
-        List<Thread__c> tList = stoHelperClass.getRecentThreads();
-        Test.stopTest();
-        System.assertEquals(tList.isEmpty(), false);
-    }
-    @isTest
-    static void getLatestMessageTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-        Case c = stoHelperClass.createCase('Jobbsøker', null);
-        Thread__c t = stoHelperClass.createThread(c.Id, 'Jobbsøker', personContact.AccountId, personContact.Id);
-        stoHelperClass.createMessage(t, 'this is a test message again', personContact.Id);
-        Test.startTest();
-        Message__c m = stoHelperClass.getLatestMessage(t.Id);
-        Test.stopTest();
-        System.assertEquals('this is a test message again', m.CRM_Message_Text__c);
-    }*/
+    
     @isTest
     static void createRequestTest() {
         Test.startTest();
