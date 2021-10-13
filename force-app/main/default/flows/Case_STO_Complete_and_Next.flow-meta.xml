@@ -5,7 +5,7 @@
         <name>Close_Workspace_Tab</name>
         <label>Close Workspace Tab</label>
         <locationX>336</locationX>
-        <locationY>2894</locationY>
+        <locationY>3230</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -145,7 +145,7 @@
         <name>Sensitive_Information_Assignment</name>
         <label>Sensitive Information Assignment</label>
         <locationX>204</locationX>
-        <locationY>1766</locationY>
+        <locationY>2102</locationY>
         <assignmentItems>
             <assignToReference>Case_Record.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -205,7 +205,7 @@
         <name>Set_Thread_isActive</name>
         <label>Set Thread isActive</label>
         <locationX>50</locationX>
-        <locationY>2342</locationY>
+        <locationY>2678</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.CRM_isActive__c</assignToReference>
             <operator>Assign</operator>
@@ -221,7 +221,7 @@
         <name>Set_Thread_Sensitive_Information</name>
         <label>Set Thread Sensitive Information</label>
         <locationX>182</locationX>
-        <locationY>2558</locationY>
+        <locationY>2894</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -237,7 +237,7 @@
         <name>Check_Thread_Close</name>
         <label>Check Thread Close</label>
         <locationX>182</locationX>
-        <locationY>2222</locationY>
+        <locationY>2558</locationY>
         <defaultConnector>
             <targetReference>Set_Thread_Sensitive_Information</targetReference>
         </defaultConnector>
@@ -287,7 +287,7 @@
         <name>Journal_Decision</name>
         <label>Journal Decision</label>
         <locationX>336</locationX>
-        <locationY>1310</locationY>
+        <locationY>1646</locationY>
         <defaultConnector>
             <targetReference>Sensitive_Information_Check</targetReference>
         </defaultConnector>
@@ -312,7 +312,7 @@
         <name>Sensitive_Information_Check</name>
         <label>Sensitive Information Check</label>
         <locationX>336</locationX>
-        <locationY>1646</locationY>
+        <locationY>1982</locationY>
         <defaultConnector>
             <targetReference>Thread_Update_Decision</targetReference>
         </defaultConnector>
@@ -336,8 +336,8 @@
     <decisions>
         <name>Should_Transfer</name>
         <label>Should Transfer</label>
-        <locationX>182</locationX>
-        <locationY>398</locationY>
+        <locationX>336</locationX>
+        <locationY>1310</locationY>
         <defaultConnector>
             <targetReference>Journal_Decision</targetReference>
         </defaultConnector>
@@ -362,7 +362,7 @@
         <name>Thread_Update_Decision</name>
         <label>Thread Update Decision</label>
         <locationX>336</locationX>
-        <locationY>2102</locationY>
+        <locationY>2438</locationY>
         <defaultConnector>
             <targetReference>Close_Workspace_Tab</targetReference>
         </defaultConnector>
@@ -479,7 +479,7 @@
         <name>Update_Case</name>
         <label>Update Case</label>
         <locationX>204</locationX>
-        <locationY>1886</locationY>
+        <locationY>2222</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
@@ -489,7 +489,7 @@
         <name>Update_Thread</name>
         <label>Update Thread</label>
         <locationX>182</locationX>
-        <locationY>2678</locationY>
+        <locationY>3014</locationY>
         <connector>
             <targetReference>Close_Workspace_Tab</targetReference>
         </connector>
@@ -575,6 +575,38 @@
             </visibilityRule>
         </fields>
         <fields>
+            <name>Transfer_Toggle</name>
+            <extensionName>flowruntime:toggle</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Overfør henvendelse (gjøres i neste steg)</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>messageToggleActive</name>
+                <value>
+                    <stringValue>Ja</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>messageToggleInactive</name>
+                <value>
+                    <stringValue>Nei</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>disabled</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
             <name>Sensitive_Toggle</name>
             <extensionName>flowruntime:toggle</extensionName>
             <fieldType>ComponentInstance</fieldType>
@@ -605,53 +637,6 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <fields>
-            <name>Transfer_Toggle</name>
-            <extensionName>flowruntime:toggle</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue>Øverfør?</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleActive</name>
-                <value>
-                    <stringValue>Ja</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleInactive</name>
-                <value>
-                    <stringValue>Nei</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>disabled</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <fields>
-            <name>Transfer_Info_Text</name>
-            <fieldText>&lt;p&gt;Overføring blir gjort på neste skjerm.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Transfer_Toggle.value</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>true</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
         </fields>
         <fields>
             <name>Close_Thread</name>
@@ -693,7 +678,7 @@
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
         <locationX>204</locationX>
-        <locationY>1430</locationY>
+        <locationY>1766</locationY>
         <connector>
             <targetReference>Sensitive_Information_Check</targetReference>
         </connector>
@@ -732,8 +717,8 @@
     <subflows>
         <name>Transfer_flow</name>
         <label>Transfer flow</label>
-        <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationX>204</locationX>
+        <locationY>1430</locationY>
         <connector>
             <targetReference>Journal_Decision</targetReference>
         </connector>
