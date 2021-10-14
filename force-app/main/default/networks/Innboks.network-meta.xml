@@ -3,7 +3,7 @@
     <allowInternalUserLogin>false</allowInternalUserLogin>
     <allowMembersToFlag>false</allowMembersToFlag>
     <changePasswordTemplate>unfiled$public/CommunityChangePasswordEmailTemplate</changePasswordTemplate>
-    <communityRoles />
+    <communityRoles/>
     <disableReputationRecordConversations>true</disableReputationRecordConversations>
     <emailSenderAddress>fakeemail@nav.no.scratchorg</emailSenderAddress>
     <emailSenderName>Innboks</emailSenderName>
@@ -28,7 +28,6 @@
     <gatherCustomerSentimentData>false</gatherCustomerSentimentData>
     <networkMemberGroups>
         <profile>admin</profile>
-        <!-- <profile>NAV Administrator - Modify all data</profile> -->
     </networkMemberGroups>
     <networkPageOverrides>
         <changePasswordPageOverrideSetting>Standard</changePasswordPageOverrideSetting>
