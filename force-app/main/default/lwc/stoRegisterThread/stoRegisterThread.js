@@ -25,7 +25,7 @@ import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     validparameter;
     showspinner = false;
-    acceptedcategories = ['Arbeid', 'Helse', 'Familie', 'Ufør', 'Pensjon', 'Internasjonal'];
+    acceptedcategories = ['Arbeid', 'Helse', 'Familie', 'Ufør', 'Pensjon', 'Internasjonal', 'Øvrig', 'Bil', 'Hjelpemidler'];
     currentPageReference = null;
     acceptedTerms = false;
     label = {
