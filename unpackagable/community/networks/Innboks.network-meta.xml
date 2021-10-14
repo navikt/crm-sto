@@ -28,7 +28,8 @@
     <gatherCustomerSentimentData>false</gatherCustomerSentimentData>
     <networkMemberGroups>
         <profile>admin</profile>
-        <!-- <profile>NAV Administrator - Modify all data</profile> -->
+        <!--<profile>NAV Administrator - Modify all data</profile>-->
+        <!--<profile>Delegated Administrator - Salesforce</profile>-->
     </networkMemberGroups>
     <networkPageOverrides>
         <changePasswordPageOverrideSetting>Standard</changePasswordPageOverrideSetting>
