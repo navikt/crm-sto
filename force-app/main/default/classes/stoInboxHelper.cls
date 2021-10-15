@@ -20,7 +20,7 @@ public with sharing class stoInboxHelper {
             i.closeDate = t.CRM_Closed_Date__c; 
             i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
             i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
-            i.objectName = 'thread'; 
+            i.objectName = 'skriv-til-oss'; 
             inboxlist.add(i);  
         }
         //TODO: Add CN name when formula fields are moved 
@@ -36,7 +36,7 @@ public with sharing class stoInboxHelper {
             i.lastModifiedDate = t.LastModifiedDate; 
             i.closeDate = t.CreatedDate; 
             i.latestMessageDate = t.CreatedDate;
-            i.objectName = 'conversation-note'; 
+            i.objectName = 'samtalereferat'; 
             inboxlist.add(i);  
         }
         return inboxlist;
@@ -58,7 +58,7 @@ public with sharing class stoInboxHelper {
             i.closeDate = t.CRM_Closed_Date__c; 
             i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
             i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
-            i.objectName = 'thread'; 
+            i.objectName = 'skriv-til-oss'; 
             inboxlist.add(i);  
         }
         return inboxlist; 
