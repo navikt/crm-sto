@@ -4,6 +4,10 @@
         <apexClass>stoHelperClass</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>stoInboxHelper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <customMetadataTypeAccesses>
         <enabled>true</enabled>
         <name>STO_Category__mdt</name>
