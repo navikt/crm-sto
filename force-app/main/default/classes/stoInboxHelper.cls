@@ -86,6 +86,7 @@ public with sharing class stoInboxHelper {
         message returntext = new message(); 
         String objectName = threadId.getSobjectType().getDescribe().getName(); 
         if(objectName == 'Thread__c'){
+            objectName = 'skriv-til-oss'; 
             Message__c messageList = [
                 SELECT Id, CRM_Message_Text__c, CRM_From_Contact__c
                 FROM Message__c
@@ -97,6 +98,7 @@ public with sharing class stoInboxHelper {
             returntext.recordId = messageList.Id; 
         }
         if(objectName == 'Conversation_Note__c'){
+            objectName = 'samtalereferat'; 
             Conversation_Note__c cn = [SELECT Id, Name, CRM_Conversation_Note__c FROM Conversation_Note__c WHERE Id =: threadId LIMIT 1]; 
             returntext.fromContact = 'NAV'; 
             returntext.messageText = cn.CRM_Conversation_Note__c; 

@@ -5,6 +5,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>stoInboxHelper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>stoUtilityBackgroundController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
