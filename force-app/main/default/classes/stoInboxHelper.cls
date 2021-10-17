@@ -21,6 +21,8 @@ public with sharing class stoInboxHelper {
             i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
             i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
             i.objectName = 'skriv-til-oss'; 
+            i.status = 'Lukket'; 
+            if(i.closeDate == null) i.status = 'Åpen'; 
             inboxlist.add(i);  
         }
         //TODO: Add CN name when formula fields are moved 
@@ -41,6 +43,7 @@ public with sharing class stoInboxHelper {
         }
         return inboxlist;
     }
+
     @AuraEnabled(cacheable=true)
     public static List<thread> getRecentThreads() {
         List<thread> inboxlist = new List <thread>(); 
@@ -59,6 +62,8 @@ public with sharing class stoInboxHelper {
             i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
             i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
             i.objectName = 'skriv-til-oss'; 
+            i.status = 'Lukket'; 
+            if(i.closeDate == null) i.status = 'Åpen'; 
             inboxlist.add(i);  
         }
         return inboxlist; 
@@ -79,6 +84,8 @@ public with sharing class stoInboxHelper {
         public Datetime latestMessageDate;
         @AuraEnabled
         public String objectName;
+        @AuraEnabled
+        public String status;
     }
 
     @AuraEnabled(cacheable=true)
