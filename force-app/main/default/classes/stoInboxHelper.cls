@@ -122,4 +122,14 @@ public with sharing class stoInboxHelper {
         @AuraEnabled
         public String fromContact; 
     }
+
+    @AuraEnabled
+    public static void markAsRead(Id conversationNoteId) {
+        List<Conversation_Note__c> noteList = [SELECT Id FROM Conversation_Note__c WHERE CRM_Is_Read__c = FALSE AND Id = :conversationNoteId LIMIT 1];
+        for (Conversation_Note__c cn : noteList) {
+            cn.CRM_Is_Read__c = true;
+            cn.CRM_Read_Date__c = DateTime.now();
+        }
+        update noteList;
+    }
 }
