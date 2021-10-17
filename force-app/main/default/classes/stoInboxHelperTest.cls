@@ -12,6 +12,8 @@ public with sharing class stoInboxHelperTest {
         STO_TestDataFactory.createRecord(
             new Common_Code__c(Name = 'Spørsmål og Svar', CRM_Code__c = 'SPM_OG_SVR', CRM_Code_Set__c = 'Oppgavetyper')
         );
+        Conversation_Note__c cn = new Conversation_Note__c (CRM_Is_Read__c = false,  CRM_Conversation_Note__c = 'this is a test message again');
+        insert cn; 
     }
 
     @isTest
@@ -62,8 +64,22 @@ public with sharing class stoInboxHelperTest {
         Test.stopTest();
         System.assertEquals('this is a test message again', m.messageText);
     }
+    @isTest
+    static void getLatestMessageConversationNoteTest() {
+        Conversation_Note__c cn = [SELECT Id FROM Conversation_Note__c LIMIT 1];
+        Test.startTest();
+        stoInboxHelper.message m = stoInboxHelper.getLatestMessage(cn.Id);
+        Test.stopTest();
+        System.assertEquals('this is a test message again', m.messageText);
+    }
+    @isTest
+    static void markAsReadTest(){
+        Conversation_Note__c cn = [SELECT Id FROM Conversation_Note__c LIMIT 1];
+        Test.startTest(); 
+        stoInboxHelper.markAsRead(cn.Id); 
+        Test.stopTest(); 
+        Boolean updatedcn = [SELECT CRM_Is_Read__c FROM Conversation_Note__c WHERE Id =: cn.Id]?.CRM_Is_Read__c; 
+        System.assertEquals(true, updatedcn, 'Conversation note not marked as read');
+    }
+
 }
-
-
-
-    
