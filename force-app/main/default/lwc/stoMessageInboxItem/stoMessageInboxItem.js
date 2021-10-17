@@ -15,18 +15,15 @@ export default class StoMessageInboxItem extends LightningElement {
     threadId;
     hasunread = false;
 
-    className;
+    className = 'lenkepanel dialog flere-meldinger .slds-size_1-of-1 read';
 
     connectedCallback() {
         this.objectName = this.thread.objectName; 
-        this.linkUrl = basepath + '/' + this.objectName + '/' + this.thread.recordId; //Implement onclick navigation
-        console.log('NAVIGATE TO :' + this.linkUrl); 
+        this.linkUrl = basepath + '/' + this.objectName + '/' + this.thread.recordId; 
         this.threadId = this.thread.recordId;
-        if (Number(this.thread.CRM_Number_of_unread_Messages__c) > 0) {
+        if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
-            this.className='unread';
-            //console.log('jkjkj ' + this.template.querySelector('[data-id="inboxitem"]'));
-            //this.template.querySelector('[data-id="inboxitem"]').className = 'lenkepanel';
+            this.className='lenkepanel dialog flere-meldinger .slds-size_1-of-1 unread';
         }
     }
     @wire(getLatest, { threadId: '$threadId' })
