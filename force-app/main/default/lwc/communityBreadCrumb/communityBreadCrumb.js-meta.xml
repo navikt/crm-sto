@@ -18,7 +18,7 @@
             <property name="secondLevelLink" type="String"  label='Second Level URL Link location' />
             <property name="thirdLevel" type="String"  label='Third Level' />
             <property name="thirdLevelLink" type="String"  label='Third Level URL Link location' />
-            <property name="leafnode" type="String" label='Third Level URL Link location' />
+            <property name="leafnode" type="String" label='Leaf Node text' />
         </targetConfig>
     </targetConfigs>
       <isExposed>true</isExposed>

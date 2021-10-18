@@ -179,12 +179,12 @@
     <formulas>
         <name>NAV_Unit_Transfer_Text</name>
         <dataType>String</dataType>
-        <expression>&apos;Samtalen ble overført til &apos; + {!NAV_Unit_Allocator.selectedUnitName}</expression>
+        <expression>&apos;Samtalen ble overført til &apos; + {!NAV_Unit_Allocator.selectedUnitName} + &apos; - &apos;</expression>
     </formulas>
     <formulas>
         <name>Queue_Transfer_Text</name>
         <dataType>String</dataType>
-        <expression>&apos;Samtalen ble overført til &apos; + {!STO_Category_Picklist}</expression>
+        <expression>&apos;Samtalen ble overført til &apos; + {!STO_Category_Picklist} + &apos; - &apos;</expression>
     </formulas>
     <interviewLabel>STO transfer {!$Flow.CurrentDateTime}</interviewLabel>
     <label>STO transfer</label>

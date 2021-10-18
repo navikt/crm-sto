@@ -1,7 +1,7 @@
 import { LightningElement, wire, api } from 'lwc';
 
-import getThreads from '@salesforce/apex/stoHelperClass.getThreads';
-import getRecentThreads from '@salesforce/apex/stoHelperClass.getRecentThreads'; 
+import getThreads from '@salesforce/apex/stoInboxHelper.getThreads';
+import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads'; 
 
 export default class StoMessageInbox extends LightningElement {
     @api title; 
@@ -10,13 +10,11 @@ export default class StoMessageInbox extends LightningElement {
 
     @wire(getThreads, {})
     wirethreads(result) {
-
         if (result.error) {
             console.log(result.error);
         }
         else if (result.data) {
             console.log(result.data);
-
             this.threads = result.data;
         }
     }

@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "d9c03552-9726-4f68-b72d-015a6788226c",
+  "appPageId" : "ee1c8800-f047-4d93-bad5-52814afdf7cf",
+  "configurationTags" : [ ],
+  "id" : "4024b795-6f73-4aa0-bd34-3450f45cb434",
+  "label" : "Conversation Note Related List",
+  "objectApiName" : "Conversation_Note__c",
+  "routeType" : "relatedlist-a0N",
+  "type" : "route",
+  "urlPrefix" : "conversation-note"
+}
