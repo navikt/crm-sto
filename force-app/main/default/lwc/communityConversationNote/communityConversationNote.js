@@ -2,7 +2,7 @@ import { LightningElement, api, wire } from 'lwc';
 import dekoratoren from '@salesforce/resourceUrl/dekoratoren';
 import veiledericon from '@salesforce/resourceUrl/female';
 import { loadStyle } from 'lightning/platformResourceLoader';
-import markasread from '@salesforce/apex/CRM_MessageHelper.markAsRead';
+import markasread from '@salesforce/apex/stoInboxHelper.markAsRead';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 
 import NAME_FIELD from '@salesforce/schema/Conversation_Note__c.Name';
@@ -22,8 +22,7 @@ export default class CommunityConversationNote extends LightningElement {
 
     connectedCallback() {
         loadStyle(this, dekoratoren);
-        //TODO: change markasread 
-        markasread({ threadId: this.recordId });
+        markasread({ conversationNoteId: this.recordId });
     }
 
     @wire(getRecord, { recordId: '$recordId', fields })
@@ -38,14 +37,3 @@ export default class CommunityConversationNote extends LightningElement {
         return getFieldValue(this.conversationnote.data, DATE_FIELD);
     }
 }
-
-//TODO: create markasread function on conversation note 
-/*@AuraEnabled
-public static void markAsRead(Id threadId) {
-    List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Read__c = FALSE AND CRM_Thread__c = :threadId];
-    for (Message__c msg : msgList) {
-        msg.CRM_Read__c = true;
-        msg.CRM_Read_Datetime__c = DateTime.now();
-    }
-    update msgList;
-}*/

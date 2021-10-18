@@ -68,7 +68,7 @@
             <assignToReference>STO_NAV_TASK.NKS_Henvendelse_BehandlingsId__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Thread_ID</elementReference>
+                <elementReference>Get_Thread.CRM_API_Reference__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -108,6 +108,22 @@
         </assignmentItems>
         <connector>
             <targetReference>Get_Task_due_date</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Thread_Related_Object</name>
+        <label>Set Thread Related Object</label>
+        <locationX>314</locationX>
+        <locationY>1238</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Thread.CRM_Related_Object__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>STO_NAV_TASK.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Thread</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -163,12 +179,12 @@
     <formulas>
         <name>NAV_Unit_Transfer_Text</name>
         <dataType>String</dataType>
-        <expression>&apos;Samtalen ble overført til &apos; + {!NAV_Unit_Allocator.selectedUnitName}</expression>
+        <expression>&apos;Samtalen ble overført til &apos; + {!NAV_Unit_Allocator.selectedUnitName} + &apos; - &apos;</expression>
     </formulas>
     <formulas>
         <name>Queue_Transfer_Text</name>
         <dataType>String</dataType>
-        <expression>&apos;Samtalen ble overført til &apos; + {!STO_Category_Picklist}</expression>
+        <expression>&apos;Samtalen ble overført til &apos; + {!STO_Category_Picklist} + &apos; - &apos;</expression>
     </formulas>
     <interviewLabel>STO transfer {!$Flow.CurrentDateTime}</interviewLabel>
     <label>STO transfer</label>
@@ -270,6 +286,9 @@
         <label>Close Case</label>
         <locationX>314</locationX>
         <locationY>1118</locationY>
+        <connector>
+            <targetReference>Set_Thread_Related_Object</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -285,6 +304,14 @@
             </value>
         </inputAssignments>
         <object>Case</object>
+    </recordUpdates>
+    <recordUpdates>
+        <description>Updates thread so its related to the new NAV Task</description>
+        <name>Update_Thread</name>
+        <label>Update Thread</label>
+        <locationX>314</locationX>
+        <locationY>1358</locationY>
+        <inputReference>Get_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>

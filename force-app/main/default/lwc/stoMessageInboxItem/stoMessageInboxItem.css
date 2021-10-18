@@ -10,5 +10,11 @@
 }
 .unread {
     border-style: hidden hidden hidden solid; 
+    border-width: .5em;
     border-color: #0067C5;
+}
+.read {
+    border-style: hidden hidden hidden solid; 
+    border-width: .5em;
+    border-color: #ffffff;
 }
