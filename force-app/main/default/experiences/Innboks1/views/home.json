@@ -8,6 +8,38 @@
       "componentAttributes" : {
         "backgroundImageConfig" : "",
         "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "sectionConfig" : "{\"UUID\":\"c70a3c91-a837-4d81-95c4-389968117c82\",\"columns\":[{\"UUID\":\"1a865b92-63dd-41a6-a779-a8384f81e615\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "c70a3c91-a837-4d81-95c4-389968117c82",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "firstLevel" : "Privatperson",
+            "firstLevelLink" : "https://nav.no",
+            "leafnode" : "Innboks",
+            "secondLevel" : "Ditt NAV",
+            "secondLevelLink" : "https://nav.no/dittnav"
+          },
+          "componentName" : "c:communityBreadCrumb",
+          "id" : "1602883c-eee1-474d-975f-1b3913246b4e",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "1a865b92-63dd-41a6-a779-a8384f81e615",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
         "sectionConfig" : "{\"UUID\":\"f56e01cf-c5ac-4e5d-9853-1a7d2c79a161\",\"columns\":[{\"UUID\":\"a6ab69ce-5882-4900-b2ab-b825de39820e\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":null},{\"UUID\":\"63476e8c-fe2c-44bd-bff9-d0c715ac388e\",\"columnName\":\"Column 2\",\"columnKey\":\"712f3\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"79be1207-33fb-4d08-858d-1f88edaef27e\",\"columnName\":\"Column 3\",\"columnKey\":\"5b510\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
       },
       "componentName" : "community_layout:section",
