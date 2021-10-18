@@ -4,9 +4,10 @@ export default class CrmStoMessaging extends LightningElement {
     @api recordId;
     @api objectApiName;
     @api singleThread;
+    @api cardTitle;
 
     connectedCallback() {
-        this.template.addEventListener('toolbaraction', (event) => {
+        this.template.addEventListener('toolbaraction', event => {
             let flowInputs = [];
             //logic to validate and create correct flowInputs for the flow to be triggered
             switch (event.detail.flowName) {

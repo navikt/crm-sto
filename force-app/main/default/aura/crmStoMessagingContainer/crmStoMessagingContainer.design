@@ -1,1 +1,3 @@
-<design:component label="STO Message Container"> </design:component>
+<design:component label="STO Message Container">
+    <design:attribute name="cardTitle" label="Header title"> </design:attribute>
+</design:component>
