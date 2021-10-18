@@ -2,13 +2,20 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
     <assignments>
-        <name>Remove_ID_for_Task_Create</name>
-        <label>Remove ID for Task Create</label>
+        <name>Remove_ID_and_Set_Status_for_Task_Create</name>
+        <label>Remove ID and Set Status for Task Create</label>
         <locationX>314</locationX>
         <locationY>1055</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.Id</assignToReference>
             <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Related_NAV_Task.NKS_Status__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>OPPRETTET</stringValue>
+            </value>
         </assignmentItems>
         <connector>
             <targetReference>Send_NAV_Task</targetReference>
@@ -72,7 +79,7 @@
     <decisions>
         <name>Check_External_Message</name>
         <label>Check External Message</label>
-        <locationX>501</locationX>
+        <locationX>545</locationX>
         <locationY>575</locationY>
         <defaultConnectorLabel>Message from NAV</defaultConnectorLabel>
         <rules>
@@ -109,13 +116,13 @@
             </conditions>
             <conditions>
                 <leftValueReference>Related_NAV_Task.NKS_Status__c</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>FERDIGSTILT</stringValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Remove_ID_for_Task_Create</targetReference>
+                <targetReference>Remove_ID_and_Set_Status_for_Task_Create</targetReference>
             </connector>
             <label>NAV Task Completed</label>
         </rules>
@@ -144,7 +151,7 @@
     <recordLookups>
         <name>Get_case</name>
         <label>Get case</label>
-        <locationX>501</locationX>
+        <locationX>545</locationX>
         <locationY>455</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -201,11 +208,12 @@
         <queriedFields>NKS_TaskType__c</queriedFields>
         <queriedFields>CRM_NavUnit__c</queriedFields>
         <queriedFields>NKS_Comments__c</queriedFields>
+        <queriedFields>NKS_Status__c</queriedFields>
     </recordLookups>
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>501</locationX>
+        <locationX>545</locationX>
         <locationY>335</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -231,7 +239,7 @@
         <inputReference>RelatedCase</inputReference>
     </recordUpdates>
     <start>
-        <locationX>375</locationX>
+        <locationX>419</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -255,11 +263,6 @@
         </inputAssignments>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </subflows>
-    <textTemplates>
-        <name>MessageSummaryText</name>
-        <isViewedAsPlainText>false</isViewedAsPlainText>
-        <text>&lt;p&gt;&lt;b&gt;{!$Record.CRM_From_First_Name__c} ({!$Record.CRM_From_Ident_Formula__c}) - {!$Record.CreatedDate}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!$Record.CRM_Message_Text__c}&lt;/p&gt;</text>
-    </textTemplates>
     <variables>
         <name>Related_NAV_Task</name>
         <dataType>SObject</dataType>
