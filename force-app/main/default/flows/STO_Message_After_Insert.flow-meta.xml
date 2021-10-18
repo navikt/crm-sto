@@ -2,26 +2,23 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
     <assignments>
-        <name>Assign_values_to_thread</name>
-        <label>Assign values to thread</label>
-        <locationX>182</locationX>
-        <locationY>575</locationY>
+        <name>Remove_ID_and_Set_Status_for_Task_Create</name>
+        <label>Remove ID and Set Status for Task Create</label>
+        <locationX>314</locationX>
+        <locationY>1055</locationY>
         <assignmentItems>
-            <assignToReference>Get_Thread.CRM_Conversation_Summary__c</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>MessageSummaryText</elementReference>
-            </value>
+            <assignToReference>Related_NAV_Task.Id</assignToReference>
+            <operator>Assign</operator>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>Get_Thread.CRM_Latest_Message_Datetime__c</assignToReference>
+            <assignToReference>Related_NAV_Task.NKS_Status__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>$Flow.CurrentDateTime</elementReference>
+                <stringValue>OPPRETTET</stringValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Case_exists</targetReference>
+            <targetReference>Send_NAV_Task</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -50,12 +47,12 @@
     <decisions>
         <name>Case_exists</name>
         <label>Case exists</label>
-        <locationX>182</locationX>
+        <locationX>248</locationX>
         <locationY>695</locationY>
         <defaultConnector>
-            <targetReference>Update_Thread</targetReference>
+            <targetReference>Get_Related_NAV_Task</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Case finnes ikke</defaultConnectorLabel>
+        <defaultConnectorLabel>Not Related to Case</defaultConnectorLabel>
         <rules>
             <name>Related_Case_exists</name>
             <conditionLogic>and</conditionLogic>
@@ -79,9 +76,59 @@
             <label>Related Case exists</label>
         </rules>
     </decisions>
-    <description>After insert actions on Message__c</description>
+    <decisions>
+        <name>Check_External_Message</name>
+        <label>Check External Message</label>
+        <locationX>545</locationX>
+        <locationY>575</locationY>
+        <defaultConnectorLabel>Message from NAV</defaultConnectorLabel>
+        <rules>
+            <name>Is_External_Message</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.CRM_External_Message__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Case_exists</targetReference>
+            </connector>
+            <label>Is External Message</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_NAV_Task</name>
+        <label>Check NAV Task</label>
+        <locationX>446</locationX>
+        <locationY>935</locationY>
+        <defaultConnectorLabel>No NAV Task or Open</defaultConnectorLabel>
+        <rules>
+            <name>NAV_Task_Completed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Related_NAV_Task</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Related_NAV_Task.NKS_Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>FERDIGSTILT</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Remove_ID_and_Set_Status_for_Task_Create</targetReference>
+            </connector>
+            <label>NAV Task Completed</label>
+        </rules>
+    </decisions>
     <interviewLabel>Message After Insert {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Message After Insert</label>
+    <label>STO Message After Insert</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -101,34 +148,14 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordCreates>
-        <name>Create_New_Message_Event</name>
-        <label>Create New Message Event</label>
-        <locationX>182</locationX>
-        <locationY>1271</locationY>
-        <inputAssignments>
-            <field>CRM_Message_Id__c</field>
-            <value>
-                <elementReference>$Record.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CRM_Related_Object_Id__c</field>
-            <value>
-                <elementReference>Get_Thread.CRM_Related_Object__c</elementReference>
-            </value>
-        </inputAssignments>
-        <object>New_Message__e</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordCreates>
     <recordLookups>
         <name>Get_case</name>
         <label>Get case</label>
-        <locationX>182</locationX>
+        <locationX>545</locationX>
         <locationY>455</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Assign_values_to_thread</targetReference>
+            <targetReference>Check_External_Message</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -150,9 +177,43 @@
         <queriedFields>Id</queriedFields>
     </recordLookups>
     <recordLookups>
+        <description>Check if the thread is related to a NAV task as process object</description>
+        <name>Get_Related_NAV_Task</name>
+        <label>Get Related NAV Task</label>
+        <locationX>446</locationX>
+        <locationY>815</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_NAV_Task</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Related_Object__c</elementReference>
+            </value>
+        </filters>
+        <object>NavTask__c</object>
+        <outputReference>Related_NAV_Task</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>CRM_Account__c</queriedFields>
+        <queriedFields>NKS_Theme__c</queriedFields>
+        <queriedFields>NKS_Theme_Group__c</queriedFields>
+        <queriedFields>NKS_Subtheme__c</queriedFields>
+        <queriedFields>CRM_Subtype__c</queriedFields>
+        <queriedFields>CRM_NoPersonInformation__c</queriedFields>
+        <queriedFields>CRM_Priority__c</queriedFields>
+        <queriedFields>NKS_Henvendelse_BehandlingsId__c</queriedFields>
+        <queriedFields>NKS_TaskType__c</queriedFields>
+        <queriedFields>CRM_NavUnit__c</queriedFields>
+        <queriedFields>NKS_Comments__c</queriedFields>
+        <queriedFields>NKS_Status__c</queriedFields>
+    </recordLookups>
+    <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>182</locationX>
+        <locationX>545</locationX>
         <locationY>335</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -175,23 +236,10 @@
         <label>Update Related Case</label>
         <locationX>50</locationX>
         <locationY>935</locationY>
-        <connector>
-            <targetReference>Update_Thread</targetReference>
-        </connector>
         <inputReference>RelatedCase</inputReference>
     </recordUpdates>
-    <recordUpdates>
-        <name>Update_Thread</name>
-        <label>Update Thread</label>
-        <locationX>182</locationX>
-        <locationY>1151</locationY>
-        <connector>
-            <targetReference>Create_New_Message_Event</targetReference>
-        </connector>
-        <inputReference>Get_Thread</inputReference>
-    </recordUpdates>
     <start>
-        <locationX>56</locationX>
+        <locationX>419</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -201,11 +249,28 @@
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
-    <textTemplates>
-        <name>MessageSummaryText</name>
-        <isViewedAsPlainText>false</isViewedAsPlainText>
-        <text>&lt;p&gt;&lt;b&gt;{!$Record.CRM_From_First_Name__c} ({!$Record.CRM_From_Ident_Formula__c}) - {!$Record.CreatedDate}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!$Record.CRM_Message_Text__c}&lt;/p&gt;</text>
-    </textTemplates>
+    <subflows>
+        <name>Send_NAV_Task</name>
+        <label>Send NAV Task</label>
+        <locationX>314</locationX>
+        <locationY>1175</locationY>
+        <flowName>CRM_Send_NAV_Task_Auto</flowName>
+        <inputAssignments>
+            <name>NAV_Task</name>
+            <value>
+                <elementReference>Related_NAV_Task</elementReference>
+            </value>
+        </inputAssignments>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </subflows>
+    <variables>
+        <name>Related_NAV_Task</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>NavTask__c</objectType>
+    </variables>
     <variables>
         <name>RelatedCase</name>
         <dataType>SObject</dataType>
