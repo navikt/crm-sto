@@ -22,7 +22,7 @@
         "components" : [ {
           "componentAttributes" : { },
           "componentName" : "c:stoRegisterThread",
-          "id" : "0056d8a7-751e-47a9-a2d4-b4d095a7144e",
+          "id" : "f307ae96-b785-45ce-aeeb-95eab0030eda",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
