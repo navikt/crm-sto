@@ -1,0 +1,107 @@
+{
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "componentName" : "community_layout:sldsFlexibleLayout",
+  "id" : "0bfa5786-f36c-4e19-b47a-63cd7bbe7859",
+  "label" : "Conversation Note Detail",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "sectionConfig" : "{\"UUID\":\"5ff5251d-06ec-4171-985d-9853efb3cd58\",\"columns\":[{\"UUID\":\"bede92a9-72c1-4c61-808a-30da1fadd35a\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "5ff5251d-06ec-4171-985d-9853efb3cd58",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "firstLevel" : "Privatperson",
+            "firstLevelLink" : "https://nav.no",
+            "leafnode" : "Samtalereferat",
+            "secondLevel" : "Ditt NAV",
+            "secondLevelLink" : "https://nav.no/dittnav",
+            "thirdLevel" : "Innboks",
+            "thirdLevelLink" : "https://innboks.nav.no"
+          },
+          "componentName" : "c:communityBreadCrumb",
+          "id" : "1a9e3dd9-ecae-443c-9277-867f4dc5bdce",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "bede92a9-72c1-4c61-808a-30da1fadd35a",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "sectionConfig" : "{\"UUID\":\"2db51da3-a826-47c6-a7b4-5e1fb1c82817\",\"columns\":[{\"UUID\":\"cc6da9d2-b17a-4532-ac33-9da7760136ce\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"21d2feef-c374-4c7f-ae52-f5800faccc76\",\"columnName\":\"Column 2\",\"columnKey\":\"c0b8b\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"5fd9ac1e-dad3-4c68-bd9b-2f897b564dd0\",\"columnName\":\"Column 3\",\"columnKey\":\"340be\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "2db51da3-a826-47c6-a7b4-5e1fb1c82817",
+      "regions" : [ {
+        "id" : "cc6da9d2-b17a-4532-ac33-9da7760136ce",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "components" : [ {
+          "componentAttributes" : {
+            "recordId" : "{!recordId}",
+            "title" : "Samtalereferat"
+          },
+          "componentName" : "c:communityConversationNote",
+          "id" : "1d85d094-6777-4540-9e4d-91c6576228e3",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "21d2feef-c374-4c7f-ae52-f5800faccc76",
+        "regionLabel" : "Column 2",
+        "regionName" : "c0b8b",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "id" : "5fd9ac1e-dad3-4c68-bd9b-2f897b564dd0",
+        "regionLabel" : "Column 3",
+        "regionName" : "340be",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "2db96511-9e91-461d-9834-f94daf1c686b",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "pageTitle" : "{!Record._Object}: {!Record._Title}",
+        "recordId" : "{!recordId}"
+      },
+      "componentName" : "community_builder:seoAssistant",
+      "id" : "0679c994-c568-4efe-82a9-f0c63acb68ec",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "e4b35d95-3cac-429f-beaa-0240a79fd414",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "detail-a0O"
+}

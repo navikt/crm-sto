@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "2250dd83-8ac4-4248-b5bd-fff2877b3abe",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "id" : "70d80b95-4b09-4926-9115-31e230daf5df",
+  "label" : "Thread List",
+  "objectApiName" : "Thread__c",
+  "routeType" : "list-a0Q",
+  "type" : "route",
+  "urlPrefix" : "skriv-til-oss"
+}
