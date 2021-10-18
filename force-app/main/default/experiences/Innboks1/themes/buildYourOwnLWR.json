@@ -32,12 +32,6 @@
             "id" : "73600e05-0ef7-4e45-a024-9aefcfd07e61",
             "renditionMap" : { },
             "type" : "component"
-          }, {
-            "componentAttributes" : { },
-            "componentName" : "c:communityBreadCrumb",
-            "id" : "406d0f63-d2c8-4dc2-a0df-5987f9026f47",
-            "renditionMap" : { },
-            "type" : "component"
           } ],
           "id" : "f53540b3-05a9-439b-b40a-757b61434ef4",
           "regionLabel" : "Theme Header",
