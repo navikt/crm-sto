@@ -1,0 +1,24 @@
+.link-header{
+    width:100%;
+    display:block;
+}
+.lenkepanel__heading{
+    text-align: left;
+}
+.expandable-body{
+    width:100%;
+    display:block;
+    margin-top: 2em;
+}
+.hoved-panel{
+    display: block!important;
+}
+.chevronboks{
+    margin-top: 1em;
+}
+.typo-normal{
+    text-align: left;
+}
+.lenkepanel{
+    width:100%;
+}

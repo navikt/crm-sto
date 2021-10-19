@@ -1,0 +1,18 @@
+<template>
+    <button onclick={togglevisible} label={header} aria-expanded={showpanel} class="lenkepanel lenkepanel--border hoved-panel">
+        <lightning-layout>
+            <lightning-layout-item size=12>
+                <div class="link-header">
+                    <span class="typo-undertittel lenkepanel__heading slds-float_left">{header}</span>
+                    <span class="nav-frontend-chevron chevronboks chevron--ned slds-float_right"></span>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+       <template if:true={showpanel}>
+        <div class="expandable-body">
+          <p class="typo-normal bodytext">
+            <lightning-formatted-rich-text value={body}></lightning-formatted-rich-text>
+           </p>
+        </div>
+    </template></button>
+</template>

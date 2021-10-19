@@ -4,6 +4,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import dekoratoren from '@salesforce/resourceUrl/dekoratoren';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
+import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
 import welcomlabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
@@ -44,6 +45,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         INCORRECT_CATEGORY
     };
     logopath = navlogos + '/email.svg';
+    newslist;
 
     /**
      * Sets the Selectedtheme based on the URL parameter.
@@ -56,6 +58,18 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
 
+        }
+    }
+    /**
+     * Finds if there are any news based on the selected theme.
+     *  @author Lars Petter Johnsen
+     */
+    @wire(getNews, { category: '$selectedTheme' })
+    wirenes(result) {
+        if (result.error) {
+            console.log(result.error);
+        } else if (result.data) {
+            this.newslist = result.data;
         }
     }
     setParametersBasedOnUrl() {

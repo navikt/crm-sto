@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Arbeid</label>
+    <protected>false</protected>
+    <values>
+        <field>STO_Body__c</field>
+        <value xsi:type="xsd:string">&lt;span&gt;Mottar du dagpenger? Skal du melde fra om at du tar utdanning med støtte fra Lånekassen?&lt;/span&gt;
+
+Du må opplyse om:
+&lt;ul&gt;
+&lt;li&gt;Hvilken utdanning du deltar i&lt;/li&gt;
+&lt;li&gt;Hvor du gjennomfører utdanningen&lt;/li&gt;
+&lt;li&gt;Når utdanningen begynte og når den slutter/ble avsluttet&lt;/li&gt;
+&lt;li&gt;Hvor høy studieprogresjon du har&lt;/li&gt;
+&lt;li&gt;Om utdanningen foregår på dag- eller kveldstid. Hvis dagtid, skriv hvor mange studiedager du har i semesteret&lt;/li&gt;
+&lt;li&gt;For hvilken periode du mottar støtte fra Lånekasse&lt;/li&gt;
+&lt;/ul&gt;</value>
+    </values>
+    <values>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Arbeid</value>
+    </values>
+    <values>
+        <field>STO_Header__c</field>
+        <value xsi:type="xsd:string">Mottar du dagpenger? Skal du melde fra om at du tar utdanning med støtte fra Lånekassen</value>
+    </values>
+</CustomMetadata>
