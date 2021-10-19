@@ -198,4 +198,16 @@ public with sharing class stoHelperClass {
             logger.publish();
         }
     }
+    /**
+     * Method for accessing news regarding a STO Category
+     * Returns a list of STO_News__C
+     * @author Lars Petter Johnsen
+     * @date 19.10.2021
+     */
+
+    @AuraEnabled(cacheable=true)
+    public static List<STO_News__mdt> getCategoryNews(String category){
+        List<STO_News__mdt> news = [SELECT STO_Body__c, STO_Header__c FROM STO_News__mdt WHERE STO_Category__c =: category];
+        return news;
+    }
 }

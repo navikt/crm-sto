@@ -80,4 +80,11 @@ public with sharing class stoHelperClass_Test {
 
         System.assertEquals(1, [SELECT COUNT() FROM NavTask__c]);
     }
+    @isTest
+    static void getSTONewsTest(){
+        Test.startTest();
+            List<STO_News__mdt> newsList = stoHelperClass.getCategoryNews('Arbeid');
+            System.assertEquals(newsList.isEmpty(), false);
+        Test.stopTest();
+    }
 }
