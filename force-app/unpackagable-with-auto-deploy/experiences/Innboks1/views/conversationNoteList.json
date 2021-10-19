@@ -1,0 +1,33 @@
+{
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "componentName" : "community_layout:sldsFlexibleLayout",
+  "id" : "5f832d85-44a4-483c-8b8e-b83d9d684623",
+  "label" : "Conversation Note List",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "sectionConfig" : "{\"UUID\":\"ed2d15cf-d5f1-43db-9432-df7b9365c8a3\",\"columns\":[{\"UUID\":\"d2adb96e-f502-4540-8df3-de98025821ec\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "ed2d15cf-d5f1-43db-9432-df7b9365c8a3",
+      "regions" : [ {
+        "id" : "d2adb96e-f502-4540-8df3-de98025821ec",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "77faf4a9-0c43-44e4-91d7-b26295f9a836",
+    "regionName" : "content",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "list-a0O"
+}
