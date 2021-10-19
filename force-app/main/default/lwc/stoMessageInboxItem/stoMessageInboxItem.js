@@ -16,11 +16,13 @@ export default class StoMessageInboxItem extends LightningElement {
     hasunread = false;
 
     className = 'lenkepanel dialog flere-meldinger .slds-size_1-of-1 read';
+    statuscolor; 
 
     connectedCallback() {
         this.objectName = this.thread.objectName; 
         this.linkUrl = basepath + '/' + this.objectName + '/' + this.thread.recordId; 
         this.threadId = this.thread.recordId;
+        if(this.thread.closeDate == null) this.statuscolor = 'greenfont'; 
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
             this.className='lenkepanel dialog flere-meldinger .slds-size_1-of-1 unread';
