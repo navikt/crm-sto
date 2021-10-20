@@ -176,7 +176,7 @@ public with sharing class stoHelperClass {
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
         thread.Name = 'Skriv til oss - ' + theme;
-        thread.CRM_Thread_Type__c = 'STO';
+        //thread.CRM_Thread_Type__c = 'STO';
         try {
             insert thread;
         } catch (DmlException e) {
