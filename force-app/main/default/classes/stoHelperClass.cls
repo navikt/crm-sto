@@ -176,6 +176,7 @@ public with sharing class stoHelperClass {
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
         thread.Name = 'Skriv til oss - ' + theme;
+        thread.CRM_Thread_Type__c = 'STO';
         try {
             insert thread;
         } catch (DmlException e) {
@@ -206,8 +207,12 @@ public with sharing class stoHelperClass {
      */
 
     @AuraEnabled(cacheable=true)
-    public static List<STO_News__mdt> getCategoryNews(String category){
-        List<STO_News__mdt> news = [SELECT STO_Body__c, STO_Header__c FROM STO_News__mdt WHERE STO_Category__c =: category];
+    public static List<STO_News__mdt> getCategoryNews(String category) {
+        List<STO_News__mdt> news = [
+            SELECT STO_Body__c, STO_Header__c
+            FROM STO_News__mdt
+            WHERE STO_Category__c = :category
+        ];
         return news;
     }
 }
