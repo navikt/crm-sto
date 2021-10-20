@@ -18,3 +18,9 @@
     border-width: .5em;
     border-color: #ffffff;
 }
+.greenfont {
+    color: #06893A;
+}
+.iconclass:hover .iconcolor {
+    filter: invert(26%) sepia(90%) saturate(1799%) hue-rotate(191deg) brightness(92%) contrast(106%);
+}

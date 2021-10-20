@@ -1,11 +1,10 @@
 <template>
     <div>
-        <a class={className} href={linkUrl} key={thread.Id}>
-            <!--<a class="lenkepanel dialog flere-meldinger .slds-size_1-of-1" href={linkUrl} key={thread.Id}>-->
-                <span class="typo-undertittel ">
+        <a class={className} href={linkUrl} key={thread.Id} id="a">
+            <span class="typo-undertittel ">
                 <lightning-layout vertical-align="center">
                     <lightning-layout-item size="1" padding="around-medium">
-                        <img src={dialog} alt="message" />
+                        <img class="iconcolor" src={dialog} alt="message" id="b"/>
                     </lightning-layout-item>
                     <lightning-layout-item size="10">
                         <p class="typo-normal blokk-xxxs">
@@ -14,7 +13,7 @@
                                 month="2-digit"
                                 day="2-digit"
                                 year="numeric"
-                            ></lightning-formatted-date-time> - {thread.status}
+                            ></lightning-formatted-date-time> - <span class={statuscolor}> {thread.status} </span>
                         </p>
                         <h3 class="typo-undertittel lenkepanel__heading ">{thread.name}<span class="vekk"></span></h3>
                         <p class="typo-normal tema-avsnitt slds-truncate">{latestText}</p>
