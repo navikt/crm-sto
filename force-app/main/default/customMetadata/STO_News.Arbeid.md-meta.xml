@@ -22,6 +22,6 @@ Du må opplyse om:
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Mottar du dagpenger? Skal du melde fra om at du tar utdanning med støtte fra Lånekassen</value>
+        <value xsi:type="xsd:string">Mottar du dagpenger?</value>
     </values>
 </CustomMetadata>
