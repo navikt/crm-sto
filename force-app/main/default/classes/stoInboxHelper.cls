@@ -27,8 +27,8 @@ public with sharing class stoInboxHelper {
         }
         //TODO: Add CN name when formula fields are moved 
         List<Conversation_Note__c> noteList = [
-            SELECT Id, Name, LastModifiedDate, CreatedDate   
-            FROM Conversation_Note__c 
+            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c   
+            FROM Conversation_Note__c WHERE CRM_Is_Read__c = true
             ORDER BY CreatedDate DESC
         ];
         for(Conversation_Note__c t : noteList){
@@ -64,6 +64,21 @@ public with sharing class stoInboxHelper {
             i.objectName = 'skriv-til-oss'; 
             i.status = 'Lukket'; 
             if(i.closeDate == null) i.status = 'Åpen'; 
+            inboxlist.add(i);  
+        }
+        List<Conversation_Note__c> noteList = [
+            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c
+            FROM Conversation_Note__c WHERE CRM_Is_Read__c = false
+            ORDER BY CreatedDate DESC
+        ];
+        for(Conversation_Note__c t : noteList){
+            thread i = new thread(); 
+            i.name = t.Name; 
+            i.recordId = t.Id; 
+            i.lastModifiedDate = t.LastModifiedDate; 
+            i.closeDate = t.CreatedDate; 
+            i.latestMessageDate = t.CreatedDate;
+            i.objectName = 'samtalereferat'; 
             inboxlist.add(i);  
         }
         return inboxlist; 
