@@ -7,6 +7,8 @@ export default class StoMessageInbox extends LightningElement {
     @api title; 
     threads;
     recentthreads; 
+    showthreads = false; 
+    showrecentthreads = false; 
 
     @wire(getThreads, {})
     wirethreads(result) {
@@ -14,8 +16,8 @@ export default class StoMessageInbox extends LightningElement {
             console.log(result.error);
         }
         else if (result.data) {
-            console.log(result.data);
             this.threads = result.data;
+            if(this.threads != '') this.showthreads = true; 
         }
     }
 
@@ -26,8 +28,8 @@ export default class StoMessageInbox extends LightningElement {
             console.log(result.error);
         }
         else if (result.data) {
-            console.log(result.data);
             this.recentthreads = result.data;
+            if(this.recentthreads != '')this.showrecentthreads = true; 
         }
     }
 }
