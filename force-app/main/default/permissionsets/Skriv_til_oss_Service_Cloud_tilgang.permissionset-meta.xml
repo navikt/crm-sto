@@ -12,6 +12,11 @@
         <apexClass>stoUtilityBackgroundController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.CRM_Conversation_Summary__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Skriv til oss - Service Cloud tilgang</label>
 </PermissionSet>
