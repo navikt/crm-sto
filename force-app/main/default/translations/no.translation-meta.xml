@@ -1,35 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Translations xmlns="http://soap.sforce.com/2006/04/metadata">
     <customLabels>
-        <label><!-- Journal Case List Col Case Id --></label>
+        <label>
+            <!-- Journal Case List Col Case Id -->
+        </label>
         <name>CRM_Journal_Case_List_Col_Case_Id</name>
     </customLabels>
     <customLabels>
-        <label><!-- Journal Case List Col Created Date --></label>
+        <label>
+            <!-- Journal Case List Col Created Date -->
+        </label>
         <name>CRM_Journal_Case_List_Col_Created_Date</name>
     </customLabels>
     <customLabels>
-        <label><!-- Journal Case List No Cases Error --></label>
+        <label>
+            <!-- Journal Case List No Cases Error -->
+        </label>
         <name>CRM_Journal_Case_List_No_Cases_Error</name>
     </customLabels>
     <customLabels>
-        <label><!-- NAV Case Retrieve Error --></label>
+        <label>
+            <!-- NAV Case Retrieve Error -->
+        </label>
         <name>CRM_NAV_Case_Retrieve_Error</name>
     </customLabels>
     <customLabels>
-        <label><!-- NAV Case Title --></label>
+        <label>
+            <!-- NAV Case Title -->
+        </label>
         <name>CRM_NAV_Case_Title</name>
     </customLabels>
     <customLabels>
-        <label><!-- NAV Case Validation Error --></label>
+        <label>
+            <!-- NAV Case Validation Error -->
+        </label>
         <name>CRM_NAV_Case_Validation_Error</name>
     </customLabels>
     <customLabels>
-        <label><!-- No Cases for Selected Theme Group --></label>
+        <label>
+            <!-- No Cases for Selected Theme Group -->
+        </label>
         <name>CRM_No_Cases_for_Selected_Theme_Group</name>
     </customLabels>
     <customLabels>
-        <label><!-- Theme Categorization Validation Error --></label>
+        <label>
+            <!-- Theme Categorization Validation Error -->
+        </label>
         <name>CRM_Theme_Categorization_Validation_Error</name>
     </customLabels>
     <customLabels>
@@ -45,15 +61,21 @@
         <name>Community_Language_Selector_Placeholder</name>
     </customLabels>
     <customLabels>
-        <label><!-- Errors_CannotFindTriggerHandlerClass --></label>
+        <label>
+            <!-- Errors_CannotFindTriggerHandlerClass -->
+        </label>
         <name>Errors_CannotFindTriggerHandlerClass</name>
     </customLabels>
     <customLabels>
-        <label><!-- Errors_DuplicateTriggerHandlerClass --></label>
+        <label>
+            <!-- Errors_DuplicateTriggerHandlerClass -->
+        </label>
         <name>Errors_DuplicateTriggerHandlerClass</name>
     </customLabels>
     <customLabels>
-        <label><!-- Errors_InvalidSettingConfiguration --></label>
+        <label>
+            <!-- Errors_InvalidSettingConfiguration -->
+        </label>
         <name>Errors_InvalidSettingConfiguration</name>
     </customLabels>
     <customLabels>
@@ -69,7 +91,9 @@
         <name>STO_Skriv_til_oss_terms_header</name>
     </customLabels>
     <customLabels>
-        <label><!-- Skriv til oss terms og use text --></label>
+        <label>
+            <!-- Skriv til oss terms og use text -->
+        </label>
         <name>STO_Skriv_til_oss_terms_og_use_text</name>
     </customLabels>
     <customLabels>
@@ -105,72 +129,88 @@
         <name>Skriv_til_oss_text_area_description</name>
     </customLabels>
     <customLabels>
-        <label><!-- Error when selecting a cross-object fieldsset is not allowed and attempted. --></label>
+        <label>
+            <!-- Error when selecting a cross-object fieldsset is not allowed and attempted. -->
+        </label>
         <name>fflib_QueryFactory_crossobject_fieldsets_not_allowed_error</name>
     </customLabels>
     <customLabels>
-        <label><!-- Error when selecting a field set for a different sobject type. --></label>
+        <label>
+            <!-- Error when selecting a field set for a different sobject type. -->
+        </label>
         <name>fflib_QueryFactory_fieldset_wrong_sobject_error</name>
     </customLabels>
     <customLabels>
-        <label><!-- Presented when attempting to nest subqueries. --></label>
+        <label>
+            <!-- Presented when attempting to nest subqueries. -->
+        </label>
         <name>fflib_QueryFactory_recursive_subquery_error</name>
     </customLabels>
     <customLabels>
-        <label><!-- Presented when attempting to create a subquery from an invalid relationship. --></label>
+        <label>
+            <!-- Presented when attempting to create a subquery from an invalid relationship. -->
+        </label>
         <name>fflib_QueryFactory_subquery_invalid_relationship</name>
     </customLabels>
     <customLabels>
-        <label><!-- fflib_security_error_field_not_insertable --></label>
+        <label>
+            <!-- fflib_security_error_field_not_insertable -->
+        </label>
         <name>fflib_security_error_field_not_insertable</name>
     </customLabels>
     <customLabels>
-        <label><!-- fflib_security_error_field_not_readable --></label>
+        <label>
+            <!-- fflib_security_error_field_not_readable -->
+        </label>
         <name>fflib_security_error_field_not_readable</name>
     </customLabels>
     <customLabels>
-        <label><!-- fflib_security_error_field_not_updateable --></label>
+        <label>
+            <!-- fflib_security_error_field_not_updateable -->
+        </label>
         <name>fflib_security_error_field_not_updateable</name>
     </customLabels>
     <customLabels>
-        <label><!-- fflib_security_error_object_not_deletable --></label>
+        <label>
+            <!-- fflib_security_error_object_not_deletable -->
+        </label>
         <name>fflib_security_error_object_not_deletable</name>
     </customLabels>
     <customLabels>
-        <label><!-- fflib_security_error_object_not_insertable --></label>
+        <label>
+            <!-- fflib_security_error_object_not_insertable -->
+        </label>
         <name>fflib_security_error_object_not_insertable</name>
     </customLabels>
     <customLabels>
-        <label><!-- fflib_security_error_object_not_readable --></label>
+        <label>
+            <!-- fflib_security_error_object_not_readable -->
+        </label>
         <name>fflib_security_error_object_not_readable</name>
     </customLabels>
     <customLabels>
-        <label><!-- fflib_security_error_object_not_updateable --></label>
+        <label>
+            <!-- fflib_security_error_object_not_updateable -->
+        </label>
         <name>fflib_security_error_object_not_updateable</name>
     </customLabels>
     <customTabs>
-        <label><!-- API Transactions --></label>
+        <label>
+            <!-- API Transactions -->
+        </label>
         <name>API_Transactions</name>
     </customTabs>
     <flowDefinitions>
-        <flows/>
-        <fullName>CRM_Conversation_Note_Office_Restriction_Activated</fullName>
-    </flowDefinitions>
-    <flowDefinitions>
-        <flows/>
+        <flows />
         <fullName>CRM_Create_Thread_Event</fullName>
     </flowDefinitions>
     <flowDefinitions>
-        <flows/>
+        <flows />
         <fullName>CRM_Journal_Conversation_Note</fullName>
     </flowDefinitions>
     <flowDefinitions>
-        <flows/>
+        <flows />
         <fullName>CRM_Journal_Message_Thread</fullName>
-    </flowDefinitions>
-    <flowDefinitions>
-        <flows/>
-        <fullName>CRM_Thread_Office_Restriction_Activated</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows>
@@ -196,11 +236,11 @@
         <fullName>Create_Community_Plus_User</fullName>
     </flowDefinitions>
     <flowDefinitions>
-        <flows/>
+        <flows />
         <fullName>NAVTask_Owner_Change</fullName>
     </flowDefinitions>
     <flowDefinitions>
-        <flows/>
+        <flows />
         <fullName>POST_JOURNAL_AUTO_TEMPLATE</fullName>
     </flowDefinitions>
     <flowDefinitions>
@@ -221,67 +261,93 @@
         <fullName>POST_JOURNAL_TEMPLATE</fullName>
     </flowDefinitions>
     <flowDefinitions>
-        <flows/>
-        <fullName>Set_Thread_Close_Date</fullName>
-    </flowDefinitions>
-    <flowDefinitions>
-        <flows/>
+        <flows />
         <fullName>TAG_Update_NavUnit_in_NavTask</fullName>
     </flowDefinitions>
     <quickActions>
-        <label><!-- LogACall --></label>
+        <label>
+            <!-- LogACall -->
+        </label>
         <name>LogACall</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewAccount --></label>
+        <label>
+            <!-- NewAccount -->
+        </label>
         <name>NewAccount</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewCase --></label>
+        <label>
+            <!-- NewCase -->
+        </label>
         <name>NewCase</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewContact --></label>
+        <label>
+            <!-- NewContact -->
+        </label>
         <name>NewContact</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewEvent --></label>
+        <label>
+            <!-- NewEvent -->
+        </label>
         <name>NewEvent</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewGroup --></label>
+        <label>
+            <!-- NewGroup -->
+        </label>
         <name>NewGroup</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewLead --></label>
+        <label>
+            <!-- NewLead -->
+        </label>
         <name>NewLead</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewNote --></label>
+        <label>
+            <!-- NewNote -->
+        </label>
         <name>NewNote</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewOpportunity --></label>
+        <label>
+            <!-- NewOpportunity -->
+        </label>
         <name>NewOpportunity</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewTask --></label>
+        <label>
+            <!-- NewTask -->
+        </label>
         <name>NewTask</name>
     </quickActions>
     <quickActions>
-        <label><!-- SendEmail --></label>
+        <label>
+            <!-- SendEmail -->
+        </label>
         <name>SendEmail</name>
     </quickActions>
     <reportTypes>
-        <description><!-- Screen Flows --></description>
-        <label><!-- Screen Flows --></label>
+        <description>
+            <!-- Screen Flows -->
+        </description>
+        <label>
+            <!-- Screen Flows -->
+        </label>
         <name>screen_flows_prebuilt_crt</name>
         <sections>
-            <label><!-- Flow Interview Log Entries --></label>
+            <label>
+                <!-- Flow Interview Log Entries -->
+            </label>
             <name>Flow Interview Log Entries</name>
         </sections>
         <sections>
-            <label><!-- Flow Interview Logs --></label>
+            <label>
+                <!-- Flow Interview Logs -->
+            </label>
             <name>Flow Interview Logs</name>
         </sections>
     </reportTypes>

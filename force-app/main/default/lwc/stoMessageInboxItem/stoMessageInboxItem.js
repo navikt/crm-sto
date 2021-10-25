@@ -14,6 +14,7 @@ export default class StoMessageInboxItem extends LightningElement {
     objectName; 
     threadId;
     hasunread = false;
+    unreadmessage = 'lest';
 
     className = 'lenkepanel dialog flere-meldinger .slds-size_1-of-1 read iconclass';
     statuscolor; 
@@ -25,6 +26,7 @@ export default class StoMessageInboxItem extends LightningElement {
         if(this.thread.closeDate == null) this.statuscolor = 'greenfont'; 
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
+            this.unreadmessage = 'ulest'; 
             this.className='lenkepanel dialog flere-meldinger .slds-size_1-of-1 unread iconclass';
         }
     }

@@ -1,20 +1,19 @@
-public with sharing class stoInboxHelper {
-    /**
-     * Get all threads. Utilize sharing sets to filter the correct messages
-     * @Author Lars Petter
-     */
+public with sharing class stoInboxHelper {    
+    
+    //TODO: Use custom labels 
+
     @AuraEnabled(cacheable=true)
     public static List<thread> getThreads() {
         List<thread> inboxlist = new List <thread>(); 
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c 
+            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_External_Name__c  
             FROM Thread__c
             WHERE (CRM_Number_of_unread_Messages__c = 0 AND CRM_Closed_Date__c != null )
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for(Thread__c t : threadList){
             thread i = new thread(); 
-            i.name = t.Name; 
+            i.name = t.STO_External_Name__c; 
             i.recordId = t.Id; 
             i.lastModifiedDate = t.LastModifiedDate; 
             i.closeDate = t.CRM_Closed_Date__c; 
@@ -25,20 +24,21 @@ public with sharing class stoInboxHelper {
             if(i.closeDate == null) i.status = 'Åpen'; 
             inboxlist.add(i);  
         }
-        //TODO: Add CN name when formula fields are moved 
         List<Conversation_Note__c> noteList = [
-            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c   
-            FROM Conversation_Note__c WHERE CRM_Is_Read__c = true
+            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c, CRM_Theme_Group__r.Name
+            FROM Conversation_Note__c WHERE CRM_Is_Read__c = true AND CRM_Created_By_Ident__c = null 
             ORDER BY CreatedDate DESC
         ];
         for(Conversation_Note__c t : noteList){
             thread i = new thread(); 
-            i.name = t.Name; 
+            i.name = t.CRM_Theme_Group__r.Name + ' - Samtalereferat'; 
             i.recordId = t.Id; 
             i.lastModifiedDate = t.LastModifiedDate; 
             i.closeDate = t.CreatedDate; 
+            i.numberOfUnreadMessages = 0; 
             i.latestMessageDate = t.CreatedDate;
             i.objectName = 'samtalereferat'; 
+            i.status = 'Lukket'; 
             inboxlist.add(i);  
         }
         return inboxlist;
@@ -48,14 +48,14 @@ public with sharing class stoInboxHelper {
     public static List<thread> getRecentThreads() {
         List<thread> inboxlist = new List <thread>(); 
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c 
+            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_External_Name__c 
             FROM Thread__c 
             WHERE (CRM_Number_of_unread_Messages__c > 0 OR CRM_Closed_Date__c = null)
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for(Thread__c t : threadList){
             thread i = new thread(); 
-            i.name = t.Name; 
+            i.name = t.STO_External_Name__c; 
             i.recordId = t.Id; 
             i.lastModifiedDate = t.LastModifiedDate; 
             i.closeDate = t.CRM_Closed_Date__c; 
@@ -67,18 +67,20 @@ public with sharing class stoInboxHelper {
             inboxlist.add(i);  
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c
-            FROM Conversation_Note__c WHERE CRM_Is_Read__c = false
+            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c, CRM_Theme_Group__r.Name
+            FROM Conversation_Note__c WHERE CRM_Is_Read__c = false AND CRM_Created_By_Ident__c = null 
             ORDER BY CreatedDate DESC
         ];
         for(Conversation_Note__c t : noteList){
             thread i = new thread(); 
-            i.name = t.Name; 
+            i.name = t.CRM_Theme_Group__r.Name + ' - Samtalereferat'; 
             i.recordId = t.Id; 
             i.lastModifiedDate = t.LastModifiedDate; 
             i.closeDate = t.CreatedDate; 
+            i.numberOfUnreadMessages = 1; 
             i.latestMessageDate = t.CreatedDate;
             i.objectName = 'samtalereferat'; 
+            i.status = 'Lukket'; 
             inboxlist.add(i);  
         }
         return inboxlist; 
