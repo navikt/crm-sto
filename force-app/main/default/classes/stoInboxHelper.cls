@@ -6,14 +6,14 @@ public with sharing class stoInboxHelper {
     public static List<thread> getThreads() {
         List<thread> inboxlist = new List <thread>(); 
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_External_Name__c  
+            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c  
             FROM Thread__c
             WHERE (CRM_Number_of_unread_Messages__c = 0 AND CRM_Closed_Date__c != null )
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for(Thread__c t : threadList){
             thread i = new thread(); 
-            i.name = t.STO_External_Name__c; 
+            i.name = t.STO_ExternalName__c; 
             i.recordId = t.Id; 
             i.lastModifiedDate = t.LastModifiedDate; 
             i.closeDate = t.CRM_Closed_Date__c; 
@@ -48,14 +48,14 @@ public with sharing class stoInboxHelper {
     public static List<thread> getRecentThreads() {
         List<thread> inboxlist = new List <thread>(); 
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_External_Name__c 
+            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c 
             FROM Thread__c 
             WHERE (CRM_Number_of_unread_Messages__c > 0 OR CRM_Closed_Date__c = null)
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for(Thread__c t : threadList){
             thread i = new thread(); 
-            i.name = t.STO_External_Name__c; 
+            i.name = t.STO_ExternalName__c; 
             i.recordId = t.Id; 
             i.lastModifiedDate = t.LastModifiedDate; 
             i.closeDate = t.CRM_Closed_Date__c; 
