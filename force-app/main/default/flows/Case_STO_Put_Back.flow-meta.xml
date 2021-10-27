@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionCalls>
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
         <locationX>176</locationX>
-        <locationY>614</locationY>
+        <locationY>974</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -73,7 +73,35 @@
             </connector>
             <label>Other</label>
         </rules>
+        <rules>
+            <name>Wrong_Queue_Choice</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Put_Back_Reason</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Wrong_Queue</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Case</targetReference>
+            </connector>
+            <label>Wrong Queue</label>
+        </rules>
     </decisions>
+    <dynamicChoiceSets>
+        <name>STO_Category_Picklist</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>STO_Category__c</picklistField>
+        <picklistObject>Case</picklistObject>
+    </dynamicChoiceSets>
+    <formulas>
+        <name>Queue_Transfer_Text</name>
+        <dataType>String</dataType>
+        <expression>&apos;Samtalen ble overført til &apos; + {!Chosen_Queue} + &apos; - &apos;</expression>
+    </formulas>
     <interviewLabel>Case STO Put Back {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Put Back</label>
     <processMetadataValues>
@@ -95,12 +123,35 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Case</name>
+        <label>Get Case</label>
+        <locationX>220</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Update_STO_category</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Case</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>STO_Thread__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <description>Updates the case to retrigger assignment to be put back to queue.</description>
         <name>Update_Case</name>
         <label>Update Case</label>
         <locationX>176</locationX>
-        <locationY>494</locationY>
+        <locationY>854</locationY>
         <connector>
             <targetReference>Close_workspace_tab</targetReference>
         </connector>
@@ -116,6 +167,30 @@
             <field>CRM_Run_Case_Assignment__c</field>
             <value>
                 <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <object>Case</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_STO_category</name>
+        <label>Update STO category</label>
+        <locationX>220</locationX>
+        <locationY>518</locationY>
+        <connector>
+            <targetReference>Submit_Transfer_Event</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>STO_Category__c</field>
+            <value>
+                <elementReference>Chosen_Queue</elementReference>
             </value>
         </inputAssignments>
         <object>Case</object>
@@ -140,10 +215,11 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>Put_Back_Reason</name>
+                    <choiceReferences>Wrong_Queue</choiceReferences>
                     <choiceReferences>Incompetent</choiceReferences>
                     <choiceReferences>Other</choiceReferences>
                     <dataType>String</dataType>
-                    <defaultSelectedChoiceReference>Incompetent</defaultSelectedChoiceReference>
+                    <defaultSelectedChoiceReference>Wrong_Queue</defaultSelectedChoiceReference>
                     <fieldType>RadioButtons</fieldType>
                     <isRequired>false</isRequired>
                 </fields>
@@ -174,6 +250,24 @@
                         </conditions>
                     </visibilityRule>
                 </fields>
+                <fields>
+                    <name>Chosen_Queue</name>
+                    <choiceReferences>STO_Category_Picklist</choiceReferences>
+                    <dataType>String</dataType>
+                    <fieldText>Velg temagruppe</fieldText>
+                    <fieldType>DropdownBox</fieldType>
+                    <isRequired>true</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Put_Back_Reason</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <elementReference>Wrong_Queue</elementReference>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
                 <inputParameters>
                     <name>width</name>
                     <value>
@@ -194,7 +288,30 @@
             <targetReference>Put_Back_Screen</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
+    <subflows>
+        <description>Add a transfer event message to the thread</description>
+        <name>Submit_Transfer_Event</name>
+        <label>Submit Transfer Event</label>
+        <locationX>220</locationX>
+        <locationY>638</locationY>
+        <connector>
+            <targetReference>Update_Case</targetReference>
+        </connector>
+        <flowName>CRM_Create_Thread_Event</flowName>
+        <inputAssignments>
+            <name>Event_Message</name>
+            <value>
+                <elementReference>Queue_Transfer_Text</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Thread_ID</name>
+            <value>
+                <elementReference>Get_Case.STO_Thread__c</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
     <variables>
         <description>ID of the case to be assigned back to the original queue.</description>
         <name>recordId</name>
