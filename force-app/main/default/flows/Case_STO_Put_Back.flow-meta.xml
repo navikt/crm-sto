@@ -84,7 +84,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Case</targetReference>
+                <targetReference>Get_Thread</targetReference>
             </connector>
             <label>Wrong Queue</label>
         </rules>
@@ -124,8 +124,8 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
-        <name>Get_Case</name>
-        <label>Get Case</label>
+        <name>Get_Thread</name>
+        <label>Get Thread</label>
         <locationX>220</locationX>
         <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
@@ -134,17 +134,17 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Id</field>
+            <field>CRM_Related_Object__c</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Case</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>STO_Thread__c</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <object>Thread__c</object>
+        <outputAssignments>
+            <assignToReference>ThreadID</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
     </recordLookups>
     <recordUpdates>
         <description>Updates the case to retrigger assignment to be put back to queue.</description>
@@ -288,7 +288,7 @@
             <targetReference>Put_Back_Screen</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <subflows>
         <description>Add a transfer event message to the thread</description>
         <name>Submit_Transfer_Event</name>
@@ -308,7 +308,7 @@
         <inputAssignments>
             <name>Thread_ID</name>
             <value>
-                <elementReference>Get_Case.STO_Thread__c</elementReference>
+                <elementReference>ThreadID</elementReference>
             </value>
         </inputAssignments>
     </subflows>
@@ -318,6 +318,13 @@
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>ThreadID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
 </Flow>
