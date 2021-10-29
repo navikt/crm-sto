@@ -48,20 +48,20 @@ jobs:
 
           packageId=$(cat output | jq -r '.result.SubscriberPackageVersionId')
           echo "::set-output name=packageId::$(echo $packageId)"
-          echo "::set-output name=aplhaVersionNumber::$(cat sfdx-project.json | jq -r '.packageAliases | keys_unsorted[-1]' | sed 's/.*-//')"
+          echo "::set-output name=alphaVersionNumber::$(cat sfdx-project.json | jq -r '.packageAliases | keys_unsorted[-1]' | sed 's/.*-//')"
 
           echo
           echo Package ID: $packageId
 
     outputs:
       packageId: ${{ steps.package-version-create.outputs.packageId }}
-      aplhaVersionNumber: ${{ steps.package-version-create.outputs.aplhaVersionNumber }}
+      alphaVersionNumber: ${{ steps.package-version-create.outputs.alphaVersionNumber }}
 
   # ################################################################# #
   # ######################### CREATE RELEASE ######################## #
   # ################################################################# #
   create-release:
-    name: Create aplha release
+    name: Create alpha release
     needs: [create-package]
     runs-on: ubuntu-latest
     steps:
@@ -74,11 +74,11 @@ jobs:
         id: release-fields
         run: |
           versionNumber=$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')
-          aplhaVersionNumber=${{ needs.create-package.outputs.aplhaVersionNumber }}
+          alphaVersionNumber=${{ needs.create-package.outputs.alphaVersionNumber }}
 
-          echo "::set-output name=tagName::v$(echo $versionNumber)-aplha$(echo $aplhaVersionNumber)"
-          echo "::set-output name=releaseName::$(echo $versionNumber)-aplha$(echo $aplhaVersionNumber)"
-          echo "::set-output name=bodyVersion::$(echo $versionNumber).$(echo $aplhaVersionNumber)"
+          echo "::set-output name=tagName::v$(echo $versionNumber)-alpha$(echo $alphaVersionNumber)"
+          echo "::set-output name=releaseName::$(echo $versionNumber)-alpha$(echo $alphaVersionNumber)"
+          echo "::set-output name=bodyVersion::$(echo $versionNumber).$(echo $alphaVersionNumber)"
           echo "::set-output name=bodyPackage::${{ needs.create-package.outputs.packageId }}"
 
           echo "::set-output name=packageCreation::✅ Package Creation"
@@ -101,7 +101,7 @@ jobs:
           body: |
             **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
             **Package ID**: ${{ steps.release-fields.outputs.bodyPackage }}
-            **APLHA**
+            **ALPHA**
 
             **Author**: ${{ github.actor }}
 
