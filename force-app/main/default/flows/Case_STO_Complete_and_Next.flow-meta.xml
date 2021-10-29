@@ -4,8 +4,8 @@
         <description>Automatically close the console tab after flow completion</description>
         <name>Close_Workspace_Tab</name>
         <label>Close Workspace Tab</label>
-        <locationX>336</locationX>
-        <locationY>3230</locationY>
+        <locationX>380</locationX>
+        <locationY>2774</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -14,7 +14,7 @@
     <assignments>
         <name>Add_journal_entry_to_text</name>
         <label>Add journal entry to text</label>
-        <locationX>292</locationX>
+        <locationX>336</locationX>
         <locationY>758</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
@@ -121,7 +121,7 @@
     <assignments>
         <name>Close_List</name>
         <label>Close List</label>
-        <locationX>204</locationX>
+        <locationX>248</locationX>
         <locationY>974</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
@@ -142,39 +142,25 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Sensitive_Information_Assignment</name>
-        <label>Sensitive Information Assignment</label>
-        <locationX>204</locationX>
-        <locationY>2102</locationY>
+        <name>Set_Case_Status_On_Hold</name>
+        <label>Set Case Status On Hold</label>
+        <locationX>512</locationX>
+        <locationY>1430</locationY>
         <assignmentItems>
-            <assignToReference>Case_Record.STO_Sensitive_Information__c</assignToReference>
+            <assignToReference>Case_Record.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>Case_Record.CRM_Run_Case_Assignment__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>Case_Record.Id</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>recordId</elementReference>
+                <stringValue>On Hold</stringValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Update_Case</targetReference>
+            <targetReference>Journal_Decision</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Set_journal_entries_text</name>
         <label>Set journal entries text</label>
-        <locationX>204</locationX>
+        <locationX>248</locationX>
         <locationY>518</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
@@ -205,7 +191,7 @@
         <name>Set_Thread_isActive</name>
         <label>Set Thread isActive</label>
         <locationX>50</locationX>
-        <locationY>2678</locationY>
+        <locationY>2222</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.CRM_isActive__c</assignToReference>
             <operator>Assign</operator>
@@ -221,7 +207,7 @@
         <name>Set_Thread_Sensitive_Information</name>
         <label>Set Thread Sensitive Information</label>
         <locationX>182</locationX>
-        <locationY>2894</locationY>
+        <locationY>2438</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -237,9 +223,9 @@
         <name>Check_Thread_Close</name>
         <label>Check Thread Close</label>
         <locationX>182</locationX>
-        <locationY>2558</locationY>
+        <locationY>2102</locationY>
         <defaultConnector>
-            <targetReference>Set_Thread_Sensitive_Information</targetReference>
+            <targetReference>Update_Case_0</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Open Thread</defaultConnectorLabel>
         <rules>
@@ -261,7 +247,7 @@
     <decisions>
         <name>How_many_journal_entries</name>
         <label>How many journal entries</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>398</locationY>
         <defaultConnector>
             <targetReference>Case_Complete_Screen</targetReference>
@@ -286,10 +272,10 @@
     <decisions>
         <name>Journal_Decision</name>
         <label>Journal Decision</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>1646</locationY>
         <defaultConnector>
-            <targetReference>Sensitive_Information_Check</targetReference>
+            <targetReference>Thread_Update_Decision</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No Journal Entry</defaultConnectorLabel>
         <rules>
@@ -309,37 +295,12 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Sensitive_Information_Check</name>
-        <label>Sensitive Information Check</label>
-        <locationX>336</locationX>
-        <locationY>1982</locationY>
-        <defaultConnector>
-            <targetReference>Thread_Update_Decision</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Not Sensitive</defaultConnectorLabel>
-        <rules>
-            <name>Has_Sensitive_Information</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Sensitive_Toggle.value</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Sensitive_Information_Assignment</targetReference>
-            </connector>
-            <label>Has Sensitive Information</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Should_Transfer</name>
         <label>Should Transfer</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>1310</locationY>
         <defaultConnector>
-            <targetReference>Journal_Decision</targetReference>
+            <targetReference>Set_Case_Status_On_Hold</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Don&apos;t transfer</defaultConnectorLabel>
         <rules>
@@ -361,10 +322,10 @@
     <decisions>
         <name>Thread_Update_Decision</name>
         <label>Thread Update Decision</label>
-        <locationX>336</locationX>
-        <locationY>2438</locationY>
+        <locationX>380</locationX>
+        <locationY>1982</locationY>
         <defaultConnector>
-            <targetReference>Close_Workspace_Tab</targetReference>
+            <targetReference>Update_Case</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No Thread Update</defaultConnectorLabel>
         <rules>
@@ -396,7 +357,7 @@
         <description>Loops through each journal entry</description>
         <name>Loop_over_journal_entries</name>
         <label>Loop over journal entries</label>
-        <locationX>204</locationX>
+        <locationX>248</locationX>
         <locationY>638</locationY>
         <collectionReference>Get_Thread_Joural_entries</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -430,7 +391,7 @@
         <description>Query the thread related to the case record</description>
         <name>Get_Case_Thread</name>
         <label>Get Case Thread</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -452,7 +413,7 @@
         <description>Gets all registered journal entries for the case</description>
         <name>Get_Thread_Joural_entries</name>
         <label>Get Thread Joural entries</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>278</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -478,18 +439,56 @@
     <recordUpdates>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>204</locationX>
+        <locationX>578</locationX>
+        <locationY>2102</locationY>
+        <connector>
+            <targetReference>Close_Workspace_Tab</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <elementReference>Case_Record.Status</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Case_0</name>
+        <label>Update Case</label>
+        <locationX>314</locationX>
         <locationY>2222</locationY>
         <connector>
-            <targetReference>Thread_Update_Decision</targetReference>
+            <targetReference>Set_Thread_Sensitive_Information</targetReference>
         </connector>
-        <inputReference>Case_Record</inputReference>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <elementReference>Case_Record.Status</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case</object>
     </recordUpdates>
     <recordUpdates>
         <name>Update_Thread</name>
         <label>Update Thread</label>
         <locationX>182</locationX>
-        <locationY>3014</locationY>
+        <locationY>2558</locationY>
         <connector>
             <targetReference>Close_Workspace_Tab</targetReference>
         </connector>
@@ -499,7 +498,7 @@
     <screens>
         <name>Case_Complete_Screen</name>
         <label>Case Complete Screen</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>1190</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -511,6 +510,38 @@
             <name>Existing_Journal_Entry_text</name>
             <fieldText>&lt;p&gt;{!Existing_Journal_Entries}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>Sensitive_Toggle</name>
+            <extensionName>flowruntime:toggle</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Samtalen skal vurderes for sladding</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>messageToggleActive</name>
+                <value>
+                    <stringValue>Ja</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>disabled</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>messageToggleInactive</name>
+                <value>
+                    <stringValue>Nei</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <fields>
             <name>Journal_Toggle</name>
@@ -607,38 +638,6 @@
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <fields>
-            <name>Sensitive_Toggle</name>
-            <extensionName>flowruntime:toggle</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue>Samtalen skal vurderes for sladding</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleActive</name>
-                <value>
-                    <stringValue>Ja</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>disabled</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleInactive</name>
-                <value>
-                    <stringValue>Nei</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <fields>
             <name>Close_Thread</name>
             <dataType>Boolean</dataType>
             <defaultValue>
@@ -667,7 +666,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>210</locationX>
+        <locationX>254</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Case_Thread</targetReference>
@@ -677,16 +676,22 @@
     <subflows>
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
-        <locationX>204</locationX>
+        <locationX>248</locationX>
         <locationY>1766</locationY>
         <connector>
-            <targetReference>Sensitive_Information_Check</targetReference>
+            <targetReference>Thread_Update_Decision</targetReference>
         </connector>
         <flowName>CRM_Thread_Create_Journal_Entry</flowName>
         <inputAssignments>
             <name>Journal_Case_ID</name>
             <value>
                 <elementReference>Journal_Case_Selector.selectedCaseId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Journal_Case_Legacy_System</name>
+            <value>
+                <elementReference>Journal_Case_Selector.selectedCaseLegacySystem</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -717,7 +722,7 @@
     <subflows>
         <name>Transfer_flow</name>
         <label>Transfer flow</label>
-        <locationX>204</locationX>
+        <locationX>248</locationX>
         <locationY>1430</locationY>
         <connector>
             <targetReference>Journal_Decision</targetReference>
