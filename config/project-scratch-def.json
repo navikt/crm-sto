@@ -59,6 +59,7 @@
         "omniChannelSettings": {
             "enableOmniChannel": true,
             "enableOmniSkillsRouting": true
-        }
+        },
+        "chatterSettings": { "enableChatter": true }
     }
 }
