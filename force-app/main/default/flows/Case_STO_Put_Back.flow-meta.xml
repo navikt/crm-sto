@@ -100,7 +100,7 @@
     <formulas>
         <name>Queue_Transfer_Text</name>
         <dataType>String</dataType>
-        <expression>&apos;Samtalen ble overført til &apos; + {!Chosen_Queue} + &apos; - &apos;</expression>
+        <expression>&apos;Samtalen ble overført til &apos; + {!Chosen_Queue} + &apos; ‎&apos;</expression>
     </formulas>
     <interviewLabel>Case STO Put Back {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Put Back</label>
