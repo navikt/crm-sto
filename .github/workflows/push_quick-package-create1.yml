@@ -48,21 +48,65 @@ jobs:
 
           packageId=$(cat output | jq -r '.result.SubscriberPackageVersionId')
           echo "::set-output name=packageId::$(echo $packageId)"
-          echo "::set-output name=aplhaVersionNumber::$(cat sfdx-project.json | jq -r '.packageAliases | keys_unsorted[-1]' | sed 's/.*-//')"
+          echo "::set-output name=alphaVersionNumber::$(cat sfdx-project.json | jq -r '.packageAliases | keys_unsorted[-1]' | sed 's/.*-//')"
 
           echo
           echo Package ID: $packageId
 
     outputs:
       packageId: ${{ steps.package-version-create.outputs.packageId }}
-      aplhaVersionNumber: ${{ steps.package-version-create.outputs.aplhaVersionNumber }}
+      alphaVersionNumber: ${{ steps.package-version-create.outputs.alphaVersionNumber }}
+
+  # ################################################################# # 
+  # ####################### VALIDATE IN SIT ######################### #
+  # ################################################################# #
+  validate-in-sit:
+    name: Validate install in SIT Sandbox
+    needs: [create-package]
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # Install SFDX
+      - name: Install SFDX
+        uses: sfdx-actions/setup-sfdx@v1
+
+      # Authenticate prod
+      - name: Authenticate prod
+        run: |
+          echo ${{ secrets.PROD_SFDX_URL}} > ./PROD_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./PROD_SFDX_URL.txt -a devhub -d
+          rm -f ./PROD_SFDX_URL.txt
+
+      # Authenticate integration-sandbox
+      - name: Authenticate integration-sandbox
+        run: |
+          echo ${{ secrets.INTEGRATION_SANDBOX_SFDX_URL}} > ./INTEGRATION_SANDBOX_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ./INTEGRATION_SANDBOX_SFDX_URL.txt -a integration-sandbox -s
+          rm -f ./INTEGRATION_SANDBOX_SFDX_URL.txt
+
+      # Install new package version into integration org
+      - name: Install new package version into integration org
+        id: integration-installation
+        run: |
+          sfdx force:package:install --package ${{ needs.create-package.outputs.packageId }} -w 20 -b 20 -u integration-sandbox -r -k ${{ secrets.PACKAGE_KEY }} --json | tee output
+
+          echo "::set-output name=installOutput::$(cat output | jq '.message')"
+          if [ $(cat output | jq '.status') == "0" ]; then
+            echo "::set-output name=successfullyInstalled::true"
+          fi
+    outputs:
+      successfullyInstalled: ${{ steps.integration-installation.outputs.successfullyInstalled }}
+      installOutput: ${{ steps.integration-installation.outputs.installOutput }}
 
   # ################################################################# #
   # ######################### CREATE RELEASE ######################## #
   # ################################################################# #
   create-release:
-    name: Create aplha release
-    needs: [create-package]
+    name: Create alpha release
+    needs: [create-package, validate-in-sit]
     runs-on: ubuntu-latest
     steps:
       # Checkout source code
@@ -74,14 +118,20 @@ jobs:
         id: release-fields
         run: |
           versionNumber=$(cat sfdx-project.json | jq '.packageDirectories | map(select(.package != null))[0].versionNumber' -r | sed 's/.\{5\}$//')
-          aplhaVersionNumber=${{ needs.create-package.outputs.aplhaVersionNumber }}
+          alphaVersionNumber=${{ needs.create-package.outputs.alphaVersionNumber }}
 
-          echo "::set-output name=tagName::v$(echo $versionNumber)-aplha$(echo $aplhaVersionNumber)"
-          echo "::set-output name=releaseName::$(echo $versionNumber)-aplha$(echo $aplhaVersionNumber)"
-          echo "::set-output name=bodyVersion::$(echo $versionNumber).$(echo $aplhaVersionNumber)"
+          echo "::set-output name=tagName::v$(echo $versionNumber)-alpha$(echo $alphaVersionNumber)"
+          echo "::set-output name=releaseName::$(echo $versionNumber)-alpha$(echo $alphaVersionNumber)"
+          echo "::set-output name=bodyVersion::$(echo $versionNumber).$(echo $alphaVersionNumber)"
           echo "::set-output name=bodyPackage::${{ needs.create-package.outputs.packageId }}"
 
           echo "::set-output name=packageCreation::✅ Package Creation"
+
+           if [ ${{ needs.validate-in-sit.outputs.successfullyInstalled }} == "true" ]; then
+            echo "::set-output name=integrationInstallation::✅ Package Installation (Integration Sandbox)"
+          else
+            echo "::set-output name=integrationInstallation::❌ Package Installation (Integration Sandbox)"
+          fi
 
       # Generate changelog from commits
       - name: Generate changelog
@@ -101,11 +151,12 @@ jobs:
           body: |
             **Version**: ${{ steps.release-fields.outputs.bodyVersion }}
             **Package ID**: ${{ steps.release-fields.outputs.bodyPackage }}
-            **APLHA**
+            **ALPHA**
 
             **Author**: ${{ github.actor }}
 
             ${{ steps.release-fields.outputs.packageCreation }}
+            ${{ steps.release-fields.outputs.integrationInstallation }}
 
             ## Changelog
 
