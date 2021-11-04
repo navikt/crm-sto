@@ -58,10 +58,10 @@ jobs:
       alphaVersionNumber: ${{ steps.package-version-create.outputs.alphaVersionNumber }}
 
   # ################################################################# # 
-  # ####################### VALIDATE IN SIT ######################### #
+  # ####################### VALIDATE IN UAT ######################### #
   # ################################################################# #
-  validate-in-sit:
-    name: Validate install in SIT Sandbox
+  validate-in-uat:
+    name: Validate install in UAT Sandbox
     needs: [create-package]
     runs-on: ubuntu-latest
     steps:
@@ -106,7 +106,7 @@ jobs:
   # ################################################################# #
   create-release:
     name: Create alpha release
-    needs: [create-package, validate-in-sit]
+    needs: [create-package, validate-in-uat]
     runs-on: ubuntu-latest
     steps:
       # Checkout source code
@@ -127,10 +127,10 @@ jobs:
 
           echo "::set-output name=packageCreation::✅ Package Creation"
 
-           if [ ${{ needs.validate-in-sit.outputs.successfullyInstalled }} == "true" ]; then
-            echo "::set-output name=integrationInstallation::✅ Package Installation (Integration Sandbox)"
+           if [ ${{ needs.validate-in-uat.outputs.successfullyInstalled }} == "true" ]; then
+            echo "::set-output name=integrationInstallation::✅ Package Installation (UAT)"
           else
-            echo "::set-output name=integrationInstallation::❌ Package Installation (Integration Sandbox)"
+            echo "::set-output name=integrationInstallation::❌ Package Installation (UAT)"
           fi
 
       # Generate changelog from commits
