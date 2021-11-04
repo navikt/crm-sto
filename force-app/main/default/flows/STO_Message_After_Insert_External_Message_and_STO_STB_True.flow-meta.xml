@@ -4,7 +4,7 @@
     <assignments>
         <name>Remove_ID_and_Set_Status_for_Task_Create</name>
         <label>Remove ID and Set Status for Task Create</label>
-        <locationX>440</locationX>
+        <locationX>605</locationX>
         <locationY>888</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.Id</assignToReference>
@@ -24,8 +24,8 @@
     <assignments>
         <name>Set_case_status_to_in_progress</name>
         <label>Set case status to in progress</label>
-        <locationX>176</locationX>
-        <locationY>648</locationY>
+        <locationX>341</locationX>
+        <locationY>768</locationY>
         <assignmentItems>
             <assignToReference>RelatedCase.Status</assignToReference>
             <operator>Assign</operator>
@@ -47,7 +47,7 @@
     <assignments>
         <name>Set_New_Task_Fields</name>
         <label>Set New Task Fields</label>
-        <locationX>968</locationX>
+        <locationX>1133</locationX>
         <locationY>1128</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Comments__c</assignToReference>
@@ -126,7 +126,7 @@
     <decisions>
         <name>Case_exists</name>
         <label>Case exists</label>
-        <locationX>440</locationX>
+        <locationX>539</locationX>
         <locationY>528</locationY>
         <defaultConnector>
             <targetReference>Get_Related_NAV_Task</targetReference>
@@ -150,15 +150,37 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Set_case_status_to_in_progress</targetReference>
+                <targetReference>Check_Case_Owner</targetReference>
             </connector>
             <label>Related Case exists</label>
         </rules>
     </decisions>
     <decisions>
+        <name>Check_Case_Owner</name>
+        <label>Check Case Owner</label>
+        <locationX>209</locationX>
+        <locationY>648</locationY>
+        <defaultConnector>
+            <targetReference>Set_case_status_to_in_progress</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not in Queue</defaultConnectorLabel>
+        <rules>
+            <name>Owned_By_Queue</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>RelatedCase.OwnerId</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>00G</stringValue>
+                </rightValue>
+            </conditions>
+            <label>Owned By Queue</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Check_NAV_Task</name>
         <label>Check NAV Task</label>
-        <locationX>704</locationX>
+        <locationX>869</locationX>
         <locationY>768</locationY>
         <defaultConnector>
             <targetReference>Get_STB_NAV_Unit</targetReference>
@@ -230,7 +252,7 @@
     <recordLookups>
         <name>Get_case</name>
         <label>Get case</label>
-        <locationX>440</locationX>
+        <locationX>539</locationX>
         <locationY>408</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -244,21 +266,15 @@
                 <elementReference>Get_Thread.CRM_Related_Object__c</elementReference>
             </value>
         </filters>
-        <filters>
-            <field>Status</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>On Hold</stringValue>
-            </value>
-        </filters>
         <object>Case</object>
         <outputReference>RelatedCase</outputReference>
         <queriedFields>Id</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
     </recordLookups>
     <recordLookups>
         <name>Get_Kontakt_Bruker_Task_Type</name>
         <label>Get Kontakt Bruker Task Type</label>
-        <locationX>968</locationX>
+        <locationX>1133</locationX>
         <locationY>1008</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -288,7 +304,7 @@
         <description>Check if the thread is related to a NAV task as process object</description>
         <name>Get_Related_NAV_Task</name>
         <label>Get Related NAV Task</label>
-        <locationX>704</locationX>
+        <locationX>869</locationX>
         <locationY>648</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -322,7 +338,7 @@
         <description>Get the reference to the NAV unit who initiated the dialogue</description>
         <name>Get_STB_NAV_Unit</name>
         <label>Get STB NAV Unit</label>
-        <locationX>968</locationX>
+        <locationX>1133</locationX>
         <locationY>888</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -344,7 +360,7 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>440</locationX>
+        <locationX>539</locationX>
         <locationY>288</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -365,8 +381,8 @@
     <recordUpdates>
         <name>Update_Related_Case</name>
         <label>Update Related Case</label>
-        <locationX>176</locationX>
-        <locationY>768</locationY>
+        <locationX>341</locationX>
+        <locationY>888</locationY>
         <inputReference>RelatedCase</inputReference>
     </recordUpdates>
     <start>
@@ -404,11 +420,11 @@
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <subflows>
         <name>Send_NAV_Task</name>
         <label>Send NAV Task</label>
-        <locationX>440</locationX>
+        <locationX>605</locationX>
         <locationY>1008</locationY>
         <flowName>CRM_Send_NAV_Task_Auto</flowName>
         <inputAssignments>
@@ -422,7 +438,7 @@
     <subflows>
         <name>Send_NAV_Task_0</name>
         <label>Send NAV Task</label>
-        <locationX>968</locationX>
+        <locationX>1133</locationX>
         <locationY>1248</locationY>
         <flowName>CRM_Send_NAV_Task_Auto</flowName>
         <inputAssignments>
