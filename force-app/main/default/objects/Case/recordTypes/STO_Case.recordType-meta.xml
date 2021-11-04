@@ -5,6 +5,25 @@
     <businessProcess>STO Support Process</businessProcess>
     <label>STO Case</label>
     <picklistValues>
+        <picklist>CRM_Person_Confidentiality__c</picklist>
+        <values>
+            <fullName>FORTROLIG</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>STRENGT_FORTROLIG</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>STRENGT_FORTROLIG_UTLAND</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UGRADERT</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Origin</picklist>
         <values>
             <fullName>Chatter Answers</fullName>
@@ -58,6 +77,37 @@
         </values>
         <values>
             <fullName>User didn%27t attend training</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>STO_Category__c</picklist>
+        <values>
+            <fullName>Arbeid</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Familie</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Helse</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Internasjonal</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pensjon</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pleiepenger</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Ufør</fullName>
             <default>false</default>
         </values>
     </picklistValues>
