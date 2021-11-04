@@ -41,6 +41,9 @@
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
+        <connector>
+            <targetReference>Create_Case</targetReference>
+        </connector>
     </assignments>
     <description>Create an STO Case from a thread</description>
     <interviewLabel>Thread - Subflow - Create STO Case {!$Flow.CurrentDateTime}</interviewLabel>
@@ -64,6 +67,13 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Case</name>
+        <label>Create Case</label>
+        <locationX>176</locationX>
+        <locationY>398</locationY>
+        <inputReference>Case</inputReference>
+    </recordCreates>
     <recordLookups>
         <name>STO_Case_Record_Type</name>
         <label>STO Case Record Type</label>
@@ -92,7 +102,7 @@
             <targetReference>STO_Case_Record_Type</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>Case</name>
         <dataType>SObject</dataType>
