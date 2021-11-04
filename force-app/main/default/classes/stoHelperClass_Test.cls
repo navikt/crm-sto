@@ -35,7 +35,7 @@ public with sharing class stoHelperClass_Test {
         Test.startTest();
         Thread__c t = stoHelperClass.createThread(null, 'Jobbsøker', personContact.AccountId, personContact.Id);
         Test.stopTest();
-        //System.assertEquals(true, String.isNotBlank(t.CRM_Related_Object__c), 'Thread creation test failure, check thread');
+        System.assertNotEquals(null, t.Id);
     }
     @isTest
     static void createMessageTest() {
@@ -63,17 +63,6 @@ public with sharing class stoHelperClass_Test {
         System.assertEquals(1, msgList.size());
     }
 
-    @isTest
-    static void createNavTaskTest() {
-        Thread__c thread = (Thread__c) STO_TestDataFactory.createRecord(new Thread__c());
-        String accountId = [SELECT CRM_Account__c FROM Person__c LIMIT 1]?.CRM_Account__c;
-
-        Test.startTest();
-        stoHelperClass.createNavTask(accountId, thread.Id);
-        Test.stopTest();
-
-        System.assertEquals(1, [SELECT COUNT() FROM NavTask__c]);
-    }
     @isTest
     static void getSTONewsTest() {
         Test.startTest();
