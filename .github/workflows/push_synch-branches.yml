@@ -29,7 +29,8 @@ jobs:
         run: |  
           git switch DEV
           git commit --allow-empty -m "skip ci"
-          git merge master
+          git rebase orirgin/master
+          git pull
           git push
       
       # Synchronize UAT branch
