@@ -36,7 +36,7 @@ jobs:
           }
 
           git commit --allow-empty -m "skip ci"
-          git merge -X theirs origin/master
+          git merge -X theirs origin/master --allow-unrelated-histories
           git push origin DEV
           
           
