@@ -27,7 +27,7 @@ jobs:
       #Adding empty commit with skip ci message to override CI on push to branches
       - name: Synchronize DEV branch
         run: |  
-          git switch -C DEV
+          git switch DEV
           git commit --allow-empty -m "skip ci"
           git pull 
           git push
