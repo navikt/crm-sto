@@ -24,7 +24,7 @@ jobs:
           git config --local user.name "Default branch syncher"
 
       # Synchronize DEV branch
-      #Adding empty commit with skip ci message to override CI on push to branches
+      #Adding empty commit with skip ci message to override CI on push to branches.
       - name: Synchronize DEV branch
         run: |  
           git switch DEV
