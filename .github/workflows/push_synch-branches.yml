@@ -27,10 +27,10 @@ jobs:
       #Adding empty commit with skip ci message to override CI on push to branches
       - name: Synchronize DEV branch
         run: |  
-          git checkout -b DEV
-          git pull || echo Neew to create DEV branch
+          git switch -c DEV
           git commit --allow-empty -m "skip ci"
-          git push origin DEV
+          git pull 
+          git push
       
       # Synchronize UAT branch
       #Adding empty commit with skip ci message to override CI on push to branches
