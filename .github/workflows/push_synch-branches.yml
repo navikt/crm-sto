@@ -38,12 +38,9 @@ jobs:
       #Adding empty commit with skip ci message to override CI on push to branches
       - name: Synchronize UAT branch
         run: |
-          {
-            git checkout -b UAT origin/UAT
-            git merge origin/master
-          } ||
-          {
-            git checkout -b UAT origin/master
-          }
+          git checkout master
+          git pull  
+          
+          git merge origin/UAT || git checkout -b UAT
           git commit --allow-empty -m "skip ci"
           git push origin UAT
