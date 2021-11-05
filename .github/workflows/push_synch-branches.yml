@@ -27,16 +27,17 @@ jobs:
       #Adding empty commit with skip ci message to override CI on push to branches.
       - name: Synchronize DEV branch
         run: |  
-          git switch -C DEV
-          git commit --allow-empty -m "skip ci"
-          git merge -X theirs origin/master
           {
-            git push origin DEV 
+            git switch DEV
+            git pull
           } ||
           {
-            git pull origin DEV
-            git push origin DEV
+            git switch -c DEV
           }
+
+          git commit --allow-empty -m "skip ci"
+          git merge -X theirs origin/master
+          git push origin DEV
           
           
       
