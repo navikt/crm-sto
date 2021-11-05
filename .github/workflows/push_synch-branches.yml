@@ -27,10 +27,8 @@ jobs:
       #Adding empty commit with skip ci message to override CI on push to branches
       - name: Synchronize DEV branch
         run: |  
-          git checkout master
-          git pull
-
-          git merge origin/DEV --allow-unrelated-histories || git checkout -b DEV
+          git checkout -b DEV
+          git pull || echo Neew to create DEV branch
           git commit --allow-empty -m "skip ci"
           git push origin DEV
       
@@ -38,9 +36,7 @@ jobs:
       #Adding empty commit with skip ci message to override CI on push to branches
       - name: Synchronize UAT branch
         run: |
-          git checkout master
-          git pull  
-          
-          git merge origin/UAT --allow-unrelated-histories || git checkout -b UAT
+          git checkout -b UAT
+          git pull || echo Neew to create UAT branch
           git commit --allow-empty -m "skip ci"
           git push origin UAT
