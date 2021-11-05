@@ -30,7 +30,15 @@ jobs:
           git switch -C DEV
           git commit --allow-empty -m "skip ci"
           git merge -X theirs origin/master
-          git push origin DEV
+          {
+            git push origin DEV 
+          } ||
+          {
+            git pull origin DEV
+            git push origin DEV
+          }
+          
+          
       
       # Synchronize UAT branch
       #Adding empty commit with skip ci message to override CI on push to branches
@@ -39,4 +47,10 @@ jobs:
           git switch -C UAT
           git commit --allow-empty -m "skip ci"
           git merge -X theirs origin/master
-          git push origin UAT
+          {
+            git push origin UAT 
+          } ||
+          {
+            git pull origin UAT
+            git push origin UAT
+          }
