@@ -30,7 +30,7 @@ jobs:
           git checkout master
           git pull
 
-          git merge origin/DEV || git checkout -b DEV
+          git merge origin/DEV --allow-unrelated-histories || git checkout -b DEV
           git commit --allow-empty -m "skip ci"
           git push origin DEV
       
@@ -41,6 +41,6 @@ jobs:
           git checkout master
           git pull  
           
-          git merge origin/UAT || git checkout -b UAT
+          git merge origin/UAT --allow-unrelated-histories || git checkout -b UAT
           git commit --allow-empty -m "skip ci"
           git push origin UAT
