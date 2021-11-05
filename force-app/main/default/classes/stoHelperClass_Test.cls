@@ -33,7 +33,7 @@ public with sharing class stoHelperClass_Test {
         ];
 
         Test.startTest();
-        Thread__c t = stoHelperClass.createThread(null, 'Jobbsøker', personContact.AccountId, personContact.Id);
+        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
         Test.stopTest();
         System.assertNotEquals(null, t.Id);
     }
@@ -46,7 +46,7 @@ public with sharing class stoHelperClass_Test {
             LIMIT 1
         ];
 
-        Thread__c t = stoHelperClass.createThread(null, 'Jobbsøker', personContact.AccountId, personContact.Id);
+        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
         Test.startTest();
         stoHelperClass.createMessage(t, 'this is a test message', personContact.Id);
         Test.stopTest();
@@ -57,7 +57,7 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void createRequestTest() {
         Test.startTest();
-        Id threadId = stoHelperClass.createRequest('Jobbsøker', 'This is the message');
+        Id threadId = stoHelperClass.createRequest('Arbeid', 'This is the message');
         Test.stopTest();
         List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :threadId];
         System.assertEquals(1, msgList.size());

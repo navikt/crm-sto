@@ -27,7 +27,7 @@ public with sharing class stoInboxHelperTest {
             WHERE Account.CRM_Person__r.Name = '12345678910'
             LIMIT 1
         ];
-        Thread__c t = stoHelperClass.createThread(null, 'Jobbsøker', personContact.AccountId, personContact.Id);
+        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
         t.CRM_Closed_Date__c = date.today();
         update t;
         Test.startTest();
@@ -43,7 +43,7 @@ public with sharing class stoInboxHelperTest {
             WHERE Account.CRM_Person__r.Name = '12345678910'
             LIMIT 1
         ];
-        Thread__c t = stoHelperClass.createThread(null, 'Jobbsøker', personContact.AccountId, personContact.Id);
+        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
         Test.startTest();
         List<stoInboxHelper.thread> tList = stoInboxHelper.getRecentThreads();
         Test.stopTest();
@@ -57,7 +57,7 @@ public with sharing class stoInboxHelperTest {
             WHERE Account.CRM_Person__r.Name = '12345678910'
             LIMIT 1
         ];
-        Thread__c t = stoHelperClass.createThread(null, 'Jobbsøker', personContact.AccountId, personContact.Id);
+        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
         stoHelperClass.createMessage(t, 'this is a test message again', personContact.Id);
         Test.startTest();
         stoInboxHelper.message m = stoInboxHelper.getLatestMessage(t.Id);
