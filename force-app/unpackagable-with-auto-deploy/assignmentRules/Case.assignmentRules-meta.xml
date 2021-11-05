@@ -4,12 +4,12 @@
         <fullName>STO Allocation</fullName>
         <active>true</active>
         <ruleEntry>
-            <assignedTo>STO_Arkiveringsavklaring</assignedTo>
+            <assignedTo>STO_Pleiepenger</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.STO_Sensitive_Information__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>True</value>
+                <value>Pleiepenger</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>

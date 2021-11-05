@@ -30,6 +30,11 @@
         <default>false</default>
         <label>Ufør</label>
     </customValue>
+    <customValue>
+        <fullName>Pleiepenger</fullName>
+        <default>false</default>
+        <label>Pleiepenger</label>
+    </customValue>
     <description>Defines the categories available for STO. Should match the categories defines in custom metadata STO_Category__mdt</description>
     <masterLabel>STO Category</masterLabel>
     <sorted>false</sorted>

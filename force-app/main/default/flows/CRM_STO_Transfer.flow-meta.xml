@@ -489,7 +489,10 @@
                 <elementReference>STO_NAV_TASK</elementReference>
             </value>
         </inputAssignments>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <outputAssignments>
+            <assignToReference>STO_NAV_TASK</assignToReference>
+            <name>NAV_Task</name>
+        </outputAssignments>
     </subflows>
     <subflows>
         <description>Add a transfer event message to the thread</description>
