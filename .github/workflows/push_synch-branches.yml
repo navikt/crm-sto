@@ -1,0 +1,52 @@
+name: "[PUSH] Synch Branches"
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+jobs:
+  # ################################################################# #
+  # ######################## SYNCH BRANCHES ######################### #
+  # ################################################################# #
+  create-package:
+    name: Synchronize branches
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # Init
+      - name: Init git
+        run: |
+          git fetch origin
+          git config --local user.email "branchsyncher@github.com"
+          git config --local user.name "Default branch syncher"
+
+      # Synchronize DEV branch
+      #Adding empty commit with skip ci message to override CI on push to branches
+      - name: Synchronize DEV branch
+        run: |  
+          {
+            git checkout -b DEV origin/DEV
+            git merge origin/master
+          } ||
+          {
+            git checkout -b DEV origin/master
+          }
+          git commit --allow-empty -m "skip ci"
+          git push origin DEV
+      
+      # Synchronize UAT branch
+      #Adding empty commit with skip ci message to override CI on push to branches
+      - name: Synchronize UAT branch
+        run: |
+          {
+            git checkout -b UAT origin/UAT
+            git merge origin/master
+          } ||
+          {
+            git checkout -b UAT origin/master
+          }
+          git commit --allow-empty -m "skip ci"
+          git push origin UAT
