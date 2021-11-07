@@ -1,9 +1,10 @@
-name: "[PUSH] Quick Package Create"
+name: "[PR MERGE] UAT Quick Package Create"
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches:
       - UAT
+    types: [closed]
     paths:
       - "force-app/**"
 jobs:
@@ -13,6 +14,7 @@ jobs:
   create-package:
     name: Create Package
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       # Checkout source code
       - name: Checkout source code
