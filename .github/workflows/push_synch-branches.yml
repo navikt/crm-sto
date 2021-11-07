@@ -22,7 +22,7 @@ jobs:
           git fetch origin
 
       # Synchronize DEV branch
-      #Adding empty commit with skip ci message to override CI on push to branches
+      #Adding empty commit with skip ci message to override CI on push to branches.
       - name: Synchronize DEV branch
         run: |  
           {
@@ -34,6 +34,8 @@ jobs:
           }
           git merge -X theirs origin/master --allow-unrelated-histories
           git push origin DEV
+          
+          
       
       # Synchronize UAT branch
       #Adding empty commit with skip ci message to override CI on push to branches
