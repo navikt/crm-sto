@@ -9,8 +9,4 @@ export default class CommunityExpandablePanel extends LightningElement {
         console.log(this.showpanel);
         this.showpanel = !this.showpanel;
     }
-
-    get lenkepanelClasses() {
-        return 'lenkepanel hoved-panel' + (this.showpanel ? ' hoved-panel--aktiv' : '');
-    }
 }
