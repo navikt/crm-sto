@@ -121,7 +121,7 @@
         <name>Skriv_til_oss_headline</name>
     </customLabels>
     <customLabels>
-        <label>Send bare beskjeder som kan ha betydning for saken din. Husk å få med alle relevante opplysninger. Du kan skrive maksimalt 1000 tegn, det er cirka en halv A4-side.</label>
+        <label>Send bare spørsmål eller opplysninger som gjelder din sak. Husk å få med alle opplysninger som kan være relevant for saken. Du kan skrive maksimalt 1000 tegn. Det det er cirka en halv A4-side.</label>
         <name>Skriv_til_oss_intro_text</name>
     </customLabels>
     <customLabels>
