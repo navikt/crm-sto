@@ -68,6 +68,9 @@
 **/workflows/Contract__c*
 **/layouts/CustomOpportunity__c-Custom Opportunity Layout.layout-meta.xml
 
+## Handling entitlement processes
+sto_entitlement_process*
+
 
 # # community classes
 # ----------------------------------------------------------------------------------------
