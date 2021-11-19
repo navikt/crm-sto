@@ -161,7 +161,7 @@
             <field>Name</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>sto_entitlement_process</stringValue>
+                <stringValue>sto_process</stringValue>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
