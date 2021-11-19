@@ -3,9 +3,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
     private TimeZone osloTimezone = TimeZone.getTimeZone('Europe/Oslo');
 
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
-        Case casy = [SELECT CreatedDate FROM Case WHERE Id = :caseId];
-
-        Date slaDate = AddBusinessDays(casy.CreatedDate.date(), 2);
+        Date slaDate = AddBusinessDays(System.today(), 2);
         Datetime endOfSlaDate = Datetime.newInstance(slaDate, Time.newInstance(23, 59, 59, 59));
         return getMinutesBetween(slaDate, Datetime.now());
     }
