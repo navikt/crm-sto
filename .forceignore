@@ -69,7 +69,7 @@
 **/layouts/CustomOpportunity__c-Custom Opportunity Layout.layout-meta.xml
 
 ## Handling entitlement processes
-sto_entitlement_process*
+sto_process*
 
 
 # # community classes
