@@ -11,7 +11,8 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             Case oldRecord = (Case) triggerOldMap.get(casy.Id);
             if (
                 casy.Origin == 'STO' &&
-                casy.Status == 'On Hold' &&
+                (casy.Status == 'On Hold' ||
+                casy.Status == 'Closed') &&
                 MyTriggers.hasChangedFields(fieldNamesToCheck, casy, oldRecord)
             ) {
                 casesToHandle.add(casy.Id);

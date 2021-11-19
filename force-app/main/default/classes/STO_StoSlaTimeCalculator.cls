@@ -3,9 +3,26 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
     private TimeZone osloTimezone = TimeZone.getTimeZone('Europe/Oslo');
 
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
-        Date slaDate = AddBusinessDays(System.today(), 2);
-        Datetime endOfSlaDate = Datetime.newInstance(slaDate, Time.newInstance(23, 59, 59, 59));
-        return getMinutesBetween(slaDate, Datetime.now());
+        CaseMilestone openSlaMilestone;
+        Date slaDate;
+        try {
+            openSlaMilestone = [
+                SELECT Id, TargetResponseInMins
+                FROM CaseMilestone
+                WHERE CaseId = :caseId AND IsCompleted = FALSE
+                LIMIT 1
+            ];
+        } catch (Exception ex) {
+            //No currently open SLA milestones in the case
+        }
+        if (openSlaMilestone != null) {
+            return openSlaMilestone.TargetResponseInMins;
+        } else {
+            slaDate = addBusinessDays(System.today(), 2);
+            Datetime endOfSlaDate = Datetime.newInstance(slaDate, Time.newInstance(23, 59, 59, 59));
+            endOfSlaDate.addSeconds(-osloTimezone.getOffset(endOfSlaDate) / 1000);
+            return getMinutesBetween(endOfSlaDate, System.now());
+        }
     }
 
     /**
@@ -17,11 +34,11 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
      **/
     private Integer getMinutesBetween(Datetime dt1, Datetime dt2) {
         Long msBetween = BusinessHours.diff(STO_BUSINESS_HOURS.Id, dt1, dt2);
-        msBetween += osloTimezone.getOffset(dt2); //Handling the timezone offset in the SLA calculation
-        Integer secondsBetween = msBetween < 0
-            ? Integer.valueOf(-1 * msBetween / 1000)
-            : Integer.valueOf(msBetween / 1000);
-        return secondsBetween / 60;
+        //msBetween += osloTimezone.getOffset(dt2); //Handling the timezone offset in the SLA calculation
+        Double secondsBetween = msBetween < 0
+            ? Double.valueOf(-1 * msBetween / 1000)
+            : Double.valueOf(msBetween / 1000);
+        return Integer.valueOf(Math.floor(secondsBetween / 60));
     }
 
     /**
@@ -31,7 +48,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
      * @param businessDaysToAdd
      * @return Date
      **/
-    public Date AddBusinessDays(Date startDate, Integer businessDaysToAdd) {
+    public Date addBusinessDays(Date startDate, Integer businessDaysToAdd) {
         Date slaDate = startDate;
 
         Integer businessDaysAdded = 0;
