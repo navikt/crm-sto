@@ -41,6 +41,9 @@
         "nameSettings": {
             "enableMiddleName": true
         },
+        "entitlementSettings": {
+            "enableEntitlements": true
+        },
         "fieldServiceSettings": {
             "fieldServiceOrgPref": true,
             "doesShareSaParentWoWithAr": false,
