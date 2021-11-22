@@ -1,7 +1,4 @@
 public with sharing class stoHelperClass {
-    private static final String STO_CASE_RECORD_TYPE = Schema.SObjectType.Case.getRecordTypeInfosByDeveloperName()
-        .get('STO_Case')
-        .getRecordTypeId();
     private static final LoggerUtility logger = new LoggerUtility('Skriv til oss');
 
     private static Map<String, Id> commonCodeMap {
