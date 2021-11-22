@@ -33,12 +33,7 @@ public with sharing class stoHelperClass {
             lang = 'English';
         }
 
-        return [
-            SELECT Id, Label, STO_Description__c, STO_Sort_Order__c, STO_Category__c
-            FROM STO_Category__mdt
-            WHERE STO_Language__c = :lang
-            ORDER BY STO_Sort_Order__c ASC
-        ];
+        return [SELECT Id, Label, STO_Category__c FROM STO_Category__mdt ORDER BY Id];
     }
     /**
      * Method to create case, thread and message when a user submits a write to us case
