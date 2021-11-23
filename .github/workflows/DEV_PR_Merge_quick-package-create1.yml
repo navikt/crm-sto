@@ -33,7 +33,7 @@ jobs:
       - name: Delete unpackagable
         run: |
           rm -rf ./force-app/unpackagable
-          rm -rf ./force-app/unpackagable-with-auto-deploy
+          mv ./force-app/unpackagable-with-auto-deploy/ ..
           rm -rf ./force-app/scratch-org
 
       # Create package version
@@ -102,6 +102,14 @@ jobs:
             echo
 
             exit 125
+          fi
+
+      # Deploy unpackagable content
+      - name: Deploy unpackagable content
+        run: |
+          if [ -d "./unpackagable-with-auto-deploy" ]; then
+            echo "Starting deployment of ./unpackagable-with-auto-deploy"
+            sfdx force:source:deploy -p ./unpackagable-with-auto-deploy -l RunLocalTests
           fi
     outputs:
       successfullyInstalled: ${{ steps.integration-installation.outputs.successfullyInstalled }}
