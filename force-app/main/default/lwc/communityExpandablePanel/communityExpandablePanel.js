@@ -19,7 +19,7 @@ export default class CommunityExpandablePanel extends LightningElement {
     }
 
     get dropdownClass() {
-        return 'dropdown ' + (this.showPanel ? 'active' : 'hidden');
+        return 'dropdown ' + (this.showpanel ? 'active' : 'hidden');
     }
 
     get inverseShowpanel() {
