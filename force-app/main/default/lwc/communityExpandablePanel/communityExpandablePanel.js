@@ -18,6 +18,14 @@ export default class CommunityExpandablePanel extends LightningElement {
         );
     }
 
+    get dropdownClass() {
+        return 'dropdown ' + (this.showPanel ? 'active' : 'hidden');
+    }
+
+    get inverseShowpanel() {
+        return !this.showpanel;
+    }
+
     // To perform animations we can't use height:auto, so we use auto to get the height
     // and set the height to that value.
     performAnimation() {
