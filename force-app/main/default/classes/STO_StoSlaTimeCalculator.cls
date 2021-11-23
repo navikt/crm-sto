@@ -52,7 +52,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
         Date slaDate = startDate;
 
         Integer businessDaysAdded = 0;
-        while (businessDaysAdded <= businessDaysToAdd) {
+        while (businessDaysAdded < businessDaysToAdd) {
             slaDate = slaDate.addDays(1);
             if (BusinessHours.isWithin(STO_BUSINESS_HOURS.id, slaDate)) {
                 businessDaysAdded++;
