@@ -58,6 +58,9 @@
         <connector>
             <targetReference>Update_Case_Entitlement_ID</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>Create_Application_Log</targetReference>
+        </faultConnector>
         <inputAssignments>
             <field>AccountId</field>
             <value>
@@ -95,6 +98,118 @@
             </value>
         </inputAssignments>
         <object>Entitlement</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Application_Log</name>
+        <label>Create Application Log</label>
+        <locationX>704</locationX>
+        <locationY>768</locationY>
+        <inputAssignments>
+            <field>Application_Domain__c</field>
+            <value>
+                <stringValue>NKS</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Category__c</field>
+            <value>
+                <stringValue>Entitlement</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Level__c</field>
+            <value>
+                <stringValue>Warning</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Message__c</field>
+            <value>
+                <stringValue>Failed to create entitlement for account</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Pay_Load__c</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_ID__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_Info__c</field>
+            <value>
+                <stringValue>Case</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Source_Class__c</field>
+            <value>
+                <stringValue>Case - After Insert - New STO Case Update Entitlement</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Application_Log__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Application_Log_0</name>
+        <label>Create Application Log</label>
+        <locationX>968</locationX>
+        <locationY>1248</locationY>
+        <inputAssignments>
+            <field>Application_Domain__c</field>
+            <value>
+                <stringValue>NKS</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Category__c</field>
+            <value>
+                <stringValue>Entitlement</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Level__c</field>
+            <value>
+                <stringValue>Warning</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Message__c</field>
+            <value>
+                <stringValue>Failed to update entitlementId for case</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Pay_Load__c</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_ID__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_Info__c</field>
+            <value>
+                <stringValue>Case</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Source_Class__c</field>
+            <value>
+                <stringValue>Case - After Insert - New STO Case Update Entitlement</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Application_Log__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordLookups>
         <name>Get_Account_STO_Entitlement</name>
@@ -172,7 +287,10 @@
         <name>Update_Case_Entitlement_ID</name>
         <label>Update Case Entitlement ID</label>
         <locationX>352</locationX>
-        <locationY>864</locationY>
+        <locationY>1128</locationY>
+        <faultConnector>
+            <targetReference>Create_Application_Log_0</targetReference>
+        </faultConnector>
         <inputAssignments>
             <field>EntitlementId</field>
             <value>
