@@ -4,9 +4,8 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">&lt;span&gt;Mottar du dagpenger? Skal du melde fra om at du tar utdanning med støtte fra Lånekassen?&lt;/span&gt;
-
-Du må opplyse om:
+        <value xsi:type="xsd:string">&lt;p&gt;Mottar du dagpenger? Skal du melde fra om at du tar utdanning med støtte fra Lånekassen?&lt;/p&gt;
+&lt;p&gt;Du må opplyse om:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Hvilken utdanning du deltar i&lt;/li&gt;
 &lt;li&gt;Hvor du gjennomfører utdanningen&lt;/li&gt;
@@ -22,6 +21,6 @@ Du må opplyse om:
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Mottar du dagpenger? Skal du melde fra om at du tar utdanning med støtte fra Lånekassen</value>
+        <value xsi:type="xsd:string">Tar du utdanning med støtte fra Lånekassen?</value>
     </values>
 </CustomMetadata>
