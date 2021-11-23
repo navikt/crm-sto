@@ -43,7 +43,7 @@
         <milestoneCriteriaFilterItems>
             <field>Case.Status</field>
             <operation>notEqual</operation>
-            <value>On Hold</value>
+            <value>On Hold, Forwarded</value>
         </milestoneCriteriaFilterItems>
         <milestoneName>Handling Time</milestoneName>
         <minutesToComplete>5</minutesToComplete>
