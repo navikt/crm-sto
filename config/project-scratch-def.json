@@ -62,7 +62,8 @@
         },
         "omniChannelSettings": {
             "enableOmniChannel": true,
-            "enableOmniSkillsRouting": true
+            "enableOmniSkillsRouting": true,
+            "enableOmniSecondaryRoutingPriority": true
         }
     }
 }
