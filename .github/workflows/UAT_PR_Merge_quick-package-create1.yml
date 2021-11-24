@@ -33,7 +33,7 @@ jobs:
       - name: Delete unpackagable
         run: |
           rm -rf ./force-app/unpackagable
-          mv ./force-app/unpackagable-with-auto-deploy/ ..
+          mv ./force-app/unpackagable-with-auto-deploy/ .
           rm -rf ./force-app/scratch-org
 
       # Create package version
