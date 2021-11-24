@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Pensjon2</label>
+    <protected>false</protected>
+    <values>
+        <field>STO_Body__c</field>
+        <value xsi:type="xsd:string">&lt;ul&gt;
+&lt;li&gt;Lønnsslipp fra måneden før første uttak av AFP. &lt;/li&gt;
+&lt;li&gt;Lønnsslipp fra måneden etter opphør av AFP. &lt;/li&gt;
+&lt;li&gt;Lønns- og trekkoppgave for etteroppgjørsåret.&lt;/li&gt;
+&lt;/ul&gt;</value>
+    </values>
+    <values>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Pensjon</value>
+    </values>
+    <values>
+        <field>STO_Header__c</field>
+        <value xsi:type="xsd:string">Eksempler på dokumentasjon som kan sendes inn:</value>
+    </values>
+</CustomMetadata>

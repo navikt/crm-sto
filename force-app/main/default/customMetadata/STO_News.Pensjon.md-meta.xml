@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Pensjon</label>
+    <protected>false</protected>
+    <values>
+        <field>STO_Body__c</field>
+        <value xsi:type="xsd:string">For å beregne riktig etteroppgjør må vi ha nødvendig dokumentasjon fra deg. Du finner &lt;a href=&quot;https://www.nav.no/no/person/pensjon/avtalefestet-pensjon-afp/hva-er-afp-etteroppgjoret&quot;
+&gt; informasjon og skjema i denne artikkelen.&lt;/a&gt;</value>
+    </values>
+    <values>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Pensjon</value>
+    </values>
+    <values>
+        <field>STO_Header__c</field>
+        <value xsi:type="xsd:string">Har du spørsmål om AFP-etteroppgjøret?</value>
+    </values>
+</CustomMetadata>

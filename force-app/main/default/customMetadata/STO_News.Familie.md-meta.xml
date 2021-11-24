@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>Kontaktstøtte</label>
+    <label>Familie</label>
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">Vi trenger følgende informasjon fra deg:
-&lt;ul&gt;
-&lt;li&gt;Fødselsdatoen til barnet&lt;/li&gt;
-&lt;li&gt;Navnet på barnehagen&lt;/li&gt;
-&lt;li&gt;Fra hvilken dato er barnet tildelt barnehageplass&lt;/li&gt;
-&lt;li&gt;Antall timer i uken barnet er tildelt barnehageplass&lt;/li&gt;
+        <value xsi:type="xsd:string">&lt;ul&gt;
+&lt;li&gt;Vi minner om at meldingen din også blir videresendt til motparten. &lt;/li&gt;
+&lt;li&gt;Dette gjelder uttalelser til en åpen sak. Spørsmål om regelverk eller bidragsforskudd blir ikke videresendt.&lt;/li&gt;
+&lt;li&gt;Har du opplysninger eller spørsmål til andre saker kan du sende dette i en ny melding.
+&lt;/li&gt;
 &lt;/ul&gt;</value>
     </values>
     <values>
@@ -18,6 +17,6 @@
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Skal du sende melding om barnehageplass?</value>
+        <value xsi:type="xsd:string">Barnebidrag: Skal du sende opplysninger til en bidragssak?</value>
     </values>
 </CustomMetadata>

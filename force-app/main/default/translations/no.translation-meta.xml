@@ -91,9 +91,15 @@
         <name>STO_Skriv_til_oss_terms_header</name>
     </customLabels>
     <customLabels>
-        <label>
-            <!-- Skriv til oss terms og use text -->
-        </label>
+        <label>&lt;div style=&quot;font-family: sans-serif&quot;&gt;
+            &lt;strong&gt;Henvendelsen gjelder deg&lt;/strong&gt; Denne tjenesten gjelder deg som privatperson. Du kan ikke bruke den på vegne av andre. Det du informerer om deg selv vil kunne få betydning for rettighetene dine hos NAV.
+            &lt;/br&gt;&lt;/br&gt;
+            Skal du sende inn en søknad, dokumenter eller klage på vedtak, må du bruke &lt;a href=&quot;https://www.nav.no/soknader/nb/person&quot;&gt;skjemaveilederen&lt;/a&gt;.
+            &lt;/br&gt;&lt;/br&gt;
+            For søknader eller informasjon om økonomisk sosialhjelp kan du bruke &lt;a href=&quot;https://www.nav.no/no/person/flere-tema/sosiale-tjenester&quot;&gt;veileder sosialhjelp&lt;/a&gt;
+            &lt;/br&gt;&lt;/br&gt;
+            Opplysningene er bare tilgjengelige for ansatte i NAV som skal svare på henvendelsen din, og som skal hjelpe deg hvis du kontakter oss en annen gang.
+            &lt;/div&gt;</label>
         <name>STO_Skriv_til_oss_terms_og_use_text</name>
     </customLabels>
     <customLabels>
@@ -121,7 +127,7 @@
         <name>Skriv_til_oss_headline</name>
     </customLabels>
     <customLabels>
-        <label>Send bare beskjeder som kan ha betydning for saken din. Husk å få med alle relevante opplysninger. Du kan skrive maksimalt 1000 tegn, det er cirka en halv A4-side.</label>
+        <label>Send bare spørsmål eller opplysninger som gjelder din sak. Husk å få med alle opplysninger som kan være relevant for saken. Du kan skrive maksimalt 1000 tegn. Det det er cirka en halv A4-side.</label>
         <name>Skriv_til_oss_intro_text</name>
     </customLabels>
     <customLabels>

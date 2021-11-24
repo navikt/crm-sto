@@ -21,12 +21,21 @@ import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_
 import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
 import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
-
-
+import dist from '@salesforce/resourceUrl/dist';
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     validparameter;
     showspinner = false;
-    acceptedcategories = ['Arbeid', 'Helse', 'Familie', 'Ufør', 'Pensjon', 'Internasjonal', 'Øvrig', 'Bil', 'Hjelpemidler'];
+    acceptedcategories = [
+        'Arbeid',
+        'Helse',
+        'Familie',
+        'Ufør',
+        'Pensjon',
+        'Internasjonal',
+        'Øvrig',
+        'Bil',
+        'Hjelpemidler'
+    ];
     currentPageReference = null;
     acceptedTerms = false;
     label = {
@@ -49,7 +58,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     /**
      * Sets the Selectedtheme based on the URL parameter.
-     * @param {} currentPageReference 
+     * @param {} currentPageReference
      * @author Lars Petter Johnsen
      */
     @wire(CurrentPageReference)
@@ -57,7 +66,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (currentPageReference) {
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
-
         }
     }
     /**
@@ -76,16 +84,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (this.acceptedcategories.includes(this.urlStateParameters.category)) {
             this.selectedTheme = this.urlStateParameters.category;
             this.validparameter = true;
-        }
-        else {
+        } else {
             try {
                 console.log(window.location);
                 //  window.location.replace("https://www.google.no/404");
-            }
-            catch (e) {
+            } catch (e) {
                 console.log(e);
             }
-
         }
     }
 
@@ -100,6 +105,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     renderedCallback() {
         loadStyle(this, dekoratoren);
+        loadStyle(this, dist);
+        if (this.showspinner) {
+            let spinner = this.template.querySelector('.spinner');
+            spinner.focus();
+        }
     }
     /**
      *  Handle Terms Modal Start
@@ -139,7 +149,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * Handles terms modal end
      */
 
-
     /**
      * Creates a Thread record, with an message attached, and then navigates the user to the record page
      * @Author Lars Petter Johnsen
@@ -165,7 +174,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             if (this.message == null || !this.message || this.message.length != 0) {
                 this.showErrorNoMessage = true;
             }
-
         }
     }
 }
