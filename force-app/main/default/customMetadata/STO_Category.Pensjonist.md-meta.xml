@@ -7,15 +7,7 @@
         <value xsi:type="xsd:string">Pensjon</value>
     </values>
     <values>
-        <field>STO_Description__c</field>
-        <value xsi:type="xsd:string">Alderspensjon, barnepensjon, etterlattepensjon, supplerende stønad, krigspensjon, AFP fra Statens pensjonskasse mellom 62 og 65 år, AFP i privat sektor.</value>
-    </values>
-    <values>
-        <field>STO_Language__c</field>
-        <value xsi:type="xsd:string">Norwegian</value>
-    </values>
-    <values>
-        <field>STO_Sort_Order__c</field>
-        <value xsi:type="xsd:double">6.0</value>
+        <field>STO_Theme_Group__c</field>
+        <value xsi:type="xsd:string">PENS</value>
     </values>
 </CustomMetadata>

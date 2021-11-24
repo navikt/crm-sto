@@ -15,12 +15,12 @@
                 <field>DeveloperName</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>STO_Language__c</field>
+                <behavior>Edit</behavior>
+                <field>STO_Category__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>STO_Category__c</field>
+                <field>STO_Theme_Group__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -29,16 +29,8 @@
                 <field>IsProtected</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>STO_Sort_Order__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Required</behavior>
                 <field>NamespacePrefix</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>STO_Description__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
