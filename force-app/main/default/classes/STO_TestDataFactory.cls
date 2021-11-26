@@ -1,7 +1,6 @@
 // Class for creating test data
 @isTest
 public class STO_TestDataFactory {
-
     public static Case createCase(String lastname) {
         Account a = [SELECT Id FROM Account WHERE LastName = :lastname];
         Case c = new Case(AccountId = a.Id, Status = 'New', Origin = 'Web');
@@ -46,7 +45,7 @@ public class STO_TestDataFactory {
         );
         insert acc;
     }
-    
+
     public static List<LiveChatTranscript> createLiveChatTranscripts(Integer amount) {
         LiveChatVisitor v = STO_TestDataFactory.createLiveChatVisitor();
         List<LiveChatTranscript> liveChatTranscripts = new List<LiveChatTranscript>();
@@ -328,6 +327,19 @@ public class STO_TestDataFactory {
         }
         public Map<String, Object> getFieldDefaults(Boolean bulkify) {
             return new Map<String, Object>{ 'FirstName' => 'Test', 'LastName' => 'Testesen' };
+        }
+        public Map<String, String> getDmlFields() {
+            return new Map<String, String>{};
+            //No dml fields
+        }
+    }
+
+    public class EntitlementDefaults implements FieldDefaults {
+        public Map<String, Object> getFieldDefaults() {
+            return getFieldDefaults(false);
+        }
+        public Map<String, Object> getFieldDefaults(Boolean bulkify) {
+            return new Map<String, Object>{ 'Name' => 'STO Entitlement' };
         }
         public Map<String, String> getDmlFields() {
             return new Map<String, String>{};

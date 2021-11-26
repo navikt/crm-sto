@@ -4,6 +4,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import dekoratoren from '@salesforce/resourceUrl/dekoratoren';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
+import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
@@ -23,20 +24,11 @@ import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
 import dist from '@salesforce/resourceUrl/dist';
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
-    validparameter;
     showspinner = false;
-    acceptedcategories = [
-        'Arbeid',
-        'Helse',
-        'Familie',
-        'Ufør',
-        'Pensjon',
-        'Internasjonal',
-        'Øvrig',
-        'Bil',
-        'Hjelpemidler'
-    ];
+    selectedTheme;
+    acceptedcategories = new Set();
     currentPageReference = null;
+    urlStateParameters;
     acceptedTerms = false;
     label = {
         welcomlabel,
@@ -55,6 +47,20 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     };
     logopath = navlogos + '/email.svg';
     newslist;
+
+    connectedCallback() {
+        getAcceptedThemes({ language: 'no' })
+            .then((categoryResults) => {
+                let categoryList = new Set();
+                categoryResults.forEach((stoCategory) => {
+                    categoryList.add(stoCategory.STO_Category__c);
+                });
+                this.acceptedcategories = categoryList;
+            })
+            .catch((error) => {
+                //Failed getting sto categories
+            });
+    }
 
     /**
      * Sets the Selectedtheme based on the URL parameter.
@@ -80,18 +86,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.newslist = result.data;
         }
     }
+
+    get validparameter() {
+        let valid = this.acceptedcategories.has(this.selectedTheme);
+        return valid;
+    }
+
     setParametersBasedOnUrl() {
-        if (this.acceptedcategories.includes(this.urlStateParameters.category)) {
-            this.selectedTheme = this.urlStateParameters.category;
-            this.validparameter = true;
-        } else {
-            try {
-                console.log(window.location);
-                //  window.location.replace("https://www.google.no/404");
-            } catch (e) {
-                console.log(e);
-            }
-        }
+        this.selectedTheme = this.urlStateParameters.category;
     }
 
     @track message;
@@ -110,6 +112,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             let spinner = this.template.querySelector('.spinner');
             spinner.focus();
         }
+        console.log(this.validparameter);
     }
     /**
      *  Handle Terms Modal Start

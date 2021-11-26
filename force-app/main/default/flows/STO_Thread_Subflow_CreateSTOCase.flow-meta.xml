@@ -31,7 +31,7 @@
             <assignToReference>Case.Origin</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Web</stringValue>
+                <stringValue>STO</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>

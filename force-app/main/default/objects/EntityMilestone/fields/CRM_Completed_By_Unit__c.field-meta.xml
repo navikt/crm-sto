@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CRM_Completed_By_Unit__c</fullName>
+    <description>Defines which NAV unit that completed the milestone.</description>
+    <externalId>true</externalId>
+    <label>Completed By Unit</label>
+    <length>4</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
