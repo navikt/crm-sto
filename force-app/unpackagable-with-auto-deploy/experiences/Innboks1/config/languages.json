@@ -1,6 +1,6 @@
 {
-  "defaultCode" : "en_US",
-  "defaultLabel" : "English (US)",
-  "id" : "6bb24d8c-22a0-4145-93dc-ba74f0970c81",
-  "type" : "languageContainer"
+    "defaultCode": "no",
+    "defaultLabel": "Norwegian",
+    "id": "6bb24d8c-22a0-4145-93dc-ba74f0970c81",
+    "type": "languageContainer"
 }
