@@ -6,12 +6,8 @@
                 <img src={navIcon} alt=""/> {title}</h1>
         </div>
         <div class="panel">
-            <lightning-formatted-date-time value={date} month="long" day="2-digit" year="numeric"></lightning-formatted-date-time> kl. 
-            <lightning-formatted-date-time value={date} hour="2-digit" ></lightning-formatted-date-time>.
-            <lightning-formatted-date-time value={date} minute="2-digit" ></lightning-formatted-date-time>
-            <p>
-                {note}
-            </p>
+            <lightning-formatted-date-time value={date} year="numeric" day="numeric" month="long" hour="2-digit" minute="2-digit" class="inline-block"></lightning-formatted-date-time>
+            <lightning-formatted-rich-text value={note} class="linebreaks"></lightning-formatted-rich-text>
         </div>
     </div>
 </template>
