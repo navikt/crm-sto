@@ -10,7 +10,17 @@
     padding: 1rem; 
     font-size: 1.125rem;
 }
+
 .wrapper{
     margin-top: 3rem;
     margin-bottom: 3rem;
+}
+
+.linebreaks {
+    white-space: pre-wrap;
+}
+
+.inline-block {
+    display: block;
+    padding-bottom: .5rem;
 }
