@@ -114,7 +114,7 @@ public with sharing class stoInboxHelper {
             Message__c messageList = [
                 SELECT Id, CRM_Message_Text__c, CRM_From_Contact__c
                 FROM Message__c
-                WHERE CRM_Thread__c = :threadId
+                WHERE CRM_Thread__c = :threadId AND CRM_Type__c = 'Message'
                 ORDER BY CRM_Sent_Datetime_Formula__c DESC LIMIT 1
             ];
             returntext.fromContact = messageList.CRM_From_Contact__c; 
