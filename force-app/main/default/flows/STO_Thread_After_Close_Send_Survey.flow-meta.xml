@@ -101,7 +101,7 @@
             <targetReference>Create_Thread_Close_Event</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
-        <filterLogic>1 AND (2 OR 3)</filterLogic>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>CRM_isActive__c</field>
             <operator>EqualTo</operator>
@@ -114,13 +114,6 @@
             <operator>EqualTo</operator>
             <value>
                 <stringValue>STO</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Thread_Type__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>STB</stringValue>
             </value>
         </filters>
         <object>Thread__c</object>
