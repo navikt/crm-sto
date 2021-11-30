@@ -67,7 +67,7 @@
                                 {
                                     "componentAttributes": {
                                         "alertopen": "Vi avslutter saken automatisk hvis du ikke svarer innen 7 dager.",
-                                        "alerttext": "Dialogen er lukket. Vil du sende <a href=\"https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss\">en ny beskjed </a> kan du gjøre det her",
+                                        "alerttext": "Saken er lukket. Vil du sende <a href=\"https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss\">en ny melding </a> kan du gjøre det her",
                                         "header": "Skriv til oss",
                                         "recordId": "{!recordId}"
                                     },
