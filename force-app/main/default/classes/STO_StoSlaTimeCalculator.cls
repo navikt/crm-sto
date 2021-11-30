@@ -1,5 +1,18 @@
 global without sharing class STO_StoSlaTimeCalculator implements Support.MilestoneTriggerTimeCalculator {
-    private BusinessHours STO_BUSINESS_HOURS = [SELECT Id FROM BusinessHours WHERE Name = 'STO Business Hours'];
+    private Id STO_BUSINESS_HOURS_ID {
+        get {
+            if (STO_BUSINESS_HOURS_ID == null) {
+                Id stoBusId = [SELECT Id FROM BusinessHours WHERE Name = 'STO Business Hours']?.Id;
+                if (stoBusId == null) {
+                    stoBusId = [SELECT Id FROM BusinessHours WHERE IsDefault = TRUE]?.Id;
+                }
+                STO_BUSINESS_HOURS_ID = stoBusId;
+            }
+            return STO_BUSINESS_HOURS_ID;
+        }
+        private set {
+        }
+    }
     private TimeZone osloTimezone = TimeZone.getTimeZone('Europe/Oslo');
 
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
@@ -33,7 +46,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
      * @return Integer
      **/
     private Integer getMinutesBetween(Datetime dt1, Datetime dt2) {
-        Long msBetween = BusinessHours.diff(STO_BUSINESS_HOURS.Id, dt1, dt2);
+        Long msBetween = BusinessHours.diff(STO_BUSINESS_HOURS_ID, dt1, dt2);
         //msBetween += osloTimezone.getOffset(dt2); //Handling the timezone offset in the SLA calculation
         Double secondsBetween = msBetween < 0
             ? Double.valueOf(-1 * msBetween / 1000)
@@ -54,7 +67,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
         Integer businessDaysAdded = 0;
         while (businessDaysAdded < businessDaysToAdd) {
             slaDate = slaDate.addDays(1);
-            if (BusinessHours.isWithin(STO_BUSINESS_HOURS.id, slaDate)) {
+            if (BusinessHours.isWithin(STO_BUSINESS_HOURS_ID, slaDate)) {
                 businessDaysAdded++;
             }
         }
