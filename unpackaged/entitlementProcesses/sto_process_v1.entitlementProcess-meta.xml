@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EntitlementProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <SObjectType>Case</SObjectType>
+    <active>true</active>
+    <businessHours>STO Business Hours</businessHours>
+    <description>Default entitlement process for NAV person accounts</description>
+    <entryStartDateField>Case.CreatedDate</entryStartDateField>
+    <exitCriteriaFilterItems>
+        <field>Case.IsClosed</field>
+        <operation>equals</operation>
+        <value>true</value>
+    </exitCriteriaFilterItems>
+    <isVersionDefault>true</isVersionDefault>
+    <milestones>
+        <businessHours>STO Business Hours</businessHours>
+        <criteriaBooleanFilter>(1 OR 3) AND 2</criteriaBooleanFilter>
+        <milestoneCriteriaFilterItems>
+            <field>Case.Status</field>
+            <operation>notEqual</operation>
+            <value>On Hold</value>
+        </milestoneCriteriaFilterItems>
+        <milestoneCriteriaFilterItems>
+            <field>Case.Origin</field>
+            <operation>equals</operation>
+            <value>STO</value>
+        </milestoneCriteriaFilterItems>
+        <milestoneCriteriaFilterItems>
+            <field>Case.CRM_In_Queue__c</field>
+            <operation>equals</operation>
+            <value>true</value>
+        </milestoneCriteriaFilterItems>
+        <milestoneName>Respond STO</milestoneName>
+        <minutesCustomClass>STO_StoSlaTimeCalculator</minutesCustomClass>
+        <useCriteriaStartTime>true</useCriteriaStartTime>
+    </milestones>
+    <milestones>
+        <businessHours>STO Business Hours</businessHours>
+        <milestoneCriteriaFilterItems>
+            <field>Case.CRM_In_Queue__c</field>
+            <operation>equals</operation>
+            <value>false</value>
+        </milestoneCriteriaFilterItems>
+        <milestoneCriteriaFilterItems>
+            <field>Case.Status</field>
+            <operation>notEqual</operation>
+            <value>On Hold, Forwarded</value>
+        </milestoneCriteriaFilterItems>
+        <milestoneName>Handling Time</milestoneName>
+        <minutesToComplete>5</minutesToComplete>
+        <useCriteriaStartTime>true</useCriteriaStartTime>
+    </milestones>
+    <name>sto_process</name>
+    <versionMaster>5521X00000015s9</versionMaster>
+    <versionNumber>1</versionNumber>
+</EntitlementProcess>

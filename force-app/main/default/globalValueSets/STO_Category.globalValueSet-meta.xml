@@ -35,6 +35,11 @@
         <default>false</default>
         <label>Pleiepenger</label>
     </customValue>
+    <customValue>
+        <fullName>Hjelpemidler</fullName>
+        <default>false</default>
+        <label>Hjelpemidler</label>
+    </customValue>
     <description>Defines the categories available for STO. Should match the categories defines in custom metadata STO_Category__mdt</description>
     <masterLabel>STO Category</masterLabel>
     <sorted>false</sorted>

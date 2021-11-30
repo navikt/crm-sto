@@ -4,18 +4,10 @@
     <protected>false</protected>
     <values>
         <field>STO_Category__c</field>
-        <value xsi:type="xsd:string">Arbeid</value>
+        <value xsi:type="xsd:string">Helse</value>
     </values>
     <values>
-        <field>STO_Description__c</field>
-        <value xsi:type="xsd:string">Sykmeldt, sykepenger, arbeidsavklaringspenger, yrkesskade/ménerstatning, grunn- og hjelpestønad.</value>
-    </values>
-    <values>
-        <field>STO_Language__c</field>
-        <value xsi:type="xsd:string">Norwegian</value>
-    </values>
-    <values>
-        <field>STO_Sort_Order__c</field>
-        <value xsi:type="xsd:double">2.0</value>
+        <field>STO_Theme_Group__c</field>
+        <value xsi:type="xsd:string">HELSE</value>
     </values>
 </CustomMetadata>
