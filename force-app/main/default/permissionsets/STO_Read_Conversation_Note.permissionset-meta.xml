@@ -85,6 +85,16 @@
         <field>Message__c.CRM_Is_Redacted__c</field>
         <readable>false</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.CRM_External_ActorId_Formula__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.CRM_External_Person_Ident_Formula__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Skriv til oss - Read Conversation Note</label>
     <license>Customer Community Login</license>
