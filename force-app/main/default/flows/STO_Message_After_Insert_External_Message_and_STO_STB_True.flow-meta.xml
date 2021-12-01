@@ -112,6 +112,10 @@
                 <elementReference>Get_STB_NAV_Unit.Id</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Related_NAV_Task.NKS_Comments__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
         <connector>
             <targetReference>Send_NAV_Task_0</targetReference>
         </connector>
@@ -413,7 +417,7 @@
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Obsolete</status>
     <subflows>
         <name>Send_NAV_Task</name>
         <label>Send NAV Task</label>
