@@ -341,6 +341,16 @@
             <fieldText>Sett over til:</fieldText>
             <fieldType>RadioButtons</fieldType>
             <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Transfer_to_NAV_Unit</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>STO_Category_Picklist</name>
@@ -352,16 +362,6 @@
             <fieldText>Kø:</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Transfer_to</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <elementReference>Transfer_to_Queue</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
         </fields>
         <fields>
             <name>NAV_Task_Categorization</name>
