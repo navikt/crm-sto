@@ -605,7 +605,7 @@
             <inputParameters>
                 <name>label</name>
                 <value>
-                    <stringValue>Overfør henvendelse (gjøres i neste steg)</stringValue>
+                    <stringValue>Overfør til annen kø (gjøres i neste steg)</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
