@@ -50,13 +50,6 @@
         <locationX>1133</locationX>
         <locationY>1128</locationY>
         <assignmentItems>
-            <assignToReference>Related_NAV_Task.NKS_Comments__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>----</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Status__c</assignToReference>
             <operator>Assign</operator>
             <value>
@@ -81,7 +74,7 @@
             <assignToReference>Related_NAV_Task.NKS_TaskType__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_Kontakt_Bruker_Task_Type.Id</elementReference>
+                <elementReference>Get_Vurder_Svar_Task_Type.Id</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -272,35 +265,6 @@
         <queriedFields>OwnerId</queriedFields>
     </recordLookups>
     <recordLookups>
-        <name>Get_Kontakt_Bruker_Task_Type</name>
-        <label>Get Kontakt Bruker Task Type</label>
-        <locationX>1133</locationX>
-        <locationY>1008</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Set_New_Task_Fields</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Code_Set__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Oppgavetyper</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>KONT_BRUK</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Common_Code__c</object>
-        <queriedFields>Id</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <description>Check if the thread is related to a NAV task as process object</description>
         <name>Get_Related_NAV_Task</name>
         <label>Get Related NAV Task</label>
@@ -342,7 +306,7 @@
         <locationY>888</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Kontakt_Bruker_Task_Type</targetReference>
+            <targetReference>Get_Vurder_Svar_Task_Type</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -376,6 +340,35 @@
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Thread__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Vurder_Svar_Task_Type</name>
+        <label>Get Vurder Svar Task Type</label>
+        <locationX>1133</locationX>
+        <locationY>1008</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Set_New_Task_Fields</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Code_Set__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Oppgavetyper</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Code__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>VUR_SVAR</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Common_Code__c</object>
+        <queriedFields>Id</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
