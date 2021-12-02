@@ -200,7 +200,7 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>Get_Case_Thread.Redaction_Cause__c</assignToReference>
+            <assignToReference>Get_Case_Thread.Cause__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>Thread_Cause</elementReference>
@@ -347,7 +347,7 @@
         <dataType>Picklist</dataType>
         <displayField xsi:nil="true"/>
         <object xsi:nil="true"/>
-        <picklistField>Redaction_Cause__c</picklistField>
+        <picklistField>Cause__c</picklistField>
         <picklistObject>Thread__c</picklistObject>
     </dynamicChoiceSets>
     <interviewLabel>Case STO Complete and Next {!$Flow.CurrentDateTime}</interviewLabel>
