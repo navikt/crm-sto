@@ -25,18 +25,18 @@ public with sharing class stoInboxHelper {
             inboxlist.add(i);  
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c, STO_External_Name__c
+            SELECT Id, Name, LastModifiedDate, CRM_Date_Time_Registered__c, CRM_Is_Read__c, STO_External_Name__c
             FROM Conversation_Note__c WHERE CRM_Is_Read__c = true AND CRM_Created_By_Ident__c != null 
-            ORDER BY CreatedDate DESC
+            ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for(Conversation_Note__c t : noteList){
             thread i = new thread(); 
             i.name = t.STO_External_Name__c; 
             i.recordId = t.Id; 
             i.lastModifiedDate = t.LastModifiedDate; 
-            i.closeDate = t.CreatedDate; 
+            i.closeDate = t.CRM_Date_Time_Registered__c; 
             i.numberOfUnreadMessages = 0; 
-            i.latestMessageDate = t.CreatedDate;
+            i.latestMessageDate = t.CRM_Date_Time_Registered__c;
             i.objectName = 'samtalereferat'; 
             i.status = 'Lukket'; 
             inboxlist.add(i);  
@@ -67,18 +67,18 @@ public with sharing class stoInboxHelper {
             inboxlist.add(i);  
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c, STO_External_Name__c
+            SELECT Id, Name, LastModifiedDate, CRM_Date_Time_Registered__c, CRM_Is_Read__c, STO_External_Name__c
             FROM Conversation_Note__c WHERE CRM_Is_Read__c = false AND CRM_Created_By_Ident__c != null 
-            ORDER BY CreatedDate DESC
+            ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for(Conversation_Note__c t : noteList){
             thread i = new thread(); 
             i.name = t.STO_External_Name__c; 
             i.recordId = t.Id; 
             i.lastModifiedDate = t.LastModifiedDate; 
-            i.closeDate = t.CreatedDate; 
+            i.closeDate = t.CRM_Date_Time_Registered__c; 
             i.numberOfUnreadMessages = 1; 
-            i.latestMessageDate = t.CreatedDate;
+            i.latestMessageDate = t.CRM_Date_Time_Registered__c;
             i.objectName = 'samtalereferat'; 
             i.status = 'Lukket'; 
             inboxlist.add(i);  
