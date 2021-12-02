@@ -24,6 +24,10 @@
 **/objects/Contact/fields/CleanStatus.field-meta.xml
 **/objects/Account/fields/AccountSource.field-meta.xml
 
+# Queues and assignment rules
+**/force-app/main/default/queues
+**/force-app/main/default/assignmentRules
+
 
 # flexipages
 # ----------------------------------------------------------------------------------------
