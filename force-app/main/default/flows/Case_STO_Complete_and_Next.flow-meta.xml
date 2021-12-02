@@ -199,6 +199,13 @@
                 <elementReference>Sensitive_Toggle.value</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Case_Thread.Cause__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Thread_Cause</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Update_Thread</targetReference>
         </connector>
@@ -342,6 +349,14 @@
         <object xsi:nil="true"/>
         <picklistField>STO_Category__c</picklistField>
         <picklistObject>Case</picklistObject>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>Thread_Cause</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>Cause__c</picklistField>
+        <picklistObject>Thread__c</picklistObject>
     </dynamicChoiceSets>
     <formulas>
         <name>QUEUE_TRANSFER_TEXT</name>
