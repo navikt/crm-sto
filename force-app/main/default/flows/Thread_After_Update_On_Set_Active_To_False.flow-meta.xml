@@ -5,7 +5,7 @@
         <name>Set_Case_Closed</name>
         <label>Set Case Closed</label>
         <locationX>50</locationX>
-        <locationY>695</locationY>
+        <locationY>815</locationY>
         <assignmentItems>
             <assignToReference>Get_Case.Status</assignToReference>
             <operator>Assign</operator>
@@ -22,7 +22,7 @@
         <name>Check_Case_Status</name>
         <label>Check Case Status</label>
         <locationX>182</locationX>
-        <locationY>575</locationY>
+        <locationY>695</locationY>
         <defaultConnectorLabel>Case Closed</defaultConnectorLabel>
         <rules>
             <name>Case_Open</name>
@@ -43,8 +43,8 @@
     <decisions>
         <name>Related_Object_Null_Check</name>
         <label>Related Object Null Check</label>
-        <locationX>336</locationX>
-        <locationY>335</locationY>
+        <locationX>380</locationX>
+        <locationY>455</locationY>
         <defaultConnectorLabel>No Relation</defaultConnectorLabel>
         <rules>
             <name>Has_Related_Object</name>
@@ -87,7 +87,7 @@
         <name>Get_Case</name>
         <label>Get Case</label>
         <locationX>182</locationX>
-        <locationY>455</locationY>
+        <locationY>575</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Case_Status</targetReference>
@@ -110,14 +110,14 @@
         <name>Update_Case</name>
         <label>Update Case</label>
         <locationX>50</locationX>
-        <locationY>815</locationY>
+        <locationY>935</locationY>
         <inputReference>Get_Case</inputReference>
     </recordUpdates>
     <start>
-        <locationX>210</locationX>
+        <locationX>254</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Related_Object_Null_Check</targetReference>
+            <targetReference>Submit_close_event</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>and</filterLogic>
@@ -140,4 +140,26 @@
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
+    <subflows>
+        <name>Submit_close_event</name>
+        <label>Submit close event</label>
+        <locationX>380</locationX>
+        <locationY>335</locationY>
+        <connector>
+            <targetReference>Related_Object_Null_Check</targetReference>
+        </connector>
+        <flowName>CRM_Create_Thread_Event</flowName>
+        <inputAssignments>
+            <name>Event_Message</name>
+            <value>
+                <stringValue>Samtalen ble avsluttet</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Thread_ID</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
 </Flow>
