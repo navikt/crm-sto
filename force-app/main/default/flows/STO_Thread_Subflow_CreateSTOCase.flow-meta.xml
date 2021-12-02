@@ -5,7 +5,7 @@
         <name>Assign_Thread_Values_to_Case</name>
         <label>Assign Thread Values to Case</label>
         <locationX>176</locationX>
-        <locationY>278</locationY>
+        <locationY>398</locationY>
         <assignmentItems>
             <assignToReference>Case.Subject</assignToReference>
             <operator>Assign</operator>
@@ -41,6 +41,20 @@
                 <elementReference>Thread.STO_Category__c</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Case.CRM_Person_Confidentiality__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Person_Confidentiality.INT_Confidential__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Case.CRM_Person_Is_NAV_Employee__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Person_Confidentiality.INT_IsNavEmployee__c</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Create_Case</targetReference>
         </connector>
@@ -71,9 +85,34 @@
         <name>Create_Case</name>
         <label>Create Case</label>
         <locationX>176</locationX>
-        <locationY>398</locationY>
+        <locationY>518</locationY>
         <inputReference>Case</inputReference>
     </recordCreates>
+    <recordLookups>
+        <description>Query the person record to get confidentiality tags</description>
+        <name>Get_Person_Confidentiality</name>
+        <label>Get Person Confidentiality</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assign_Thread_Values_to_Case</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Account__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Thread.CRM_Account__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Person__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>INT_Confidential__c</queriedFields>
+        <queriedFields>INT_IsNavEmployee__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordLookups>
         <name>STO_Case_Record_Type</name>
         <label>STO Case Record Type</label>
@@ -81,7 +120,7 @@
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Assign_Thread_Values_to_Case</targetReference>
+            <targetReference>Get_Person_Confidentiality</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
