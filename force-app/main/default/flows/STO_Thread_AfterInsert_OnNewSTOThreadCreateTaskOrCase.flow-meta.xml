@@ -4,8 +4,8 @@
     <decisions>
         <name>Is_Case_Routing</name>
         <label>Is Case Routing</label>
-        <locationX>182</locationX>
-        <locationY>575</locationY>
+        <locationX>440</locationX>
+        <locationY>528</locationY>
         <defaultConnector>
             <targetReference>Create_STO_Case</targetReference>
         </defaultConnector>
@@ -55,11 +55,61 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Error_Log</name>
+        <label>Create Error Log</label>
+        <locationX>968</locationX>
+        <locationY>888</locationY>
+        <inputAssignments>
+            <field>Application_Domain__c</field>
+            <value>
+                <stringValue>NKS</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Category__c</field>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Level__c</field>
+            <value>
+                <stringValue>Critical</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Message__c</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_ID__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_Info__c</field>
+            <value>
+                <stringValue>Thread__c</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Source_Class__c</field>
+            <value>
+                <stringValue>Thread - After Insert - On New STO Thread Create Task or Case</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Application_Log__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <recordLookups>
         <name>Contact</name>
         <label>Contact</label>
-        <locationX>182</locationX>
-        <locationY>335</locationY>
+        <locationX>440</locationX>
+        <locationY>288</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Person</targetReference>
@@ -79,8 +129,8 @@
     <recordLookups>
         <name>Person</name>
         <label>Person</label>
-        <locationX>182</locationX>
-        <locationY>455</locationY>
+        <locationX>440</locationX>
+        <locationY>408</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Is_Case_Routing</targetReference>
@@ -100,8 +150,12 @@
     <recordUpdates>
         <name>Set_related_record_NAV_Task</name>
         <label>Set related record NAV Task</label>
-        <locationX>50</locationX>
-        <locationY>815</locationY>
+        <locationX>176</locationX>
+        <locationY>768</locationY>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Create_Error_Log</targetReference>
+        </faultConnector>
         <inputAssignments>
             <field>CRM_Related_Object__c</field>
             <value>
@@ -113,8 +167,11 @@
     <recordUpdates>
         <name>Set_Related_Record_STO_Case</name>
         <label>Set Related Record STO Case</label>
-        <locationX>314</locationX>
-        <locationY>815</locationY>
+        <locationX>704</locationX>
+        <locationY>768</locationY>
+        <faultConnector>
+            <targetReference>Create_Error_Log</targetReference>
+        </faultConnector>
         <inputAssignments>
             <field>CRM_Related_Object__c</field>
             <value>
@@ -124,11 +181,8 @@
         <inputReference>$Record</inputReference>
     </recordUpdates>
     <start>
-        <locationX>56</locationX>
+        <locationX>50</locationX>
         <locationY>0</locationY>
-        <connector>
-            <targetReference>Contact</targetReference>
-        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>CRM_Thread_Type__c</field>
@@ -139,14 +193,20 @@
         </filters>
         <object>Thread__c</object>
         <recordTriggerType>Create</recordTriggerType>
+        <scheduledPaths>
+            <connector>
+                <targetReference>Contact</targetReference>
+            </connector>
+            <pathType>AsyncAfterCommit</pathType>
+        </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Draft</status>
     <subflows>
         <name>Create_STO_Case</name>
         <label>Create STO Case</label>
-        <locationX>314</locationX>
-        <locationY>695</locationY>
+        <locationX>704</locationX>
+        <locationY>648</locationY>
         <connector>
             <targetReference>Set_Related_Record_STO_Case</targetReference>
         </connector>
@@ -162,8 +222,8 @@
     <subflows>
         <name>Create_STO_NAV_Task</name>
         <label>Create STO NAV Task</label>
-        <locationX>50</locationX>
-        <locationY>695</locationY>
+        <locationX>176</locationX>
+        <locationY>648</locationY>
         <connector>
             <targetReference>Set_related_record_NAV_Task</targetReference>
         </connector>
