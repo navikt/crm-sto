@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionCalls>
         <description>Automatically close the console tab after flow completion</description>
         <name>Close_Workspace_Tab</name>
         <label>Close Workspace Tab</label>
         <locationX>336</locationX>
-        <locationY>2774</locationY>
+        <locationY>3014</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -175,7 +175,7 @@
         <name>Set_Thread_isActive</name>
         <label>Set Thread isActive</label>
         <locationX>50</locationX>
-        <locationY>2222</locationY>
+        <locationY>2462</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.CRM_isActive__c</assignToReference>
             <operator>Assign</operator>
@@ -191,7 +191,7 @@
         <name>Set_Thread_Sensitive_Information</name>
         <label>Set Thread Sensitive Information</label>
         <locationX>182</locationX>
-        <locationY>2438</locationY>
+        <locationY>2678</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -207,7 +207,7 @@
         <name>Check_Thread_Close</name>
         <label>Check Thread Close</label>
         <locationX>182</locationX>
-        <locationY>2102</locationY>
+        <locationY>2342</locationY>
         <defaultConnector>
             <targetReference>Set_Thread_Sensitive_Information</targetReference>
         </defaultConnector>
@@ -257,7 +257,7 @@
         <name>Journal_Decision</name>
         <label>Journal Decision</label>
         <locationX>336</locationX>
-        <locationY>1646</locationY>
+        <locationY>1886</locationY>
         <defaultConnector>
             <targetReference>Thread_Update_Decision</targetReference>
         </defaultConnector>
@@ -298,7 +298,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Transfer_flow</targetReference>
+                <targetReference>Transfer_case</targetReference>
             </connector>
             <label>Transfer</label>
         </rules>
@@ -307,7 +307,7 @@
         <name>Thread_Update_Decision</name>
         <label>Thread Update Decision</label>
         <locationX>336</locationX>
-        <locationY>1982</locationY>
+        <locationY>2222</locationY>
         <defaultConnector>
             <targetReference>Close_Workspace_Tab</targetReference>
         </defaultConnector>
@@ -335,6 +335,19 @@
             <label>Update Thread</label>
         </rules>
     </decisions>
+    <dynamicChoiceSets>
+        <name>STO_Categories</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>STO_Category__c</picklistField>
+        <picklistObject>Case</picklistObject>
+    </dynamicChoiceSets>
+    <formulas>
+        <name>QUEUE_TRANSFER_TEXT</name>
+        <dataType>String</dataType>
+        <expression>&apos;Samtalen ble overført til &apos; + {!STO_Category_Picklist} + &apos; - &apos;</expression>
+    </formulas>
     <interviewLabel>Case STO Complete and Next {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Complete and Next</label>
     <loops>
@@ -445,14 +458,74 @@
         <object>Case</object>
     </recordUpdates>
     <recordUpdates>
+        <name>Transfer_case</name>
+        <label>Transfer case</label>
+        <locationX>204</locationX>
+        <locationY>1430</locationY>
+        <connector>
+            <targetReference>Update_Thread_Category</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>CRM_Run_Case_Assignment__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>STO_Category__c</field>
+            <value>
+                <elementReference>STO_Category_Picklist</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Forwarded</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Case</object>
+    </recordUpdates>
+    <recordUpdates>
         <name>Update_Thread</name>
         <label>Update Thread</label>
         <locationX>182</locationX>
-        <locationY>2558</locationY>
+        <locationY>2798</locationY>
         <connector>
             <targetReference>Close_Workspace_Tab</targetReference>
         </connector>
         <inputReference>Get_Case_Thread</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Thread_Category</name>
+        <label>Update Thread Category</label>
+        <locationX>204</locationX>
+        <locationY>1550</locationY>
+        <connector>
+            <targetReference>Submt_transfer_event</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Case_Thread.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>STO_Category__c</field>
+            <value>
+                <elementReference>STO_Category_Picklist</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Thread__c</object>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
@@ -572,7 +645,7 @@
             <inputParameters>
                 <name>label</name>
                 <value>
-                    <stringValue>Overfør henvendelse (gjøres i neste steg)</stringValue>
+                    <stringValue>Overfør til annen kø</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -596,6 +669,27 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>STO_Category_Picklist</name>
+            <choiceReferences>STO_Categories</choiceReferences>
+            <dataType>String</dataType>
+            <defaultValue>
+                <stringValue>Arbeid</stringValue>
+            </defaultValue>
+            <fieldText>Kø</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Transfer_Toggle.value</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>Close_Thread</name>
@@ -637,7 +731,7 @@
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
         <locationX>204</locationX>
-        <locationY>1766</locationY>
+        <locationY>2006</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
@@ -680,18 +774,18 @@
         </inputAssignments>
     </subflows>
     <subflows>
-        <name>Transfer_flow</name>
-        <label>Transfer flow</label>
+        <name>Submt_transfer_event</name>
+        <label>Submt transfer event</label>
         <locationX>204</locationX>
-        <locationY>1430</locationY>
+        <locationY>1670</locationY>
         <connector>
             <targetReference>Journal_Decision</targetReference>
         </connector>
-        <flowName>CRM_STO_Transfer</flowName>
+        <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>
-            <name>recordId</name>
+            <name>Event_Message</name>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>QUEUE_TRANSFER_TEXT</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

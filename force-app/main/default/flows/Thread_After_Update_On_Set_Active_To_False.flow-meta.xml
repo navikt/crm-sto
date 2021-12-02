@@ -43,7 +43,7 @@
     <decisions>
         <name>Related_Object_Null_Check</name>
         <label>Related Object Null Check</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>335</locationY>
         <defaultConnectorLabel>No Relation</defaultConnectorLabel>
         <rules>
@@ -114,7 +114,7 @@
         <inputReference>Get_Case</inputReference>
     </recordUpdates>
     <start>
-        <locationX>210</locationX>
+        <locationX>254</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Related_Object_Null_Check</targetReference>
