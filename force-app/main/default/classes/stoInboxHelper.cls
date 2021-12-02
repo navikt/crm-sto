@@ -26,7 +26,7 @@ public with sharing class stoInboxHelper {
         }
         List<Conversation_Note__c> noteList = [
             SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c, STO_External_Name__c
-            FROM Conversation_Note__c WHERE CRM_Is_Read__c = true AND CRM_Created_By_Ident__c = null 
+            FROM Conversation_Note__c WHERE CRM_Is_Read__c = true AND CRM_Created_By_Ident__c != null 
             ORDER BY CreatedDate DESC
         ];
         for(Conversation_Note__c t : noteList){
@@ -68,7 +68,7 @@ public with sharing class stoInboxHelper {
         }
         List<Conversation_Note__c> noteList = [
             SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c, STO_External_Name__c
-            FROM Conversation_Note__c WHERE CRM_Is_Read__c = false AND CRM_Created_By_Ident__c = null 
+            FROM Conversation_Note__c WHERE CRM_Is_Read__c = false AND CRM_Created_By_Ident__c != null 
             ORDER BY CreatedDate DESC
         ];
         for(Conversation_Note__c t : noteList){
