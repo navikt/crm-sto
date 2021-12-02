@@ -16,6 +16,7 @@ import showtermstext from '@salesforce/label/c.Skriv_til_oss_Show_terms';
 import textareadescription from '@salesforce/label/c.Skriv_til_oss_text_area_description';
 import SERVICE_TERMS_HEADER from '@salesforce/label/c.STO_Skriv_til_oss_terms_header';
 import SERVICE_TERMS from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text';
+import SERVICE_TERMS_2 from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text_2';
 import ACCEPT_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Accept_Terms_Button';
 import ACCEPT_TERMS_ERROR from '@salesforce/label/c.Skriv_til_oss_Accept_terms_error_message';
 import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_Button';
@@ -39,6 +40,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         textareadescription,
         SERVICE_TERMS_HEADER,
         SERVICE_TERMS,
+        SERVICE_TERMS_2,
         ACCEPT_TERMS_BUTTON,
         ACCEPT_TERMS_ERROR,
         DENY_TERMS_BUTTON,
@@ -127,6 +129,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get termsModal() {
         return this.template.querySelector('c-community-modal');
+    }
+
+    get termsContentText() {
+        return this.label.SERVICE_TERMS + this.label.SERVICE_TERMS_2;
     }
 
     showTerms() {
