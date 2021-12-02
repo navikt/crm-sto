@@ -37,12 +37,12 @@
         <name>STO_Category__mdt</name>
     </customMetadataTypeAccesses>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Message__c.CRM_External_Message__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Message__c.CRM_From_Label__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -52,12 +52,12 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Message__c.CRM_Message_Text__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>Message__c.CRM_Read__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -67,7 +67,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Message__c.CRM_Type__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -107,7 +107,7 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>Conversation_Note__c.CRM_Is_Read__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -134,7 +134,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Conversation_Note__c.CRM_Sent__c</field>
-        <readable>true</readable>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -157,12 +157,12 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Message__c.CRM_From_Contact__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Message__c.CRM_From_User__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -172,27 +172,22 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Thread__c.AAREG_Thread_Subject__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.CRM_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.CRM_Contact__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.CRM_From__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.CRM_Latest_Message_Datetime__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -207,27 +202,27 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.CRM_Related_Object_Type__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.CRM_Related_Object__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.CRM_Thread_Type__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.CRM_Type__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.CRM_isActive__c</field>
         <readable>true</readable>
     </fieldPermissions>
