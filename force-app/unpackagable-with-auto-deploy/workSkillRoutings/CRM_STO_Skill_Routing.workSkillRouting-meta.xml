@@ -27,6 +27,13 @@
     <workSkillRoutingAttributes>
         <field>Case.STO_Category__c</field>
         <isAdditionalSkill>false</isAdditionalSkill>
+        <skill>Hjelpemidler</skill>
+        <skillLevel>0</skillLevel>
+        <value>Hjelpemidler</value>
+    </workSkillRoutingAttributes>
+    <workSkillRoutingAttributes>
+        <field>Case.STO_Category__c</field>
+        <isAdditionalSkill>false</isAdditionalSkill>
         <skill>Internasjonal</skill>
         <skillLevel>0</skillLevel>
         <value>Internasjonal</value>
