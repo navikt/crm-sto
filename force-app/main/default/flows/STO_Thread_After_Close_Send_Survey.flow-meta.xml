@@ -5,10 +5,7 @@
         <description>Calculated thread close message.</description>
         <name>Thread_Close_Event_Message</name>
         <dataType>String</dataType>
-        <expression>IF(ISBLANK({!$User.CRM_NAV_Ident__c}),
-&apos;Samtalen ble avsluttet&apos;,
-{!$User.NKS_GreetingName__c} + ({!$User.CRM_NAV_Ident__c})  + &apos;avsluttet samtalen&apos;
-)</expression>
+        <expression>Samtalen ble avsluttet</expression>
     </formulas>
     <formulas>
         <description>Send message including survey link on closing Thread</description>
