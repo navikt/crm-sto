@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
+        <apexClass>CRM_ConvNoteJournalHelper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>stoHelperClass</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -113,4 +117,12 @@
         <object>Thread__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <pageAccesses>
+        <apexPage>CRM_Conversation_Note_PDF</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>CRM_Thread_PDF</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
 </PermissionSet>

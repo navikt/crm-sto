@@ -358,6 +358,14 @@
         <picklistField>STO_Category__c</picklistField>
         <picklistObject>Case</picklistObject>
     </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>Thread_Cause</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>Cause__c</picklistField>
+        <picklistObject>Thread__c</picklistObject>
+    </dynamicChoiceSets>
     <formulas>
         <name>QUEUE_TRANSFER_TEXT</name>
         <dataType>String</dataType>
