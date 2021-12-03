@@ -343,14 +343,6 @@
         </rules>
     </decisions>
     <dynamicChoiceSets>
-        <name>Thread_Cause</name>
-        <dataType>Picklist</dataType>
-        <displayField xsi:nil="true"/>
-        <object xsi:nil="true"/>
-        <picklistField>Cause__c</picklistField>
-        <picklistObject>Thread__c</picklistObject>
-    </dynamicChoiceSets>
-    <dynamicChoiceSets>
         <name>STO_Categories</name>
         <dataType>Picklist</dataType>
         <displayField xsi:nil="true"/>
