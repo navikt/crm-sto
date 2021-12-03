@@ -5,7 +5,7 @@
         <description>Calculated thread close message.</description>
         <name>Thread_Close_Event_Message</name>
         <dataType>String</dataType>
-        <expression>Samtalen ble avsluttet</expression>
+        <expression>&quot;Samtalen ble avsluttet&quot;</expression>
     </formulas>
     <formulas>
         <description>Send message including survey link on closing Thread</description>
