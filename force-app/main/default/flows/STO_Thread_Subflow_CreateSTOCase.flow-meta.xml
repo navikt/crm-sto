@@ -55,6 +55,13 @@
                 <elementReference>Get_Person_Confidentiality.INT_IsNavEmployee__c</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Case.CRM_Run_Case_Assignment__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Create_Case</targetReference>
         </connector>
