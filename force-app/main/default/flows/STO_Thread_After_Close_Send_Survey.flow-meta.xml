@@ -7,14 +7,6 @@
         <dataType>String</dataType>
         <expression>&quot;Samtalen ble avsluttet&quot;</expression>
     </formulas>
-    <formulas>
-        <description>Send message including survey link on closing Thread</description>
-        <name>Thread_Close_Survey_Message</name>
-        <dataType>String</dataType>
-        <expression>&quot;Vi ønsker å forbedre oss. Hvis du har ett minutt til overs vil vi gjerne at du svarer på disse spørsmålene: https://forms.office.com/r/szyVW7AmCv&quot;
-+BR()+BR()+
-&quot;We wish to improve our service. If you can spare a minute, we would appreciate you answering a few questions: https://forms.office.com/r/qYKwRcCfWE&quot;</expression>
-    </formulas>
     <interviewLabel>Thread {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Thread After Update - On Closed STO Thread Send Survey</label>
     <processMetadataValues>
@@ -41,9 +33,6 @@
         <label>Create Thread Close Event</label>
         <locationX>176</locationX>
         <locationY>335</locationY>
-        <connector>
-            <targetReference>Send_Message_With_Survey_Link</targetReference>
-        </connector>
         <inputAssignments>
             <field>CRM_Message_Text__c</field>
             <value>
@@ -60,32 +49,6 @@
             <field>CRM_Type__c</field>
             <value>
                 <stringValue>Event</stringValue>
-            </value>
-        </inputAssignments>
-        <object>Message__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordCreates>
-    <recordCreates>
-        <name>Send_Message_With_Survey_Link</name>
-        <label>Send Message With Survey Link</label>
-        <locationX>176</locationX>
-        <locationY>455</locationY>
-        <inputAssignments>
-            <field>CRM_Message_Text__c</field>
-            <value>
-                <elementReference>Thread_Close_Survey_Message</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CRM_Thread__c</field>
-            <value>
-                <elementReference>$Record.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CRM_Type__c</field>
-            <value>
-                <stringValue>Message</stringValue>
             </value>
         </inputAssignments>
         <object>Message__c</object>
