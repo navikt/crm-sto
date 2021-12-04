@@ -62,6 +62,13 @@
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Case.NKS_Henvendelse_BehandlingsId__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Thread.CRM_API_Reference__c</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Create_Case</targetReference>
         </connector>
