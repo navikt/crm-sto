@@ -9,7 +9,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.127.0.LATEST"
+                    "versionNumber": "0.131.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
@@ -17,7 +17,7 @@
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.6.0.LATEST"
+                    "versionNumber": "0.9.0.LATEST"
                 },
                 {
                     "package": "crm-platform-oppgave",
@@ -28,12 +28,16 @@
                     "versionNumber": "0.70.0.LATEST"
                 },
                 {
-                    "package": "crm-shared-user-notification",
+                    "package": "crm-shared-flowComponents",
                     "versionNumber": "0.1.0.LATEST"
                 },
                 {
+                    "package": "crm-shared-user-notification",
+                    "versionNumber": "0.3.0.LATEST"
+                },
+                {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.25.0.LATEST"
+                    "versionNumber": "0.28.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
@@ -54,6 +58,7 @@
         "crm-platform-integration": "0Ho2o0000008ORrCAM",
         "crm-platform-oppgave": "0Ho2o000000fxXzCAI",
         "crm-shared-user-notification": "0Ho2o000000fxY4CAI",
+        "crm-shared-flowComponents": "0Ho2o000000fxYJCAY",
         "crm-sto": "0Ho2o000000fxXpCAI"
     }
 }
