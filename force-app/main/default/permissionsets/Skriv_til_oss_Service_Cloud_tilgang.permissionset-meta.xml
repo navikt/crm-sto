@@ -102,6 +102,11 @@
         <field>Thread__c.STO_Sensitive_Information__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.CRM_Is_Closed__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Skriv til oss - Service Cloud tilgang</label>
     <objectPermissions>
@@ -113,4 +118,12 @@
         <object>Thread__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <pageAccesses>
+        <apexPage>CRM_Conversation_Note_PDF</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>CRM_Thread_PDF</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
 </PermissionSet>
