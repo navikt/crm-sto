@@ -4,8 +4,8 @@
     <assignments>
         <name>Remove_ID_and_Set_Status_for_Task_Create</name>
         <label>Remove ID and Set Status for Task Create</label>
-        <locationX>803</locationX>
-        <locationY>1008</locationY>
+        <locationX>1149</locationX>
+        <locationY>1248</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.Id</assignToReference>
             <operator>Assign</operator>
@@ -29,14 +29,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Send_NAV_Task</targetReference>
+            <targetReference>Send_NAV_Task_On_Complete</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Set_case_status_to_in_progress</name>
         <label>Set case status to in progress</label>
-        <locationX>275</locationX>
-        <locationY>768</locationY>
+        <locationX>621</locationX>
+        <locationY>1008</locationY>
         <assignmentItems>
             <assignToReference>RelatedCase.Status</assignToReference>
             <operator>Assign</operator>
@@ -58,8 +58,8 @@
     <assignments>
         <name>Set_New_Task_Fields</name>
         <label>Set New Task Fields</label>
-        <locationX>1331</locationX>
-        <locationY>1128</locationY>
+        <locationX>1677</locationX>
+        <locationY>1368</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Status__c</assignToReference>
             <operator>Assign</operator>
@@ -128,14 +128,14 @@
             <operator>Assign</operator>
         </assignmentItems>
         <connector>
-            <targetReference>Send_NAV_Task_0</targetReference>
+            <targetReference>Send_NAV_Task_On_No_Task</targetReference>
         </connector>
     </assignments>
     <decisions>
         <name>Case_exists</name>
         <label>Case exists</label>
-        <locationX>605</locationX>
-        <locationY>528</locationY>
+        <locationX>951</locationX>
+        <locationY>768</locationY>
         <defaultConnector>
             <targetReference>Get_Related_NAV_Task</targetReference>
         </defaultConnector>
@@ -166,8 +166,8 @@
     <decisions>
         <name>Check_Case_Owner</name>
         <label>Check Case Owner</label>
-        <locationX>143</locationX>
-        <locationY>648</locationY>
+        <locationX>489</locationX>
+        <locationY>888</locationY>
         <defaultConnector>
             <targetReference>Set_case_status_to_in_progress</targetReference>
         </defaultConnector>
@@ -186,10 +186,33 @@
         </rules>
     </decisions>
     <decisions>
+        <description>If this if the first message in the thread, then the case or nav task routing is handled in the thread flow</description>
+        <name>Check_if_first_message</name>
+        <label>Check if first message</label>
+        <locationX>522</locationX>
+        <locationY>408</locationY>
+        <defaultConnector>
+            <targetReference>Get_Thread</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not First Message</defaultConnectorLabel>
+        <rules>
+            <name>Is_First_Message</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_First_Message.Id</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.Id</elementReference>
+                </rightValue>
+            </conditions>
+            <label>Is First Message</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Check_NAV_Task</name>
         <label>Check NAV Task</label>
-        <locationX>1067</locationX>
-        <locationY>768</locationY>
+        <locationX>1413</locationX>
+        <locationY>1008</locationY>
         <defaultConnector>
             <targetReference>Get_STB_NAV_Unit</targetReference>
         </defaultConnector>
@@ -260,8 +283,8 @@
     <recordCreates>
         <name>Create_Application_Log</name>
         <label>Create Application Log</label>
-        <locationX>539</locationX>
-        <locationY>1008</locationY>
+        <locationX>885</locationX>
+        <locationY>1248</locationY>
         <inputAssignments>
             <field>Application_Domain__c</field>
             <value>
@@ -304,8 +327,8 @@
     <recordLookups>
         <name>Get_case</name>
         <label>Get case</label>
-        <locationX>605</locationX>
-        <locationY>408</locationY>
+        <locationX>951</locationX>
+        <locationY>648</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Case_exists</targetReference>
@@ -324,11 +347,36 @@
         <queriedFields>OwnerId</queriedFields>
     </recordLookups>
     <recordLookups>
+        <description>Run a query to get the first message in the thread</description>
+        <name>Get_First_Message</name>
+        <label>Get First Message</label>
+        <locationX>522</locationX>
+        <locationY>288</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_if_first_message</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Thread__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.CRM_Thread__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Message__c</object>
+        <queriedFields>Id</queriedFields>
+        <sortField>CRM_Sent_date__c</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <description>Check if the thread is related to a NAV task as process object</description>
         <name>Get_Related_NAV_Task</name>
         <label>Get Related NAV Task</label>
-        <locationX>1067</locationX>
-        <locationY>648</locationY>
+        <locationX>1413</locationX>
+        <locationY>888</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_NAV_Task</targetReference>
@@ -361,8 +409,8 @@
         <description>Get the reference to the NAV unit who initiated the dialogue</description>
         <name>Get_STB_NAV_Unit</name>
         <label>Get STB NAV Unit</label>
-        <locationX>1331</locationX>
-        <locationY>888</locationY>
+        <locationX>1677</locationX>
+        <locationY>1128</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Vurder_Svar_Task_Type</targetReference>
@@ -383,8 +431,8 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>605</locationX>
-        <locationY>288</locationY>
+        <locationX>951</locationX>
+        <locationY>528</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_case</targetReference>
@@ -404,8 +452,8 @@
     <recordLookups>
         <name>Get_Vurder_Svar_Task_Type</name>
         <label>Get Vurder Svar Task Type</label>
-        <locationX>1331</locationX>
-        <locationY>1008</locationY>
+        <locationX>1677</locationX>
+        <locationY>1248</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_New_Task_Fields</targetReference>
@@ -433,8 +481,8 @@
     <recordLookups>
         <name>Get_Vurder_Svar_Task_Type_0</name>
         <label>Get Vurder Svar Task Type</label>
-        <locationX>803</locationX>
-        <locationY>888</locationY>
+        <locationX>1149</locationX>
+        <locationY>1128</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Remove_ID_and_Set_Status_for_Task_Create</targetReference>
@@ -462,12 +510,56 @@
     <recordUpdates>
         <name>Update_Related_Case</name>
         <label>Update Related Case</label>
-        <locationX>275</locationX>
-        <locationY>888</locationY>
+        <locationX>621</locationX>
+        <locationY>1128</locationY>
         <faultConnector>
             <targetReference>Create_Application_Log</targetReference>
         </faultConnector>
         <inputReference>RelatedCase</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <description>Updates the thread related object when new nav task is created</description>
+        <name>Update_Thread_Reference</name>
+        <label>Update Thread Reference</label>
+        <locationX>1149</locationX>
+        <locationY>1488</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.CRM_Thread__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>CRM_Related_Object__c</field>
+            <value>
+                <elementReference>Send_NAV_Task_On_Complete.NAV_Task.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Thread__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <description>Updated the related object when the new nav task is generated</description>
+        <name>Update_Thread_Reference_On_No_Task</name>
+        <label>Update Thread Reference</label>
+        <locationX>1677</locationX>
+        <locationY>1608</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.CRM_Thread__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>CRM_Related_Object__c</field>
+            <value>
+                <elementReference>Send_NAV_Task_On_No_Task.NAV_Task.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Thread__c</object>
     </recordUpdates>
     <start>
         <locationX>50</locationX>
@@ -498,7 +590,7 @@
         <recordTriggerType>Create</recordTriggerType>
         <scheduledPaths>
             <connector>
-                <targetReference>Get_Thread</targetReference>
+                <targetReference>Get_First_Message</targetReference>
             </connector>
             <pathType>AsyncAfterCommit</pathType>
         </scheduledPaths>
@@ -506,10 +598,13 @@
     </start>
     <status>Draft</status>
     <subflows>
-        <name>Send_NAV_Task</name>
+        <name>Send_NAV_Task_On_Complete</name>
         <label>Send NAV Task</label>
-        <locationX>803</locationX>
-        <locationY>1128</locationY>
+        <locationX>1149</locationX>
+        <locationY>1368</locationY>
+        <connector>
+            <targetReference>Update_Thread_Reference</targetReference>
+        </connector>
         <flowName>CRM_Send_NAV_Task_Auto</flowName>
         <inputAssignments>
             <name>NAV_Task</name>
@@ -520,10 +615,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </subflows>
     <subflows>
-        <name>Send_NAV_Task_0</name>
+        <name>Send_NAV_Task_On_No_Task</name>
         <label>Send NAV Task</label>
-        <locationX>1331</locationX>
-        <locationY>1248</locationY>
+        <locationX>1677</locationX>
+        <locationY>1488</locationY>
+        <connector>
+            <targetReference>Update_Thread_Reference_On_No_Task</targetReference>
+        </connector>
         <flowName>CRM_Send_NAV_Task_Auto</flowName>
         <inputAssignments>
             <name>NAV_Task</name>

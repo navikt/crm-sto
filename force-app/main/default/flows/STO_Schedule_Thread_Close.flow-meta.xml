@@ -101,7 +101,7 @@
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
-        <filterLogic>1 AND (2 OR 3) AND 4</filterLogic>
+        <filterLogic>1 AND (2 OR 3) AND 4 AND 5</filterLogic>
         <filters>
             <field>CRM_External_Message__c</field>
             <operator>EqualTo</operator>
@@ -130,6 +130,13 @@
                 <stringValue>Message</stringValue>
             </value>
         </filters>
+        <filters>
+            <field>CRM_HenvendelseId__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
         <object>Message__c</object>
         <recordTriggerType>Create</recordTriggerType>
         <scheduledPaths>
@@ -145,5 +152,5 @@
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
 </Flow>
