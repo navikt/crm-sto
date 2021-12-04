@@ -8,7 +8,7 @@ public with sharing class stoInboxHelper {
         List<Thread__c> threadList = [
             SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c, CRM_Is_Closed__C  
             FROM Thread__c
-            WHERE (CRM_Number_of_unread_Messages__c = 0 AND CRM_Closed_Date__c != null )
+            WHERE (CRM_Number_of_unread_Messages__c = 0 AND CRM_Is_Closed__C = true )
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for(Thread__c t : threadList){
@@ -50,7 +50,7 @@ public with sharing class stoInboxHelper {
         List<Thread__c> threadList = [
             SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c, CRM_Is_Closed__C 
             FROM Thread__c 
-            WHERE (CRM_Number_of_unread_Messages__c > 0 OR CRM_Closed_Date__c = null)
+            WHERE (CRM_Number_of_unread_Messages__c > 0 OR CRM_Is_Closed__c = false )
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for(Thread__c t : threadList){
