@@ -6,7 +6,7 @@ public with sharing class stoInboxHelper {
     public static List<thread> getThreads() {
         List<thread> inboxlist = new List <thread>(); 
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c  
+            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c, CRM_Is_Closed__C  
             FROM Thread__c
             WHERE (CRM_Number_of_unread_Messages__c = 0 AND CRM_Closed_Date__c != null )
             ORDER BY CRM_Latest_Message_Datetime__c DESC
@@ -20,8 +20,8 @@ public with sharing class stoInboxHelper {
             i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
             i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
             i.objectName = 'skriv-til-oss'; 
-            i.status = 'Lukket'; 
-            if(i.closeDate == null) i.status = 'Åpen'; 
+            i.status = 'Åpen'; 
+            if(t.CRM_Is_Closed__C) i.status = 'Lukket'; 
             inboxlist.add(i);  
         }
         List<Conversation_Note__c> noteList = [
@@ -48,7 +48,7 @@ public with sharing class stoInboxHelper {
     public static List<thread> getRecentThreads() {
         List<thread> inboxlist = new List <thread>(); 
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c 
+            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c, CRM_Is_Closed__C 
             FROM Thread__c 
             WHERE (CRM_Number_of_unread_Messages__c > 0 OR CRM_Closed_Date__c = null)
             ORDER BY CRM_Latest_Message_Datetime__c DESC
@@ -62,8 +62,8 @@ public with sharing class stoInboxHelper {
             i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
             i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
             i.objectName = 'skriv-til-oss'; 
-            i.status = 'Lukket'; 
-            if(i.closeDate == null) i.status = 'Åpen'; 
+            i.status = 'Åpen'; 
+            if(t.CRM_Is_Closed__C) i.status = 'Lukket'; 
             inboxlist.add(i);  
         }
         List<Conversation_Note__c> noteList = [
