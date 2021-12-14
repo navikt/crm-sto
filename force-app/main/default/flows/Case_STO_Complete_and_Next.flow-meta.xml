@@ -749,6 +749,7 @@
                 </conditions>
             </visibilityRule>
         </fields>
+        <nextOrFinishButtonLabel>Fullfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
