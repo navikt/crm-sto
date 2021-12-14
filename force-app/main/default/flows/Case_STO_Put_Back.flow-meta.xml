@@ -278,6 +278,7 @@
             </fields>
             <isRequired>false</isRequired>
         </fields>
+        <nextOrFinishButtonLabel>Legg tilbake</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
