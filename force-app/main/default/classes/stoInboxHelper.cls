@@ -20,8 +20,7 @@ public with sharing class stoInboxHelper {
             i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
             i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
             i.objectName = 'skriv-til-oss'; 
-            i.status = 'Åpen'; 
-            if(t.CRM_Is_Closed__C) i.status = 'Lukket'; 
+            i.status = (t.CRM_Is_Closed__C)?'Lukket':'Åpen';
             inboxlist.add(i);  
         }
         List<Conversation_Note__c> noteList = [
@@ -62,8 +61,7 @@ public with sharing class stoInboxHelper {
             i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
             i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
             i.objectName = 'skriv-til-oss'; 
-            i.status = 'Åpen'; 
-            if(t.CRM_Is_Closed__C) i.status = 'Lukket'; 
+            i.status = (t.CRM_Is_Closed__C)?'Lukket':'Åpen';
             inboxlist.add(i);  
         }
         List<Conversation_Note__c> noteList = [
