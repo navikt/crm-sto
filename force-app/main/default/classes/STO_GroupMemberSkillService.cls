@@ -68,14 +68,6 @@ public with sharing class STO_GroupMemberSkillService {
      * @author Stian Ruud Schikora | 12-16-2021
      **/
     public void getGroupMembers() {
-        System.debug(nksUserMap.keySet());
-        System.debug(
-            [
-                SELECT UserOrGroupId, Group.DeveloperName
-                FROM GroupMember
-                WHERE Group.DeveloperName = 'Fortrolig_Adresse_AD'
-            ]
-        );
         for (GroupMember groupMember : [
             SELECT UserOrGroupId, Group.DeveloperName
             FROM GroupMember
