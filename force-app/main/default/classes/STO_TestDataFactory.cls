@@ -304,6 +304,7 @@ public class STO_TestDataFactory {
             return new Map<String, Object>{
                 'FirstName' => 'Test',
                 'LastName' => 'Testesen' + generateRandomString(6),
+                'Username' => generateRandomString(8) + '@test.com',
                 'LanguageLocaleKey' => 'no',
                 'TimeZoneSidKey' => 'Europe/Paris',
                 'LocaleSidKey' => 'no_NO',
