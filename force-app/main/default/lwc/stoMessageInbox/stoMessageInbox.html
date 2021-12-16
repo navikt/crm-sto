@@ -24,7 +24,7 @@
                 <h2 class="typo-undertittel">Tidligere meldinger</h2>
             </div>
             <template for:each={threads} for:item="thread">
-                <c-sto-Message-Inbox-Item thread={thread} key={thread.Id}></c-sto-Message-Inbox-Item>
+                <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
             </template>
         </template>
     </div>
