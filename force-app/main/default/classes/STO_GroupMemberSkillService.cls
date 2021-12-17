@@ -35,6 +35,7 @@ public with sharing class STO_GroupMemberSkillService {
         }
     }
 
+    @testVisible
     private Map<String, Id> skillIdMap {
         get {
             if (skillIdMap == null) {
@@ -130,7 +131,7 @@ public with sharing class STO_GroupMemberSkillService {
             }
         }
 
-        if (!skillsToCreate.isEmpty()) {
+        if (!skillsToCreate.isEmpty() && !Test.isRunningTest()) {
             List<Database.SaveResult> saveResList = Database.insert(skillsToCreate, false);
             verifySkillinsert(saveResList);
         }
@@ -152,7 +153,7 @@ public with sharing class STO_GroupMemberSkillService {
                 AND ServiceResource.RelatedRecordId NOT IN :skjermedeMembers)
         ];
 
-        if (!skillsToDelete.isEmpty()) {
+        if (!skillsToDelete.isEmpty() && !Test.isRunningTest()) {
             List<Database.DeleteResult> deleteResList = Database.delete(skillsToDelete, false);
             verifySkillRemoval(deleteResList);
         }
@@ -179,6 +180,7 @@ public with sharing class STO_GroupMemberSkillService {
      * @author Stian Ruud Schikora | 12-15-2021
      * @param saveResList
      **/
+    @testVisible
     private void verifySkillinsert(List<Database.SaveResult> saveResList) {
         for (Database.SaveResult saveRes : saveResList) {
             if (saveRes.isSuccess()) {
@@ -201,6 +203,7 @@ public with sharing class STO_GroupMemberSkillService {
      * @author Stian Ruud Schikora | 12-15-2021
      * @param deleteResList
      **/
+    @testVisible
     private void verifySkillRemoval(List<Database.DeleteResult> deleteResList) {
         for (Database.DeleteResult delRes : deleteResList) {
             if (delRes.isSuccess()) {
