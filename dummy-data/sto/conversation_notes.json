@@ -1,0 +1,13 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "Conversation_Note__c",
+                "referenceId": "convNoteRef1"
+            },
+            "CRM_Account__c": "@AccountRef1",
+            "CRM_Conversation_Note__c": "Dette er et testreferat",
+            "CRM_Created_By_Ident__c": "Z999999"
+        }
+    ]
+}
