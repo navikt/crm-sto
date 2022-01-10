@@ -52,6 +52,21 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     showTextboxWarning = false;
     showTermWarning = false;
 
+    get errors() {
+        let errorList = [];
+        if (this.showTextboxWarning) {
+            errorList.push({ Id: 1, EventItem: '.inputTextbox', Text: 'Tekstboksen kan ikke være tom.' });
+        }
+        if (this.showTermWarning) {
+            errorList.push({
+                Id: 2,
+                EventItem: '.checkboks',
+                Text: 'Du må godta vilkårene for å sende beskjeden.'
+            });
+        }
+        return errorList;
+    }
+
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
@@ -180,6 +195,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             if (!this.acceptedTerms) {
                 this.showTermWarning = true;
             }
+            let errorSummary = this.template.querySelector('.errorSummary');
+            errorSummary.focusHeader();
         }
     }
 
@@ -187,9 +204,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.showTextboxWarning || this.showTermWarning;
     }
 
-    targetTextbox(event) {
-        event.preventDefault();
-        let textbox = this.template.querySelector('.inputTextbox');
-        textbox.focus();
+    handleErrorClick(event) {
+        let item = this.template.querySelector(event.detail);
+        item.focus();
     }
 }
