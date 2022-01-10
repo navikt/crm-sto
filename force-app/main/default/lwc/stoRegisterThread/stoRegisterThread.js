@@ -48,6 +48,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     };
     logopath = navlogos + '/email.svg';
     newslist;
+    showTextboxWarning = false;
+    showTermWarning = false;
 
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
@@ -100,10 +102,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @track message;
     inputChange(event) {
         this.message = event.target.value;
-
-        if (this.message && this.message.length != 0) {
-            this.showErrorNoMessage = false;
-        }
     }
 
     renderedCallback() {
@@ -119,10 +117,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      */
 
     togglechecked() {
-        this.acceptedTerms = this.acceptedTerms == true ? false : true;
-        if (this.showError == true) {
-            this.showError = false;
-        }
+        this.acceptedTerms = !this.acceptedTerms;
     }
 
     get termsModal() {
@@ -161,6 +156,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitrequest() {
+        this.showTextboxWarning = false;
+        this.showTermWarning = false;
         if (this.acceptedTerms == true && this.message && this.message.length != null) {
             this.showspinner = true;
 
@@ -175,12 +172,22 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 });
             });
         } else {
-            if (this.acceptedTerms == false) {
-                this.showError = true;
+            if (!this.message || this.message.length == null) {
+                this.showTextboxWarning = true;
             }
-            if (this.message == null || !this.message || this.message.length != 0) {
-                this.showErrorNoMessage = true;
+            if (!this.acceptedTerms) {
+                this.showTermWarning = true;
             }
         }
+    }
+
+    get showWarnings() {
+        return this.showTextboxWarning || this.showTermWarning;
+    }
+
+    targetTextbox(event) {
+        event.preventDefault();
+        let textbox = this.template.querySelector('.inputTextbox');
+        textbox.focus();
     }
 }
