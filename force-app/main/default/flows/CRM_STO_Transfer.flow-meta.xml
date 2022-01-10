@@ -179,12 +179,12 @@
     <formulas>
         <name>NAV_Unit_Transfer_Text</name>
         <dataType>String</dataType>
-        <expression>&apos;Samtalen ble overført til &apos; + {!NAV_Unit_Allocator.selectedUnitName} + &apos; - &apos;</expression>
+        <expression>&apos;Samtalen din er overført til avdeling &apos; + {!NAV_Unit_Allocator.selectedUnitName} + &apos; - &apos;</expression>
     </formulas>
     <formulas>
         <name>Queue_Transfer_Text</name>
         <dataType>String</dataType>
-        <expression>&apos;Samtalen ble overført til &apos; + {!STO_Category_Picklist} + &apos; - &apos;</expression>
+        <expression>&apos;Samtalen din er overført til avdeling &apos; + {!STO_Category_Picklist} + &apos; - &apos;</expression>
     </formulas>
     <interviewLabel>STO transfer {!$Flow.CurrentDateTime}</interviewLabel>
     <label>STO transfer</label>
@@ -514,6 +514,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <name>Event_Type</name>
+            <value>
+                <stringValue>QUEUE_TRANSFER</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <name>Thread_ID</name>
             <value>
                 <elementReference>Get_Thread.Id</elementReference>
@@ -534,6 +540,12 @@
             <name>Event_Message</name>
             <value>
                 <elementReference>NAV_Unit_Transfer_Text</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Event_Type</name>
+            <value>
+                <stringValue>UNIT_TRANSFER</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
