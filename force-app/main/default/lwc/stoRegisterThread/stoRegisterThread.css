@@ -39,7 +39,7 @@
 .logo {
     margin: 1em;
 }
-.typo-undertittel {
+.typo-undertittel_farge {
     color: #0067c5;
     margin-bottom: 2em;
 }
@@ -59,4 +59,17 @@
 .knapp-width {
     justify-content: center;
     width: 14em;
+}
+
+.list {
+    list-style-type: disc;
+}
+
+.listItem {
+    width: fit-content;
+    margin: auto;
+}
+
+.feilBoks {
+    border: var(--navds-global-color-nav-red) solid 3px;
 }
