@@ -34,6 +34,12 @@
         <locationX>176</locationX>
         <locationY>335</locationY>
         <inputAssignments>
+            <field>CRM_Event_Type__c</field>
+            <value>
+                <stringValue>END_OF_CHAT</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>CRM_Message_Text__c</field>
             <value>
                 <elementReference>Thread_Close_Event_Message</elementReference>

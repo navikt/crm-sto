@@ -307,6 +307,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <name>Event_Type</name>
+            <value>
+                <stringValue>QUEUE_TRANSFER</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <name>Thread_ID</name>
             <value>
                 <elementReference>ThreadID</elementReference>
