@@ -61,7 +61,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (this.showTermWarning) {
             errorList.push({
                 Id: 2,
-                EventItem: '.checkboks',
+                EventItem: '.checkboxContainer',
                 Text: 'Du må godta vilkårene for å sende beskjeden.'
             });
         }
@@ -154,11 +154,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     termsAccepted() {
         this.acceptedTerms = true;
         this.closeTerms();
+        this.sendChecked();
     }
 
     termsDenied() {
         this.acceptedTerms = false;
         this.closeTerms();
+        this.sendChecked();
     }
     /**
      * Handles terms modal end
@@ -207,5 +209,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     handleTextChange(event) {
         this.message = event.detail;
+    }
+
+    sendChecked() {
+        let checkbox = this.template.querySelector('c-community-checkbox');
+        checkbox.setChecked(this.acceptedTerms);
+    }
+
+    handleChecked(event) {
+        this.acceptedTerms = event.detail;
     }
 }
