@@ -1,29 +1,22 @@
 <template>
-    <div class="inboxwrapper">
-        <div class="header decorator-wrapper">
+    <div class="decorator-wrapper inboxwrapper">
+        <div class="header">
             <h1 class="typo-sidetittel">{title}</h1>
         </div>
         <div class="header">
-            <c-nav-Button url="https://www.nav.no" title="Skriv ny melding"></c-nav-Button>
+            <c-nav-Button url='https://www.nav.no' title='Skriv ny melding' ></c-nav-Button>
         </div>
-        <div class="decorator-wrapper">
-            <div class="body">
-                <p class="navds-body-long navds-typo--spacing">
-                    <strong>
-                        For meldinger om dokumenter og/eller informasjonsbrev se
-                        <a href="https://mininnboks.nav.no/" class="lenke lenke-inline" target="_blank"
-                            >brev og vedtak</a
-                        >
-                    </strong>
-                </p>
+        <div class="body">
+            <p class="navds-body-long navds-typo--spacing"><strong>
+                For meldinger om dokumenter og/eller informasjonsbrev se <a href="https://mininnboks.nav.no/" class="lenke lenke-inline" target="_blank">brev og vedtak</a>
+            </strong></p>
+        </div>
+        <template if:true={showrecentthreads}>
+            <div class="subheader">
+                <h2 class="typo-undertittel">Siste meldinger</h2>
             </div>
-            <template if:true={showrecentthreads}>
-                <div class="subheader">
-                    <h2 class="typo-undertittel">Siste meldinger</h2>
-                </div>
-                <template for:each={recentthreads} for:item="thread">
-                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
-                </template>
+            <template for:each={recentthreads} for:item="thread">
+                <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
             </template>
         </template>
         <template if:true={showthreads}>
@@ -33,6 +26,6 @@
             <template for:each={threads} for:item="thread">
                 <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
             </template>
-        </div>
+        </template>
     </div>
 </template>
