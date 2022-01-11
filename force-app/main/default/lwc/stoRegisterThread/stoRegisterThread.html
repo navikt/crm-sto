@@ -27,26 +27,17 @@
                                 key={news.id}
                             ></c-community-expandable-panel>
                         </template>
-                        <lightning-textarea
-                            name="input1"
-                            onchange={inputChange}
-                            variant="label-hidden"
-                            label="Skriv din melding her"
-                            class="typo-normal inputTextbox"
-                            maxlength="1000"
-                        ></lightning-textarea>
+                        <c-community-textarea
+                            max-length="1000"
+                            class="inputTextbox"
+                            ontextchanged={handleTextChange}
+                        ></c-community-textarea>
                         <div class="skjemaelement checkbox">
-                            <input
-                                type="checkbox"
-                                class="skjemaelement__input checkboks"
-                                data-id="checkbox"
-                                id="godkjennVilkaar"
-                                aria-invalid="false"
-                                name="godkjennVilkaar"
-                                onchange={togglechecked}
-                                aria-describedby="checkbox-feilmelding"
-                                checked={acceptedTerms}
-                            /><label class="skjemaelement__label" for="godkjennVilkaar">{label.acceptermtext}</label
+                            <c-community-checkbox
+                                label-text={label.acceptermtext}
+                                oncheckedchanged={handleChecked}
+                                class="checkboxContainer"
+                            ></c-community-checkbox
                             ><a onclick={showTerms} class="slds-var-m-left_small lenke vilkar-link" tabindex="0"
                                 >{label.showtermstext}</a
                             >

@@ -1,0 +1,20 @@
+<template>
+    <div class={wrapperClass}>
+        <input
+            aria-invalid={error}
+            type="checkbox"
+            class="navds-checkbox__input checkboks"
+            data-id="checkbox"
+            id="checkbox"
+            name="checkbox"
+            onchange={toggleChecked}
+            checked={checked}
+            onfocusout={checkError}
+        /><label class="navds-checkbox__label" for="checkbox">{labelText}</label>
+        <template if:true={error}>
+            <div class="navds-error-message navds-error-message--medium navds-label">
+                Du må godta vilkårene for å sende melding
+            </div>
+        </template>
+    </div>
+</template>
