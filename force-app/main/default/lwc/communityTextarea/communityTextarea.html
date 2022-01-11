@@ -1,11 +1,6 @@
 <template>
     <div class={wrapperClass}>
         <div class="navds-textarea__wrapper">
-            <!-- <textarea
-                    aria-invalid="true"
-                    class="navds-textarea__input navds-body-short navds-body-medium navds-textarea--counter"
-                    style="height: 66px; overflow: hidden"
-                ></textarea> -->
             <textarea
                 aria-invalid={errorState}
                 name="textbox"
@@ -15,6 +10,7 @@
                 class="navds-textarea__input navds-body-short navds-body-medium navds-textarea--counter tekstboks"
                 maxlength={maxLength}
                 onfocusout={checkError}
+                rows="6"
             ></textarea>
             <span class="sr-only"> Tekstområde med plass til {maxLength} tegn.</span>
             <p aria-live="off" class="navds-textarea__counter navds-body-short">
