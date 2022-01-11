@@ -27,14 +27,19 @@
                                 key={news.id}
                             ></c-community-expandable-panel>
                         </template>
-                        <lightning-textarea
+                        <!-- <lightning-textarea
                             name="input1"
                             onchange={inputChange}
                             variant="label-hidden"
                             label="Skriv din melding her"
                             class="typo-normal inputTextbox"
                             maxlength="1000"
-                        ></lightning-textarea>
+                        ></lightning-textarea> -->
+                        <c-community-textarea
+                            max-length="1000"
+                            class="inputTextbox"
+                            ontextchanged={handleTextChange}
+                        ></c-community-textarea>
                         <div class="skjemaelement checkbox">
                             <input
                                 type="checkbox"

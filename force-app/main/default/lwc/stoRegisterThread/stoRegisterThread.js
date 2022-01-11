@@ -51,6 +51,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     newslist;
     showTextboxWarning = false;
     showTermWarning = false;
+    message;
 
     get errors() {
         let errorList = [];
@@ -113,11 +114,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     setParametersBasedOnUrl() {
         this.selectedTheme = this.urlStateParameters.category;
-    }
-
-    @track message;
-    inputChange(event) {
-        this.message = event.target.value;
     }
 
     renderedCallback() {
@@ -207,5 +203,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     handleErrorClick(event) {
         let item = this.template.querySelector(event.detail);
         item.focus();
+    }
+
+    handleTextChange(event) {
+        this.message = event.detail;
     }
 }
