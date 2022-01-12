@@ -31,7 +31,7 @@
                                     "components": [
                                         {
                                             "componentAttributes": {
-                                                "NAVarea": "Privatperson",
+                                                "n-a-varea": "Privatperson",
                                                 "navareapicklist": "Privatperson"
                                             },
                                             "componentName": "c:globalCommunityHeader",
@@ -71,7 +71,7 @@
                                     "components": [
                                         {
                                             "componentAttributes": {
-                                                "NAVarea": "Privatperson",
+                                                "n-a-varea": "Privatperson",
                                                 "navareapicklist": "Privatperson"
                                             },
                                             "componentName": "c:globalCommunityFooter",
