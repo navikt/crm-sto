@@ -42,7 +42,11 @@
                                 {label.showtermstext}
                             </button>
                         </div>
-                        <c-community-modal show-modal={modalOpen} onmodalclosed={closeTerms}>
+                        <c-community-modal
+                            show-modal={modalOpen}
+                            onmodalclosed={closeTerms}
+                            onkeyup={handleKeyboardEvent}
+                        >
                             <h1
                                 slot="modalHeader"
                                 tabindex="0"

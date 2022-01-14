@@ -242,4 +242,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
         }
     };
+
+    handleKeyboardEvent(event) {
+        if (event.key == 'Escape') {
+            this.closeTerms();
+        }
+    }
 }
