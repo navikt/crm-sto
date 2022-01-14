@@ -38,11 +38,11 @@
                                 oncheckedchanged={handleChecked}
                                 class="checkboxContainer"
                             ></c-community-checkbox
-                            ><a onclick={showTerms} class="slds-var-m-left_small lenke vilkar-link" tabindex="0"
-                                >{label.showtermstext}</a
-                            >
+                            ><button onclick={showTerms} class="slds-var-m-left_small lenke vilkar-link" tabindex="0">
+                                {label.showtermstext}
+                            </button>
                         </div>
-                        <c-community-modal>
+                        <c-community-modal show-modal={modalOpen} onmodalclosed={closeTerms}>
                             <h1
                                 slot="modalHeader"
                                 tabindex="0"
