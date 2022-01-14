@@ -51,6 +51,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     showTextboxWarning = false;
     showTermWarning = false;
     message;
+    modalOpen = false;
 
     get errors() {
         let errorList = [];
@@ -66,7 +67,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
         return errorList;
     }
-
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
@@ -79,6 +79,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             .catch((error) => {
                 //Failed getting sto categories
             });
+    }
+
+    disconnectedCallback() {
+        document.addEventListener('focus', this.handleModalFocus, true);
     }
 
     /**
@@ -140,13 +144,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     showTerms() {
-        const modal = this.template.querySelector('c-community-modal');
-        this.termsModal.showModal = true;
+        this.modalOpen = true;
+        document.addEventListener('focus', this.handleModalFocus, true);
+        this.termsModal.focusModal();
     }
 
     closeTerms() {
-        const modal = this.template.querySelector('c-community-modal');
-        this.termsModal.showModal = false;
+        document.removeEventListener('focus', this.handleModalFocus, true);
+        this.modalOpen = false;
     }
 
     termsAccepted() {
@@ -217,4 +222,22 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     handleChecked(event) {
         this.acceptedTerms = event.detail;
     }
+
+    handleModalFocus = (event) => {
+        if (this.modalOpen) {
+            let modal = false;
+            // event.target always returns the shadow dom.
+            // event.path returns the 'target' and all parent elements
+            // loop through all elements to see if it's an ariaModal
+            event.path.forEach((pathItem) => {
+                if (pathItem.ariaModal) {
+                    modal = true;
+                    return;
+                }
+            });
+            if (!modal) {
+                this.termsModal.focusModal();
+            }
+        }
+    };
 }
