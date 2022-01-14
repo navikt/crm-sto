@@ -32,4 +32,10 @@ export default class CommunityModal extends LightningElement {
             this.bufferFocus = true;
         }
     }
+
+    @api
+    focusLoop() {
+        const modalFocusElement = this.template.querySelector('.modalFocus');
+        modalFocusElement.focus();
+    }
 }
