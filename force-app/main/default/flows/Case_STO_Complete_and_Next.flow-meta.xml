@@ -361,7 +361,7 @@
     <formulas>
         <name>QUEUE_TRANSFER_TEXT</name>
         <dataType>String</dataType>
-        <expression>&apos;Samtalen ble overført til &apos; + {!STO_Category_Picklist} + &apos; - &apos;</expression>
+        <expression>{!STO_Category_Picklist}</expression>
     </formulas>
     <interviewLabel>Case STO Complete and Next {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Complete and Next</label>
@@ -820,6 +820,12 @@
             <name>Event_Message</name>
             <value>
                 <elementReference>QUEUE_TRANSFER_TEXT</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Event_Type</name>
+            <value>
+                <stringValue>QUEUE_TRANSFER</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>

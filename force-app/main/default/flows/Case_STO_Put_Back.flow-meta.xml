@@ -100,7 +100,7 @@
     <formulas>
         <name>Queue_Transfer_Text</name>
         <dataType>String</dataType>
-        <expression>&apos;Samtalen ble overført til &apos; + {!Chosen_Queue} + &apos; ‎&apos;</expression>
+        <expression>{!Chosen_Queue}</expression>
     </formulas>
     <interviewLabel>Case STO Put Back {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Put Back</label>
@@ -304,6 +304,12 @@
             <name>Event_Message</name>
             <value>
                 <elementReference>Queue_Transfer_Text</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Event_Type</name>
+            <value>
+                <stringValue>QUEUE_TRANSFER</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
