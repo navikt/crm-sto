@@ -55,7 +55,7 @@ export default class StoMessageInboxItem extends LightningElement {
         if (result.data) {
             this.latestmessage = result.data;
             this.latestText = result.data.messageText;
-            this.isExternal = result.date.isExternal;
+            this.isExternal = result.data.isExternal;
         }
     }
 }
