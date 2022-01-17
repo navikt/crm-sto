@@ -1,10 +1,10 @@
 <template>
     <div>
         <a class={className} href={linkUrl} key={thread.recordId} id="a">
-            <span class="typo-undertittel">
+            <span class="typo-undertittel ">
                 <lightning-layout vertical-align="center">
                     <lightning-layout-item size="1" padding="around-medium">
-                        <img class="iconcolor" src={dialog} alt={unreadmessage} id="b" />
+                        <img class="iconcolor" src={dialog} alt={unreadmessage} id="b"/>
                     </lightning-layout-item>
                     <lightning-layout-item size="10">
                         <p class="typo-normal blokk-xxxs">
@@ -13,18 +13,13 @@
                                 month="2-digit"
                                 day="2-digit"
                                 year="numeric"
-                            ></lightning-formatted-date-time>
-                            - <span class={statuscolor}> {thread.status} </span>
+                            ></lightning-formatted-date-time> - <span class={statuscolor}> {thread.status} </span>
                         </p>
-                        <h3 class="typo-undertittel lenkepanel__heading">{thread.name}<span class="vekk"></span></h3>
-                        <p class="typo-normal tema-avsnitt slds-truncate">
-                            <!-- {latestText} -->
-                        </p>
+                        <h3 class="typo-undertittel lenkepanel__heading ">{itemTitle}<span class="vekk"></span></h3>
+                        <p class="typo-normal tema-avsnitt slds-truncate">{latestText}</p>
                     </lightning-layout-item>
                     <lightning-layout-item size="1">
-                        <span
-                            class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"
-                        ></span>
+                        <span class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"></span>
                     </lightning-layout-item>
                 </lightning-layout>
             </span>
