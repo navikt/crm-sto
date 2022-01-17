@@ -110,7 +110,7 @@ public with sharing class stoInboxHelper {
         if(objectName == 'Thread__c'){
             objectName = 'skriv-til-oss'; 
             Message__c messageList = [
-                SELECT Id, CRM_Message_Text__c, CRM_From_Contact__c
+                SELECT Id, CRM_Message_Text__c, CRM_From_Contact__c, CRM_External_Message__c
                 FROM Message__c
                 WHERE CRM_Thread__c = :threadId AND CRM_Type__c = 'Message'
                 ORDER BY CRM_Sent_Datetime_Formula__c DESC LIMIT 1
@@ -118,6 +118,7 @@ public with sharing class stoInboxHelper {
             returntext.fromContact = messageList.CRM_From_Contact__c; 
             returntext.messageText = messageList.CRM_Message_Text__c; 
             returntext.recordId = messageList.Id; 
+            returntext.isExternal = messageList.CRM_External_Message__c;
         }
         if(objectName == 'Conversation_Note__c'){
             objectName = 'samtalereferat'; 
@@ -135,7 +136,9 @@ public with sharing class stoInboxHelper {
         @AuraEnabled
         public String messageText; 
         @AuraEnabled
-        public String fromContact; 
+        public String fromContact;
+        @Auraenabled
+        public Boolean isExternal;
     }
 
     @AuraEnabled
