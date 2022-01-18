@@ -23,7 +23,7 @@
                 <div class="subheader">
                     <h2 class="typo-undertittel">Siste meldinger</h2>
                 </div>
-                <lightning-layout multiple-rows class="slds-has-flexi-truncate">
+                <lightning-layout multiple-rows>
                     <template for:each={recentthreads} for:item="thread">
                         <lightning-layout-item size="12" key={thread.recordId}>
                             <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
@@ -35,7 +35,7 @@
                 <div class="subheader">
                     <h2 class="typo-undertittel">Tidligere meldinger</h2>
                 </div>
-                <lightning-layout multiple-rows class="slds-has-flexi-truncate">
+                <lightning-layout multiple-rows>
                     <template for:each={threads} for:item="thread">
                         <lightning-layout-item size="12" key={thread.recordId}>
                             <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>

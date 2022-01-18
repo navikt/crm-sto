@@ -2,11 +2,11 @@
     <div>
         <a class={className} href={linkUrl} key={thread.recordId} id="a">
             <span class="typo-undertittel ">
-                <lightning-layout vertical-align="center" class="slds-has-flexi-truncate">
+                <lightning-layout vertical-align="center">
                     <lightning-layout-item size="1" padding="around-medium">
                         <img class="iconcolor" src={dialog} alt={unreadmessage} id="b"/>
                     </lightning-layout-item>
-                    <lightning-layout-item size="10">
+                    <lightning-layout-item size="10" class="slds-truncate_container_75">
                         <p class="typo-normal blokk-xxxs">
                             <lightning-formatted-date-time
                                 value={thread.latestMessageDate}
