@@ -23,17 +23,25 @@
                 <div class="subheader">
                     <h2 class="typo-undertittel">Siste meldinger</h2>
                 </div>
-                <template for:each={recentthreads} for:item="thread">
-                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
-                </template>
+                <lightning-layout multiple-rows>
+                    <template for:each={recentthreads} for:item="thread">
+                        <lightning-layout-item size="12" key={thread.recordId}>
+                            <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
             </template>
             <template if:true={showthreads}>
                 <div class="subheader">
                     <h2 class="typo-undertittel">Tidligere meldinger</h2>
                 </div>
-                <template for:each={threads} for:item="thread">
-                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
-                </template>
+                <lightning-layout multiple-rows>
+                    <template for:each={threads} for:item="thread">
+                        <lightning-layout-item size="12" key={thread.recordId}>
+                            <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
             </template>
         </div>
     </div>
