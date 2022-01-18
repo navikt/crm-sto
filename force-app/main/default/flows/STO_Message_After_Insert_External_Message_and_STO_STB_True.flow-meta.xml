@@ -28,6 +28,13 @@
                 <elementReference>Get_Vurder_Svar_Task_Type_0.Id</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Related_NAV_Task.NKS_Assignee__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Send_NAV_Task_On_Complete</targetReference>
         </connector>
@@ -126,6 +133,13 @@
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Comments__c</assignToReference>
             <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Related_NAV_Task.NKS_Assignee__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
+            </value>
         </assignmentItems>
         <connector>
             <targetReference>Send_NAV_Task_On_No_Task</targetReference>
