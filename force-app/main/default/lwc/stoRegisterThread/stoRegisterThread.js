@@ -236,7 +236,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 }
             });
             if (!modal) {
-                this.termsModal.focusModal();
+                this.termsModal.focusLoop();
             }
         }
     };
