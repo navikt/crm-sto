@@ -1,0 +1,22 @@
+<template>
+    <template if:true={showWarnings}>
+        <div class="navds-error-summary navds-error-summary--medium" tabindex="-1" role="region">
+            <h2 class="navds-error-summary__heading navds-heading navds-heading--small" tabindex="0">
+                Du må fikse disse feilene før du kan sende inn søknad.
+            </h2>
+            <ul class="navds-error-summary__list navds-body-short">
+                <template for:each={errorList} for:item="error">
+                    <li key={error.Id}>
+                        <a
+                            href="#"
+                            event-item={error.EventItem}
+                            class="navds-error-summary__item navds-link"
+                            onclick={test}
+                            >{error.Text}</a
+                        >
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </template>
+</template>
