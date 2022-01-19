@@ -54,7 +54,7 @@ export default class StoMessageInboxItem extends LightningElement {
     wiremessage(result) {
         if (result.data) {
             this.latestmessage = result.data;
-            this.latestText = String(result.data.messageText).replace(/<[^>]+>/g,'');
+            this.latestText = result.data.messageText;//replace(/<[^>]+>/g,'');
             this.isExternal = result.data.isExternal;
         }
     }
