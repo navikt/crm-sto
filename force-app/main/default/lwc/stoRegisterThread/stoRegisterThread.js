@@ -23,7 +23,6 @@ import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_
 import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
 import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
-import dist from '@salesforce/resourceUrl/dist';
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     showspinner = false;
     selectedTheme;
@@ -122,7 +121,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     renderedCallback() {
         loadStyle(this, dekoratoren);
-        loadStyle(this, dist);
         if (this.showspinner) {
             let spinner = this.template.querySelector('.spinner');
             spinner.focus();
