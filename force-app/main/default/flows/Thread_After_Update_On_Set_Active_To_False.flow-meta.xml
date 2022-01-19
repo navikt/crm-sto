@@ -28,10 +28,10 @@
             <name>Case_Open</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <leftValueReference>Get_Case.IsClosed</leftValueReference>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue>Closed</stringValue>
+                    <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -103,7 +103,7 @@
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Case</object>
         <queriedFields>Id</queriedFields>
-        <queriedFields>Status</queriedFields>
+        <queriedFields>IsClosed</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>

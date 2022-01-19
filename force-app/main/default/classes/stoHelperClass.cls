@@ -1,5 +1,5 @@
 public with sharing class stoHelperClass {
-    private static final LoggerUtility logger = new LoggerUtility('Skriv til oss');
+    private static final LoggerUtility logger = new LoggerUtility('STO');
 
     private static Map<String, Id> commonCodeMap {
         get {
@@ -88,7 +88,6 @@ public with sharing class stoHelperClass {
         try {
             insert msg;
         } catch (DmlException e) {
-            LoggerUtility logger = new LoggerUtility('Skriv til oss');
             logger.exception(e);
             logger.publish();
         }

@@ -100,6 +100,7 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
+        <nextOrFinishButtonLabel>Journalfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
@@ -170,6 +171,12 @@
             <name>Event_Message</name>
             <value>
                 <stringValue>Tråden ble journalført.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Event_Type</name>
+            <value>
+                <stringValue>JOURNAL</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>

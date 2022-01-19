@@ -9,7 +9,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.131.0.LATEST"
+                    "versionNumber": "0.141.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
@@ -17,7 +17,7 @@
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.9.0.LATEST"
+                    "versionNumber": "0.10.0.LATEST"
                 },
                 {
                     "package": "crm-platform-oppgave",
@@ -37,7 +37,7 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.29.0.LATEST"
+                    "versionNumber": "0.33.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",

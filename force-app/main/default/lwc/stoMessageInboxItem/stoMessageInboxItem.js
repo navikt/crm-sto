@@ -24,6 +24,7 @@ export default class StoMessageInboxItem extends LightningElement {
         this.linkUrl = basepath + '/' + this.objectName + '/' + this.thread.recordId; 
         this.threadId = this.thread.recordId;
         if(this.thread.status == 'Åpen') this.statuscolor = 'greenfont'; 
+        if(this.objectName == 'samtalereferat') this.dialog = navlogos + '/Notes.svg';
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
             this.unreadmessage = 'ulest'; 
