@@ -1,7 +1,7 @@
 <template>
     <div>
         <a class={className} href={linkUrl} key={thread.recordId} id="a">
-            <span class="typo-undertittel ">
+            <div>
                 <lightning-layout vertical-align="center">
                     <lightning-layout-item size="1" padding="around-medium">
                         <img class="iconcolor" src={dialog} alt={unreadmessage} id="b"/>
@@ -22,7 +22,7 @@
                         <span class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"></span>
                     </lightning-layout-item>
                 </lightning-layout>
-            </span>
+            </div>
         </a>
     </div>
 </template>
