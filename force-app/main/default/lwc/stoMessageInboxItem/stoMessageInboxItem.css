@@ -1,5 +1,4 @@
 .typo-undertittel {
-    width: inherit;
 }
 .dialog {
     margin-bottom: 3px !important;
@@ -21,6 +20,10 @@
     filter: invert(26%) sepia(90%) saturate(1799%) hue-rotate(191deg) brightness(92%) contrast(106%);
 }
 .messagebox{
-    box-sizing: content-box;
-    width: 100%;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: pre-line;
 }
