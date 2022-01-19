@@ -25,13 +25,13 @@
                     <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
                 </template>
             </template>
-        </template>
-        <template if:true={showthreads}>
-            <div class="subheader">
-                <h2 class="typo-undertittel">Tidligere meldinger</h2>
-            </div>
-            <template for:each={threads} for:item="thread">
-                <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+            <template if:true={showthreads}>
+                <div class="subheader">
+                    <h2 class="typo-undertittel">Tidligere meldinger</h2>
+                </div>
+                <template for:each={threads} for:item="thread">
+                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+                </template>
             </template>
         </div>
     </div>
