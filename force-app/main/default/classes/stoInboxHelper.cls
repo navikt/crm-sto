@@ -127,7 +127,7 @@ public with sharing class stoInboxHelper {
             returntext.messageText = cn.CRM_Conversation_Note__c; 
             returntext.recordId = cn.Id; 
         }
-        returntext.messageText = returntext.messageText.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ').left(64);
+        returntext.messageText = returntext.messageText.replaceAll('<[^>]+>', ' ');
         return returntext;
     }
 
