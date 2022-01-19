@@ -1,11 +1,7 @@
-.lenkepanel {
-    width: 100%;
-}
 .typo-undertittel {
     width: inherit;
 }
 .dialog {
-    width: 100%;
     margin-bottom: 3px !important;
 }
 .unread {
@@ -23,4 +19,8 @@
 }
 .iconclass:hover .iconcolor {
     filter: invert(26%) sepia(90%) saturate(1799%) hue-rotate(191deg) brightness(92%) contrast(106%);
+}
+.messagebox{
+    box-sizing: content-box;
+    width: 100%;
 }

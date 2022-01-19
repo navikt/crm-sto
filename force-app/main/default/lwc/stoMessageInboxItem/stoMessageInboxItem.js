@@ -18,7 +18,7 @@ export default class StoMessageInboxItem extends LightningElement {
     hasunread = false;
     unreadmessage = 'lest';
 
-    className = 'lenkepanel dialog flere-meldinger .slds-size_1-of-1 read iconclass';
+    className = 'lenkepanel dialog read iconclass';
     statuscolor; 
     get itemTitle() {
         if(this.objectName ==='samtalereferat')
@@ -47,7 +47,7 @@ export default class StoMessageInboxItem extends LightningElement {
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
             this.unreadmessage = 'ulest'; 
-            this.className='lenkepanel dialog flere-meldinger .slds-size_1-of-1 unread iconclass';
+            this.className='lenkepanel dialog unread iconclass';
         }
     }
     @wire(getLatest, { threadId: '$threadId' })
