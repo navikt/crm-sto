@@ -1,12 +1,18 @@
 <template>
-        
     <div class="decorator-wrapper wrapper">
         <div class="header header--center page-header" style="text-align: center">
-            <h1 class="typo-sidetittel header__tittel">
-                <img src={navIcon} alt=""/> {title}</h1>
+            <h1 class="navds-heading navds-heading--2xlarge header__tittel"><img src={navIcon} alt="" /> {title}</h1>
         </div>
         <div class="panel">
-            <lightning-formatted-date-time value={date} year="numeric" day="numeric" month="long" hour="2-digit" minute="2-digit" class="inline-block"></lightning-formatted-date-time>
+            <lightning-formatted-date-time
+                value={date}
+                year="numeric"
+                day="numeric"
+                month="long"
+                hour="2-digit"
+                minute="2-digit"
+                class="inline-block"
+            ></lightning-formatted-date-time>
             <lightning-formatted-rich-text value={note} class="linebreaks"></lightning-formatted-rich-text>
         </div>
     </div>
