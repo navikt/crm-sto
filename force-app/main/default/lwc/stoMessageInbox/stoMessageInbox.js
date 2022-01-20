@@ -6,20 +6,26 @@ import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads';
 export default class StoMessageInbox extends LightningElement {
     @api title;
     @track threads;
-    @track recentthreads;
-    showthreads = false;
-    showrecentthreads = false;
+    @track recentthreads; 
+    wthreads;
+    wrthreads;
+    showthreads = false; 
+    showrecentthreads = false; 
 
     @wire(getThreads, {})
     wirethreads(result) {
         if (result.error) {
             console.log(result.error);
-        } else if (result.data) {
-            this.threads = result.data;
-            if (this.threads != '') {
-                this.threads.sort(this.sortByDate);
-                this.showthreads = true;
-            }
+        }
+        else if (result.data) {
+            this.wthreads = result.data;
+            this.setThreads();
+        }
+    }
+    setThreads(){
+        if(this.wthreads){
+            this.threads = [...this.wthreads].sort(this.sortByDate);
+            this.showthreads = true;
         }
     }
 
@@ -27,12 +33,16 @@ export default class StoMessageInbox extends LightningElement {
     wirerecentthreads(result) {
         if (result.error) {
             console.log(result.error);
-        } else if (result.data) {
-            this.recentthreads = result.data;
-            if (this.recentthreads != '') {
-                this.showrecentthreads = true;
-                this.recentthreads.sort(this.sortByDate);
-            }
+        }
+        else if (result.data) {
+            this.wrthreads = result.data;
+            this.setRecentThreads();
+        }
+    }
+    setRecentThreads(){
+        if(this.wrthreads){
+            this.recentthreads = [...this.wrthreads].sort(this.sortByDate);
+            this.showrecentthreads = true;
         }
     }
     sortByDate(t1, t2) {
