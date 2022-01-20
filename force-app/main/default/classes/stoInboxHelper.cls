@@ -7,7 +7,6 @@ public with sharing class stoInboxHelper {
         List<Thread__c> threadList = [
             SELECT
                 Id,
-                Name,
                 LastModifiedDate,
                 CRM_Number_of_unread_Messages__c,
                 CRM_Latest_Message_Datetime__c,
@@ -31,7 +30,7 @@ public with sharing class stoInboxHelper {
             inboxlist.add(i);
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Date_Time_Registered__c, CRM_Is_Read__c, STO_External_Name__c
+            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
             ORDER BY CRM_Date_Time_Registered__c DESC
@@ -57,7 +56,6 @@ public with sharing class stoInboxHelper {
         List<Thread__c> threadList = [
             SELECT
                 Id,
-                Name,
                 LastModifiedDate,
                 CRM_Number_of_unread_Messages__c,
                 CRM_Latest_Message_Datetime__c,
@@ -81,7 +79,7 @@ public with sharing class stoInboxHelper {
             inboxlist.add(i);
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Date_Time_Registered__c, CRM_Is_Read__c, STO_External_Name__c
+            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
             ORDER BY CRM_Date_Time_Registered__c DESC
@@ -127,13 +125,12 @@ public with sharing class stoInboxHelper {
         if (objectName == 'Thread__c') {
             objectName = 'skriv-til-oss';
             Message__c messageList = [
-                SELECT Id, CRM_Message_Text__c, CRM_From_Contact__c, CRM_External_Message__c
+                SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                 FROM Message__c
-                WHERE CRM_Thread__c = :threadId AND CRM_Type__c = 'Message'
+                WHERE CRM_Thread__c = :threadId AND ( CRM_Type__c = 'Message' OR CRM_Type__c = 'Info' )
                 ORDER BY CRM_Sent_Datetime_Formula__c DESC
                 LIMIT 1
             ];
-            returntext.fromContact = messageList.CRM_From_Contact__c; 
             returntext.messageText = messageList.CRM_Message_Text__c; 
             returntext.recordId = messageList.Id; 
             returntext.isExternal = messageList.CRM_External_Message__c;
@@ -141,12 +138,11 @@ public with sharing class stoInboxHelper {
         if (objectName == 'Conversation_Note__c') {
             objectName = 'samtalereferat';
             Conversation_Note__c cn = [
-                SELECT Id, Name, CRM_Conversation_Note__c
+                SELECT Id, CRM_Conversation_Note__c
                 FROM Conversation_Note__c
                 WHERE Id = :threadId
                 LIMIT 1
             ];
-            returntext.fromContact = 'NAV';
             returntext.messageText = cn.CRM_Conversation_Note__c;
             returntext.recordId = cn.Id;
         }
@@ -159,8 +155,6 @@ public with sharing class stoInboxHelper {
         public Id recordId;
         @AuraEnabled
         public String messageText;
-        @AuraEnabled
-        public String fromContact;
         @Auraenabled
         public Boolean isExternal;
     }

@@ -28,7 +28,6 @@ export default class StoMessageInbox extends LightningElement {
             this.showthreads = true;
         }
     }
-
     @wire(getRecentThreads, {})
     wirerecentthreads(result) {
         if (result.error) {

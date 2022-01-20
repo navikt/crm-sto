@@ -13,7 +13,7 @@ export default class StoMessageInboxItem extends LightningElement {
     latestText;
     objectName; 
     isExternal;
-    isOpen;;
+    isOpen;
     threadId;
     hasunread = false;
     unreadmessage = 'lest';
@@ -54,7 +54,7 @@ export default class StoMessageInboxItem extends LightningElement {
     wiremessage(result) {
         if (result.data) {
             this.latestmessage = result.data;
-            this.latestText = result.data.messageText;//replace(/<[^>]+>/g,'');
+            this.latestText = result.data.messageText;
             this.isExternal = result.data.isExternal;
         }
     }
