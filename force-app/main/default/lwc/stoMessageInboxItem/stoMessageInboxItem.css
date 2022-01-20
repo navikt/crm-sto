@@ -26,4 +26,5 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: pre-line;
+        word-break: break-word;
 }
