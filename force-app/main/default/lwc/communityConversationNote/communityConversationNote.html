@@ -14,6 +14,16 @@
                 class="inline-block"
             ></lightning-formatted-date-time>
             <lightning-formatted-rich-text value={note} class="linebreaks"></lightning-formatted-rich-text>
+            <template if:true={showRelatedNotes}>
+                <br />
+                <br />
+                <template for:each={relatedNotes} for:item="note">
+                    <c-community-conversation-note-related-item
+                        key={note}
+                        note={note}
+                    ></c-community-conversation-note-related-item>
+                </template>
+            </template>
         </div>
     </div>
 </template>
