@@ -82,7 +82,7 @@
             <assignToReference>Related_NAV_Task.CRM_Priority__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>NORM</stringValue>
+                <stringValue>HOY</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
