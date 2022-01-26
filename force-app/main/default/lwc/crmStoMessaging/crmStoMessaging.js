@@ -1,7 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
-import NKS_FullName from '@salesforce/schema/User.NKS_FullName__c';
+import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
 import userId from '@salesforce/user/Id';
 
@@ -155,13 +155,13 @@ export default class CrmStoMessaging extends LightningElement {
 
     @wire(getRecord, {
         recordId: '$userId',
-        fields: [NKS_FullName]
+        fields: [NKS_FULL_NAME]
     })
     wiredUser({ error, data }) {
         if (error) {
             console.log(error);
         } else if (data) {
-            this.supervisorName = getFieldValue(data, NKS_FullName);
+            this.supervisorName = getFieldValue(data, NKS_FULL_NAME);
         }
     }
 
