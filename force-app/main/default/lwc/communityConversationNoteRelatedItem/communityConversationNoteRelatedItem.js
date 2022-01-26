@@ -17,4 +17,18 @@ export default class CommunityConversationNoteRelatedItem extends NavigationMixi
             this.url = url;
         });
     }
+
+    get date() {
+        return this.note.CRM_Date_Registered__c
+            ? ' - ' + this.note.CRM_Date_Registered__c.split('-').reverse().join('.')
+            : '';
+    }
+
+    get label() {
+        return (
+            (this.note.CRM_Theme__r.Name ? this.note.CRM_Theme__r.Name + ' - ' : '') +
+            'Klikk her for å se relaterte samtalereferat på samme sak' +
+            this.date
+        );
+    }
 }
