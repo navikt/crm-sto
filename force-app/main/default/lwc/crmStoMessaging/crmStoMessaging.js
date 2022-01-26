@@ -2,7 +2,7 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import NKS_FullName from '@salesforce/schema/User.NKS_FullName__c';
-import NAME from '@salesforce/schema/Account.Name';
+import FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
 import userId from '@salesforce/user/Id';
 
 export default class CrmStoMessaging extends LightningElement {
@@ -12,12 +12,12 @@ export default class CrmStoMessaging extends LightningElement {
     @api cardTitle;
 
     wireField;
-    userId;
     accountId;
+    userId;
+    personId;
     userName;
     supervisorName;
     accountApiName;
-    account = 'Account';
 
     connectedCallback() {
         this.template.addEventListener('toolbaraction', (event) => {
@@ -70,44 +70,9 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get textTemplate() {
-        return 'Hei ' + this.userName + ',\n\n\nMed vennlig hilsen\n' + this.supervisorName + '\nNAV Kontaktsenter';
-    }
-
-    @wire(getRecord, {
-        recordId: '$recordId',
-        fields: '$wireField'
-    })
-    wiredRecord({ error, data }) {
-        if (error) {
-            console.log(error);
-        } else if (data) {
-            this.getAccountId();
-        }
-    }
-
-    @wire(getRecord, {
-        recordId: '$accountId',
-        fields: [NAME]
-    })
-    wiredPerson({ error, data }) {
-        if (error) {
-            console.log(error);
-        } else if (data) {
-            let fullName = getFieldValue(data, NAME);
-            this.userName = fullName.split(' ')[0];
-        }
-    }
-
-    @wire(getRecord, {
-        recordId: '$userId',
-        fields: [NKS_FullName]
-    })
-    wiredUser({ error, data }) {
-        if (error) {
-            console.log(error);
-        } else if (data) {
-            this.supervisorName = getFieldValue(data, NKS_FullName);
-        }
+        let greeting = '';
+        greeting = this.userName == null ? 'Hei,' : 'Hei ' + this.userName + ',';
+        return greeting + '\n\n\nMed vennlig hilsen\n' + this.supervisorName + '\nNAV Kontaktsenter';
     }
 
     getAccountApiName() {
@@ -132,6 +97,72 @@ export default class CrmStoMessaging extends LightningElement {
             .catch((error) => {
                 console.log(error);
             });
+    }
+
+    getPersonId() {
+        getRelatedRecord({
+            parentId: this.accountId,
+            relationshipField: 'CRM_Person__c',
+            objectApiName: 'Account'
+        })
+            .then((record) => {
+                this.personId = this.resolve('CRM_Person__c', record);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    @wire(getRecord, {
+        recordId: '$recordId',
+        fields: '$wireField'
+    })
+    wiredRecord({ error, data }) {
+        if (error) {
+            console.log(error);
+        } else if (data) {
+            this.getAccountId();
+        }
+    }
+
+    @wire(getRecord, {
+        recordId: '$accountId',
+        fields: ['Account.Id']
+    })
+    wiredAccount({ error, data }) {
+        if (error) {
+            console.log(error);
+        } else if (data) {
+            if (this.accountId) {
+                this.getPersonId();
+            }
+        }
+    }
+
+    @wire(getRecord, {
+        recordId: '$personId',
+        fields: [FIRST_NAME]
+    })
+    wiredPerson({ error, data }) {
+        if (error) {
+            console.log(error);
+        } else if (data) {
+            if (this.accountId && this.personId) {
+                this.userName = getFieldValue(data, FIRST_NAME);
+            }
+        }
+    }
+
+    @wire(getRecord, {
+        recordId: '$userId',
+        fields: [NKS_FullName]
+    })
+    wiredUser({ error, data }) {
+        if (error) {
+            console.log(error);
+        } else if (data) {
+            this.supervisorName = getFieldValue(data, NKS_FullName);
+        }
     }
 
     resolve(path, obj) {
