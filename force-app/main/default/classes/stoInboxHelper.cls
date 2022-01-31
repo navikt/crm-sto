@@ -127,7 +127,7 @@ public with sharing class stoInboxHelper {
         if (objectName == 'Thread__c') {
             objectName = 'skriv-til-oss';
             Message__c messageList = [
-                SELECT Id, CRM_Message_Text__c, CRM_From_Contact__c
+                SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                 FROM Message__c
                 WHERE CRM_Thread__c = :threadId AND CRM_Type__c = 'Message'
                 ORDER BY CRM_Sent_Datetime_Formula__c DESC
@@ -149,6 +149,7 @@ public with sharing class stoInboxHelper {
             returntext.messageText = cn.CRM_Conversation_Note__c;
             returntext.recordId = cn.Id;
         }
+        returntext.messageText = returntext.messageText.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
         return returntext;
     }
 

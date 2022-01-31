@@ -1,17 +1,17 @@
 <template>
     <div if:true={showModal} class="modal__overlay">
-        <div class="modal modalpadding" aria-modal="true">
-            <slot name="modalHeader"></slot>
-            <slot name="modalContent"></slot>
-            <hr class="blokk-m" />
-            <slot name="modalFooter"></slot>
+        <div class="modal modalpadding" role="dialog" aria-modal="true" tabindex="-1">
             <button
-                class="lukknapp lukknapp-positioning modal__lukkknapp--shake"
+                class="lukknapp lukknapp-positioning modal__lukkknapp--shake modalFocus"
                 aria-label="Lukk"
                 onclick={closeModal}
             >
                 <span class="text-hide">Lukk</span>
             </button>
+            <slot name="modalHeader"></slot>
+            <slot name="modalContent"></slot>
+            <hr class="blokk-m" />
+            <slot name="modalFooter"></slot>
         </div>
     </div>
 </template>

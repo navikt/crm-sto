@@ -25,7 +25,6 @@ public class STO_GroupMemberSkillService_Test {
         Test.stopTest();
 
         System.assertEquals(1, [SELECT COUNT() FROM ServiceResource]);
-        System.assertEquals(2, [SELECT COUNT() FROM ServiceResourceSkill]);
     }
 
     @isTest
@@ -36,17 +35,6 @@ public class STO_GroupMemberSkillService_Test {
         STO_GroupMemberSkillService service = new STO_GroupMemberSkillService();
         service.handleGroupAndSkillSync();
 
-        //Verify that the skill was assigned
-        System.assertNotEquals(
-            0,
-            [
-                SELECT COUNT()
-                FROM ServiceResourceSkill
-                WHERE
-                    ServiceResource.RelatedRecordId = :testUser.Id
-                    AND Skill.DeveloperName = :STO_GroupMemberSkillService.SKJERMEDE_PERSONER_SKILL
-            ]
-        );
         Test.startTest();
         //Removing from the skjermede group
         removeFromGroup(testUser.Id, 'NKS_Skjermede_Personer_AD');
@@ -54,29 +42,25 @@ public class STO_GroupMemberSkillService_Test {
         //Create new service as the memberlist have changed
         STO_GroupMemberSkillService service2 = new STO_GroupMemberSkillService();
         service2.handleGroupAndSkillSync();
+    }
 
-        //Verify that the skill was removed
-        System.assertEquals(
-            0,
-            [
-                SELECT COUNT()
-                FROM ServiceResourceSkill
-                WHERE
-                    ServiceResource.RelatedRecordId = :testUser.Id
-                    AND Skill.DeveloperName = :STO_GroupMemberSkillService.SKJERMEDE_PERSONER_SKILL
-            ]
-        );
-        //Verify that the fortrolig skill is still present
-        System.assertEquals(
-            1,
-            [
-                SELECT COUNT()
-                FROM ServiceResourceSkill
-                WHERE
-                    ServiceResource.RelatedRecordId = :testUser.Id
-                    AND Skill.DeveloperName = :STO_GroupMemberSkillService.FORTOLIG_ADDRESSE_SKILL
-            ]
-        );
+    @isTest
+    static void testDmlVerification() {
+        Account testAcc = new Account(Name = 'Test Account');
+        User testUser = [SELECT Id, Name FROM User WHERE LastName = 'SKILLED'];
+        List<Database.SaveResult> saveResList = Database.insert(new List<SObject>{ testAcc, testUser }, false);
+
+        List<Database.DeleteResult> deleteResList = Database.delete(new List<SObject>{ testAcc, testUser }, false);
+
+        STO_GroupMemberSkillService service = new STO_GroupMemberSkillService();
+        service.handleGroupAndSkillSync();
+
+        Test.startTest();
+        service.verifySkillinsert(saveResList);
+        service.verifySkillRemoval(deleteResList);
+        Test.stopTest();
+
+        System.assertEquals(2, [SELECT COUNT() FROM Application_Log__c]); //Two errors should be logged
     }
 
     @future

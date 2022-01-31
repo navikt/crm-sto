@@ -48,7 +48,25 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     };
     logopath = navlogos + '/email.svg';
     newslist;
+    showTextboxWarning = false;
+    showTermWarning = false;
+    message;
+    modalOpen = false;
 
+    get errors() {
+        let errorList = [];
+        if (this.showTextboxWarning) {
+            errorList.push({ Id: 1, EventItem: '.inputTextbox', Text: 'Tekstboksen kan ikke være tom.' });
+        }
+        if (this.showTermWarning) {
+            errorList.push({
+                Id: 2,
+                EventItem: '.checkboxContainer',
+                Text: 'Du må godta vilkårene for å sende beskjeden.'
+            });
+        }
+        return errorList;
+    }
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
@@ -61,6 +79,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             .catch((error) => {
                 //Failed getting sto categories
             });
+    }
+
+    disconnectedCallback() {
+        document.addEventListener('focus', this.handleModalFocus, true);
     }
 
     /**
@@ -97,15 +119,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.selectedTheme = this.urlStateParameters.category;
     }
 
-    @track message;
-    inputChange(event) {
-        this.message = event.target.value;
-
-        if (this.message && this.message.length != 0) {
-            this.showErrorNoMessage = false;
-        }
-    }
-
     renderedCallback() {
         loadStyle(this, dekoratoren);
         if (this.showspinner) {
@@ -119,10 +132,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      */
 
     togglechecked() {
-        this.acceptedTerms = this.acceptedTerms == true ? false : true;
-        if (this.showError == true) {
-            this.showError = false;
-        }
+        this.acceptedTerms = !this.acceptedTerms;
     }
 
     get termsModal() {
@@ -134,23 +144,26 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     showTerms() {
-        const modal = this.template.querySelector('c-community-modal');
-        this.termsModal.showModal = true;
+        this.modalOpen = true;
+        document.addEventListener('focus', this.handleModalFocus, true);
+        this.termsModal.focusModal();
     }
 
     closeTerms() {
-        const modal = this.template.querySelector('c-community-modal');
-        this.termsModal.showModal = false;
+        document.removeEventListener('focus', this.handleModalFocus, true);
+        this.modalOpen = false;
     }
 
     termsAccepted() {
         this.acceptedTerms = true;
         this.closeTerms();
+        this.sendChecked();
     }
 
     termsDenied() {
         this.acceptedTerms = false;
         this.closeTerms();
+        this.sendChecked();
     }
     /**
      * Handles terms modal end
@@ -161,6 +174,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitrequest() {
+        this.showTextboxWarning = false;
+        this.showTermWarning = false;
         if (this.acceptedTerms == true && this.message && this.message.length != null) {
             this.showspinner = true;
 
@@ -175,12 +190,60 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 });
             });
         } else {
-            if (this.acceptedTerms == false) {
-                this.showError = true;
+            if (!this.message || this.message.length == null) {
+                this.showTextboxWarning = true;
             }
-            if (this.message == null || !this.message || this.message.length != 0) {
-                this.showErrorNoMessage = true;
+            if (!this.acceptedTerms) {
+                this.showTermWarning = true;
             }
+            let errorSummary = this.template.querySelector('.errorSummary');
+            errorSummary.focusHeader();
+        }
+    }
+
+    get showWarnings() {
+        return this.showTextboxWarning || this.showTermWarning;
+    }
+
+    handleErrorClick(event) {
+        let item = this.template.querySelector(event.detail);
+        item.focus();
+    }
+
+    handleTextChange(event) {
+        this.message = event.detail;
+    }
+
+    sendChecked() {
+        let checkbox = this.template.querySelector('c-community-checkbox');
+        checkbox.setChecked(this.acceptedTerms);
+    }
+
+    handleChecked(event) {
+        this.acceptedTerms = event.detail;
+    }
+
+    handleModalFocus = (event) => {
+        if (this.modalOpen) {
+            let modal = false;
+            // event.target always returns the shadow dom.
+            // event.path returns the 'target' and all parent elements
+            // loop through all elements to see if it's an ariaModal
+            event.path.forEach((pathItem) => {
+                if (pathItem.ariaModal) {
+                    modal = true;
+                    return;
+                }
+            });
+            if (!modal) {
+                this.termsModal.focusLoop();
+            }
+        }
+    };
+
+    handleKeyboardEvent(event) {
+        if (event.key == 'Escape') {
+            this.closeTerms();
         }
     }
 }

@@ -17,5 +17,17 @@
             //Closes the modal when the flow finishes
             component.set('v.showPanel', false);
         }
+    },
+
+    handleModalKey: function (component, event, helper) {
+        if (event.keyCode === 27 || event.code === 'Escape') {
+            var action = component.get('c.closeModal');
+            $A.enqueueAction(action);
+        } else if (event.keyCode === 9 || event.code === 'Tab') {
+            const el = document.activeElement;
+            if (el.classList.contains('lastfocusable') || el.classList.contains('firstfocusable')) {
+                component.find('focusElement').getElement().focus();
+            }
+        }
     }
 });
