@@ -7,6 +7,8 @@ export default class StoMessageInbox extends LightningElement {
     @api title;
     @track threads;
     @track recentthreads;
+    wthreads;
+    wrthreads;
     showthreads = false;
     showrecentthreads = false;
 
@@ -15,11 +17,14 @@ export default class StoMessageInbox extends LightningElement {
         if (result.error) {
             console.log(result.error);
         } else if (result.data) {
-            this.threads = result.data;
-            if (this.threads != '') {
-                this.threads.sort(this.sortByDate);
-                this.showthreads = true;
-            }
+            this.wthreads = result.data;
+            this.setThreads();
+        }
+    }
+    setThreads() {
+        if (this.wthreads) {
+            this.threads = [...this.wthreads].sort(this.sortByDate);
+            this.showthreads = true;
         }
     }
     @wire(getRecentThreads, {})
@@ -27,11 +32,14 @@ export default class StoMessageInbox extends LightningElement {
         if (result.error) {
             console.log(result.error);
         } else if (result.data) {
-            this.recentthreads = result.data;
-            if (this.recentthreads != '') {
-                this.showrecentthreads = true;
-                this.recentthreads.sort(this.sortByDate);
-            }
+            this.wrthreads = result.data;
+            this.setRecentThreads();
+        }
+    }
+    setRecentThreads() {
+        if (this.wrthreads) {
+            this.recentthreads = [...this.wrthreads].sort(this.sortByDate);
+            this.showrecentthreads = true;
         }
     }
     sortByDate(t1, t2) {
