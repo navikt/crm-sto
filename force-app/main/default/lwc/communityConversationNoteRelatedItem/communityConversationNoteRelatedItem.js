@@ -32,10 +32,6 @@ export default class CommunityConversationNoteRelatedItem extends NavigationMixi
     }
 
     get label() {
-        return (
-            (this.note.CRM_Theme__r?.Name ? this.note.CRM_Theme__r.Name + ' - ' : '') +
-            'Klikk her for å se relaterte samtalereferat på samme sak' +
-            this.date
-        );
+        return 'Klikk her for å se relaterte samtalereferat på samme sak' + this.date;
     }
 }
