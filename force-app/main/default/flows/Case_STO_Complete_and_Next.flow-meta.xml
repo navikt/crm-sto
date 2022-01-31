@@ -172,6 +172,23 @@
         </connector>
     </assignments>
     <assignments>
+        <description>Set the new category for the thread transfer</description>
+        <name>Set_Thread_Category</name>
+        <label>Set Thread Category</label>
+        <locationX>204</locationX>
+        <locationY>1550</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_Thread.STO_Category__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>STO_Category_Picklist</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Submt_transfer_event</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Set_Thread_isActive</name>
         <label>Set Thread isActive</label>
         <locationX>50</locationX>
@@ -336,6 +353,13 @@
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>Transfer</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>Check_Thread_Close</targetReference>
             </connector>
@@ -478,7 +502,7 @@
         <locationX>204</locationX>
         <locationY>1430</locationY>
         <connector>
-            <targetReference>Update_Thread_Category</targetReference>
+            <targetReference>Set_Thread_Category</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -517,30 +541,6 @@
             <targetReference>Close_Workspace_Tab</targetReference>
         </connector>
         <inputReference>Get_Case_Thread</inputReference>
-    </recordUpdates>
-    <recordUpdates>
-        <name>Update_Thread_Category</name>
-        <label>Update Thread Category</label>
-        <locationX>204</locationX>
-        <locationY>1550</locationY>
-        <connector>
-            <targetReference>Submt_transfer_event</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Case_Thread.Id</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>STO_Category__c</field>
-            <value>
-                <elementReference>STO_Category_Picklist</elementReference>
-            </value>
-        </inputAssignments>
-        <object>Thread__c</object>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
