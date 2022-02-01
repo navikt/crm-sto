@@ -63,7 +63,7 @@ public with sharing class relatedConversationNoteHelper_Test {
         ][0];
         List<Conversation_Note__c> updateList = new List<Conversation_Note__c>();
         for (Conversation_Note__c child : [
-            SELECT Id, CRM_Henvendelse_BehandlingskjedeId__c
+            SELECT Id, CRM_Henvendelse_BehandlingskjedeId__c, CRM_API_Reference__c
             FROM Conversation_Note__c
             WHERE CRM_Created_By_Ident__c = 'Test2' OR CRM_Created_By_Ident__c = 'Test3'
             ORDER BY CRM_Date_Time_Registered__c DESC
