@@ -19,11 +19,27 @@ export default class CommunityTextarea extends LightningElement {
         let text = event.target.value;
         this.message = text;
         let counter = this.template.querySelector('.remainingCounter');
-        counter.ariaLive = text.length / this.maxLength >= 0.95 ? 'polite' : 'off';
+        counter.ariaLive = this.remainingCharacters <= 20 ? 'polite' : 'off';
     }
 
     get remainingCharacters() {
         return this.message ? this.maxLength - this.message.length : this.maxLength;
+    }
+
+    get remainingCharacterText() {
+        return (
+            'Du har ' +
+            Math.abs(this.remainingCharacters) +
+            ' tegn ' +
+            (this.remainingCharacters < 0 ? 'for mye' : 'igjen')
+        );
+    }
+
+    get remainingCharacterClass() {
+        return (
+            'navds-textarea__counter navds-body-short remainingCounter' +
+            (this.remainingCharacters < 0 ? ' navds-textarea__counter--error' : '')
+        );
     }
 
     checkError() {

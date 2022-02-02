@@ -51,22 +51,31 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     };
     logopath = navlogos + '/email.svg';
     newslist;
-    showTextboxWarning = false;
+    showTextboxEmptyWarning = false;
+    showTextboxFullWarning = false;
     showTermWarning = false;
     message;
     modalOpen = false;
+    maxLength = 1000;
 
     @wire(MessageContext)
     messageContext;
 
     get errors() {
         let errorList = [];
-        if (this.showTextboxWarning) {
+        if (this.showTextboxEmptyWarning) {
             errorList.push({ Id: 1, EventItem: '.inputTextbox', Text: 'Tekstboksen kan ikke være tom.' });
+        }
+        if (this.showTextboxFullWarning) {
+            errorList.push({
+                Id: 2,
+                EventItem: '.inputTextbox',
+                Text: 'Det er for mange tegn i tekstboksen.'
+            });
         }
         if (this.showTermWarning) {
             errorList.push({
-                Id: 2,
+                Id: 3,
                 EventItem: '.checkboxContainer',
                 Text: 'Du må godta vilkårene for å sende beskjeden.'
             });
@@ -178,9 +187,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitrequest() {
-        this.showTextboxWarning = false;
+        this.showTextboxEmptyWarning = false;
+        this.showTextboxFullWarning = false;
         this.showTermWarning = false;
-        if (this.acceptedTerms == true && this.message && this.message.length != null) {
+        if (
+            this.acceptedTerms == true &&
+            this.message &&
+            this.message.length != null &&
+            this.message.length <= this.maxLength
+        ) {
             this.showspinner = true;
 
             createRecords({ theme: this.selectedTheme, msgText: this.message }).then((result) => {
@@ -195,7 +210,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             });
         } else {
             if (!this.message || this.message.length == null) {
-                this.showTextboxWarning = true;
+                this.showTextboxEmptyWarning = true;
+            } else if (this.message.length >= this.maxLength) {
+                this.showTextboxFullWarning = true;
             }
             if (!this.acceptedTerms) {
                 this.showTermWarning = true;
@@ -206,7 +223,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get showWarnings() {
-        return this.showTextboxWarning || this.showTermWarning;
+        return this.showTextboxEmptyWarning || this.showTermWarning || this.showTextboxFullWarning;
     }
 
     handleErrorClick(event) {
