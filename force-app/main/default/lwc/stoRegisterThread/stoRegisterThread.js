@@ -87,10 +87,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             });
     }
 
-    disconnectedCallback() {
-        document.addEventListener('focus', this.handleModalFocus, true);
-    }
-
     /**
      * Sets the Selectedtheme based on the URL parameter.
      * @param {} currentPageReference
@@ -151,13 +147,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     showTerms() {
         this.modalOpen = true;
-        document.addEventListener('focus', this.handleModalFocus, true);
         this.termsModal.focusModal();
         publish(this.messageContext, globalModalOpen, { status: 'true' });
     }
 
     closeTerms() {
-        document.removeEventListener('focus', this.handleModalFocus, true);
         this.modalOpen = false;
         const btn = this.template.querySelector('.focusBtn');
         btn.focus();
@@ -233,27 +227,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.acceptedTerms = event.detail;
     }
 
-    handleModalFocus = (event) => {
-        if (this.modalOpen) {
-            let modal = false;
-            // event.target always returns the shadow dom.
-            // event.path returns the 'target' and all parent elements
-            // loop through all elements to see if it's an ariaModal
-            event.path.forEach((pathItem) => {
-                if (pathItem.ariaModal) {
-                    modal = true;
-                    return;
-                }
-            });
-            if (!modal) {
+    handleKeyboardEvent(event) {
+        if (event.keyCode === 27 || event.code === 'Escape') {
+            this.closeTerms();
+        } else if (event.keyCode === 9 || event.code === 'Tab') {
+            const el = event.path[0];
+            if (el.classList.contains('firstfocusable')) {
+                this.template.querySelector('.lastFocusElement').focus();
+            } else if (el.classList.contains('lastfocusable')) {
                 this.termsModal.focusLoop();
             }
-        }
-    };
-
-    handleKeyboardEvent(event) {
-        if (event.key == 'Escape') {
-            this.closeTerms();
         }
     }
 }

@@ -1,5 +1,6 @@
 <template>
     <div if:true={showModal} class="modal__overlay">
+        <div tabindex="0" class="firstfocusable"></div>
         <div class="modal modalpadding" role="dialog" aria-modal="true" tabindex="-1">
             <button
                 class="lukknapp lukknapp-positioning modal__lukkknapp--shake modalFocus"
@@ -13,5 +14,6 @@
             <hr class="blokk-m" />
             <slot name="modalFooter"></slot>
         </div>
+        <div tabindex="0" class="lastfocusable"></div>
     </div>
 </template>
