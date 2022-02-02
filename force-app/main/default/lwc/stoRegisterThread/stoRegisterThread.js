@@ -23,6 +23,9 @@ import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_
 import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
 import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
+import { publish, MessageContext } from 'lightning/messageService';
+import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
+
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     showspinner = false;
     selectedTheme;
@@ -48,19 +51,31 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     };
     logopath = navlogos + '/email.svg';
     newslist;
-    showTextboxWarning = false;
+    showTextboxEmptyWarning = false;
+    showTextboxFullWarning = false;
     showTermWarning = false;
     message;
     modalOpen = false;
+    maxLength = 1000;
+
+    @wire(MessageContext)
+    messageContext;
 
     get errors() {
         let errorList = [];
-        if (this.showTextboxWarning) {
+        if (this.showTextboxEmptyWarning) {
             errorList.push({ Id: 1, EventItem: '.inputTextbox', Text: 'Tekstboksen kan ikke være tom.' });
+        }
+        if (this.showTextboxFullWarning) {
+            errorList.push({
+                Id: 2,
+                EventItem: '.inputTextbox',
+                Text: 'Det er for mange tegn i tekstboksen.'
+            });
         }
         if (this.showTermWarning) {
             errorList.push({
-                Id: 2,
+                Id: 3,
                 EventItem: '.checkboxContainer',
                 Text: 'Du må godta vilkårene for å sende beskjeden.'
             });
@@ -79,10 +94,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             .catch((error) => {
                 //Failed getting sto categories
             });
-    }
-
-    disconnectedCallback() {
-        document.addEventListener('focus', this.handleModalFocus, true);
     }
 
     /**
@@ -145,13 +156,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     showTerms() {
         this.modalOpen = true;
-        document.addEventListener('focus', this.handleModalFocus, true);
         this.termsModal.focusModal();
+        publish(this.messageContext, globalModalOpen, { status: 'true' });
     }
 
     closeTerms() {
-        document.removeEventListener('focus', this.handleModalFocus, true);
         this.modalOpen = false;
+        const btn = this.template.querySelector('.focusBtn');
+        btn.focus();
+        publish(this.messageContext, globalModalOpen, { status: 'false' });
     }
 
     termsAccepted() {
@@ -174,9 +187,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitrequest() {
-        this.showTextboxWarning = false;
+        this.showTextboxEmptyWarning = false;
+        this.showTextboxFullWarning = false;
         this.showTermWarning = false;
-        if (this.acceptedTerms == true && this.message && this.message.length != null) {
+        if (
+            this.acceptedTerms == true &&
+            this.message &&
+            this.message.length != null &&
+            this.message.length <= this.maxLength
+        ) {
             this.showspinner = true;
 
             createRecords({ theme: this.selectedTheme, msgText: this.message }).then((result) => {
@@ -191,7 +210,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             });
         } else {
             if (!this.message || this.message.length == null) {
-                this.showTextboxWarning = true;
+                this.showTextboxEmptyWarning = true;
+            } else if (this.message.length >= this.maxLength) {
+                this.showTextboxFullWarning = true;
             }
             if (!this.acceptedTerms) {
                 this.showTermWarning = true;
@@ -202,7 +223,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get showWarnings() {
-        return this.showTextboxWarning || this.showTermWarning;
+        return this.showTextboxEmptyWarning || this.showTermWarning || this.showTextboxFullWarning;
     }
 
     handleErrorClick(event) {
@@ -223,27 +244,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.acceptedTerms = event.detail;
     }
 
-    handleModalFocus = (event) => {
-        if (this.modalOpen) {
-            let modal = false;
-            // event.target always returns the shadow dom.
-            // event.path returns the 'target' and all parent elements
-            // loop through all elements to see if it's an ariaModal
-            event.path.forEach((pathItem) => {
-                if (pathItem.ariaModal) {
-                    modal = true;
-                    return;
-                }
-            });
-            if (!modal) {
+    handleKeyboardEvent(event) {
+        if (event.keyCode === 27 || event.code === 'Escape') {
+            this.closeTerms();
+        } else if (event.keyCode === 9 || event.code === 'Tab') {
+            const el = event.path[0];
+            if (el.classList.contains('firstfocusable')) {
+                this.template.querySelector('.lastFocusElement').focus();
+            } else if (el.classList.contains('lastfocusable')) {
                 this.termsModal.focusLoop();
             }
-        }
-    };
-
-    handleKeyboardEvent(event) {
-        if (event.key == 'Escape') {
-            this.closeTerms();
         }
     }
 }
