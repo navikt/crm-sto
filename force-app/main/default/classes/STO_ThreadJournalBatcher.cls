@@ -1,5 +1,4 @@
 public without sharing class STO_ThreadJournalBatcher implements Database.Batchable<SObject>, Database.AllowsCallouts, Database.Stateful {
-    private final String query = 'SELECT Id, CRM_Thread__c, NAV_Case_Reference__c, CRM_Theme_Code__c, CRM_Subtheme_Code__c, Subtheme__c, Theme__c, CRM_Created_By_NAV_Unit__c, CRM_NAV_Case_Legacy_System__c FROM Journal_Entry__c WHERE CRM_Thread__r.CRM_isActive__c = false AND CRM_Thread__r.STO_Sensitive_Information__c = false AND CRM_Thread__c != null AND Journal_Entry_Status__c = \'In Progress\'';
     private LoggerUtility logger = new LoggerUtility('Thread Journal Batch');
     private Boolean error = false;
 
@@ -12,8 +11,52 @@ public without sharing class STO_ThreadJournalBatcher implements Database.Batcha
         Database.executeBatch(new STO_ThreadJournalBatcher(), 50);
     }
 
+    //################################################//
+    //############ SELECTOR CLASS ####################//
+    //################################################//
+
+    private class JournalEntrySelector extends CRM_ApiSelector {
+        public JournalEntrySelector() {
+            super(false, false, false);
+        }
+
+        public List<Schema.SObjectField> getSObjectFieldList() {
+            return new List<Schema.SObjectField>{
+                Journal_Entry__c.Id,
+                Journal_Entry__c.CRM_Thread__c,
+                Journal_Entry__c.CRM_Created_By_Ident__c,
+                Journal_Entry__c.CRM_Created_By_NAV_Unit__c,
+                Journal_Entry__c.NAV_Case_Reference__c,
+                Journal_Entry__c.CRM_Theme_Code__c,
+                Journal_Entry__c.CRM_Subtheme_Code__c,
+                Journal_Entry__c.Subtheme__c,
+                Journal_Entry__c.Theme__c,
+                Journal_Entry__c.CRM_NAV_Case_Legacy_System__c
+            };
+        }
+
+        public Schema.SObjectType getSObjectType() {
+            return Journal_Entry__c.sObjectType;
+        }
+
+        private String getJournalConditions() {
+            return 'CRM_Thread__r.CRM_isActive__c = false AND CRM_Thread__r.STO_Sensitive_Information__c = false AND CRM_Thread__c != null AND Journal_Entry_Status__c = \'In Progress\'';
+        }
+
+        public String getJournalEntriesToJournal() {
+            fflib_QueryFactory query = newQueryFactory();
+            query.setCondition(getJournalConditions());
+
+            return query.toSOQL();
+        }
+    }
+
+    //################################################//
+    //###### BATCH IMPLEMENTATION CLASS ##############//
+    //################################################//
+
     public Database.QueryLocator start(Database.BatchableContext BC) {
-        return Database.getQueryLocator(query);
+        return Database.getQueryLocator(new JournalEntrySelector().getJournalEntriesToJournal());
     }
 
     public void execute(Database.BatchableContext BC, List<sObject> scope) {
