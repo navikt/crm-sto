@@ -1,6 +1,7 @@
 <template>
     <div class={wrapperClass}>
         <div class="navds-textarea__wrapper">
+            <label for="textareaInput" class="sr-only">Tekstområde med plass til {maxLength} tegn.</label>
             <textarea
                 aria-invalid={errorState}
                 name="textbox"
@@ -11,9 +12,9 @@
                 maxlength={maxLength}
                 onfocusout={checkError}
                 rows="6"
+                id="textareaInput"
             ></textarea>
-            <span class="sr-only"> Tekstområde med plass til {maxLength} tegn.</span>
-            <p aria-live="off" class="navds-textarea__counter navds-body-short">
+            <p aria-live="off" class="navds-textarea__counter navds-body-short remainingCounter">
                 Du har {remainingCharacters} tegn igjen
             </p>
         </div>

@@ -23,6 +23,9 @@ import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_
 import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
 import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
+import { publish, MessageContext } from 'lightning/messageService';
+import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
+
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     showspinner = false;
     selectedTheme;
@@ -52,6 +55,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     showTermWarning = false;
     message;
     modalOpen = false;
+
+    @wire(MessageContext)
+    messageContext;
 
     get errors() {
         let errorList = [];
@@ -147,11 +153,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.modalOpen = true;
         document.addEventListener('focus', this.handleModalFocus, true);
         this.termsModal.focusModal();
+        publish(this.messageContext, globalModalOpen, { status: 'true' });
     }
 
     closeTerms() {
         document.removeEventListener('focus', this.handleModalFocus, true);
         this.modalOpen = false;
+        const btn = this.template.querySelector('.focusBtn');
+        btn.focus();
+        publish(this.messageContext, globalModalOpen, { status: 'false' });
     }
 
     termsAccepted() {

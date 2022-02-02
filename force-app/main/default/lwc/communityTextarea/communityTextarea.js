@@ -18,6 +18,8 @@ export default class CommunityTextarea extends LightningElement {
         this.errorState = false;
         let text = event.target.value;
         this.message = text;
+        let counter = this.template.querySelector('.remainingCounter');
+        counter.ariaLive = text.length / this.maxLength >= 0.95 ? 'polite' : 'off';
     }
 
     get remainingCharacters() {
