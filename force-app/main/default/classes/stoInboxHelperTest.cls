@@ -49,29 +49,29 @@ public with sharing class stoInboxHelperTest {
         Test.stopTest();
         System.assertEquals(tList.isEmpty(), false);
     }
-    @isTest
-    static void getLatestMessageTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
-        stoHelperClass.createMessage(t, 'this is a test message again', personContact.Id);
-        Test.startTest();
-        stoInboxHelper.message m = stoInboxHelper.getLatestMessage(t.Id);
-        Test.stopTest();
-        System.assertEquals('this is a test message again', m.messageText);
-    }
-    @isTest
-    static void getLatestMessageConversationNoteTest() {
-        Conversation_Note__c cn = [SELECT Id FROM Conversation_Note__c LIMIT 1];
-        Test.startTest();
-        stoInboxHelper.message m = stoInboxHelper.getLatestMessage(cn.Id);
-        Test.stopTest();
-        System.assertEquals('this is a test message again', m.messageText);
-    }
+    // @isTest
+    // static void getLatestMessageTest() {
+    //     Contact personContact = [
+    //         SELECT Id, AccountId
+    //         FROM Contact
+    //         WHERE Account.CRM_Person__r.Name = '12345678910'
+    //         LIMIT 1
+    //     ];
+    //     Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
+    //     stoHelperClass.createMessage(t, 'this is a test message again', personContact.Id);
+    //     Test.startTest();
+    //     stoInboxHelper.message m = stoInboxHelper.getLatestMessage(t.Id);
+    //     Test.stopTest();
+    //     System.assertEquals('this is a test message again', m.messageText);
+    // }
+    // @isTest
+    // static void getLatestMessageConversationNoteTest() {
+    //     Conversation_Note__c cn = [SELECT Id FROM Conversation_Note__c LIMIT 1];
+    //     Test.startTest();
+    //     stoInboxHelper.message m = stoInboxHelper.getLatestMessage(cn.Id);
+    //     Test.stopTest();
+    //     System.assertEquals('this is a test message again', m.messageText);
+    // }
     @isTest
     static void markAsReadTest() {
         Conversation_Note__c cn = [SELECT Id FROM Conversation_Note__c LIMIT 1];
