@@ -1,145 +1,148 @@
 <template>
     <div class="decorator-wrapper">
-        <div class="header">
-            <h1 class="typo-sidetittel">Skriv til oss</h1>
-        </div>
-        <div class="panel text-center">
-            <template if:true={validparameter}>
-                <img aria-hidden="true" src={logopath} class="logo" />
-                <h2 class="typo-undertittel typo-undertittel_farge blokk-s">{selectedTheme}</h2>
-                <c-community-error-summary
-                    error-list={errors}
-                    show-warnings={showWarnings}
-                    onclickedevent={handleErrorClick}
-                    class="errorSummary"
-                >
-                </c-community-error-summary>
+        <div>
+            <div class="header">
+                <h1 class="typo-sidetittel">Skriv til oss</h1>
+            </div>
+            <div class="panel text-center">
+                <template if:true={validparameter}>
+                    <img aria-hidden="true" src={logopath} class="logo" />
+                    <h2 class="typo-undertittel typo-undertittel_farge blokk-s">{selectedTheme}</h2>
+                    <c-community-error-summary
+                        error-list={errors}
+                        show-warnings={showWarnings}
+                        onclickedevent={handleErrorClick}
+                        class="errorSummary"
+                    >
+                    </c-community-error-summary>
 
-                <div class="descholder">
-                    <p class="typo-normal blokk-xs description">{label.welcomlabel}</p>
-                </div>
-                <div class="inputarea">
-                    <template if:false={showspinner}>
-                        <template for:each={newslist} for:item="news">
-                            <c-community-expandable-panel
-                                header={news.STO_Header__c}
-                                body={news.STO_Body__c}
-                                key={news.id}
-                            ></c-community-expandable-panel>
-                        </template>
-                        <c-community-textarea
-                            max-length="1000"
-                            class="inputTextbox"
-                            ontextchanged={handleTextChange}
-                        ></c-community-textarea>
-                        <div class="skjemaelement checkbox">
-                            <c-community-checkbox
-                                label-text={label.acceptermtext}
-                                oncheckedchanged={handleChecked}
-                                class="checkboxContainer"
-                            ></c-community-checkbox
-                            ><button onclick={showTerms} class="slds-var-m-left_small lenke vilkar-link" tabindex="0">
-                                {label.showtermstext}
+                    <div class="descholder">
+                        <p class="typo-normal blokk-xs description">{label.welcomlabel}</p>
+                    </div>
+                    <div class="inputarea">
+                        <template if:false={showspinner}>
+                            <template for:each={newslist} for:item="news">
+                                <c-community-expandable-panel
+                                    header={news.STO_Header__c}
+                                    body={news.STO_Body__c}
+                                    key={news.id}
+                                ></c-community-expandable-panel>
+                            </template>
+                            <c-community-textarea
+                                max-length={maxLength}
+                                class="inputTextbox"
+                                ontextchanged={handleTextChange}
+                            ></c-community-textarea>
+                            <div class="skjemaelement checkbox">
+                                <c-community-checkbox
+                                    label-text={label.acceptermtext}
+                                    oncheckedchanged={handleChecked}
+                                    class="checkboxContainer"
+                                ></c-community-checkbox
+                                ><button
+                                    onclick={showTerms}
+                                    class="slds-var-m-left_small lenke vilkar-link focusBtn"
+                                    tabindex="0"
+                                >
+                                    {label.showtermstext}
+                                </button>
+                            </div>
+
+                            <button
+                                class="sendbutton navds-button navds-button--primary navds-button--medium"
+                                type="submit"
+                                style="padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px) 2.5rem"
+                                aria-disabled="false"
+                                onclick={submitrequest}
+                            >
+                                Send
                             </button>
-                        </div>
-                        <c-community-modal
-                            show-modal={modalOpen}
-                            onmodalclosed={closeTerms}
-                            onkeyup={handleKeyboardEvent}
-                        >
-                            <h1 slot="modalHeader" class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">
-                                {label.SERVICE_TERMS_HEADER}
-                            </h1>
-                            <div slot="modalContent">
-                                <section>
-                                    <form class="betingelser-panel panel side-innhold">
-                                        <div class="blokk-m slds-var-m-top_medium" style="text-align: left">
-                                            <lightning-formatted-rich-text
-                                                value={termsContentText}
-                                            ></lightning-formatted-rich-text>
-                                        </div>
-                                    </form>
-                                </section>
-                            </div>
-                            <div slot="modalFooter">
-                                <div class="slds-var-p-bottom_x-large svar-godta text-center blokk-m">
-                                    <button
-                                        class="navds-button navds-button--primary navds-button--medium knapp-width"
-                                        aria-controls="betingelser"
-                                        onclick={termsAccepted}
-                                        type="submit"
-                                        label="Godta"
-                                    >
-                                        {label.ACCEPT_TERMS_BUTTON}
-                                    </button>
-                                </div>
-                                <div class="text-center">
-                                    <button
-                                        class="navds-button navds-button--secondary navds-button--medium knapp-width"
-                                        type="submit"
-                                        aria-controls="betingelser"
-                                        role="button"
-                                        onclick={termsDenied}
-                                    >
-                                        {label.DENY_TERMS_BUTTON}
-                                    </button>
-                                </div>
-                            </div>
-                        </c-community-modal>
-                        <button
-                            class="sendbutton navds-button navds-button--primary navds-button--medium"
-                            type="submit"
-                            style="padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px) 2.5rem"
-                            aria-disabled="false"
-                            onclick={submitrequest}
-                        >
-                            Send
-                        </button>
-                    </template>
-                    <template if:true={showspinner}>
-                        <div tabindex="0" class="spinner" aria-label="Sender melding. Vennligst vent.">
-                            <div class="overflow-detector">
-                                <div class="overflow-detector__scroller">
-                                    <div class="overflow-detector__inner">
-                                        <div class="example__inner">
-                                            <svg
-                                                kind="spinner-negativ"
-                                                class="spinner spinner--m"
-                                                focusable="false"
-                                                height="32"
-                                                width="32"
-                                                viewBox="0 0 50 50"
-                                                preserveAspectRatio="xMidYMid"
-                                            >
-                                                <title></title>
-                                                <circle
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    cx="25"
-                                                    cy="25"
-                                                    r="20"
-                                                    stroke="#eee"
-                                                    fill="none"
-                                                    stroke-width="5"
-                                                ></circle>
-                                                <circle
-                                                    cx="25"
-                                                    cy="25"
-                                                    r="20"
-                                                    stroke="#888"
-                                                    fill="none"
-                                                    stroke-width="5"
-                                                    stroke-dasharray="50 155"
-                                                    stroke-linecap="round"
-                                                ></circle>
-                                            </svg>
+                        </template>
+                        <template if:true={showspinner}>
+                            <div tabindex="0" class="spinner" aria-label="Sender melding. Vennligst vent.">
+                                <div class="overflow-detector">
+                                    <div class="overflow-detector__scroller">
+                                        <div class="overflow-detector__inner">
+                                            <div class="example__inner">
+                                                <svg
+                                                    kind="spinner-negativ"
+                                                    class="spinner spinner--m"
+                                                    focusable="false"
+                                                    height="32"
+                                                    width="32"
+                                                    viewBox="0 0 50 50"
+                                                    preserveAspectRatio="xMidYMid"
+                                                >
+                                                    <title></title>
+                                                    <circle
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        cx="25"
+                                                        cy="25"
+                                                        r="20"
+                                                        stroke="#eee"
+                                                        fill="none"
+                                                        stroke-width="5"
+                                                    ></circle>
+                                                    <circle
+                                                        cx="25"
+                                                        cy="25"
+                                                        r="20"
+                                                        stroke="#888"
+                                                        fill="none"
+                                                        stroke-width="5"
+                                                        stroke-dasharray="50 155"
+                                                        stroke-linecap="round"
+                                                    ></circle>
+                                                </svg>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </template>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </div>
+        <div>
+            <c-community-modal show-modal={modalOpen} onmodalclosed={closeTerms} onkeyup={handleKeyboardEvent}>
+                <h1 slot="modalHeader" class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">
+                    {label.SERVICE_TERMS_HEADER}
+                </h1>
+                <div slot="modalContent">
+                    <section>
+                        <form class="betingelser-panel panel side-innhold">
+                            <div class="blokk-m slds-var-m-top_medium" style="text-align: left">
+                                <lightning-formatted-rich-text value={termsContentText}></lightning-formatted-rich-text>
+                            </div>
+                        </form>
+                    </section>
                 </div>
-            </template>
+                <div slot="modalFooter">
+                    <div class="slds-var-p-bottom_x-large svar-godta text-center blokk-m">
+                        <button
+                            class="navds-button navds-button--primary navds-button--medium knapp-width"
+                            aria-controls="betingelser"
+                            onclick={termsAccepted}
+                            type="submit"
+                            label="Godta"
+                        >
+                            {label.ACCEPT_TERMS_BUTTON}
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <button
+                            class="navds-button navds-button--secondary navds-button--medium knapp-width lastFocusElement"
+                            type="submit"
+                            aria-controls="betingelser"
+                            role="button"
+                            onclick={termsDenied}
+                        >
+                            {label.DENY_TERMS_BUTTON}
+                        </button>
+                    </div>
+                </div>
+            </c-community-modal>
         </div>
     </div>
 </template>

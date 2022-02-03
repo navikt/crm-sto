@@ -25,17 +25,15 @@ export default class CommunityConversationNoteRelatedItem extends NavigationMixi
             const timeTable = inputs[1].split(':');
 
             const fullDate = new Date(Date.UTC(dateTable[0], dateTable[1], dateTable[2], timeTable[0], timeTable[1]));
-            return ' - ' + new Intl.DateTimeFormat('no-no', { dateStyle: 'long', timeStyle: 'short' }).format(fullDate);
+            return (
+                ' fra ' + new Intl.DateTimeFormat('no-no', { dateStyle: 'long', timeStyle: 'short' }).format(fullDate)
+            );
         } else {
             return '';
         }
     }
 
     get label() {
-        return (
-            (this.note.CRM_Theme__r?.Name ? this.note.CRM_Theme__r.Name + ' - ' : '') +
-            'Klikk her for å se relaterte samtalereferat på samme sak' +
-            this.date
-        );
+        return 'Klikk her for å se referat' + this.date;
     }
 }

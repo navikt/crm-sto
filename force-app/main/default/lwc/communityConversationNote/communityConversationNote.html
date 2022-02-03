@@ -3,20 +3,25 @@
         <div class="header header--center page-header" style="text-align: center">
             <h1 class="navds-heading navds-heading--2xlarge header__tittel"><img src={navIcon} alt="" /> {title}</h1>
         </div>
-        <div class="panel">
-            <lightning-formatted-date-time
-                value={date}
-                year="numeric"
-                day="numeric"
-                month="long"
-                hour="2-digit"
-                minute="2-digit"
-                class="inline-block"
-            ></lightning-formatted-date-time>
-            <lightning-formatted-rich-text value={note} class="linebreaks"></lightning-formatted-rich-text>
+        <div class="panel-custom">
+            <div class="big-gap">
+                <lightning-formatted-date-time
+                    value={date}
+                    year="numeric"
+                    day="numeric"
+                    month="long"
+                    hour="2-digit"
+                    minute="2-digit"
+                    class="inline-block thick"
+                ></lightning-formatted-date-time>
+                <lightning-formatted-rich-text value={note} class="linebreaks"></lightning-formatted-rich-text>
+            </div>
             <template if:true={showRelatedNotes}>
-                <div class="slds-border_top slds-var-m-top_xx-large slds-var-p-top_medium">
-                    <p>Dette er en veldig viktig setning som forteller deg alt du trenger å vite.</p>
+                <div class="slds-border_top grey-border big-gap slds-var-p-top_medium">
+                    <p class="navds-body-short navds-body-short--small">
+                        Du har flere referater fra samtaler om denne henvendelsen:
+                    </p>
+                    <br />
                     <template for:each={relatedNotes} for:item="note">
                         <c-community-conversation-note-related-item
                             key={note}
