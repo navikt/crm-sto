@@ -91,10 +91,10 @@
             <name>Send_Follow_Up_Task</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.CreatedDate</leftValueReference>
-                <operator>GreaterThan</operator>
+                <leftValueReference>$Record.Id</leftValueReference>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>Get_Last_External_Message.CreatedDate</elementReference>
+                    <elementReference>Get_Last_Message.Id</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
@@ -162,8 +162,8 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Last_External_Message</name>
-        <label>Get Last External Message</label>
+        <name>Get_Last_Message</name>
+        <label>Get Last Message</label>
         <locationX>374</locationX>
         <locationY>288</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
@@ -183,13 +183,6 @@
             <operator>EqualTo</operator>
             <value>
                 <stringValue>Message</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_External_Message__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>true</booleanValue>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -296,7 +289,7 @@
         <scheduledPaths>
             <name>Schedule_Follow_Up_Task</name>
             <connector>
-                <targetReference>Get_Last_External_Message</targetReference>
+                <targetReference>Get_Last_Message</targetReference>
             </connector>
             <label>Schedule Follow Up Task</label>
             <maxBatchSize>40</maxBatchSize>
