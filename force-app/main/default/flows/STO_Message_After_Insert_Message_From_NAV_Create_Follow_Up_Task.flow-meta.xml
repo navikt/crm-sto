@@ -85,7 +85,7 @@
         <name>Follow_up_Task_Check</name>
         <label>Follow up Task Check</label>
         <locationX>374</locationX>
-        <locationY>408</locationY>
+        <locationY>528</locationY>
         <defaultConnectorLabel>Do Nothing</defaultConnectorLabel>
         <rules>
             <name>Send_Follow_Up_Task</name>
@@ -105,7 +105,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Thread</targetReference>
+                <targetReference>Get_Ikke_Svar_Task_Type</targetReference>
             </connector>
             <label>Send Follow Up Task</label>
         </rules>
@@ -168,7 +168,7 @@
         <locationY>288</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Follow_up_Task_Check</targetReference>
+            <targetReference>Get_Thread</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -226,11 +226,11 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>242</locationX>
-        <locationY>528</locationY>
+        <locationX>374</locationX>
+        <locationY>408</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Ikke_Svar_Task_Type</targetReference>
+            <targetReference>Follow_up_Task_Check</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
