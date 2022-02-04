@@ -327,6 +327,12 @@
                 <elementReference>NAV_TASK_TO_CREATE</elementReference>
             </value>
         </inputAssignments>
+        <inputAssignments>
+            <name>SYSTEM_CONTEXT</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </subflows>
     <variables>
