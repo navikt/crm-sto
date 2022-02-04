@@ -249,6 +249,7 @@
         <queriedFields>CRM_Theme_Group__c</queriedFields>
         <queriedFields>CRM_API_Reference__c</queriedFields>
         <queriedFields>CRM_Account__c</queriedFields>
+        <queriedFields>CRM_isActive__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
