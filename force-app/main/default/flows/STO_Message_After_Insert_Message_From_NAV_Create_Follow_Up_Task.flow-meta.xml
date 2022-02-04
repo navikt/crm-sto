@@ -97,6 +97,13 @@
                     <elementReference>Get_Last_External_Message.CreatedDate</elementReference>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_isActive__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>Get_Thread</targetReference>
             </connector>
