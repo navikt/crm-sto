@@ -6,6 +6,12 @@ export default class CommunityTextarea extends LightningElement {
     message;
     errorState = false;
 
+    renderedCallback() {
+        if (this.mirror.style.minHeight == '') {
+            this.mirror.style.minHeight = this.tekstboks.offsetHeight + 'px';
+        }
+    }
+
     publishMessage(event) {
         this.message = event.target.value;
         const textChangedEvent = new CustomEvent('textchanged', {
@@ -18,6 +24,8 @@ export default class CommunityTextarea extends LightningElement {
         this.errorState = false;
         let text = event.target.value;
         this.message = text;
+        this.mirror.textContent = this.message + '\n s';
+        this.tekstboks.style.height = this.mirror.offsetHeight + 'px';
         let counter = this.template.querySelector('.remainingCounter');
         counter.ariaLive = this.remainingCharacters <= 20 ? 'polite' : 'off';
     }
@@ -42,6 +50,14 @@ export default class CommunityTextarea extends LightningElement {
         );
     }
 
+    get tekstboks() {
+        return this.template.querySelector('.tekstboks');
+    }
+
+    get mirror() {
+        return this.template.querySelector('.mirror');
+    }
+
     checkError() {
         this.errorState = !this.message || this.message.length == 0;
     }
@@ -52,7 +68,6 @@ export default class CommunityTextarea extends LightningElement {
 
     @api
     focus() {
-        let textbox = this.template.querySelector('.tekstboks');
-        textbox.focus();
+        this.tekstboks.focus();
     }
 }
