@@ -16,18 +16,19 @@ public with sharing class stoInboxHelperTest {
             CRM_Is_Read__c = false,
             CRM_Conversation_Note__c = 'this is a test message again'
         );
-        LiveChatTranscript chat = STO_TestDataFactory.createLiveChatTranscripts(1)[0];
-        Thread__c chatThread = new Thread__c();
-        Message__c chatMessage = new Message__c();
-        chatThread.CRM_Related_Object__c = chat.Id;
-        insert chatThread;
-        chatMessage.CRM_Thread__c = chatThread;
-        insert chatMessage;
-        Thread__c STOThread = new Thread__c();
-        Message__c STOMessage = new Message__c();
-        insert STOThread;
-        STOMessage.CRM_Thread__c = STOThread;
-        insert STOMessage;
+        // LiveChatTranscript chat = STO_TestDataFactory.createLiveChatTranscripts(1)[0];
+        // Thread__c chatThread = new Thread__c();
+        // Message__c chatMessage = new Message__c();
+        // chatThread.CRM_Related_Object__c = chat.Id;
+        // insert chatThread;
+        // chatMessage.CRM_Thread__c = chatThread;
+        // insert chatMessage;
+        // Thread__c STOThread = new Thread__c();
+        // Message__c STOMessage = new Message__c();
+        // insert STOThread;
+        // STOMessage.CRM_Thread__c = STOThread;
+        // insert STOMessage;
+        insert cn;
     }
 
     @isTest
