@@ -2,12 +2,14 @@
     <aura:attribute name="showPanel" type="Boolean" default="false"></aura:attribute>
     <aura:attribute name="singleThread" type="Boolean" default="true"></aura:attribute>
     <aura:attribute name="cardTitle" type="String"></aura:attribute>
+    <aura:attribute name="showClose" type="Boolean" default="false"></aura:attribute>
 
     <c:crmStoMessaging
         recordId="{!v.recordId}"
         objectApiName="{!v.sObjectName}"
         singleThread="{!v.singleThread}"
         cardTitle="{!v.cardTitle}"
+        showClose="{!v.showClose}"
         onsto_toolbaraction="{!c.handleToolbarAction}"
     ></c:crmStoMessaging>
 
