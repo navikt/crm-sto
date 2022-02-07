@@ -24,7 +24,7 @@ export default class StoMessageInbox extends LightningElement {
     setThreads() {
         if (this.wthreads) {
             this.threads = [...this.wthreads].sort(this.sortByDate);
-            this.showthreads = true;
+            this.showthreads = this.wthreads.length > 0;
         }
     }
     @wire(getRecentThreads, {})
@@ -39,9 +39,14 @@ export default class StoMessageInbox extends LightningElement {
     setRecentThreads() {
         if (this.wrthreads) {
             this.recentthreads = [...this.wrthreads].sort(this.sortByDate);
-            this.showrecentthreads = true;
+            this.showrecentthreads = this.wrthreads.length > 0;
         }
     }
+
+    get noItems() {
+        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
+    }
+
     sortByDate(t1, t2) {
         let d1 = new Date(t1.latestMessageDate);
         let d2 = new Date(t2.latestMessageDate);
