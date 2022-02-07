@@ -573,7 +573,7 @@
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <subflows>
         <name>Send_NAV_Task_On_No_Task</name>
         <label>Send NAV Task</label>
@@ -583,6 +583,12 @@
             <targetReference>Update_Thread_Reference_On_No_Task</targetReference>
         </connector>
         <flowName>CRM_Send_NAV_Task_Auto</flowName>
+        <inputAssignments>
+            <name>Created_By_Unit_Number</name>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
+            </value>
+        </inputAssignments>
         <inputAssignments>
             <name>NAV_Task</name>
             <value>
