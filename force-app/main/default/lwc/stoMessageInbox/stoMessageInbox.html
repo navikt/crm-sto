@@ -33,6 +33,15 @@
                     <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
                 </template>
             </template>
+            <template if:true={noItems}>
+                <div class="slds-var-p-vertical_large centerInfobox">
+                    <c-crm-community-alert-stripe
+                        class="alertbox"
+                        type="info"
+                        alerttext="Du har ingen meldinger i innboksen din."
+                    ></c-crm-community-alert-stripe>
+                </div>
+            </template>
         </div>
     </div>
 </template>
