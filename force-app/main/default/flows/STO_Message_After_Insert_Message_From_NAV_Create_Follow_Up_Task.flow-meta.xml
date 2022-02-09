@@ -85,16 +85,16 @@
         <name>Follow_up_Task_Check</name>
         <label>Follow up Task Check</label>
         <locationX>374</locationX>
-        <locationY>408</locationY>
+        <locationY>528</locationY>
         <defaultConnectorLabel>Do Nothing</defaultConnectorLabel>
         <rules>
             <name>Send_Follow_Up_Task</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.CreatedDate</leftValueReference>
-                <operator>GreaterThan</operator>
+                <leftValueReference>$Record.Id</leftValueReference>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>Get_Last_External_Message.CreatedDate</elementReference>
+                    <elementReference>Get_Last_Message.Id</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
@@ -105,7 +105,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Thread</targetReference>
+                <targetReference>Get_Ikke_Svar_Task_Type</targetReference>
             </connector>
             <label>Send Follow Up Task</label>
         </rules>
@@ -162,13 +162,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Last_External_Message</name>
-        <label>Get Last External Message</label>
+        <name>Get_Last_Message</name>
+        <label>Get Last Message</label>
         <locationX>374</locationX>
         <locationY>288</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Follow_up_Task_Check</targetReference>
+            <targetReference>Get_Thread</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -183,13 +183,6 @@
             <operator>EqualTo</operator>
             <value>
                 <stringValue>Message</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_External_Message__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>true</booleanValue>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -226,11 +219,11 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>242</locationX>
-        <locationY>528</locationY>
+        <locationX>374</locationX>
+        <locationY>408</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Ikke_Svar_Task_Type</targetReference>
+            <targetReference>Follow_up_Task_Check</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -249,6 +242,7 @@
         <queriedFields>CRM_Theme_Group__c</queriedFields>
         <queriedFields>CRM_API_Reference__c</queriedFields>
         <queriedFields>CRM_Account__c</queriedFields>
+        <queriedFields>CRM_isActive__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
@@ -295,7 +289,7 @@
         <scheduledPaths>
             <name>Schedule_Follow_Up_Task</name>
             <connector>
-                <targetReference>Get_Last_External_Message</targetReference>
+                <targetReference>Get_Last_Message</targetReference>
             </connector>
             <label>Schedule Follow Up Task</label>
             <maxBatchSize>40</maxBatchSize>
@@ -324,6 +318,12 @@
             <name>NAV_Task</name>
             <value>
                 <elementReference>NAV_TASK_TO_CREATE</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>SYSTEM_CONTEXT</name>
+            <value>
+                <booleanValue>true</booleanValue>
             </value>
         </inputAssignments>
         <storeOutputAutomatically>true</storeOutputAutomatically>

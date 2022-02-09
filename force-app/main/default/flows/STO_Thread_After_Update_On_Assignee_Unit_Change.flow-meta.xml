@@ -4,7 +4,7 @@
     <decisions>
         <name>Check_Prior_Assignee_Unit</name>
         <label>Check Prior Assignee Unit</label>
-        <locationX>534</locationX>
+        <locationX>578</locationX>
         <locationY>335</locationY>
         <defaultConnectorLabel>Has Prior</defaultConnectorLabel>
         <rules>
@@ -84,6 +84,12 @@
             </value>
         </filters>
         <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Status</field>
             <value>
                 <stringValue>Closed</stringValue>
@@ -92,7 +98,7 @@
         <object>Case</object>
     </recordUpdates>
     <start>
-        <locationX>408</locationX>
+        <locationX>452</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Check_Prior_Assignee_Unit</targetReference>

@@ -69,6 +69,7 @@
                                         "alertopen": "Vi avslutter samtalen automatisk hvis du ikke svarer innen 7 dager.",
                                         "alerttext": "Samtalen er avsluttet. Vil du <a href=\"https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss\">sende en ny melding</a>, kan du gjøre det her.",
                                         "header": "Skriv til oss",
+                                        "maxLength": 1000,
                                         "recordId": "{!recordId}"
                                     },
                                     "componentName": "c:crmMessagingCommunityThreadViewer",

@@ -10,6 +10,7 @@ export default class CrmStoMessaging extends LightningElement {
     @api objectApiName;
     @api singleThread;
     @api cardTitle;
+    @api showClose = false;
 
     wireField;
     accountId;
