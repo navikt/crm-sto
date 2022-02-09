@@ -24,7 +24,9 @@ export default class CommunityConversationNoteRelatedItem extends NavigationMixi
             const dateTable = inputs[0].split('-');
             const timeTable = inputs[1].split(':');
 
-            const fullDate = new Date(Date.UTC(dateTable[0], dateTable[1], dateTable[2], timeTable[0], timeTable[1]));
+            const fullDate = new Date(
+                Date.UTC(dateTable[0], dateTable[1] - 1, dateTable[2], timeTable[0], timeTable[1])
+            );
             return (
                 ' fra ' + new Intl.DateTimeFormat('no-no', { dateStyle: 'long', timeStyle: 'short' }).format(fullDate)
             );
