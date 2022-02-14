@@ -14,7 +14,7 @@ public with sharing class stoInboxHelper {
                 STO_ExternalName__c,
                 CRM_Is_Closed__C
             FROM Thread__c
-            WHERE CRM_Number_of_unread_Messages__c = 0 AND CRM_Is_Closed__C = TRUE
+            WHERE CRM_Number_of_unread_Messages__c = 0 AND CRM_Is_Closed__C = TRUE AND CRM_Incorrectly_Sent__c = FALSE
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -32,7 +32,7 @@ public with sharing class stoInboxHelper {
         List<Conversation_Note__c> noteList = [
             SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c
             FROM Conversation_Note__c
-            WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
+            WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL AND CRM_Incorrectly_Sent__c = FALSE
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -63,7 +63,7 @@ public with sharing class stoInboxHelper {
                 STO_ExternalName__c,
                 CRM_Is_Closed__C
             FROM Thread__c
-            WHERE CRM_Number_of_unread_Messages__c > 0 OR CRM_Is_Closed__c = FALSE
+            WHERE (CRM_Number_of_unread_Messages__c > 0 OR CRM_Is_Closed__c = FALSE) AND CRM_Incorrectly_Sent__c = FALSE
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -81,7 +81,7 @@ public with sharing class stoInboxHelper {
         List<Conversation_Note__c> noteList = [
             SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c
             FROM Conversation_Note__c
-            WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
+            WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL AND CRM_Incorrectly_Sent__c = FALSE
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -127,12 +127,12 @@ public with sharing class stoInboxHelper {
             Message__c messageList = [
                 SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                 FROM Message__c
-                WHERE CRM_Thread__c = :threadId AND ( CRM_Type__c = 'Message' OR CRM_Type__c = 'Info' )
+                WHERE CRM_Thread__c = :threadId AND (CRM_Type__c = 'Message' OR CRM_Type__c = 'Info')
                 ORDER BY CRM_Sent_Datetime_Formula__c DESC
                 LIMIT 1
             ];
-            returntext.messageText = messageList.CRM_Message_Text__c; 
-            returntext.recordId = messageList.Id; 
+            returntext.messageText = messageList.CRM_Message_Text__c;
+            returntext.recordId = messageList.Id;
             returntext.isExternal = messageList.CRM_External_Message__c;
         }
         if (objectName == 'Conversation_Note__c') {
