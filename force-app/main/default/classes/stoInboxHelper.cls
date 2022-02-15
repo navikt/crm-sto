@@ -14,7 +14,11 @@ public with sharing class stoInboxHelper {
                 STO_ExternalName__c,
                 CRM_Is_Closed__C
             FROM Thread__c
-            WHERE CRM_Number_of_unread_Messages__c = 0 AND CRM_Is_Closed__C = TRUE
+            WHERE
+                CRM_Number_of_unread_Messages__c = 0
+                AND CRM_Is_Closed__C = TRUE
+                AND (CRM_Thread_Type__c = 'STO'
+                OR CRM_Thread_Type__c = 'STB')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -63,7 +67,11 @@ public with sharing class stoInboxHelper {
                 STO_ExternalName__c,
                 CRM_Is_Closed__C
             FROM Thread__c
-            WHERE CRM_Number_of_unread_Messages__c > 0 OR CRM_Is_Closed__c = FALSE
+            WHERE
+                (CRM_Number_of_unread_Messages__c > 0
+                OR CRM_Is_Closed__c = FALSE)
+                AND (CRM_Thread_Type__c = 'STO'
+                OR CRM_Thread_Type__c = 'STB')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -127,12 +135,12 @@ public with sharing class stoInboxHelper {
             Message__c messageList = [
                 SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                 FROM Message__c
-                WHERE CRM_Thread__c = :threadId AND ( CRM_Type__c = 'Message' OR CRM_Type__c = 'Info' )
+                WHERE CRM_Thread__c = :threadId AND (CRM_Type__c = 'Message' OR CRM_Type__c = 'Info')
                 ORDER BY CRM_Sent_Datetime_Formula__c DESC
                 LIMIT 1
             ];
-            returntext.messageText = messageList.CRM_Message_Text__c; 
-            returntext.recordId = messageList.Id; 
+            returntext.messageText = messageList.CRM_Message_Text__c;
+            returntext.recordId = messageList.Id;
             returntext.isExternal = messageList.CRM_External_Message__c;
         }
         if (objectName == 'Conversation_Note__c') {
