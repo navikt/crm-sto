@@ -103,7 +103,7 @@
                     "componentAttributes": {
                         "customHeadTags": "",
                         "description": "",
-                        "pageTitle": "Home",
+                        "pageTitle": "Innboks",
                         "recordId": "{!recordId}"
                     },
                     "componentName": "community_builder:seoAssistant",

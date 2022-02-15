@@ -74,7 +74,7 @@ public with sharing class stoHelperClass {
         try {
             insert thread;
         } catch (DmlException e) {
-            logger.exception(e);
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
         return thread;
@@ -88,7 +88,7 @@ public with sharing class stoHelperClass {
         try {
             insert msg;
         } catch (DmlException e) {
-            logger.exception(e);
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
     }

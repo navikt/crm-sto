@@ -300,7 +300,7 @@
         </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <subflows>
         <description>Performs the outbound callout to store the NAV task for conversation follow up.</description>
         <name>Send_NAV_Task</name>
