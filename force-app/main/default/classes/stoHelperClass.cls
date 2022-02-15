@@ -41,7 +41,7 @@ public with sharing class stoHelperClass {
      * @date 08.06.21
      */
     @AuraEnabled
-    public static Id createRequest(String theme, String msgText) {
+    public static Thread__c createRequest(String theme, String msgText) {
         String relatedObjId;
         Thread__c thread;
 
@@ -50,7 +50,7 @@ public with sharing class stoHelperClass {
         thread = createThread(null, theme, personUser);
         createMessage(thread, msgText, personUser.ContactId);
 
-        return thread.Id;
+        return thread;
     }
 
     private static Thread__c createThread(String relatedObjId, String theme, User personUser) {
@@ -74,7 +74,7 @@ public with sharing class stoHelperClass {
         try {
             insert thread;
         } catch (DmlException e) {
-            logger.exception(e);
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
         return thread;
@@ -88,7 +88,7 @@ public with sharing class stoHelperClass {
         try {
             insert msg;
         } catch (DmlException e) {
-            logger.exception(e);
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
     }

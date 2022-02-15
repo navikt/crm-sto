@@ -42,18 +42,32 @@ export default class StoMessageInboxItem extends LightningElement {
     }
     connectedCallback() {
         this.objectName = this.thread.objectName;
-        this.linkUrl = basepath + '/' + this.objectName + '/' + this.thread.recordId;
+        this.linkUrl =
+            basepath +
+            '/' +
+            this.objectName +
+            '/' +
+            this.thread.recordId +
+            '/' +
+            encodeURIComponent(this.thread.recordName);
         this.threadId = this.thread.recordId;
         if (this.thread.status == 'Åpen') {
             this.statuscolor = 'greenfont';
             this.isOpen = true;
         }
         if (this.objectName == 'samtalereferat') this.dialog = navlogos + '/Notes.svg';
-        if (this.objectName == 'chat') this.dialog = navlogos + '/bag.svg';
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
             this.unreadmessage = 'ulest';
             this.className = 'lenkepanel dialog unread iconclass';
+        }
+    }
+    @wire(getLatest, { threadId: '$threadId' })
+    wiremessage(result) {
+        if (result.data) {
+            this.latestmessage = result.data;
+            this.latestText = result.data.messageText;
+            this.isExternal = result.data.isExternal;
         }
         this.latestmessage = this.thread.latestmessage;
         this.latestText = this.thread.latestmessage.messageText;

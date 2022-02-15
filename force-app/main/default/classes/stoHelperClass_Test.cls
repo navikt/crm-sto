@@ -57,9 +57,9 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void createRequestTest() {
         Test.startTest();
-        Id threadId = stoHelperClass.createRequest('Arbeid', 'This is the message');
+        Thread__c thread = stoHelperClass.createRequest('Arbeid', 'This is the message');
         Test.stopTest();
-        List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :threadId];
+        List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
         System.assertEquals(1, msgList.size());
     }
 
