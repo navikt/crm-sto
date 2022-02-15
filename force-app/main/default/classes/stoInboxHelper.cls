@@ -15,7 +15,11 @@ public with sharing class stoInboxHelper {
                 CRM_Is_Closed__C,
                 Name
             FROM Thread__c
-            WHERE CRM_Number_of_unread_Messages__c = 0 AND CRM_Is_Closed__C = TRUE
+            WHERE
+                CRM_Number_of_unread_Messages__c = 0
+                AND CRM_Is_Closed__C = TRUE
+                AND (CRM_Thread_Type__c = 'STO'
+                OR CRM_Thread_Type__c = 'STB')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -67,7 +71,11 @@ public with sharing class stoInboxHelper {
                 CRM_Is_Closed__C,
                 Name
             FROM Thread__c
-            WHERE CRM_Number_of_unread_Messages__c > 0 OR CRM_Is_Closed__c = FALSE
+            WHERE
+                (CRM_Number_of_unread_Messages__c > 0
+                OR CRM_Is_Closed__c = FALSE)
+                AND (CRM_Thread_Type__c = 'STO'
+                OR CRM_Thread_Type__c = 'STB')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
