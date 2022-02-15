@@ -15,6 +15,7 @@ public with sharing class stoInboxHelper {
                 CRM_Is_Closed__c,
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
+                Name,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -50,11 +51,18 @@ public with sharing class stoInboxHelper {
                     .replaceAll('(\\r|\\n)+', ' ');
                 m.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
                 i.latestmessage = m;
+                i.recordName = t.Name;
                 inboxlist.add(i);
             }
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, CRM_Conversation_Note__c
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Date_Time_Registered__c,
+                STO_External_Name__c,
+                CRM_Conversation_Note__c,
+                Name
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
             ORDER BY CRM_Date_Time_Registered__c DESC
@@ -73,6 +81,7 @@ public with sharing class stoInboxHelper {
             m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
             m.recordId = t.Id;
             i.latestmessage = m;
+            i.recordName = t.Name;
             inboxlist.add(i);
         }
         return inboxlist;
@@ -92,6 +101,7 @@ public with sharing class stoInboxHelper {
                 CRM_Is_Closed__c,
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
+                Name,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -127,11 +137,18 @@ public with sharing class stoInboxHelper {
                     .replaceAll('(\\r|\\n)+', ' ');
                 m.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
                 i.latestmessage = m;
+                i.recordName = t.Name;
                 inboxlist.add(i);
             }
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, CRM_Conversation_Note__c
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Date_Time_Registered__c,
+                STO_External_Name__c,
+                CRM_Conversation_Note__c,
+                Name
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
             ORDER BY CRM_Date_Time_Registered__c DESC
@@ -150,6 +167,7 @@ public with sharing class stoInboxHelper {
             m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
             m.recordId = t.Id;
             i.latestmessage = m;
+            i.recordName = t.Name;
             inboxlist.add(i);
         }
         return inboxlist;
@@ -174,6 +192,8 @@ public with sharing class stoInboxHelper {
         public String status;
         @AuraEnabled
         public message latestmessage;
+        @AuraEnabled
+        public String recordName;
     }
 
     public class message {
