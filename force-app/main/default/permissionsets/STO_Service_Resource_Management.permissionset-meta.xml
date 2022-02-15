@@ -33,7 +33,7 @@
         <allowDelete>false</allowDelete>
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>ServiceResource</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
