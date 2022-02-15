@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <actionCalls>
-        <description>Automatically close the console tab after flow completion</description>
-        <name>Close_Workspace_Tab</name>
-        <label>Close Workspace Tab</label>
-        <locationX>336</locationX>
-        <locationY>3014</locationY>
-        <actionName>c:crmTabCloser</actionName>
-        <actionType>component</actionType>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-    </actionCalls>
     <apiVersion>52.0</apiVersion>
     <assignments>
         <name>Add_journal_entry_to_text</name>
         <label>Add journal entry to text</label>
-        <locationX>292</locationX>
+        <locationX>270</locationX>
         <locationY>758</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
@@ -121,7 +111,7 @@
     <assignments>
         <name>Close_List</name>
         <label>Close List</label>
-        <locationX>204</locationX>
+        <locationX>182</locationX>
         <locationY>974</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
@@ -144,7 +134,7 @@
     <assignments>
         <name>Set_journal_entries_text</name>
         <label>Set journal entries text</label>
-        <locationX>204</locationX>
+        <locationX>182</locationX>
         <locationY>518</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
@@ -175,7 +165,7 @@
         <description>Set the new category for the thread transfer</description>
         <name>Set_Thread_Category</name>
         <label>Set Thread Category</label>
-        <locationX>204</locationX>
+        <locationX>50</locationX>
         <locationY>1550</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.STO_Category__c</assignToReference>
@@ -189,26 +179,10 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Set_Thread_isActive</name>
-        <label>Set Thread isActive</label>
-        <locationX>50</locationX>
-        <locationY>2462</locationY>
-        <assignmentItems>
-            <assignToReference>Get_Case_Thread.CRM_isActive__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Set_Thread_Sensitive_Information</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Set_Thread_Sensitive_Information</name>
         <label>Set Thread Sensitive Information</label>
         <locationX>182</locationX>
-        <locationY>2678</locationY>
+        <locationY>2006</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -227,35 +201,26 @@
             <targetReference>Update_Thread</targetReference>
         </connector>
     </assignments>
-    <decisions>
-        <name>Check_Thread_Close</name>
-        <label>Check Thread Close</label>
-        <locationX>182</locationX>
-        <locationY>2342</locationY>
-        <defaultConnector>
-            <targetReference>Set_Thread_Sensitive_Information</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Open Thread</defaultConnectorLabel>
-        <rules>
-            <name>Do_Close_Thread</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Close_Thread</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Set_Thread_isActive</targetReference>
-            </connector>
-            <label>Close Thread</label>
-        </rules>
-    </decisions>
+    <choices>
+        <name>NAV_UNIT_TRANSFER</name>
+        <choiceText>NAV-kontor</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>NAV_UNIT_TRANSFER</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>TRANSFER_QUEUE</name>
+        <choiceText>Annen kø</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>QUEUE_TRANSFER</stringValue>
+        </value>
+    </choices>
     <decisions>
         <name>How_many_journal_entries</name>
         <label>How many journal entries</label>
-        <locationX>336</locationX>
+        <locationX>314</locationX>
         <locationY>398</locationY>
         <defaultConnector>
             <targetReference>Case_Complete_Screen</targetReference>
@@ -278,41 +243,16 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Journal_Decision</name>
-        <label>Journal Decision</label>
-        <locationX>336</locationX>
-        <locationY>1886</locationY>
-        <defaultConnector>
-            <targetReference>Thread_Update_Decision</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No Journal Entry</defaultConnectorLabel>
-        <rules>
-            <name>Do_Create_Journal_Entry</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Journal_Toggle.value</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Create_Journal_Entry</targetReference>
-            </connector>
-            <label>Do Create Journal Entry</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Should_Transfer</name>
         <label>Should Transfer</label>
-        <locationX>336</locationX>
+        <locationX>314</locationX>
         <locationY>1310</locationY>
         <defaultConnector>
             <targetReference>Set_Case_Status_On_Hold</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Don&apos;t transfer</defaultConnectorLabel>
         <rules>
-            <name>Transfer</name>
+            <name>Transfer_to_Queue</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Transfer_Toggle.value</leftValueReference>
@@ -321,31 +261,50 @@
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>INPUT_TRANSFER_TO</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>TRANSFER_QUEUE</elementReference>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>Transfer_case</targetReference>
             </connector>
-            <label>Transfer</label>
+            <label>Transfer to Queue</label>
         </rules>
-    </decisions>
-    <decisions>
-        <name>Thread_Update_Decision</name>
-        <label>Thread Update Decision</label>
-        <locationX>336</locationX>
-        <locationY>2222</locationY>
-        <defaultConnector>
-            <targetReference>Close_Workspace_Tab</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No Thread Update</defaultConnectorLabel>
         <rules>
-            <name>Do_Update_Thread</name>
-            <conditionLogic>or</conditionLogic>
+            <name>Transfer_to_NAV_Unit</name>
+            <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Close_Thread</leftValueReference>
+                <leftValueReference>Transfer_Toggle.value</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>INPUT_TRANSFER_TO</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>NAV_UNIT_TRANSFER</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Initiate_NAV_Unit_Transfer</targetReference>
+            </connector>
+            <label>Transfer to NAV Unit</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Thread_Update_Decision</name>
+        <label>Thread Update Decision</label>
+        <locationX>314</locationX>
+        <locationY>1886</locationY>
+        <defaultConnectorLabel>No Thread Update</defaultConnectorLabel>
+        <rules>
+            <name>Do_Update_Thread</name>
+            <conditionLogic>or</conditionLogic>
             <conditions>
                 <leftValueReference>Sensitive_Toggle.value</leftValueReference>
                 <operator>EqualTo</operator>
@@ -354,14 +313,14 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Transfer</leftValueReference>
+                <leftValueReference>Transfer_to_Queue</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Check_Thread_Close</targetReference>
+                <targetReference>Set_Thread_Sensitive_Information</targetReference>
             </connector>
             <label>Update Thread</label>
         </rules>
@@ -393,7 +352,7 @@
         <description>Loops through each journal entry</description>
         <name>Loop_over_journal_entries</name>
         <label>Loop over journal entries</label>
-        <locationX>204</locationX>
+        <locationX>182</locationX>
         <locationY>638</locationY>
         <collectionReference>Get_Thread_Joural_entries</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -427,7 +386,7 @@
         <description>Query the thread related to the case record</description>
         <name>Get_Case_Thread</name>
         <label>Get Case Thread</label>
-        <locationX>336</locationX>
+        <locationX>314</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -449,7 +408,7 @@
         <description>Gets all registered journal entries for the case</description>
         <name>Get_Thread_Joural_entries</name>
         <label>Get Thread Joural entries</label>
-        <locationX>336</locationX>
+        <locationX>314</locationX>
         <locationY>278</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -475,10 +434,10 @@
     <recordUpdates>
         <name>Set_Case_Status_On_Hold</name>
         <label>Set Case Status On Hold</label>
-        <locationX>468</locationX>
+        <locationX>578</locationX>
         <locationY>1430</locationY>
         <connector>
-            <targetReference>Journal_Decision</targetReference>
+            <targetReference>Thread_Update_Decision</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -499,7 +458,7 @@
     <recordUpdates>
         <name>Transfer_case</name>
         <label>Transfer case</label>
-        <locationX>204</locationX>
+        <locationX>50</locationX>
         <locationY>1430</locationY>
         <connector>
             <targetReference>Set_Thread_Category</targetReference>
@@ -536,17 +495,14 @@
         <name>Update_Thread</name>
         <label>Update Thread</label>
         <locationX>182</locationX>
-        <locationY>2798</locationY>
-        <connector>
-            <targetReference>Close_Workspace_Tab</targetReference>
-        </connector>
+        <locationY>2126</locationY>
         <inputReference>Get_Case_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Case_Complete_Screen</name>
         <label>Case Complete Screen</label>
-        <locationX>336</locationX>
+        <locationX>314</locationX>
         <locationY>1190</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -610,75 +566,13 @@
             </visibilityRule>
         </fields>
         <fields>
-            <name>Journal_Toggle</name>
-            <extensionName>flowruntime:toggle</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue>Fremtidig journalføring?</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleActive</name>
-                <value>
-                    <stringValue>Ja</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleInactive</name>
-                <value>
-                    <stringValue>Nei</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>disabled</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <fields>
-            <name>Journal_Case_Selector</name>
-            <extensionName>c:crmPersonCaseOverview</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>actorId</name>
-                <value>
-                    <elementReference>Get_Case_Thread.CRM_External_ActorId__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>prefilledThemeGroup</name>
-                <value>
-                    <elementReference>Get_Case_Thread.CRM_Theme_Group__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Journal_Toggle.value</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>true</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
             <name>Transfer_Toggle</name>
             <extensionName>flowruntime:toggle</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>label</name>
                 <value>
-                    <stringValue>Overfør til annen kø</stringValue>
+                    <stringValue>Overfør</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -702,6 +596,26 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>INPUT_TRANSFER_TO</name>
+            <choiceReferences>TRANSFER_QUEUE</choiceReferences>
+            <choiceReferences>NAV_UNIT_TRANSFER</choiceReferences>
+            <dataType>String</dataType>
+            <defaultSelectedChoiceReference>TRANSFER_QUEUE</defaultSelectedChoiceReference>
+            <fieldText>Sett over til:</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Transfer_Toggle.value</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>STO_Category_Picklist</name>
@@ -722,29 +636,122 @@
                         <booleanValue>true</booleanValue>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>INPUT_TRANSFER_TO</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>TRANSFER_QUEUE</elementReference>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
-            <name>Close_Thread</name>
-            <dataType>Boolean</dataType>
-            <defaultValue>
-                <booleanValue>false</booleanValue>
-            </defaultValue>
-            <fieldText>Avslutt samtaletråd</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>true</isRequired>
-        </fields>
-        <fields>
-            <name>Close_Thread_Message</name>
-            <fieldText>&lt;p&gt;Brukeren kan ikke svare når samtalen av avsluttet.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
+            <name>Case_Complete_Screen_Section1</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Case_Complete_Screen_Section1_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>THEME_CATEGORIZATION</name>
+                    <extensionName>c:crmThemeCategorization</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>themeGroup</name>
+                        <value>
+                            <elementReference>Get_Case_Thread.CRM_Theme_Group__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>theme</name>
+                        <value>
+                            <elementReference>Get_Case_Thread.CRM_Theme__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <fields>
+                    <name>TASK_TYPE_SELECTOR</name>
+                    <extensionName>c:crmTaskTypePicklist</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <fields>
+                    <name>TASK_COMMENT</name>
+                    <fieldText>Kommentar</fieldText>
+                    <fieldType>LargeTextArea</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>TRANFER_UNIT_ALLOCATION</name>
+                    <extensionName>c:crmNavTaskWorkAllocation</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>hideDelegateToSelf</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>disableConditionalRendering</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>taskType</name>
+                        <value>
+                            <stringValue>KONT_BRUK</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>theme</name>
+                        <value>
+                            <stringValue>KNA</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>themeGroup</name>
+                        <value>
+                            <elementReference>Get_Case_Thread.CRM_Theme_Group_Code__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>personId</name>
+                        <value>
+                            <elementReference>Get_Case_Thread.CRM_Account__r.CRM_Person__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
-                    <leftValueReference>Close_Thread</leftValueReference>
+                    <leftValueReference>Transfer_Toggle.value</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>INPUT_TRANSFER_TO</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>NAV_UNIT_TRANSFER</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -754,7 +761,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>210</locationX>
+        <locationX>188</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Case_Thread</targetReference>
@@ -762,58 +769,64 @@
     </start>
     <status>Active</status>
     <subflows>
-        <name>Create_Journal_Entry</name>
-        <label>Create Journal Entry</label>
-        <locationX>204</locationX>
-        <locationY>2006</locationY>
+        <name>Initiate_NAV_Unit_Transfer</name>
+        <label>Initiate NAV Unit Transfer</label>
+        <locationX>314</locationX>
+        <locationY>1430</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
-        <flowName>CRM_Thread_Create_Journal_Entry</flowName>
-        <inputAssignments>
-            <name>Journal_Case_ID</name>
-            <value>
-                <elementReference>Journal_Case_Selector.selectedCaseId</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Journal_Case_Legacy_System</name>
-            <value>
-                <elementReference>Journal_Case_Selector.selectedCaseLegacySystem</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Journal_Entry_NAV_Ident</name>
-            <value>
-                <elementReference>$User.CRM_NAV_Ident__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Journal_Entry_Unit</name>
-            <value>
-                <elementReference>$User.Department</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Journal_Theme_Code</name>
-            <value>
-                <elementReference>Journal_Case_Selector.selectedCaseTheme</elementReference>
-            </value>
-        </inputAssignments>
+        <flowName>STO_Transfer_to_NAV_Unit_Auto</flowName>
         <inputAssignments>
             <name>recordId</name>
             <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_COMMENTS</name>
+            <value>
+                <elementReference>TASK_COMMENT</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_TASKTYPE_ID</name>
+            <value>
+                <elementReference>TASK_TYPE_SELECTOR.selectedTaskTypeId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_THEME_GROUP_ID</name>
+            <value>
+                <elementReference>THEME_CATEGORIZATION.themeGroup</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_THEME_ID</name>
+            <value>
+                <elementReference>THEME_CATEGORIZATION.theme</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Thread_ID</name>
+            <value>
                 <elementReference>Get_Case_Thread.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TRANSFER_TO_UNIT_NUMBER</name>
+            <value>
+                <elementReference>TRANFER_UNIT_ALLOCATION.selectedUnitNumber</elementReference>
             </value>
         </inputAssignments>
     </subflows>
     <subflows>
         <name>Submt_transfer_event</name>
         <label>Submt transfer event</label>
-        <locationX>204</locationX>
+        <locationX>50</locationX>
         <locationY>1670</locationY>
         <connector>
-            <targetReference>Journal_Decision</targetReference>
+            <targetReference>Thread_Update_Decision</targetReference>
         </connector>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>
