@@ -675,6 +675,12 @@
                     <name>TASK_TYPE_SELECTOR</name>
                     <extensionName>c:crmTaskTypePicklist</extensionName>
                     <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>showcomponent</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -699,24 +705,6 @@
                         <name>disableConditionalRendering</name>
                         <value>
                             <booleanValue>true</booleanValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>taskType</name>
-                        <value>
-                            <stringValue>KONT_BRUK</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>theme</name>
-                        <value>
-                            <stringValue>KNA</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>themeGroup</name>
-                        <value>
-                            <elementReference>Get_Case_Thread.CRM_Theme_Group_Code__c</elementReference>
                         </value>
                     </inputParameters>
                     <inputParameters>
