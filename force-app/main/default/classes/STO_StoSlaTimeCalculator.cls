@@ -14,6 +14,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
         }
     }
     private TimeZone osloTimezone = TimeZone.getTimeZone('Europe/Oslo');
+    private static final String RESPOND_STO_TYPE_NAME = 'Respond STO';
 
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
         CaseMilestone openSlaMilestone;
@@ -22,7 +23,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
             openSlaMilestone = [
                 SELECT Id, TargetResponseInMins
                 FROM CaseMilestone
-                WHERE CaseId = :caseId AND IsCompleted = FALSE
+                WHERE CaseId = :caseId AND IsCompleted = FALSE AND MilestoneType.Name = :RESPOND_STO_TYPE_NAME
                 LIMIT 1
             ];
         } catch (Exception ex) {
