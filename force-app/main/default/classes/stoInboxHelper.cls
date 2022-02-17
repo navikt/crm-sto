@@ -29,7 +29,7 @@ public with sharing class stoInboxHelper {
                 AND CRM_Is_Closed__C = TRUE
                 AND (CRM_Thread_Type__c = 'STO'
                 OR CRM_Thread_Type__c = 'STB'
-                OR CRM_Thread_Type__c = 'Chat')
+                OR CRM_Thread_Type__c = 'CHAT')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -115,7 +115,7 @@ public with sharing class stoInboxHelper {
                 OR CRM_Is_Closed__c = FALSE)
                 AND (CRM_Thread_Type__c = 'STO'
                 OR CRM_Thread_Type__c = 'STB'
-                OR CRM_Thread__Type__c = 'Chat')
+                OR CRM_Thread_Type__c = 'CHAT')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
