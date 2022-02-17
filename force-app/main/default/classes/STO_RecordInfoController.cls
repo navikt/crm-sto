@@ -20,4 +20,9 @@ public class STO_RecordInfoController {
 
         return returnObject;
     }
+
+    @AuraEnabled
+    public static string getThreadIdByApiReference(String apiRef) {
+        return [SELECT Id FROM Thread__c WHERE CRM_API_Reference__c = :apiRef LIMIT 1]?.Id;
+    }
 }
