@@ -5,7 +5,7 @@
         <name>Add_journal_entry_to_text</name>
         <label>Add journal entry to text</label>
         <locationX>270</locationX>
-        <locationY>758</locationY>
+        <locationY>878</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
             <operator>Add</operator>
@@ -112,7 +112,7 @@
         <name>Close_List</name>
         <label>Close List</label>
         <locationX>182</locationX>
-        <locationY>974</locationY>
+        <locationY>1094</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
             <operator>Add</operator>
@@ -135,7 +135,7 @@
         <name>Set_journal_entries_text</name>
         <label>Set journal entries text</label>
         <locationX>182</locationX>
-        <locationY>518</locationY>
+        <locationY>638</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
             <operator>Assign</operator>
@@ -166,7 +166,7 @@
         <name>Set_Thread_Category</name>
         <label>Set Thread Category</label>
         <locationX>50</locationX>
-        <locationY>1550</locationY>
+        <locationY>1670</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.STO_Category__c</assignToReference>
             <operator>Assign</operator>
@@ -182,7 +182,7 @@
         <name>Set_Thread_Sensitive_Information</name>
         <label>Set Thread Sensitive Information</label>
         <locationX>182</locationX>
-        <locationY>2006</locationY>
+        <locationY>2126</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -221,7 +221,7 @@
         <name>How_many_journal_entries</name>
         <label>How many journal entries</label>
         <locationX>314</locationX>
-        <locationY>398</locationY>
+        <locationY>518</locationY>
         <defaultConnector>
             <targetReference>Case_Complete_Screen</targetReference>
         </defaultConnector>
@@ -246,7 +246,7 @@
         <name>Should_Transfer</name>
         <label>Should Transfer</label>
         <locationX>314</locationX>
-        <locationY>1310</locationY>
+        <locationY>1430</locationY>
         <defaultConnector>
             <targetReference>Set_Case_Status_On_Hold</targetReference>
         </defaultConnector>
@@ -300,7 +300,7 @@
         <name>Thread_Update_Decision</name>
         <label>Thread Update Decision</label>
         <locationX>314</locationX>
-        <locationY>1886</locationY>
+        <locationY>2006</locationY>
         <defaultConnectorLabel>No Thread Update</defaultConnectorLabel>
         <rules>
             <name>Do_Update_Thread</name>
@@ -353,7 +353,7 @@
         <name>Loop_over_journal_entries</name>
         <label>Loop over journal entries</label>
         <locationX>182</locationX>
-        <locationY>638</locationY>
+        <locationY>758</locationY>
         <collectionReference>Get_Thread_Joural_entries</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -387,7 +387,7 @@
         <name>Get_Case_Thread</name>
         <label>Get Case Thread</label>
         <locationX>314</locationX>
-        <locationY>158</locationY>
+        <locationY>278</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Thread_Joural_entries</targetReference>
@@ -400,16 +400,46 @@
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
+        <filters>
+            <field>CRM_API_Reference__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>THREAD_API_REFERENCE</elementReference>
+            </value>
+        </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Thread__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Thread_API_Reference</name>
+        <label>Get Thread API Reference</label>
+        <locationX>314</locationX>
+        <locationY>158</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Case_Thread</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>Case</object>
+        <outputAssignments>
+            <assignToReference>THREAD_API_REFERENCE</assignToReference>
+            <field>NKS_Henvendelse_BehandlingsId__c</field>
+        </outputAssignments>
     </recordLookups>
     <recordLookups>
         <description>Gets all registered journal entries for the case</description>
         <name>Get_Thread_Joural_entries</name>
         <label>Get Thread Joural entries</label>
         <locationX>314</locationX>
-        <locationY>278</locationY>
+        <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>How_many_journal_entries</targetReference>
@@ -435,7 +465,7 @@
         <name>Set_Case_Status_On_Hold</name>
         <label>Set Case Status On Hold</label>
         <locationX>578</locationX>
-        <locationY>1430</locationY>
+        <locationY>1550</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
@@ -459,7 +489,7 @@
         <name>Transfer_case</name>
         <label>Transfer case</label>
         <locationX>50</locationX>
-        <locationY>1430</locationY>
+        <locationY>1550</locationY>
         <connector>
             <targetReference>Set_Thread_Category</targetReference>
         </connector>
@@ -495,7 +525,7 @@
         <name>Update_Thread</name>
         <label>Update Thread</label>
         <locationX>182</locationX>
-        <locationY>2126</locationY>
+        <locationY>2246</locationY>
         <inputReference>Get_Case_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
@@ -503,13 +533,18 @@
         <name>Case_Complete_Screen</name>
         <label>Case Complete Screen</label>
         <locationX>314</locationX>
-        <locationY>1190</locationY>
+        <locationY>1310</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
             <targetReference>Should_Transfer</targetReference>
         </connector>
+        <fields>
+            <name>Remember</name>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Husk å vurdere om du skal journalføre etter du har trykket fullfør&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>Existing_Journal_Entry_text</name>
             <fieldText>&lt;p&gt;{!Existing_Journal_Entries}&lt;/p&gt;</fieldText>
@@ -764,7 +799,7 @@
         <locationX>188</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Case_Thread</targetReference>
+            <targetReference>Get_Thread_API_Reference</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -772,7 +807,7 @@
         <name>Initiate_NAV_Unit_Transfer</name>
         <label>Initiate NAV Unit Transfer</label>
         <locationX>314</locationX>
-        <locationY>1430</locationY>
+        <locationY>1550</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
@@ -824,7 +859,7 @@
         <name>Submt_transfer_event</name>
         <label>Submt transfer event</label>
         <locationX>50</locationX>
-        <locationY>1670</locationY>
+        <locationY>1790</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
@@ -885,6 +920,13 @@
     <variables>
         <name>SENSITIVE_INFORMATION</name>
         <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>THREAD_API_REFERENCE</name>
+        <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
