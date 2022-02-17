@@ -68,7 +68,7 @@ public with sharing class stoHelperClass {
         thread.CRM_Related_Object__c = relatedObjId;
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
-        thread.Name = 'Skriv til oss - ' + theme;
+        thread.Name = 'Skriv til oss';
         thread.CRM_Thread_Type__c = 'STO';
         thread.STO_Category__c = theme;
         try {
