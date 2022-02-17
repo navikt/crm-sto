@@ -85,6 +85,13 @@
                 <elementReference>STO_NAV_TASK.Id</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread.CRM_Assignee_NAV_Unit__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Transfer_Unit.INT_UnitNumber__c</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Update_Thread</targetReference>
         </connector>
