@@ -25,6 +25,7 @@ import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
+import basepath from '@salesforce/community/basePath';
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     showspinner = false;
@@ -198,15 +199,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         ) {
             this.showspinner = true;
 
-            createRecords({ theme: this.selectedTheme, msgText: this.message }).then((result) => {
-                this[NavigationMixin.Navigate]({
-                    type: 'standard__recordPage',
-                    attributes: {
-                        recordId: result,
-                        objectApiName: 'Thread__c',
-                        actionName: 'view'
-                    }
-                });
+            createRecords({ theme: this.selectedTheme, msgText: this.message }).then((thread) => {
+                window.open(
+                    (this.linkUrl = basepath + '/skriv-til-oss/' + thread.Id + '/' + encodeURIComponent(thread.Name)),
+                    '_self'
+                );
             });
         } else {
             if (!this.message || this.message.length == null) {

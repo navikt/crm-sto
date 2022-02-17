@@ -42,7 +42,14 @@ export default class StoMessageInboxItem extends LightningElement {
     }
     connectedCallback() {
         this.objectName = this.thread.objectName;
-        this.linkUrl = basepath + '/' + this.objectName + '/' + this.thread.recordId;
+        this.linkUrl =
+            basepath +
+            '/' +
+            this.objectName +
+            '/' +
+            this.thread.recordId +
+            '/' +
+            encodeURIComponent(this.thread.recordName);
         this.threadId = this.thread.recordId;
         if (this.thread.status == 'Åpen') {
             this.statuscolor = 'greenfont';

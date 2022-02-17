@@ -15,6 +15,7 @@ public with sharing class stoInboxHelper {
                 CRM_Is_Closed__c,
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
+                Name,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -23,7 +24,12 @@ public with sharing class stoInboxHelper {
                     LIMIT 1
                 )
             FROM Thread__c
-            WHERE CRM_Number_of_unread_Messages__c = 0 AND CRM_Is_Closed__C = TRUE AND CRM_Number_of_Messages__c > 0
+            WHERE
+                CRM_Number_of_unread_Messages__c = 0
+                AND CRM_Is_Closed__C = TRUE
+                AND (CRM_Thread_Type__c = 'STO'
+                OR CRM_Thread_Type__c = 'STB'
+                OR CRM_Thread_Type__c = 'Chat')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -38,6 +44,7 @@ public with sharing class stoInboxHelper {
                 i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
                 i.objectName = t.CRM_Thread_Type__c == 'CHAT' ? 'chat' : 'skriv-til-oss';
                 i.status = (t.CRM_Is_Closed__c) ? 'Lukket' : 'Åpen';
+                i.recordName = t.Name;
                 m.recordId = t.Messages__r[0]?.Id;
                 m.messageText = t.Messages__r[0]
                     ?.CRM_Message_Text__c
@@ -49,7 +56,13 @@ public with sharing class stoInboxHelper {
             }
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, CRM_Conversation_Note__c
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Date_Time_Registered__c,
+                STO_External_Name__c,
+                CRM_Conversation_Note__c,
+                Name
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
             ORDER BY CRM_Date_Time_Registered__c DESC
@@ -65,6 +78,7 @@ public with sharing class stoInboxHelper {
             i.latestMessageDate = t.CRM_Date_Time_Registered__c;
             i.objectName = 'samtalereferat';
             i.status = 'Lukket';
+            i.recordName = t.Name;
             m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
             m.recordId = t.Id;
             i.latestmessage = m;
@@ -87,6 +101,7 @@ public with sharing class stoInboxHelper {
                 CRM_Is_Closed__c,
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
+                Name,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -95,7 +110,12 @@ public with sharing class stoInboxHelper {
                     LIMIT 1
                 )
             FROM Thread__c
-            WHERE (CRM_Number_of_unread_Messages__c > 0 OR CRM_Is_Closed__c = FALSE) AND CRM_Number_of_Messages__c > 0
+            WHERE
+                (CRM_Number_of_unread_Messages__c > 0
+                OR CRM_Is_Closed__c = FALSE)
+                AND (CRM_Thread_Type__c = 'STO'
+                OR CRM_Thread_Type__c = 'STB'
+                OR CRM_Thread__Type__c = 'Chat')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -110,6 +130,7 @@ public with sharing class stoInboxHelper {
                 i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
                 i.objectName = t.CRM_Thread_Type__c == 'CHAT' ? 'chat' : 'skriv-til-oss';
                 i.status = (t.CRM_Is_Closed__c) ? 'Lukket' : 'Åpen';
+                i.recordName = t.Name;
                 m.recordId = t.Messages__r[0]?.Id;
                 m.messageText = t.Messages__r[0]
                     ?.CRM_Message_Text__c
@@ -121,7 +142,13 @@ public with sharing class stoInboxHelper {
             }
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, CRM_Conversation_Note__c
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Date_Time_Registered__c,
+                STO_External_Name__c,
+                CRM_Conversation_Note__c,
+                Name
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
             ORDER BY CRM_Date_Time_Registered__c DESC
@@ -137,6 +164,7 @@ public with sharing class stoInboxHelper {
             i.latestMessageDate = t.CRM_Date_Time_Registered__c;
             i.objectName = 'samtalereferat';
             i.status = 'Lukket';
+            i.recordName = t.Name;
             m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
             m.recordId = t.Id;
             i.latestmessage = m;
@@ -164,6 +192,8 @@ public with sharing class stoInboxHelper {
         public String status;
         @AuraEnabled
         public message latestmessage;
+        @AuraEnabled
+        public String recordName;
     }
 
     public class message {

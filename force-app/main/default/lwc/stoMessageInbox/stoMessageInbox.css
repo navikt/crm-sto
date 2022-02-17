@@ -7,17 +7,22 @@
     vertical-align: middle;
     margin: auto;
 }
-.subheader{
+.subheader {
     margin-bottom: 1rem;
     margin-top: 3rem;
 }
-.inboxwrapper{
+.inboxwrapper {
     margin-bottom: 3rem;
 }
-.body{
+.body {
     font-family: var(--navds-font-family);
     line-height: 1.375;
     color: var(--navds-color-text-primary);
     font-size: 1.125rem;
     text-align: center;
+}
+
+.centerInfobox {
+    width: 65%;
+    margin: auto;
 }

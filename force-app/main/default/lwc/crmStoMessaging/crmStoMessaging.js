@@ -10,6 +10,7 @@ export default class CrmStoMessaging extends LightningElement {
     @api objectApiName;
     @api singleThread;
     @api cardTitle;
+    @api showClose = false;
 
     wireField;
     accountId;
@@ -148,7 +149,10 @@ export default class CrmStoMessaging extends LightningElement {
             console.log(error);
         } else if (data) {
             if (this.accountId && this.personId) {
-                this.userName = getFieldValue(data, FIRST_NAME);
+                let list = [];
+                let firstName = getFieldValue(data, FIRST_NAME).toLowerCase().split(' ');
+                firstName.forEach((item) => list.push(item.charAt(0).toUpperCase() + item.slice(1)));
+                this.userName = list.join(' ');
             }
         }
     }

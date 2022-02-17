@@ -4,16 +4,17 @@
             <h1 class="navds-heading navds-heading--2xlarge">{title}</h1>
         </div>
         <div class="header">
-            <c-nav-Button url="https://www.nav.no" title="Skriv ny melding"></c-nav-Button>
+            <c-nav-Button
+                url="https://www.nav.no/person/kontakt-oss/skriv-til-oss"
+                title="Skriv ny melding"
+            ></c-nav-Button>
         </div>
         <div class="decorator-wrapper">
             <div class="body">
                 <p class="navds-body-long navds-typo--spacing">
                     <strong>
                         For meldinger om dokumenter og/eller informasjonsbrev se&#32;
-                        <a href="https://mininnboks.nav.no/" class="lenke lenke-inline" target="_blank"
-                            >brev og vedtak</a
-                        >
+                        <a href="https://mininnboks.nav.no/" class="lenke lenke-inline">brev og vedtak</a>
                     </strong>
                 </p>
             </div>
@@ -32,6 +33,15 @@
                 <template for:each={threads} for:item="thread">
                     <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
                 </template>
+            </template>
+            <template if:true={noItems}>
+                <div class="slds-var-p-vertical_large centerInfobox">
+                    <c-crm-community-alert-stripe
+                        class="alertbox"
+                        type="info"
+                        alerttext="Du har ingen meldinger i innboksen din."
+                    ></c-crm-community-alert-stripe>
+                </div>
             </template>
         </div>
     </div>
