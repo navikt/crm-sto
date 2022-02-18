@@ -394,13 +394,6 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>CRM_Related_Object__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <filters>
             <field>CRM_API_Reference__c</field>
             <operator>EqualTo</operator>
             <value>
