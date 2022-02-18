@@ -21,7 +21,7 @@ export default class CrmStoMessaging extends LightningElement {
     userName;
     supervisorName;
     accountApiName;
-    threadReference;
+    threadId;
 
     connectedCallback() {
         this.template.addEventListener('toolbaraction', (event) => {
@@ -66,7 +66,6 @@ export default class CrmStoMessaging extends LightningElement {
                 ? [this.objectApiName + '.Id', CASE_THREAD_API_REFERENCE]
                 : [this.objectApiName + '.Id'];
         this.userId = userId;
-        this.threadReference = this.record;
         this.accountApiName = this.getAccountApiName();
     }
 
@@ -81,6 +80,10 @@ export default class CrmStoMessaging extends LightningElement {
         let greeting = '';
         greeting = this.userName == null ? 'Hei,' : 'Hei ' + this.userName + ',';
         return greeting + '\n\n\nMed vennlig hilsen\n' + this.supervisorName + '\nNAV Kontaktsenter';
+    }
+
+    get threadReference() {
+        return this.threadId ? this.threadId : this.recordId;
     }
 
     getAccountApiName() {
@@ -138,9 +141,13 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     getThreadId(apiRef) {
-        getThreadId({ apiRef: apiRef }).then((threadId) => {
-            this.threadReference = threadId;
-        });
+        getThreadId({ apiRef: apiRef })
+            .then((threadId) => {
+                this.threadId = threadId;
+            })
+            .catch((error) => {
+                //Failure yields rollback to using record id as reference
+            });
     }
 
     @wire(getRecord, {
