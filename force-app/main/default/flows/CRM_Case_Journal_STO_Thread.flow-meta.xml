@@ -114,7 +114,7 @@
             <inputParameters>
                 <name>recordId</name>
                 <value>
-                    <elementReference>Thread_ID</elementReference>
+                    <elementReference>Get_Thread.Id</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -209,7 +209,7 @@
         <inputAssignments>
             <name>recordId</name>
             <value>
-                <elementReference>Thread_ID</elementReference>
+                <elementReference>Get_Thread.Id</elementReference>
             </value>
         </inputAssignments>
     </subflows>
@@ -237,7 +237,7 @@
         <inputAssignments>
             <name>Thread_ID</name>
             <value>
-                <elementReference>Thread_ID</elementReference>
+                <elementReference>Get_Thread.Id</elementReference>
             </value>
         </inputAssignments>
     </subflows>
