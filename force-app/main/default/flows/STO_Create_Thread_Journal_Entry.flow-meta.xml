@@ -1,33 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
-    <decisions>
-        <name>Check_Inputs</name>
-        <label>Check Inputs</label>
-        <locationX>176</locationX>
-        <locationY>158</locationY>
-        <defaultConnector>
-            <targetReference>Get_Thread_API_Reference</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Is Case</defaultConnectorLabel>
-        <rules>
-            <name>Has_Thread_ID</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Thread_ID</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Get_Thread</targetReference>
-            </connector>
-            <label>Has Thread ID</label>
-        </rules>
-    </decisions>
-    <interviewLabel>Ca {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Case Journal STO Thread</label>
+    <interviewLabel>Create Thread Journal Entry {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Create Thread Journal Entry</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -51,38 +26,10 @@
         <name>Get_Thread</name>
         <label>Get Thread</label>
         <locationX>176</locationX>
-        <locationY>494</locationY>
+        <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Thread_Journal_Screen</targetReference>
-        </connector>
-        <filterLogic>or</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Thread_ID</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_API_Reference__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>THREAD_API_REFERENCE</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Thread__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Thread_API_Reference</name>
-        <label>Get Thread API Reference</label>
-        <locationX>264</locationX>
-        <locationY>278</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_Thread</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -92,29 +39,27 @@
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
-        <object>Case</object>
-        <outputAssignments>
-            <assignToReference>THREAD_API_REFERENCE</assignToReference>
-            <field>NKS_Henvendelse_BehandlingsId__c</field>
-        </outputAssignments>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Thread__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Journal_Success_Screen_0</name>
         <label>Journal Success Screen</label>
         <locationX>176</locationX>
-        <locationY>974</locationY>
+        <locationY>638</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>Notify_Thread_Change_0</name>
+            <name>Notify_Thread_Change</name>
             <extensionName>c:crmRecordChangeNotifier</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>recordId</name>
                 <value>
-                    <elementReference>Get_Thread.Id</elementReference>
+                    <elementReference>recordId</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -134,7 +79,7 @@
         <name>Thread_Journal_Screen</name>
         <label>Thread Journal Screen</label>
         <locationX>176</locationX>
-        <locationY>614</locationY>
+        <locationY>278</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -163,7 +108,7 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Check_Inputs</targetReference>
+            <targetReference>Get_Thread</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -171,7 +116,7 @@
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
         <locationX>176</locationX>
-        <locationY>734</locationY>
+        <locationY>398</locationY>
         <connector>
             <targetReference>Create_Thread_Journal_Event</targetReference>
         </connector>
@@ -209,7 +154,7 @@
         <inputAssignments>
             <name>recordId</name>
             <value>
-                <elementReference>Get_Thread.Id</elementReference>
+                <elementReference>recordId</elementReference>
             </value>
         </inputAssignments>
     </subflows>
@@ -217,7 +162,7 @@
         <name>Create_Thread_Journal_Event</name>
         <label>Create Thread Journal Event</label>
         <locationX>176</locationX>
-        <locationY>854</locationY>
+        <locationY>518</locationY>
         <connector>
             <targetReference>Journal_Success_Screen_0</targetReference>
         </connector>
@@ -237,28 +182,12 @@
         <inputAssignments>
             <name>Thread_ID</name>
             <value>
-                <elementReference>Get_Thread.Id</elementReference>
+                <elementReference>recordId</elementReference>
             </value>
         </inputAssignments>
     </subflows>
     <variables>
-        <description>Case record id if passed as input</description>
         <name>recordId</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>THREAD_API_REFERENCE</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <description>Id of the thread to journal</description>
-        <name>Thread_ID</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>

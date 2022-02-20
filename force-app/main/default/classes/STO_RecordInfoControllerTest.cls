@@ -26,6 +26,8 @@ public with sharing class STO_RecordInfoControllerTest {
             CRM_Person__c = person.Id
         );
         insert account;
+
+        STO_TestDataFactory.createRecord(new Thread__c());
     }
 
     @isTest
@@ -39,5 +41,12 @@ public with sharing class STO_RecordInfoControllerTest {
         );
         Test.stopTest();
         System.assertNotEquals(null, testAccount.CRM_Person__c);
+    }
+
+    @isTest
+    static void testGetByApiReference() {
+        String apiRef = [SELECT CRM_API_Reference__c FROM Thread__c LIMIT 1]?.CRM_API_Reference__c;
+
+        System.assertNotEquals(null, STO_RecordInfoController.getThreadIdByApiReference(apiRef));
     }
 }

@@ -1,8 +1,10 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
+import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
+import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import userId from '@salesforce/user/Id';
 
 export default class CrmStoMessaging extends LightningElement {
@@ -19,6 +21,7 @@ export default class CrmStoMessaging extends LightningElement {
     userName;
     supervisorName;
     accountApiName;
+    threadId;
 
     connectedCallback() {
         this.template.addEventListener('toolbaraction', (event) => {
@@ -58,7 +61,10 @@ export default class CrmStoMessaging extends LightningElement {
 
             this.dispatchStoToolbarAction(event); //Forwards the event to parent
         });
-        this.wireField = [this.objectApiName + '.Id'];
+        this.wireField =
+            this.objectApiName === 'Case'
+                ? [this.objectApiName + '.Id', CASE_THREAD_API_REFERENCE]
+                : [this.objectApiName + '.Id'];
         this.userId = userId;
         this.accountApiName = this.getAccountApiName();
     }
@@ -74,6 +80,10 @@ export default class CrmStoMessaging extends LightningElement {
         let greeting = '';
         greeting = this.userName == null ? 'Hei,' : 'Hei ' + this.userName + ',';
         return greeting + '\n\n\nMed vennlig hilsen\n' + this.supervisorName + '\nNAV Kontaktsenter';
+    }
+
+    get threadReference() {
+        return this.threadId ? this.threadId : this.recordId;
     }
 
     getAccountApiName() {
@@ -122,8 +132,22 @@ export default class CrmStoMessaging extends LightningElement {
         if (error) {
             console.log(error);
         } else if (data) {
+            if (this.objectApiName === 'Case') {
+                let ThreadApiReference = getFieldValue(data, CASE_THREAD_API_REFERENCE);
+                this.getThreadId(ThreadApiReference);
+            }
             this.getAccountId();
         }
+    }
+
+    getThreadId(apiRef) {
+        getThreadId({ apiRef: apiRef })
+            .then((threadId) => {
+                this.threadId = threadId;
+            })
+            .catch((error) => {
+                //Failure yields rollback to using record id as reference
+            });
     }
 
     @wire(getRecord, {
@@ -151,7 +175,7 @@ export default class CrmStoMessaging extends LightningElement {
             if (this.accountId && this.personId) {
                 let list = [];
                 let firstName = getFieldValue(data, FIRST_NAME).toLowerCase().split(' ');
-                firstName.forEach(item => list.push(item.charAt(0).toUpperCase() + item.slice(1)));
+                firstName.forEach((item) => list.push(item.charAt(0).toUpperCase() + item.slice(1)));
                 this.userName = list.join(' ');
             }
         }
