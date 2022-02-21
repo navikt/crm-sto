@@ -16,8 +16,9 @@ public with sharing class stoInboxHelper {
                 Name
             FROM Thread__c
             WHERE
-                CRM_Number_of_unread_Messages__c = 0
-                AND CRM_Is_Closed__C = TRUE
+                ((CRM_Number_of_unread_Messages__c = 0
+                AND CRM_Is_Closed__C = TRUE)
+                OR CRM_Latest_Message_Datetime__c != LAST_N_DAYS:30)
                 AND (CRM_Thread_Type__c = 'STO'
                 OR CRM_Thread_Type__c = 'STB')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
@@ -36,9 +37,12 @@ public with sharing class stoInboxHelper {
             inboxlist.add(i);
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, Name
+            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, Name, CRM_Is_Read__c
             FROM Conversation_Note__c
-            WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
+            WHERE
+                (CRM_Is_Read__c = TRUE
+                AND CRM_Created_By_Ident__c != NULL)
+                OR CRM_Date_Time_Registered__c != LAST_N_DAYS:30
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -47,7 +51,7 @@ public with sharing class stoInboxHelper {
             i.recordId = t.Id;
             i.lastModifiedDate = t.LastModifiedDate;
             i.closeDate = t.CRM_Date_Time_Registered__c;
-            i.numberOfUnreadMessages = 0;
+            i.numberOfUnreadMessages = t.CRM_Is_Read__c ? 0 : 1;
             i.latestMessageDate = t.CRM_Date_Time_Registered__c;
             i.objectName = 'samtalereferat';
             i.status = 'Lukket';
@@ -74,6 +78,7 @@ public with sharing class stoInboxHelper {
             WHERE
                 (CRM_Number_of_unread_Messages__c > 0
                 OR CRM_Is_Closed__c = FALSE)
+                AND CRM_Latest_Message_Datetime__c = LAST_N_DAYS:30
                 AND (CRM_Thread_Type__c = 'STO'
                 OR CRM_Thread_Type__c = 'STB')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
@@ -92,9 +97,12 @@ public with sharing class stoInboxHelper {
             inboxlist.add(i);
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, Name
+            SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, Name, CRM_Is_read__c
             FROM Conversation_Note__c
-            WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
+            WHERE
+                CRM_Is_Read__c = FALSE
+                AND CRM_Created_By_Ident__c != NULL
+                AND CRM_Date_Time_Registered__c = LAST_N_DAYS:30
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -103,7 +111,7 @@ public with sharing class stoInboxHelper {
             i.recordId = t.Id;
             i.lastModifiedDate = t.LastModifiedDate;
             i.closeDate = t.CRM_Date_Time_Registered__c;
-            i.numberOfUnreadMessages = 1;
+            i.numberOfUnreadMessages = t.CRM_Is_Read__c ? 0 : 1;
             i.latestMessageDate = t.CRM_Date_Time_Registered__c;
             i.objectName = 'samtalereferat';
             i.status = 'Lukket';

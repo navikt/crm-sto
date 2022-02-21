@@ -10,9 +10,11 @@
             "CRM_External_Person_Ident__c": "12345678901",
             "CRM_isActive__c": true,
             "CRM_Journal_Status__c": "Not Journaled",
-            "CRM_Latest_Message_Datetime__c": "2021-08-26T19:36:04.000+0000", 
-            "Name": "Chat Arbeid", 
-            "CRM_Account__c": "@AccountRef1"
+            "CRM_Latest_Message_Datetime__c": "2021-08-26T19:36:04.000+0000",
+            "Name": "Chat Arbeid",
+            "CRM_Account__c": "@AccountRef1",
+            "CRM_Created_By_Ident__c": "A123456",
+            "CRM_Thread_Type__c": "CHAT"
         },
         {
             "attributes": {
@@ -24,9 +26,11 @@
             "CRM_External_Person_Ident__c": "12345678901",
             "CRM_isActive__c": true,
             "CRM_Journal_Status__c": "Not Journaled",
-            "CRM_Latest_Message_Datetime__c": "2021-08-26T19:36:04.000+0000", 
-            "Name": "Dialog med NAV - Uføretrygd", 
-            "CRM_Account__c": "@AccountRef1"
+            "CRM_Latest_Message_Datetime__c": "2021-08-26T19:36:04.000+0000",
+            "Name": "Dialog med NAV - Uføretrygd",
+            "CRM_Account__c": "@AccountRef1",
+            "CRM_Created_By_Ident__c": "A124326",
+            "CRM_Thread_Type__c": "STO"
         },
         {
             "attributes": {
@@ -38,9 +42,11 @@
             "CRM_External_Person_Ident__c": "12345678901",
             "CRM_isActive__c": true,
             "CRM_Journal_Status__c": "Not Journaled",
-            "CRM_Latest_Message_Datetime__c": "2021-08-26T19:43:37.000+0000", 
-            "Name": "Chat Familie", 
-            "CRM_Account__c": "@AccountRef1"
+            "CRM_Latest_Message_Datetime__c": "2021-08-26T19:43:37.000+0000",
+            "Name": "Chat Familie",
+            "CRM_Account__c": "@AccountRef1",
+            "CRM_Created_By_Ident__c": "B123456",
+            "CRM_Thread_Type__c": "CHAT"
         },
         {
             "attributes": {
@@ -52,9 +58,11 @@
             "CRM_External_Person_Ident__c": "12345678901",
             "CRM_isActive__c": true,
             "CRM_Journal_Status__c": "Not Journaled",
-            "CRM_Latest_Message_Datetime__c": "2021-08-26T19:36:04.000+0000", 
-            "Name": "Dialog med NAV - Arbeid", 
-            "CRM_Account__c": "@AccountRef1"
+            "CRM_Latest_Message_Datetime__c": "2021-08-26T19:36:04.000+0000",
+            "Name": "Dialog med NAV - Arbeid",
+            "CRM_Account__c": "@AccountRef1",
+            "CRM_Created_By_Ident__c": "C723456",
+            "CRM_Thread_Type__c": "STO"
         }
     ]
 }
