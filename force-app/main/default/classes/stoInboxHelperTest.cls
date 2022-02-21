@@ -44,6 +44,9 @@ public with sharing class stoInboxHelperTest {
             LIMIT 1
         ];
         Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
+        stoHelperClass.createMessage(t, 'Dette er en tekst', personContact.Id);
+        t.CRM_Latest_Message_Datetime__c = dateTime.now();
+        update t;
         Test.startTest();
         List<stoInboxHelper.thread> tList = stoInboxHelper.getRecentThreads();
         Test.stopTest();
