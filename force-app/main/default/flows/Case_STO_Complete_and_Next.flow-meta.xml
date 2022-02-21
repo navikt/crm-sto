@@ -4,7 +4,7 @@
     <assignments>
         <name>Add_journal_entry_to_text</name>
         <label>Add journal entry to text</label>
-        <locationX>270</locationX>
+        <locationX>138</locationX>
         <locationY>878</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
@@ -111,7 +111,7 @@
     <assignments>
         <name>Close_List</name>
         <label>Close List</label>
-        <locationX>182</locationX>
+        <locationX>50</locationX>
         <locationY>1094</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
@@ -134,7 +134,7 @@
     <assignments>
         <name>Set_journal_entries_text</name>
         <label>Set journal entries text</label>
-        <locationX>182</locationX>
+        <locationX>50</locationX>
         <locationY>638</locationY>
         <assignmentItems>
             <assignToReference>Existing_Journal_Entries</assignToReference>
@@ -165,8 +165,8 @@
         <description>Set the new category for the thread transfer</description>
         <name>Set_Thread_Category</name>
         <label>Set Thread Category</label>
-        <locationX>50</locationX>
-        <locationY>1670</locationY>
+        <locationX>182</locationX>
+        <locationY>1790</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.STO_Category__c</assignToReference>
             <operator>Assign</operator>
@@ -181,8 +181,8 @@
     <assignments>
         <name>Set_Thread_Sensitive_Information</name>
         <label>Set Thread Sensitive Information</label>
-        <locationX>182</locationX>
-        <locationY>2126</locationY>
+        <locationX>314</locationX>
+        <locationY>2246</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Thread.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -203,7 +203,7 @@
     </assignments>
     <choices>
         <name>NAV_UNIT_TRANSFER</name>
-        <choiceText>NAV-kontor</choiceText>
+        <choiceText>NAV-enhet</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>NAV_UNIT_TRANSFER</stringValue>
@@ -218,9 +218,46 @@
         </value>
     </choices>
     <decisions>
+        <description>Check if case status is either closed or on hold as this means the flow has already run and the process is finished.</description>
+        <name>Case_Completed_Check</name>
+        <label>Case Completed Check</label>
+        <locationX>182</locationX>
+        <locationY>1430</locationY>
+        <defaultConnector>
+            <targetReference>Should_Transfer</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Case In Progress</defaultConnectorLabel>
+        <rules>
+            <name>Handling_Completed</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>On Hold</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Case.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Forwarded</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Case.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <label>Handling Completed</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>How_many_journal_entries</name>
         <label>How many journal entries</label>
-        <locationX>314</locationX>
+        <locationX>182</locationX>
         <locationY>518</locationY>
         <defaultConnector>
             <targetReference>Case_Complete_Screen</targetReference>
@@ -245,8 +282,8 @@
     <decisions>
         <name>Should_Transfer</name>
         <label>Should Transfer</label>
-        <locationX>314</locationX>
-        <locationY>1430</locationY>
+        <locationX>446</locationX>
+        <locationY>1550</locationY>
         <defaultConnector>
             <targetReference>Set_Case_Status_On_Hold</targetReference>
         </defaultConnector>
@@ -299,8 +336,8 @@
     <decisions>
         <name>Thread_Update_Decision</name>
         <label>Thread Update Decision</label>
-        <locationX>314</locationX>
-        <locationY>2006</locationY>
+        <locationX>446</locationX>
+        <locationY>2126</locationY>
         <defaultConnectorLabel>No Thread Update</defaultConnectorLabel>
         <rules>
             <name>Do_Update_Thread</name>
@@ -352,7 +389,7 @@
         <description>Loops through each journal entry</description>
         <name>Loop_over_journal_entries</name>
         <label>Loop over journal entries</label>
-        <locationX>182</locationX>
+        <locationX>50</locationX>
         <locationY>758</locationY>
         <collectionReference>Get_Thread_Joural_entries</collectionReference>
         <iterationOrder>Asc</iterationOrder>
@@ -383,31 +420,9 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
-        <description>Query the thread related to the case record</description>
-        <name>Get_Case_Thread</name>
-        <label>Get Case Thread</label>
-        <locationX>314</locationX>
-        <locationY>278</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_Thread_Joural_entries</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_API_Reference__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>THREAD_API_REFERENCE</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Thread__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Thread_API_Reference</name>
-        <label>Get Thread API Reference</label>
-        <locationX>314</locationX>
+        <name>Get_Case</name>
+        <label>Get Case</label>
+        <locationX>182</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -421,17 +436,38 @@
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Case</object>
-        <outputAssignments>
-            <assignToReference>THREAD_API_REFERENCE</assignToReference>
-            <field>NKS_Henvendelse_BehandlingsId__c</field>
-        </outputAssignments>
+        <queriedFields>NKS_Henvendelse_BehandlingsId__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <description>Query the thread related to the case record</description>
+        <name>Get_Case_Thread</name>
+        <label>Get Case Thread</label>
+        <locationX>182</locationX>
+        <locationY>278</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Thread_Joural_entries</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_API_Reference__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Case.NKS_Henvendelse_BehandlingsId__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Thread__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
         <description>Gets all registered journal entries for the case</description>
         <name>Get_Thread_Joural_entries</name>
         <label>Get Thread Joural entries</label>
-        <locationX>314</locationX>
+        <locationX>182</locationX>
         <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -457,8 +493,8 @@
     <recordUpdates>
         <name>Set_Case_Status_On_Hold</name>
         <label>Set Case Status On Hold</label>
-        <locationX>578</locationX>
-        <locationY>1550</locationY>
+        <locationX>710</locationX>
+        <locationY>1670</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
@@ -481,8 +517,8 @@
     <recordUpdates>
         <name>Transfer_case</name>
         <label>Transfer case</label>
-        <locationX>50</locationX>
-        <locationY>1550</locationY>
+        <locationX>182</locationX>
+        <locationY>1670</locationY>
         <connector>
             <targetReference>Set_Thread_Category</targetReference>
         </connector>
@@ -517,170 +553,44 @@
     <recordUpdates>
         <name>Update_Thread</name>
         <label>Update Thread</label>
-        <locationX>182</locationX>
-        <locationY>2246</locationY>
+        <locationX>314</locationX>
+        <locationY>2366</locationY>
         <inputReference>Get_Case_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Case_Complete_Screen</name>
         <label>Case Complete Screen</label>
-        <locationX>314</locationX>
+        <locationX>182</locationX>
         <locationY>1310</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Should_Transfer</targetReference>
+            <targetReference>Case_Completed_Check</targetReference>
         </connector>
         <fields>
-            <name>Remember</name>
-            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Husk å vurdere om du skal journalføre etter du har trykket fullfør&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <name>Case_Completed_Text</name>
+            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Henvendelsen er allerede ferdigstilt&lt;/b&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
-            <name>Existing_Journal_Entry_text</name>
-            <fieldText>&lt;p&gt;{!Existing_Journal_Entries}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
-            <name>Sensitive_Toggle</name>
-            <extensionName>flowruntime:toggle</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue>Samtalen skal vurderes for sladding</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleActive</name>
-                <value>
-                    <stringValue>Ja</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>disabled</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleInactive</name>
-                <value>
-                    <stringValue>Nei</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>value</name>
-                <value>
-                    <elementReference>SENSITIVE_INFORMATION</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <fields>
-            <name>Cause</name>
-            <choiceReferences>Thread_Cause</choiceReferences>
-            <dataType>String</dataType>
-            <fieldText>Årsak</fieldText>
-            <fieldType>DropdownBox</fieldType>
-            <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
-                    <leftValueReference>Sensitive_Toggle.value</leftValueReference>
+                    <leftValueReference>Get_Case.Status</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
-                        <booleanValue>true</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>Transfer_Toggle</name>
-            <extensionName>flowruntime:toggle</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue>Overfør</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleActive</name>
-                <value>
-                    <stringValue>Ja</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>messageToggleInactive</name>
-                <value>
-                    <stringValue>Nei</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>disabled</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>value</name>
-                <value>
-                    <elementReference>DO_TRANSFER</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <fields>
-            <name>INPUT_TRANSFER_TO</name>
-            <choiceReferences>TRANSFER_QUEUE</choiceReferences>
-            <choiceReferences>NAV_UNIT_TRANSFER</choiceReferences>
-            <dataType>String</dataType>
-            <defaultSelectedChoiceReference>TRANSFER_QUEUE</defaultSelectedChoiceReference>
-            <fieldText>Sett over til:</fieldText>
-            <fieldType>RadioButtons</fieldType>
-            <isRequired>false</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Transfer_Toggle.value</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>true</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>STO_Category_Picklist</name>
-            <choiceReferences>STO_Categories</choiceReferences>
-            <dataType>String</dataType>
-            <defaultValue>
-                <stringValue>Arbeid</stringValue>
-            </defaultValue>
-            <fieldText>Kø</fieldText>
-            <fieldType>DropdownBox</fieldType>
-            <isRequired>true</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Transfer_Toggle.value</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>true</booleanValue>
+                        <stringValue>On Hold</stringValue>
                     </rightValue>
                 </conditions>
                 <conditions>
-                    <leftValueReference>INPUT_TRANSFER_TO</leftValueReference>
+                    <leftValueReference>Get_Case.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Get_Case.Status</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
-                        <elementReference>TRANSFER_QUEUE</elementReference>
+                        <stringValue>Closed</stringValue>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -690,6 +600,174 @@
             <fieldType>RegionContainer</fieldType>
             <fields>
                 <name>Case_Complete_Screen_Section1_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>Remember</name>
+                    <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Husk å vurdere om du skal journalføre etter du har trykket fullfør&lt;/b&gt;&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <fields>
+                    <name>Existing_Journal_Entry_text</name>
+                    <fieldText>&lt;p&gt;{!Existing_Journal_Entries}&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <fields>
+                    <name>Sensitive_Toggle</name>
+                    <extensionName>flowruntime:toggle</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Samtalen skal vurderes for sladding</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>messageToggleActive</name>
+                        <value>
+                            <stringValue>Ja</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>disabled</name>
+                        <value>
+                            <booleanValue>false</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>messageToggleInactive</name>
+                        <value>
+                            <stringValue>Nei</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>value</name>
+                        <value>
+                            <elementReference>SENSITIVE_INFORMATION</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <fields>
+                    <name>Cause</name>
+                    <choiceReferences>Thread_Cause</choiceReferences>
+                    <dataType>String</dataType>
+                    <fieldText>Årsak</fieldText>
+                    <fieldType>DropdownBox</fieldType>
+                    <isRequired>true</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Sensitive_Toggle.value</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <booleanValue>true</booleanValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>Transfer_Toggle</name>
+                    <extensionName>flowruntime:toggle</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Overfør</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>messageToggleActive</name>
+                        <value>
+                            <stringValue>Ja</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>messageToggleInactive</name>
+                        <value>
+                            <stringValue>Nei</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>disabled</name>
+                        <value>
+                            <booleanValue>false</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>value</name>
+                        <value>
+                            <elementReference>DO_TRANSFER</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <fields>
+                    <name>INPUT_TRANSFER_TO</name>
+                    <choiceReferences>TRANSFER_QUEUE</choiceReferences>
+                    <choiceReferences>NAV_UNIT_TRANSFER</choiceReferences>
+                    <dataType>String</dataType>
+                    <defaultSelectedChoiceReference>TRANSFER_QUEUE</defaultSelectedChoiceReference>
+                    <fieldText>Sett over til:</fieldText>
+                    <fieldType>RadioButtons</fieldType>
+                    <isRequired>false</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Transfer_Toggle.value</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <booleanValue>true</booleanValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>STO_Category_Picklist</name>
+                    <choiceReferences>STO_Categories</choiceReferences>
+                    <dataType>String</dataType>
+                    <defaultValue>
+                        <stringValue>Arbeid</stringValue>
+                    </defaultValue>
+                    <fieldText>Kø</fieldText>
+                    <fieldType>DropdownBox</fieldType>
+                    <isRequired>true</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Transfer_Toggle.value</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <booleanValue>true</booleanValue>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>INPUT_TRANSFER_TO</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <elementReference>TRANSFER_QUEUE</elementReference>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>Case_Complete_Screen_Section2</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Case_Complete_Screen_Section2_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>THEME_CATEGORIZATION</name>
@@ -789,18 +867,18 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>188</locationX>
+        <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Thread_API_Reference</targetReference>
+            <targetReference>Get_Case</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <subflows>
         <name>Initiate_NAV_Unit_Transfer</name>
         <label>Initiate NAV Unit Transfer</label>
-        <locationX>314</locationX>
-        <locationY>1550</locationY>
+        <locationX>446</locationX>
+        <locationY>1670</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
@@ -851,8 +929,8 @@
     <subflows>
         <name>Submt_transfer_event</name>
         <label>Submt transfer event</label>
-        <locationX>50</locationX>
-        <locationY>1790</locationY>
+        <locationX>182</locationX>
+        <locationY>1910</locationY>
         <connector>
             <targetReference>Thread_Update_Decision</targetReference>
         </connector>
@@ -885,6 +963,14 @@
         <objectType>Case</objectType>
     </variables>
     <variables>
+        <description>Status of the case</description>
+        <name>CASE_STATUS</name>
+        <dataType>Picklist</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>DO_TRANSFER</name>
         <dataType>Boolean</dataType>
         <isCollection>false</isCollection>
@@ -913,13 +999,6 @@
     <variables>
         <name>SENSITIVE_INFORMATION</name>
         <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>THREAD_API_REFERENCE</name>
-        <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
