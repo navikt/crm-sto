@@ -43,7 +43,7 @@ export default class StoMessageInboxItem extends LightningElement {
             '/' +
             this.thread.recordId +
             '/' +
-            encodeURIComponent(this.thread.recordName);
+            encodeURIComponent(this.thread.recordName.replace(/[ -]+/g, '-'));
         this.threadId = this.thread.recordId;
         if (this.thread.status == 'Åpen') {
             this.statuscolor = 'greenfont';
