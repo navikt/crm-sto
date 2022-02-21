@@ -438,7 +438,9 @@
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Case</object>
+        <queriedFields>Id</queriedFields>
         <queriedFields>NKS_Henvendelse_BehandlingsId__c</queriedFields>
+        <queriedFields>Status</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
@@ -777,6 +779,9 @@
                 <conditions>
                     <leftValueReference>Get_Case.Status</leftValueReference>
                     <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>In Progress</stringValue>
+                    </rightValue>
                 </conditions>
             </visibilityRule>
         </fields>
