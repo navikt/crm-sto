@@ -890,7 +890,7 @@
             <targetReference>Get_Case</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <subflows>
         <name>Initiate_NAV_Unit_Transfer</name>
         <label>Initiate NAV Unit Transfer</label>
