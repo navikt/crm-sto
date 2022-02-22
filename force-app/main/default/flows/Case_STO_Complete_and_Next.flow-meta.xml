@@ -780,7 +780,7 @@
                     <leftValueReference>Get_Case.Status</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
-                        <stringValue>In Progress</stringValue>
+                        <stringValue>In progress</stringValue>
                     </rightValue>
                 </conditions>
             </visibilityRule>

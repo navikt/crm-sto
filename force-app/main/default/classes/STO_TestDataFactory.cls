@@ -392,7 +392,7 @@ public class STO_TestDataFactory {
             return getFieldDefaults(false);
         }
         public Map<String, Object> getFieldDefaults(Boolean bulkify) {
-            return new Map<String, Object>{ 'Priority' => 'High', 'Status' => 'In Progress' };
+            return new Map<String, Object>{ 'Priority' => 'High', 'Status' => 'In progress' };
         }
         public Map<String, String> getDmlFields() {
             return new Map<String, String>{};
