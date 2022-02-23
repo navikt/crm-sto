@@ -222,6 +222,9 @@
         <label>Update Thread</label>
         <locationX>176</locationX>
         <locationY>1118</locationY>
+        <faultConnector>
+            <targetReference>Create_log</targetReference>
+        </faultConnector>
         <inputReference>Get_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
@@ -233,6 +236,37 @@
         </connector>
     </start>
     <status>Active</status>
+    <subflows>
+        <name>Create_log</name>
+        <label>Create log</label>
+        <locationX>440</locationX>
+        <locationY>1238</locationY>
+        <flowName>Flow_Create_Application_Log</flowName>
+        <inputAssignments>
+            <name>Application_Domain</name>
+            <value>
+                <stringValue>NKS</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Log_Category</name>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Log_Level</name>
+            <value>
+                <stringValue>Warning</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Log_Message</name>
+            <value>
+                <stringValue>There was an error transfering NAV Unit</stringValue>
+            </value>
+        </inputAssignments>
+    </subflows>
     <subflows>
         <name>Send_NAV_Task</name>
         <label>Send NAV Task</label>
