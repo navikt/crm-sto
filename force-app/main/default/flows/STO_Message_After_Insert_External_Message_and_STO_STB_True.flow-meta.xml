@@ -26,7 +26,7 @@
             <assignToReference>RelatedCase.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>In Progress</stringValue>
+                <stringValue>In progress</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
