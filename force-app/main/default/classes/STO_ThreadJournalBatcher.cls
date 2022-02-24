@@ -31,7 +31,8 @@ public without sharing class STO_ThreadJournalBatcher implements Database.Batcha
                 Journal_Entry__c.CRM_Subtheme_Code__c,
                 Journal_Entry__c.Subtheme__c,
                 Journal_Entry__c.Theme__c,
-                Journal_Entry__c.CRM_NAV_Case_Legacy_System__c
+                Journal_Entry__c.CRM_NAV_Case_Legacy_System__c,
+                Journal_Entry__c.CRM_Journal_Post_Type__c
             };
         }
 
