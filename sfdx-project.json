@@ -4,12 +4,12 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.23.0.NEXT",
+            "versionNumber": "1.26.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.141.0.LATEST"
+                    "versionNumber": "0.146.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
@@ -17,7 +17,7 @@
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.10.0.LATEST"
+                    "versionNumber": "0.13.0.LATEST"
                 },
                 {
                     "package": "crm-platform-oppgave",
@@ -37,11 +37,11 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.41.0.LATEST"
+                    "versionNumber": "0.47.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.44.0.LATEST"
+                    "versionNumber": "0.48.0.LATEST"
                 }
             ]
         }

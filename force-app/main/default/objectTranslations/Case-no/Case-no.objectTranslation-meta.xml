@@ -23,6 +23,11 @@
         <name>NewChildCase</name>
     </quickActions>
     <quickActions>
+        <aspect>Master</aspect>
+        <label>Journalfør</label>
+        <name>STO_Journal_Thread</name>
+    </quickActions>
+    <quickActions>
         <label><!-- SendEmail --></label>
         <name>SendEmail</name>
     </quickActions>

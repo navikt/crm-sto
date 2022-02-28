@@ -169,6 +169,12 @@
                 <booleanValue>true</booleanValue>
             </value>
         </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>New</stringValue>
+            </value>
+        </inputAssignments>
         <object>Case</object>
     </recordUpdates>
     <recordUpdates>
