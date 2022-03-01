@@ -52,9 +52,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     };
     logopath = navlogos + '/email.svg';
     newslist;
-    showTextboxEmptyWarning = false;
-    showTextboxFullWarning = false;
-    showTermWarning = false;
+    errorList = { title: '', errors: [] };
     message;
     modalOpen = false;
     maxLength = 1000;
@@ -62,27 +60,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @wire(MessageContext)
     messageContext;
 
-    get errors() {
-        let errorList = [];
-        if (this.showTextboxEmptyWarning) {
-            errorList.push({ Id: 1, EventItem: '.inputTextbox', Text: 'Tekstboksen kan ikke være tom.' });
-        }
-        if (this.showTextboxFullWarning) {
-            errorList.push({
-                Id: 2,
-                EventItem: '.inputTextbox',
-                Text: 'Det er for mange tegn i tekstboksen.'
-            });
-        }
-        if (this.showTermWarning) {
-            errorList.push({
-                Id: 3,
-                EventItem: '.checkboxContainer',
-                Text: 'Du må godta vilkårene for å sende beskjeden.'
-            });
-        }
-        return errorList;
-    }
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
@@ -188,9 +165,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitrequest() {
-        this.showTextboxEmptyWarning = false;
-        this.showTextboxFullWarning = false;
-        this.showTermWarning = false;
         if (
             this.acceptedTerms == true &&
             this.message &&
@@ -206,21 +180,30 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 );
             });
         } else {
+            this.errorList = { title: '', errors: [] };
             if (!this.message || this.message.length == null) {
-                this.showTextboxEmptyWarning = true;
+                this.errorList.errors.push({
+                    Id: 1,
+                    EventItem: '.inputTextbox',
+                    Text: 'Tekstboksen kan ikke være tom.'
+                });
             } else if (this.message.length >= this.maxLength) {
-                this.showTextboxFullWarning = true;
+                this.errorList.errors.push({
+                    Id: 2,
+                    EventItem: '.inputTextbox',
+                    Text: 'Det er for mange tegn i tekstboksen.'
+                });
             }
             if (!this.acceptedTerms) {
-                this.showTermWarning = true;
+                this.errorList.errors.push({
+                    Id: 3,
+                    EventItem: '.checkboxContainer',
+                    Text: 'Du må godta vilkårene for å sende beskjeden.'
+                });
             }
             let errorSummary = this.template.querySelector('.errorSummary');
             errorSummary.focusHeader();
         }
-    }
-
-    get showWarnings() {
-        return this.showTextboxEmptyWarning || this.showTermWarning || this.showTextboxFullWarning;
     }
 
     handleErrorClick(event) {

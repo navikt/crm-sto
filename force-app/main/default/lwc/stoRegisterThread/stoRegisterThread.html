@@ -9,8 +9,7 @@
                     <img aria-hidden="true" src={logopath} class="logo" />
                     <h2 class="typo-undertittel typo-undertittel_farge blokk-s">{selectedTheme}</h2>
                     <c-community-error-summary
-                        error-list={errors}
-                        show-warnings={showWarnings}
+                        error-list={errorList}
                         onclickedevent={handleErrorClick}
                         class="errorSummary"
                     >
