@@ -108,4 +108,19 @@ public with sharing class stoHelperClass {
         ];
         return news;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static Id getOpenThread(String category) {
+        List<Thread__c> openThreads = [
+            SELECT Id
+            FROM Thread__c
+            WHERE CRM_Is_Closed__C = FALSE AND CRM_Thread_Type__c IN ('STO', 'STB') AND STO_Category__c = :category
+            ORDER BY CRM_Latest_Message_Datetime__c DESC
+            LIMIT 1
+        ];
+        if (openThreads.size() > 0) {
+            return openThreads[0].Id;
+        }
+        return null;
+    }
 }

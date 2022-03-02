@@ -6,6 +6,7 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
+import getOpenThread from '@salesforce/apex/stoHelperClass.getOpenThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
 import welcomlabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
@@ -58,6 +59,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     message;
     modalOpen = false;
     maxLength = 1000;
+    openThreadId;
 
     @wire(MessageContext)
     messageContext;
@@ -122,6 +124,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
+    @wire(getOpenThread, { category: '$selectedTheme' })
+    openThread({ error, data }) {
+        console.log('Checked thread with ' + this.selectedTheme);
+        console.log('That got med: ' + data);
+        if (error) {
+            console.log(error);
+        }
+        this.openThreadId = data;
+    }
     get validparameter() {
         let valid = this.acceptedcategories.has(this.selectedTheme);
         return valid;
@@ -252,5 +263,23 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.termsModal.focusLoop();
             }
         }
+    }
+
+    get showOpenThreadWarning() {
+        return this.openThreadId !== null && this.openThreadId !== undefined;
+    }
+
+    get openThreadText() {
+        return (
+            'Du har allerede en pågående samtale om ' +
+            this.selectedTheme.toLowerCase() +
+            '. Hvis du lurer på noe mer, kan du <a href="' +
+            this.openThreadLink +
+            '">fortsette samtalen</a>.'
+        );
+    }
+
+    get openThreadLink() {
+        return basepath + '/skriv-til-oss/' + this.openThreadId;
     }
 }
