@@ -273,9 +273,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return (
             'Du har allerede en pågående samtale om ' +
             this.selectedTheme.toLowerCase() +
-            '. <br> Hvis du lurer på noe mer, kan du <a href="' +
+            '. Hvis du lurer på noe mer, kan du <a href="' +
             this.openThreadLink +
-            '">fortsette samtalen</a>'
+            '">fortsette samtalen</a>.'
         );
     }
 
