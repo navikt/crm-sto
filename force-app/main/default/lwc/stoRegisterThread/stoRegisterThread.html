@@ -16,7 +16,7 @@
                     >
                     </c-community-error-summary>
 
-                    <div class="descholder">
+                    <div class="descholder slds-var-m-bottom_xx-large">
                         <p class="typo-normal blokk-xs description">{label.welcomlabel}</p>
                     </div>
                     <div class="inputarea">
@@ -28,11 +28,19 @@
                                     key={news.id}
                                 ></c-community-expandable-panel>
                             </template>
-                            <c-community-textarea
-                                max-length={maxLength}
-                                class="inputTextbox"
-                                ontextchanged={handleTextChange}
-                            ></c-community-textarea>
+                            <template if:true={showOpenThreadWarning}>
+                                <div class="slds-var-m-top_xx-large slds-text-align_left">
+                                    <c-crm-community-alert-stripe type="advarsel" alerttext={openThreadText}>
+                                    </c-crm-community-alert-stripe>
+                                </div>
+                            </template>
+                            <div class="slds-var-m-top_xx-large">
+                                <c-community-textarea
+                                    max-length={maxLength}
+                                    class="inputTextbox"
+                                    ontextchanged={handleTextChange}
+                                ></c-community-textarea>
+                            </div>
                             <div class="skjemaelement checkbox">
                                 <c-community-checkbox
                                     label-text={label.acceptermtext}
