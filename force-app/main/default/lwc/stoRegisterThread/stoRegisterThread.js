@@ -271,7 +271,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get openThreadText() {
         return (
-            'Du har allerede en pågående samtale om ' +
+            'Du har allerede en åpen samtale om ' +
             this.selectedTheme.toLowerCase() +
             '. Hvis du lurer på noe mer, kan du <a href="' +
             this.openThreadLink +
