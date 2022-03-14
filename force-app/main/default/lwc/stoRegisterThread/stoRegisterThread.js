@@ -6,6 +6,7 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
+import getOpenThread from '@salesforce/apex/stoHelperClass.getOpenThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
 import welcomlabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
@@ -52,37 +53,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     };
     logopath = navlogos + '/email.svg';
     newslist;
-    showTextboxEmptyWarning = false;
-    showTextboxFullWarning = false;
-    showTermWarning = false;
+    errorList = { title: '', errors: [] };
     message;
     modalOpen = false;
     maxLength = 1000;
+    openThreadId;
 
     @wire(MessageContext)
     messageContext;
 
-    get errors() {
-        let errorList = [];
-        if (this.showTextboxEmptyWarning) {
-            errorList.push({ Id: 1, EventItem: '.inputTextbox', Text: 'Tekstboksen kan ikke være tom.' });
-        }
-        if (this.showTextboxFullWarning) {
-            errorList.push({
-                Id: 2,
-                EventItem: '.inputTextbox',
-                Text: 'Det er for mange tegn i tekstboksen.'
-            });
-        }
-        if (this.showTermWarning) {
-            errorList.push({
-                Id: 3,
-                EventItem: '.checkboxContainer',
-                Text: 'Du må godta vilkårene for å sende beskjeden.'
-            });
-        }
-        return errorList;
-    }
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
@@ -122,6 +101,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
+    @wire(getOpenThread, { category: '$selectedTheme' })
+    openThread({ error, data }) {
+        console.log('Checked thread with ' + this.selectedTheme);
+        console.log('That got med: ' + data);
+        if (error) {
+            console.log(error);
+        }
+        this.openThreadId = data;
+    }
     get validparameter() {
         let valid = this.acceptedcategories.has(this.selectedTheme);
         return valid;
@@ -188,9 +176,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitrequest() {
-        this.showTextboxEmptyWarning = false;
-        this.showTextboxFullWarning = false;
-        this.showTermWarning = false;
         if (
             this.acceptedTerms == true &&
             this.message &&
@@ -206,21 +191,30 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 );
             });
         } else {
+            this.errorList = { title: '', errors: [] };
             if (!this.message || this.message.length == null) {
-                this.showTextboxEmptyWarning = true;
+                this.errorList.errors.push({
+                    Id: 1,
+                    EventItem: '.inputTextbox',
+                    Text: 'Tekstboksen kan ikke være tom.'
+                });
             } else if (this.message.length >= this.maxLength) {
-                this.showTextboxFullWarning = true;
+                this.errorList.errors.push({
+                    Id: 2,
+                    EventItem: '.inputTextbox',
+                    Text: 'Det er for mange tegn i tekstboksen.'
+                });
             }
             if (!this.acceptedTerms) {
-                this.showTermWarning = true;
+                this.errorList.errors.push({
+                    Id: 3,
+                    EventItem: '.checkboxContainer',
+                    Text: 'Du må godta vilkårene for å sende beskjeden.'
+                });
             }
             let errorSummary = this.template.querySelector('.errorSummary');
             errorSummary.focusHeader();
         }
-    }
-
-    get showWarnings() {
-        return this.showTextboxEmptyWarning || this.showTermWarning || this.showTextboxFullWarning;
     }
 
     handleErrorClick(event) {
@@ -252,5 +246,23 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.termsModal.focusLoop();
             }
         }
+    }
+
+    get showOpenThreadWarning() {
+        return this.openThreadId !== null && this.openThreadId !== undefined;
+    }
+
+    get openThreadText() {
+        return (
+            'Du har allerede en åpen samtale om ' +
+            this.selectedTheme.toLowerCase() +
+            '. Hvis du lurer på noe mer, kan du <a href="' +
+            this.openThreadLink +
+            '">fortsette samtalen</a>.'
+        );
+    }
+
+    get openThreadLink() {
+        return basepath + '/skriv-til-oss/' + this.openThreadId;
     }
 }
