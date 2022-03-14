@@ -85,6 +85,8 @@ public with sharing class stoHelperClass {
         msg.CRM_Message_Text__c = msgText;
         msg.CRM_From_Contact__c = contactId;
         msg.CRM_Thread__c = thread.Id;
+        m.CRM_Read__c = true;
+        m.CRM_Read_Datetime__c = DateTime.now();
         try {
             insert msg;
         } catch (DmlException e) {
