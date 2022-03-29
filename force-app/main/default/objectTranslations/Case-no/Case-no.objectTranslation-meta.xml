@@ -28,6 +28,11 @@
         <name>STO_Journal_Thread</name>
     </quickActions>
     <quickActions>
+        <aspect>Master</aspect>
+        <label>Reserver til meg</label>
+        <name>STO_Reserve_Case</name>
+    </quickActions>
+    <quickActions>
         <label><!-- SendEmail --></label>
         <name>SendEmail</name>
     </quickActions>
