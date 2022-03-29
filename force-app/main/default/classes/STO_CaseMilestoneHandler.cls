@@ -2,7 +2,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
     private static final String RESPOND_STO_TYPE_NAME = 'Respond STO';
     private static final String HANDLING_TIME_TYPE_NAME = 'Handling Time';
     private static final Set<String> milestoneTypes = new Set<String>{ RESPOND_STO_TYPE_NAME, HANDLING_TIME_TYPE_NAME };
-    private static final Set<String> triggerStatuses = new Set<String>{ 'On Hold', 'Forwarded', 'Closed' };
+    private static final Set<String> triggerStatuses = new Set<String>{ 'On Hold', 'Reserved', 'Forwarded', 'Closed' };
 
     global override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<String> fieldNamesToCheck = new List<String>{ 'Status' };
@@ -34,6 +34,9 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             if (milestoneCase.Status == 'Forwarded') {
                 //Only close handling time milestone, response time is still initial as end user is still awaiting the "full" response
                 caseMile.CompletionDate = caseMile.MilestoneType.Name == 'Respond STO' ? null : complTime;
+            } else if (milestoneCase.Status == 'Reserved') {
+                //Only close the respond milestone, as the agent has reserved the case to give a more elaborate response
+                caseMile.CompletionDate = caseMile.MilestoneType.Name == 'Respond STO' ? complTime : null;
             } else {
                 caseMile.CompletionDate = complTime;
             }
