@@ -438,14 +438,43 @@
         <label>Create Journal Entry</label>
         <locationX>50</locationX>
         <locationY>878</locationY>
-        <flowName>CRM_Journal_Message_Thread</flowName>
+        <flowName>CRM_Thread_Create_Journal_Entry</flowName>
         <inputAssignments>
-            <name>Journal_Entry_SF</name>
+            <name>Journal_Case_ID</name>
             <value>
-                <elementReference>JOURNAL_ENTRY</elementReference>
+                <elementReference>PERSON_NAV_CASES.selectedCaseId</elementReference>
             </value>
         </inputAssignments>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <inputAssignments>
+            <name>Journal_Case_Legacy_System</name>
+            <value>
+                <elementReference>PERSON_NAV_CASES.selectedCaseLegacySystem</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Journal_Entry_NAV_Ident</name>
+            <value>
+                <elementReference>$User.CRM_NAV_Ident__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Journal_Entry_Unit</name>
+            <value>
+                <elementReference>$User.Department</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Journal_Theme_Code</name>
+            <value>
+                <elementReference>PERSON_NAV_CASES.selectedCaseTheme</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>recordId</name>
+            <value>
+                <elementReference>Create_Thread</elementReference>
+            </value>
+        </inputAssignments>
     </subflows>
     <variables>
         <description>Journal entry record to be passed for journal post</description>
