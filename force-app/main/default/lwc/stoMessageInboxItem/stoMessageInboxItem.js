@@ -5,9 +5,7 @@ import basepath from '@salesforce/community/basePath';
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
     linkUrl;
-    messageLogo = navlogos + '/email.svg';
-    readLogo = navlogos + '/EmailOpen.svg';
-    dialog = navlogos + '/dialog.svg';
+    dialog = navlogos + '/send.svg';
     latestmessage;
     latestText;
     objectName;
@@ -55,8 +53,8 @@ export default class StoMessageInboxItem extends LightningElement {
             this.statuscolor = 'greenfont';
             this.isOpen = true;
         }
-        if (this.objectName == 'samtalereferat') this.dialog = navlogos + '/Notes.svg';
-        if (this.objectName == 'chat') this.dialog = navlogos + '/bag.svg';
+        if (this.objectName == 'samtalereferat') this.dialog = navlogos + '/FileContent.svg';
+        if (this.objectName == 'chat') this.dialog = navlogos + '/dialog.svg';
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
             this.unreadmessage = 'ulest';
@@ -65,5 +63,9 @@ export default class StoMessageInboxItem extends LightningElement {
         this.latestmessage = this.thread.latestmessage;
         this.latestText = this.thread.latestmessage.messageText;
         this.isExternal = this.thread.latestmessage.isExternal;
+    }
+
+    get showStatus() {
+        return this.objectName != 'samtalereferat';
     }
 }
