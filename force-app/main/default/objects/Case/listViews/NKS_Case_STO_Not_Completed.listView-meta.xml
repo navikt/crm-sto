@@ -3,11 +3,7 @@
     <fullName>NKS_Case_STO_Not_Completed</fullName>
     <booleanFilter>1 AND 2 AND 3</booleanFilter>
     <columns>CASES.CASE_NUMBER</columns>
-    <columns>NAME</columns>
-    <columns>CASES.SUBJECT</columns>
     <columns>CASES.STATUS</columns>
-    <columns>CASES.PRIORITY</columns>
-    <columns>CORE.USERS.ALIAS</columns>
     <columns>STO_Category__c</columns>
     <filterScope>Mine</filterScope>
     <filters>
