@@ -82,11 +82,11 @@ export default class CrmStoMessaging extends LightningElement {
             let greeting = '';
             greeting = this.userName == null ? 'Hi,' : 'Hi ' + this.userName + ',';
             return greeting + '\n\n\nKind regards\n' + this.supervisorName + '\nNAV Contact center';
-        } else {
-            let greeting = '';
-            greeting = this.userName == null ? 'Hei,' : 'Hei ' + this.userName + ',';
-            return greeting + '\n\n\nMed vennlig hilsen\n' + this.supervisorName + '\nNAV Kontaktsenter';
-        }
+        } 
+        let greeting = '';
+        greeting = this.userName == null ? 'Hei,' : 'Hei ' + this.userName + ',';
+        return greeting + '\n\n\nMed vennlig hilsen\n' + this.supervisorName + '\nNAV Kontaktsenter';
+        
     }
 
     get threadReference() {
