@@ -172,7 +172,7 @@
         <inputAssignments>
             <field>Status</field>
             <value>
-                <stringValue>New</stringValue>
+                <stringValue>Forwarded</stringValue>
             </value>
         </inputAssignments>
         <object>Case</object>
