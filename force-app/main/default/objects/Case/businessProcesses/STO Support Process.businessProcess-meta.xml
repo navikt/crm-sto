@@ -27,4 +27,8 @@
         <fullName>On Hold</fullName>
         <default>false</default>
     </values>
+    <values>
+        <fullName>Reserved</fullName>
+        <default>false</default>
+    </values>
 </BusinessProcess>

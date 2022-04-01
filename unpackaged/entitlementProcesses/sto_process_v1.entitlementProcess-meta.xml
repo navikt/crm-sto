@@ -36,14 +36,9 @@
     <milestones>
         <businessHours>STO Business Hours</businessHours>
         <milestoneCriteriaFilterItems>
-            <field>Case.CRM_In_Queue__c</field>
-            <operation>equals</operation>
-            <value>false</value>
-        </milestoneCriteriaFilterItems>
-        <milestoneCriteriaFilterItems>
             <field>Case.Status</field>
-            <operation>notEqual</operation>
-            <value>On Hold, Forwarded</value>
+            <operation>equals</operation>
+            <value>Reserved, In progress</value>
         </milestoneCriteriaFilterItems>
         <milestoneName>Handling Time</milestoneName>
         <minutesToComplete>5</minutesToComplete>
