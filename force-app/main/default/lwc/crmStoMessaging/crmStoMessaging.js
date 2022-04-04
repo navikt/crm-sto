@@ -22,6 +22,7 @@ export default class CrmStoMessaging extends LightningElement {
     supervisorName;
     accountApiName;
     threadId;
+    englishTextTemplate = false;
 
     connectedCallback() {
         this.template.addEventListener('toolbaraction', (event) => {
@@ -77,9 +78,15 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get textTemplate() {
+        if (this.englishTextTemplate == true) {
+            let greeting = '';
+            greeting = this.userName == null ? 'Hi,' : 'Hi ' + this.userName + ',';
+            return greeting + '\n\n\nKind regards\n' + this.supervisorName + '\nNAV Contact center';
+        } 
         let greeting = '';
         greeting = this.userName == null ? 'Hei,' : 'Hei ' + this.userName + ',';
         return greeting + '\n\n\nMed vennlig hilsen\n' + this.supervisorName + '\nNAV Kontaktsenter';
+        
     }
 
     get threadReference() {
@@ -197,5 +204,9 @@ export default class CrmStoMessaging extends LightningElement {
         return path.split('.').reduce(function (prev, curr) {
             return prev ? prev[curr] : null;
         }, obj || self);
+    }
+
+    handleEnglishEventTwo(event) {
+        this.englishTextTemplate = event.detail;
     }
 }
