@@ -111,6 +111,22 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Assign_thread_to_NAV_unit</name>
+        <label>Assign thread to NAV unit</label>
+        <locationX>314</locationX>
+        <locationY>1358</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Thread.CRM_Assignee_NAV_Unit__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>NAV_Unit_Allocator.selectedUnitId</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Thread</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Set_Thread_Related_Object</name>
         <label>Set Thread Related Object</label>
         <locationX>314</locationX>
@@ -123,7 +139,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Update_Thread</targetReference>
+            <targetReference>Assign_thread_to_NAV_unit</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -316,7 +332,7 @@
         <name>Update_Thread</name>
         <label>Update Thread</label>
         <locationX>314</locationX>
-        <locationY>1358</locationY>
+        <locationY>1478</locationY>
         <inputReference>Get_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
