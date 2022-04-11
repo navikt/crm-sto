@@ -783,6 +783,13 @@
                         <stringValue>In progress</stringValue>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>Get_Case.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Reserved</stringValue>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
