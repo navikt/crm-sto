@@ -69,6 +69,20 @@
                 <elementReference>TASK_TASKTYPE_ID</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>STO_NAV_TASK.NKS_Subtheme__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>TASK_SUBTHEME_ID</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>STO_NAV_TASK.CRM_Subtype__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>TASK_SUBTYPE_ID</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Send_NAV_Task</targetReference>
         </connector>
@@ -340,6 +354,20 @@
     </variables>
     <variables>
         <name>TASK_COMMENTS</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>TASK_SUBTHEME_ID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>TASK_SUBTYPE_ID</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
