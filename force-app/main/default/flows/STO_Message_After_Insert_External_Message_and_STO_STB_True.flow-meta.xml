@@ -356,6 +356,7 @@
         <outputReference>RelatedCase</outputReference>
         <queriedFields>Id</queriedFields>
         <queriedFields>OwnerId</queriedFields>
+        <queriedFields>Status</queriedFields>
     </recordLookups>
     <recordLookups>
         <description>Run a query to get the first message in the thread</description>
