@@ -436,8 +436,6 @@
         <queriedFields>CRM_Account__c</queriedFields>
         <queriedFields>NKS_Theme__c</queriedFields>
         <queriedFields>NKS_Theme_Group__c</queriedFields>
-        <queriedFields>NKS_Subtheme__c</queriedFields>
-        <queriedFields>CRM_Subtype__c</queriedFields>
         <queriedFields>CRM_NoPersonInformation__c</queriedFields>
         <queriedFields>CRM_Priority__c</queriedFields>
         <queriedFields>NKS_Henvendelse_BehandlingsId__c</queriedFields>
