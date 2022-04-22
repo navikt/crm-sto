@@ -2,7 +2,9 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
+import getUnitName from '@salesforce/apex/STO_RecordInfoController.getUnitNameFromUnitNumber';
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
+import USER_DEPARTMENT from '@salesforce/schema/User.Department';
 import FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import userId from '@salesforce/user/Id';
@@ -18,8 +20,9 @@ export default class CrmStoMessaging extends LightningElement {
     accountId;
     userId;
     personId;
-    userName;
-    supervisorName;
+    userName = '';
+    supervisorName = '';
+    supervisorDepartment = '';
     accountApiName;
     threadId;
     englishTextTemplate = false;
@@ -78,15 +81,15 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get textTemplate() {
+        let salutation = 'Hei';
+        let regards = 'Med vennlig hilsen';
+
         if (this.englishTextTemplate == true) {
-            let greeting = '';
-            greeting = this.userName == null ? 'Hi,' : 'Hi ' + this.userName + ',';
-            return greeting + '\n\n\nKind regards\n' + this.supervisorName + '\nNAV Contact center';
-        } 
-        let greeting = '';
-        greeting = this.userName == null ? 'Hei,' : 'Hei ' + this.userName + ',';
-        return greeting + '\n\n\nMed vennlig hilsen\n' + this.supervisorName + '\nNAV Kontaktsenter';
-        
+            salutation = 'Hi';
+            regards = 'Kind regards';
+        }
+
+        return `${salutation}, ${this.userName},\n\n\n${regards}\n${this.supervisorName}\n${this.supervisorDepartment}`;
     }
 
     get threadReference() {
@@ -190,13 +193,19 @@ export default class CrmStoMessaging extends LightningElement {
 
     @wire(getRecord, {
         recordId: '$userId',
-        fields: [NKS_FULL_NAME]
+        fields: [NKS_FULL_NAME, USER_DEPARTMENT]
     })
     wiredUser({ error, data }) {
         if (error) {
             console.log(error);
         } else if (data) {
             this.supervisorName = getFieldValue(data, NKS_FULL_NAME);
+
+            getUnitName({ unitNumber: getFieldValue(data, USER_DEPARTMENT) })
+                .then((response) => (this.supervisorDepartment = response))
+                .catch((error) => {
+                    console.log(error);
+                });
         }
     }
 
