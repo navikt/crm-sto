@@ -1,24 +1,6 @@
 public with sharing class stoHelperClass {
     private static final LoggerUtility logger = new LoggerUtility('STO');
 
-    private static Map<String, Id> commonCodeMap {
-        get {
-            if (commonCodeMap == null) {
-                commonCodeMap = new Map<String, Id>();
-                for (Common_Code__c comCode : [
-                    SELECT Id, CRM_Code__c
-                    FROM Common_Code__c
-                    WHERE CRM_Code_Set__c IN ('Tema', 'Temagrupper', 'Oppgavetyper')
-                ]) {
-                    commonCodeMap.put(comCode.CRM_Code__c, comCode.Id);
-                }
-            }
-
-            return commonCodeMap;
-        }
-        set {
-        }
-    }
     /**
      * Get themes from custom metadata
      * @Author Lars Petter Johnsen
