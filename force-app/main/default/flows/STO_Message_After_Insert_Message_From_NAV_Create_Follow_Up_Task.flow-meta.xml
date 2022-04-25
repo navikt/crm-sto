@@ -327,14 +327,7 @@
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
-        <filterLogic>(1 OR 2) AND 3 AND 4 AND 5</filterLogic>
-        <filters>
-            <field>CRM_Thread_Type__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>STO</stringValue>
-            </value>
-        </filters>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>CRM_Thread_Type__c</field>
             <operator>EqualTo</operator>

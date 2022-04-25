@@ -783,6 +783,13 @@
                         <stringValue>In progress</stringValue>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>Get_Case.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Reserved</stringValue>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
@@ -915,6 +922,18 @@
             <name>TASK_COMMENTS</name>
             <value>
                 <elementReference>TASK_COMMENT</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_SUBTHEME_ID</name>
+            <value>
+                <elementReference>THEME_CATEGORIZATION.subtheme</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_SUBTYPE_ID</name>
+            <value>
+                <elementReference>THEME_CATEGORIZATION.subtype</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

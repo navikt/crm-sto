@@ -8,4 +8,8 @@
         <priority>0</priority>
         <value>Forwarded</value>
     </serviceChannelFieldPriorities>
+    <serviceChannelFieldPriorities>
+        <priority>1</priority>
+        <value>Escalated</value>
+    </serviceChannelFieldPriorities>
 </ServiceChannel>

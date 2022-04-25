@@ -1,0 +1,12 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "NavUnit__c",
+                "referenceId": "NavUnit__cRef1"
+            },
+            "Name": "NAV Test Unit",
+            "INT_UnitNumber__c": "1234"
+        }
+    ]
+}

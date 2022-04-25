@@ -9,6 +9,7 @@
     "permsets_to_assign": [
         "Messaging_Read_and_Write_Messages_and_Threads",
         "Skriv_til_Oss",
-        "Skriv_til_oss_Service_Cloud_tilgang"
+        "Skriv_til_oss_Service_Cloud_tilgang",
+        "Scratch_Permissions"
     ]
 }
