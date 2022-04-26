@@ -13,6 +13,7 @@
         "CustomerCommunityPlusLogin",
         "PersonAccounts",
         "ProcessBuilder",
+        "Knowledge",
         "API",
         "ServiceCloud",
         "LiveAgent",
@@ -34,6 +35,13 @@
         },
         "lightningExperienceSettings": {
             "enableS1DesktopEnabled": true
+        },
+        "accountSettings": {
+            "enableRelateContactToMultipleAccounts": true
+        },
+        "knowledgeSettings": {
+            "enableKnowledge": true,
+            "enableLightningKnowledge": true
         },
         "languageSettings": {
             "enableTranslationWorkbench": true
