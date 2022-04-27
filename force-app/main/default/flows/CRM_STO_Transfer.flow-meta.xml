@@ -132,10 +132,10 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Id</field>
+            <field>CRM_API_Reference__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Thread_ID</elementReference>
+                <elementReference>Get_Case.NKS_Henvendelse_BehandlingsId__c</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
