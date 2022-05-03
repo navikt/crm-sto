@@ -23,13 +23,6 @@
         <locationX>844</locationX>
         <locationY>1008</locationY>
         <assignmentItems>
-            <assignToReference>RelatedCase.Status</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>In progress</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
             <assignToReference>RelatedCase.CRM_Run_Case_Assignment__c</assignToReference>
             <operator>Assign</operator>
             <value>

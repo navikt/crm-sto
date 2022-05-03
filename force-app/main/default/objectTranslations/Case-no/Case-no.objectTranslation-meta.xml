@@ -19,6 +19,11 @@
         <name>CRM_STO_Close_and_Next</name>
     </quickActions>
     <quickActions>
+        <aspect>Master</aspect>
+        <label>Ferdigstill</label>
+        <name>Complete</name>
+    </quickActions>
+    <quickActions>
         <label><!-- NewChildCase --></label>
         <name>NewChildCase</name>
     </quickActions>
@@ -35,6 +40,16 @@
     <quickActions>
         <label><!-- SendEmail --></label>
         <name>SendEmail</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Sladd</label>
+        <name>Sladd</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Overfør</label>
+        <name>Transfer</name>
     </quickActions>
     <recordTypes>
         <label><!-- STO Case --></label>

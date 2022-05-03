@@ -1,145 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <actionCalls>
-        <description>Call apex to calculate the due date for the NAV task</description>
-        <name>Get_Task_due_date</name>
-        <label>Get Task due date</label>
-        <locationX>314</locationX>
-        <locationY>758</locationY>
-        <actionName>CRM_DueDateUtility</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>Send_NAV_Task</targetReference>
-        </connector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>taskList</name>
-            <value>
-                <elementReference>STO_NAV_TASK</elementReference>
-            </value>
-        </inputParameters>
-        <outputParameters>
-            <assignToReference>STO_NAV_TASK.CRM_DueDate__c</assignToReference>
-            <name>output</name>
-        </outputParameters>
-    </actionCalls>
     <apiVersion>49.0</apiVersion>
     <assignments>
-        <name>Assign_NAV_Task_Values</name>
-        <label>Assign NAV Task Values</label>
-        <locationX>314</locationX>
-        <locationY>638</locationY>
+        <name>Set_Thread_Category</name>
+        <label>Set Thread Category</label>
+        <locationX>50</locationX>
+        <locationY>758</locationY>
         <assignmentItems>
-            <assignToReference>STO_NAV_TASK.CRM_NavUnit__c</assignToReference>
+            <assignToReference>Get_Thread.STO_Category__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>NAV_Unit_Allocator.selectedUnitId</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.NKS_Comments__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Task_Description</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.CRM_Account__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Case.AccountId</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.CRM_NoPersonInformation__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.CRM_Priority__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>NORM</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.NKS_Henvendelse_BehandlingsId__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_API_Reference__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.NKS_Theme__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>NAV_Task_Categorization.theme</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.NKS_Theme_Group__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>NAV_Task_Categorization.themeGroup</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.NKS_Subtheme__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>NAV_Task_Categorization.subtheme</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.NKS_TaskType__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Task_Type_Selection.selectedTaskTypeId</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>STO_NAV_TASK.CRM_Subtype__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>NAV_Task_Categorization.subtype</elementReference>
+                <elementReference>STO_Category_Picklist</elementReference>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Get_Task_due_date</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_thread_to_NAV_unit</name>
-        <label>Assign thread to NAV unit</label>
-        <locationX>314</locationX>
-        <locationY>1358</locationY>
-        <assignmentItems>
-            <assignToReference>Get_Thread.CRM_Assignee_NAV_Unit__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>NAV_Unit_Allocator.selectedUnitId</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Update_Thread</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Set_Thread_Related_Object</name>
-        <label>Set Thread Related Object</label>
-        <locationX>314</locationX>
-        <locationY>1238</locationY>
-        <assignmentItems>
-            <assignToReference>Get_Thread.CRM_Related_Object__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>STO_NAV_TASK.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Assign_thread_to_NAV_unit</targetReference>
+            <targetReference>Submit_Transfer_Event</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -165,7 +40,7 @@
         <locationX>182</locationX>
         <locationY>518</locationY>
         <defaultConnector>
-            <targetReference>Assign_NAV_Task_Values</targetReference>
+            <targetReference>Initiate_NAVUnit_Transfer</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Transfer to NAV Unit</defaultConnectorLabel>
         <rules>
@@ -257,10 +132,10 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Id</field>
+            <field>CRM_API_Reference__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Thread_ID</elementReference>
+                <elementReference>Get_Case.NKS_Henvendelse_BehandlingsId__c</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -273,7 +148,7 @@
         <locationX>50</locationX>
         <locationY>638</locationY>
         <connector>
-            <targetReference>Submit_Transfer_Event</targetReference>
+            <targetReference>Set_Thread_Category</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -304,35 +179,10 @@
         <object>Case</object>
     </recordUpdates>
     <recordUpdates>
-        <name>Close_Case</name>
-        <label>Close Case</label>
-        <locationX>314</locationX>
-        <locationY>1118</locationY>
-        <connector>
-            <targetReference>Set_Thread_Related_Object</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>Status</field>
-            <value>
-                <stringValue>Closed</stringValue>
-            </value>
-        </inputAssignments>
-        <object>Case</object>
-    </recordUpdates>
-    <recordUpdates>
-        <description>Updates thread so its related to the new NAV Task</description>
-        <name>Update_Thread</name>
-        <label>Update Thread</label>
-        <locationX>314</locationX>
-        <locationY>1478</locationY>
+        <name>Update_thread</name>
+        <label>Update thread</label>
+        <locationX>50</locationX>
+        <locationY>998</locationY>
         <inputReference>Get_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
@@ -380,94 +230,86 @@
             </visibilityRule>
         </fields>
         <fields>
-            <name>NAV_Task_Categorization</name>
-            <extensionName>c:crmThemeCategorization</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>themeGroup</name>
-                <value>
-                    <elementReference>Get_Thread.CRM_Theme_Group__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Transfer_to</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <elementReference>Transfer_to_NAV_Unit</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>Task_Type_Selection</name>
-            <extensionName>c:crmTaskTypePicklist</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>showcomponent</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Transfer_to</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <elementReference>Transfer_to_NAV_Unit</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>Task_Description</name>
-            <fieldText>Oppgave</fieldText>
-            <fieldType>LargeTextArea</fieldType>
+            <name>Transfer_Screen_Section1</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Transfer_Screen_Section1_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>NAV_Task_Categorization</name>
+                    <extensionName>c:crmThemeCategorization</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>themeGroup</name>
+                        <value>
+                            <elementReference>Get_Thread.CRM_Theme_Group__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>theme</name>
+                        <value>
+                            <elementReference>Get_Thread.CRM_Theme__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <fields>
+                    <name>Task_Type_Selection</name>
+                    <extensionName>c:crmTaskTypePicklist</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>showcomponent</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <fields>
+                    <name>Task_Comment</name>
+                    <fieldText>Kommentar</fieldText>
+                    <fieldType>LargeTextArea</fieldType>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>NAV_Unit_Allocator</name>
+                    <extensionName>c:crmNavTaskWorkAllocation</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>personId</name>
+                        <value>
+                            <elementReference>Get_Thread.CRM_Account__r.CRM_Person__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>hideDelegateToSelf</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>disableConditionalRendering</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
             <isRequired>false</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Transfer_to</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <elementReference>Transfer_to_NAV_Unit</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>NAV_Unit_Allocator</name>
-            <extensionName>c:crmNavTaskWorkAllocation</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>personId</name>
-                <value>
-                    <elementReference>Get_Case.Account.CRM_Person__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>hideDelegateToSelf</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>disableConditionalRendering</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
@@ -491,37 +333,75 @@
     </start>
     <status>Active</status>
     <subflows>
-        <name>Send_NAV_Task</name>
-        <label>Send NAV Task</label>
+        <name>Initiate_NAVUnit_Transfer</name>
+        <label>Initiate NAV Unit Transfer</label>
         <locationX>314</locationX>
-        <locationY>878</locationY>
-        <connector>
-            <targetReference>Submit_Transfer_Event_0</targetReference>
-        </connector>
-        <flowName>CRM_Send_NAV_Task_Auto</flowName>
+        <locationY>638</locationY>
+        <flowName>STO_Transfer_to_NAV_Unit_Auto</flowName>
         <inputAssignments>
-            <name>Created_By_Unit_Number</name>
+            <name>recordId</name>
             <value>
-                <elementReference>$User.Department</elementReference>
+                <elementReference>recordId</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
-            <name>NAV_Task</name>
+            <name>TASK_COMMENTS</name>
             <value>
-                <elementReference>STO_NAV_TASK</elementReference>
+                <elementReference>Task_Comment</elementReference>
             </value>
         </inputAssignments>
-        <outputAssignments>
-            <assignToReference>STO_NAV_TASK</assignToReference>
-            <name>NAV_Task</name>
-        </outputAssignments>
+        <inputAssignments>
+            <name>TASK_SUBTHEME_ID</name>
+            <value>
+                <elementReference>NAV_Task_Categorization.subtheme</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_SUBTYPE_ID</name>
+            <value>
+                <elementReference>NAV_Task_Categorization.subtype</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_TASKTYPE_ID</name>
+            <value>
+                <elementReference>Task_Type_Selection.selectedTaskTypeId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_THEME_GROUP_ID</name>
+            <value>
+                <elementReference>NAV_Task_Categorization.themeGroup</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TASK_THEME_ID</name>
+            <value>
+                <elementReference>NAV_Task_Categorization.theme</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Thread_ID</name>
+            <value>
+                <elementReference>Get_Thread.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>TRANSFER_TO_UNIT_NUMBER</name>
+            <value>
+                <elementReference>NAV_Unit_Allocator.selectedUnitNumber</elementReference>
+            </value>
+        </inputAssignments>
     </subflows>
     <subflows>
         <description>Add a transfer event message to the thread</description>
         <name>Submit_Transfer_Event</name>
         <label>Submit Transfer Event</label>
         <locationX>50</locationX>
-        <locationY>758</locationY>
+        <locationY>878</locationY>
+        <connector>
+            <targetReference>Update_thread</targetReference>
+        </connector>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>
             <name>Event_Message</name>
@@ -533,35 +413,6 @@
             <name>Event_Type</name>
             <value>
                 <stringValue>QUEUE_TRANSFER</stringValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Thread_ID</name>
-            <value>
-                <elementReference>Get_Thread.Id</elementReference>
-            </value>
-        </inputAssignments>
-    </subflows>
-    <subflows>
-        <description>Add a transfer event message to the thread</description>
-        <name>Submit_Transfer_Event_0</name>
-        <label>Submit Transfer Event</label>
-        <locationX>314</locationX>
-        <locationY>998</locationY>
-        <connector>
-            <targetReference>Close_Case</targetReference>
-        </connector>
-        <flowName>CRM_Create_Thread_Event</flowName>
-        <inputAssignments>
-            <name>Event_Message</name>
-            <value>
-                <elementReference>NAV_Unit_Transfer_Text</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Event_Type</name>
-            <value>
-                <stringValue>UNIT_TRANSFER</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
