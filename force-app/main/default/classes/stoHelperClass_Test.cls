@@ -15,20 +15,6 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void getOpenThreadTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
-        Test.startTest();
-        System.assertNotEquals(null, stoHelperClass.getOpenThread('Arbeid'), 'Expected to get a thread');
-        Test.stopTest();
-    }
-
-    @isTest
     static void getThemesTest() {
         Test.startTest();
         List<STO_Category__mdt> themes = stoHelperClass.getThemes('no');

@@ -13,7 +13,6 @@ public with sharing class stoInboxHelperTest {
             new Common_Code__c(Name = 'Spørsmål og Svar', CRM_Code__c = 'SPM_OG_SVR', CRM_Code_Set__c = 'Oppgavetyper')
         );
         Conversation_Note__c cn = new Conversation_Note__c(
-            CRM_Created_By_Ident__c = 'Z123455',
             CRM_Is_Read__c = false,
             CRM_Conversation_Note__c = 'this is a test message again'
         );

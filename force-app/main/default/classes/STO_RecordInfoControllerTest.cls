@@ -27,8 +27,6 @@ public with sharing class STO_RecordInfoControllerTest {
         );
         insert account;
 
-        insert new NavUnit__c(Name = 'Test Unit', INT_UnitNumber__c = '1234');
-
         STO_TestDataFactory.createRecord(new Thread__c());
     }
 
@@ -50,31 +48,5 @@ public with sharing class STO_RecordInfoControllerTest {
         String apiRef = [SELECT CRM_API_Reference__c FROM Thread__c LIMIT 1]?.CRM_API_Reference__c;
 
         System.assertNotEquals(null, STO_RecordInfoController.getThreadIdByApiReference(apiRef));
-    }
-
-    @isTest
-    static void testGetUnitName() {
-        Test.startTest();
-        System.assertEquals(
-            'Test Unit',
-            STO_RecordInfoController.getUnitNameFromUnitNumber('1234'),
-            'Expected to get the correct unit number'
-        );
-        System.assertEquals(
-            '',
-            STO_RecordInfoController.getUnitNameFromUnitNumber('12345'),
-            'Expected to get an empty string when there is no matching units'
-        );
-        System.assertEquals(
-            '',
-            STO_RecordInfoController.getUnitNameFromUnitNumber(''),
-            'Expected to get blank string when unit number is empty string'
-        );
-        System.assertEquals(
-            '',
-            STO_RecordInfoController.getUnitNameFromUnitNumber(null),
-            'Expected to get blank string when unit number is null'
-        );
-        Test.stopTest();
     }
 }

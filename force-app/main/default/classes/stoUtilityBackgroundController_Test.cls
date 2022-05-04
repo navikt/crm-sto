@@ -24,11 +24,4 @@ public with sharing class stoUtilityBackgroundController_Test {
         );
         System.assertEquals(null, tablabelcase, 'Should be null because there is no chat connected to the case');
     }
-
-    @IsTest
-    static void getOnlineIdTest() {
-        Test.startTest();
-        stoUtilityBackgroundController.getOnlineId();
-        Test.stopTest();
-    }
 }
