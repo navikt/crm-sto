@@ -48,7 +48,7 @@
     <workSkillRoutingAttributes>
         <field>Case.STO_Category__c</field>
         <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>Ufoer</skill>
+        <skill>Ufoeretrygd</skill>
         <skillLevel>0</skillLevel>
         <value>Ufør</value>
     </workSkillRoutingAttributes>
