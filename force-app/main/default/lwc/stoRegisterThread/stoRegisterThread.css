@@ -88,3 +88,8 @@
     justify-self: start;
     border: 0px;
 }
+
+.override {
+    --override-border-top-right-radius: 0px;
+    --override-border-bottom-right-radius: 0px;
+}

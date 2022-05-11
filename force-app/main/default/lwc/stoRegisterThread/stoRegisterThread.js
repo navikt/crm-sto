@@ -6,7 +6,8 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
-import getOpenThread from '@salesforce/apex/stoHelperClass.getOpenThread';
+import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
+import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
 import welcomlabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
@@ -24,6 +25,7 @@ import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_
 import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
 import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
+import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
@@ -52,17 +54,19 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         INCORRECT_CATEGORY
     };
     logopath = navlogos + '/email.svg';
+    deletepath = navlogos + '/delete.svg';
     newslist;
     errorList = { title: '', errors: [] };
     message;
     modalOpen = false;
     maxLength = 1000;
-    openThreadId;
+    openThreadList;
 
     @wire(MessageContext)
     messageContext;
 
     connectedCallback() {
+        console.log('geir');
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
                 let categoryList = new Set();
@@ -101,14 +105,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    @wire(getOpenThread, { category: '$selectedTheme' })
-    openThread({ error, data }) {
-        console.log('Checked thread with ' + this.selectedTheme);
-        console.log('That got med: ' + data);
+    @wire(getOpenThreads, { category: '$selectedTheme' })
+    openThread(wireData) {
+        const { error, data } = wireData;
         if (error) {
             console.log(error);
         }
-        this.openThreadId = data;
+        this._wireThreadData = wireData;
+        this.openThreadList = data;
     }
     get validparameter() {
         let valid = this.acceptedcategories.has(this.selectedTheme);
@@ -185,6 +189,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showspinner = true;
 
             createRecords({ theme: this.selectedTheme, msgText: this.message }).then((thread) => {
+                this.showspinner = false;
                 window.open(
                     (this.linkUrl = basepath + '/skriv-til-oss/' + thread.Id + '/' + encodeURIComponent(thread.Name)),
                     '_self'
@@ -215,6 +220,31 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             let errorSummary = this.template.querySelector('.errorSummary');
             errorSummary.focusHeader();
         }
+    }
+
+    shaggy(event) {
+        console.log('geir');
+        const t = event.currentTarget.dataset.id;
+        this.showspinner = true;
+        console.log(t);
+        closeThread({ id: t })
+            .then(() => {
+                console.log('Kidney');
+                refreshApex(this._wireThreadData)
+                    .then((a) => {
+                        console.log('a');
+                        console.log(a);
+                        this.showspinner = false;
+                    })
+                    .catch((e) => {
+                        console.log('e');
+                        console.log(e);
+                    });
+            })
+            .catch((e) => {
+                console.log('g');
+                console.log(e);
+            });
     }
 
     handleErrorClick(event) {
@@ -249,7 +279,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get showOpenThreadWarning() {
-        return this.openThreadId !== null && this.openThreadId !== undefined;
+        return this.openThreadList !== null && this.openThreadList !== undefined;
     }
 
     get openThreadText() {
@@ -257,12 +287,20 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             'Du har allerede en åpen samtale om ' +
             this.selectedTheme.toLowerCase() +
             '. Hvis du lurer på noe mer, kan du <a href="' +
-            this.openThreadLink +
+            // this.openThreadLink +
             '">fortsette samtalen</a>.'
         );
     }
 
-    get openThreadLink() {
-        return basepath + '/skriv-til-oss/' + this.openThreadId;
+    // get openThreadLink() {
+    //     return basepath + '/skriv-til-oss/' + this.openThreadId;
+    // }
+
+    get alertType() {
+        return this.openThreadList.length > 1 ? 'feil' : 'advarsel';
+    }
+
+    get showTextArea() {
+        return this.openThreadList === null || this.openThreadList === undefined || this.openThreadList.length < 5;
     }
 }

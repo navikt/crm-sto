@@ -15,7 +15,7 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void getOpenThreadTest() {
+    static void getOpenThreadsTest() {
         Contact personContact = [
             SELECT Id, AccountId
             FROM Contact
@@ -24,7 +24,7 @@ public with sharing class stoHelperClass_Test {
         ];
         Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
         Test.startTest();
-        System.assertNotEquals(null, stoHelperClass.getOpenThread('Arbeid'), 'Expected to get a thread');
+        System.assertNotEquals(null, stoHelperClass.getOpenThreads('Arbeid'), 'Expected to get a thread');
         Test.stopTest();
     }
 

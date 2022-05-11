@@ -1,24 +1,31 @@
 <template>
-        <a class={className} href={linkUrl} key={thread.recordId} id="a">
-                <lightning-layout vertical-align="center" class="slds-size_1-of-1">
-                    <lightning-layout-item size="1" padding="around-medium">
-                        <img class="iconcolor" src={dialog} alt={unreadmessage} id="b"/>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="10">
-                                <p class="typo-normal blokk-xxxs">
-                                    <lightning-formatted-date-time
-                                        value={thread.latestMessageDate}
-                                        month="2-digit"
-                                        day="2-digit"
-                                        year="numeric"
-                                    ></lightning-formatted-date-time> - <span class={statuscolor}> {thread.status} </span>
-                                </p>
-                                <h3 class="typo-undertittel lenkepanel__heading ">{itemTitle}</h3>
-                                <p class="typo-normal tema-avsnitt messagebox">{latestText}</p>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="1">
-                        <span class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"></span>
-                    </lightning-layout-item>
-                </lightning-layout>
-        </a>
+    <a
+        class={className}
+        href={linkUrl}
+        key={thread.recordId}
+        id="a"
+        style="border: 1px solid var(--navds-color-gray-60, blue)"
+    >
+        <lightning-layout vertical-align="center" class="slds-size_1-of-1">
+            <lightning-layout-item size="1" padding="around-medium">
+                <img class="iconcolor" src={dialog} alt={unreadmessage} id="b" />
+            </lightning-layout-item>
+            <lightning-layout-item size="10">
+                <p class="typo-normal blokk-xxxs">
+                    <lightning-formatted-date-time
+                        value={thread.latestMessageDate}
+                        month="2-digit"
+                        day="2-digit"
+                        year="numeric"
+                    ></lightning-formatted-date-time>
+                    - <span class={statuscolor}> {thread.status} </span>
+                </p>
+                <h3 class="typo-undertittel lenkepanel__heading">{itemTitle}</h3>
+                <p class="typo-normal tema-avsnitt messagebox">{latestText}</p>
+            </lightning-layout-item>
+            <lightning-layout-item size="1">
+                <span class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"></span>
+            </lightning-layout-item>
+        </lightning-layout>
+    </a>
 </template>

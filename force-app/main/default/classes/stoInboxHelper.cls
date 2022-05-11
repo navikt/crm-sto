@@ -23,17 +23,7 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
-            thread i = new thread();
-            i.name = t.STO_ExternalName__c;
-            i.recordId = t.Id;
-            i.lastModifiedDate = t.LastModifiedDate;
-            i.closeDate = t.CRM_Closed_Date__c;
-            i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
-            i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
-            i.objectName = 'skriv-til-oss';
-            i.status = (t.CRM_Is_Closed__C) ? 'Lukket' : 'Åpen';
-            i.recordName = t.Name;
-            inboxlist.add(i);
+            inboxlist.add(formatThread(t));
         }
         List<Conversation_Note__c> noteList = [
             SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, Name
@@ -42,17 +32,7 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
-            thread i = new thread();
-            i.name = t.STO_External_Name__c;
-            i.recordId = t.Id;
-            i.lastModifiedDate = t.LastModifiedDate;
-            i.closeDate = t.CRM_Date_Time_Registered__c;
-            i.numberOfUnreadMessages = 0;
-            i.latestMessageDate = t.CRM_Date_Time_Registered__c;
-            i.objectName = 'samtalereferat';
-            i.status = 'Lukket';
-            i.recordName = t.Name;
-            inboxlist.add(i);
+            inboxlist.add(formatConversationNote(t));
         }
         return inboxlist;
     }
@@ -79,17 +59,7 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
-            thread i = new thread();
-            i.name = t.STO_ExternalName__c;
-            i.recordId = t.Id;
-            i.lastModifiedDate = t.LastModifiedDate;
-            i.closeDate = t.CRM_Closed_Date__c;
-            i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
-            i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
-            i.objectName = 'skriv-til-oss';
-            i.status = (t.CRM_Is_Closed__C) ? 'Lukket' : 'Åpen';
-            i.recordName = t.Name;
-            inboxlist.add(i);
+            inboxlist.add(formatThread(t));
         }
         List<Conversation_Note__c> noteList = [
             SELECT Id, LastModifiedDate, CRM_Date_Time_Registered__c, STO_External_Name__c, Name
@@ -98,19 +68,37 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
-            thread i = new thread();
-            i.name = t.STO_External_Name__c;
-            i.recordId = t.Id;
-            i.lastModifiedDate = t.LastModifiedDate;
-            i.closeDate = t.CRM_Date_Time_Registered__c;
-            i.numberOfUnreadMessages = 1;
-            i.latestMessageDate = t.CRM_Date_Time_Registered__c;
-            i.objectName = 'samtalereferat';
-            i.status = 'Lukket';
-            i.recordName = t.Name;
-            inboxlist.add(i);
+            inboxlist.add(formatConversationNote(t));
         }
         return inboxlist;
+    }
+
+    public static thread formatThread(Thread__c t) {
+        thread i = new thread();
+        i.name = t.STO_ExternalName__c;
+        i.recordId = t.Id;
+        i.lastModifiedDate = t.LastModifiedDate;
+        i.closeDate = t.CRM_Closed_Date__c;
+        i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
+        i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
+        i.objectName = 'skriv-til-oss';
+        i.status = (t.CRM_Is_Closed__C) ? 'Lukket' : 'Åpen';
+        i.recordName = t.Name;
+        return i;
+    }
+
+    public static thread formatConversationNote(Conversation_Note__c t) {
+        thread i = new thread();
+        i.name = t.STO_External_Name__c;
+        i.recordId = t.Id;
+        i.lastModifiedDate = t.LastModifiedDate;
+        i.closeDate = t.CRM_Date_Time_Registered__c;
+        i.numberOfUnreadMessages = 1;
+        i.latestMessageDate = t.CRM_Date_Time_Registered__c;
+        i.objectName = 'samtalereferat';
+        i.status = 'Lukket';
+        i.recordName = t.Name;
+        return i;
     }
 
     public class thread {
