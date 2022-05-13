@@ -4,8 +4,16 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">For å beregne riktig etteroppgjør må vi ha nødvendig dokumentasjon fra deg. Du finner &lt;a href=&quot;https://www.nav.no/no/person/pensjon/avtalefestet-pensjon-afp/hva-er-afp-etteroppgjoret&quot;
-&gt; informasjon og skjema i denne artikkelen.&lt;/a&gt;</value>
+        <value xsi:type="xsd:string">&lt;p&gt;Her ser du hvordan du registrerer frivillig skattetrekk: &lt;a href=&quot;https://www.nav.no/frivillig-skattetrekk&quot;&gt;nav.no/frivillig-skattetrekk&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Legg merke til at frivillig skattetrekk:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;gjelder ut inneværende kalenderår&lt;/li&gt;
+&lt;li&gt;trekkes uavhengig av om det er skattefri måned eller eventuelt halv skatt&lt;/li&gt;
+&lt;li&gt;må registreres på nytt hvert år&lt;/li&gt;
+&lt;li&gt;gjelder fra måneden etter at du har registrert det&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Vi har laget en &lt;a href=&quot;https://vimeo.com/489841874&quot;&gt;film om hvordan du registrerer skattetrekk (Vimeo.com).&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;På &lt;a href=&quot;https://www.nav.no/utbetaling&quot;&gt;utbetalingsoversikten&lt;/a&gt; kan du se hvor mye som trekkes i skatt.&lt;/p&gt;</value>
     </values>
     <values>
         <field>STO_Category__c</field>
@@ -13,6 +21,6 @@
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Har du spørsmål om AFP-etteroppgjøret?</value>
+        <value xsi:type="xsd:string">Registrere frivillig skattetrekk?</value>
     </values>
 </CustomMetadata>

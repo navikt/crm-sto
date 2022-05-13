@@ -4,9 +4,9 @@ public with sharing class stoUtilityBackgroundController {
         try {
             String tabname;
             SObjectType objectName = Id.valueOf(recordId).getSobjectType();
-             if (objectName == Schema.Case.getSObjectType()) {
+            if (objectName == Schema.Case.getSObjectType()) {
                 Case c = [SELECT STO_Category__c, Id, Origin FROM Case WHERE Id = :recordId LIMIT 1];
-                if(c.STO_Category__c != null){
+                if (c.STO_Category__c != null) {
                     tabname = c.STO_Category__c;
                 }
             }

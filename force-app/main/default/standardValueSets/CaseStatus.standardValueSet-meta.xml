@@ -37,4 +37,10 @@
         <label>In progress</label>
         <closed>false</closed>
     </standardValue>
+    <standardValue>
+        <fullName>Reserved</fullName>
+        <default>false</default>
+        <label>Reserved</label>
+        <closed>false</closed>
+    </standardValue>
 </StandardValueSet>
