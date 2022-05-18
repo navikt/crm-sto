@@ -1,8 +1,8 @@
 {
     "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
     "componentName": "community_layout:sldsFlexibleLayout",
-    "id": "f2e01c29-11ef-4fe7-9665-6ccb85f009bc",
-    "label": "Conversation Note Related List",
+    "id": "1dd24a6f-83f4-45e4-8b61-5215b58cf4ad",
+    "label": "Chat Transcript List",
     "regions": [
         {
             "components": [
@@ -10,13 +10,13 @@
                     "componentAttributes": {
                         "backgroundImageConfig": "",
                         "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"638e5750-dd69-47ab-aeeb-d8ce9d3be164\",\"columns\":[{\"UUID\":\"f2a36687-8549-4c61-a838-e1131d495fca\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+                        "sectionConfig": "{\"UUID\":\"109d45eb-9e88-4ffa-9c82-b72dd74134f9\",\"columns\":[{\"UUID\":\"06ed618c-a120-48fe-89fe-bc9a47e49368\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
                     },
                     "componentName": "community_layout:section",
-                    "id": "638e5750-dd69-47ab-aeeb-d8ce9d3be164",
+                    "id": "109d45eb-9e88-4ffa-9c82-b72dd74134f9",
                     "regions": [
                         {
-                            "id": "f2a36687-8549-4c61-a838-e1131d495fca",
+                            "id": "06ed618c-a120-48fe-89fe-bc9a47e49368",
                             "regionLabel": "Column 1",
                             "regionName": "col1",
                             "renditionMap": {},
@@ -29,12 +29,12 @@
                     "type": "component"
                 }
             ],
-            "id": "9acc8ca4-695c-422b-9725-03887dff77b5",
+            "id": "c66e24bd-5853-4c75-a7cc-5c1d1a6d7947",
             "regionName": "content",
             "type": "region"
         }
     ],
     "themeLayoutType": "Inner",
     "type": "view",
-    "viewType": "relatedlist-a1a"
+    "viewType": "list-570"
 }
