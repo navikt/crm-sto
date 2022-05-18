@@ -1,0 +1,40 @@
+{
+    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+    "componentName": "community_layout:sldsFlexibleLayout",
+    "id": "0d3e7168-a8b5-468f-b387-c1863dca2ba5",
+    "label": "Chat Transcript Related List",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "sectionConfig": "{\"UUID\":\"2391cbb3-48e9-4d84-86a5-065188412f54\",\"columns\":[{\"UUID\":\"07773397-786d-4e8d-948b-8217c332df0b\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "2391cbb3-48e9-4d84-86a5-065188412f54",
+                    "regions": [
+                        {
+                            "id": "07773397-786d-4e8d-948b-8217c332df0b",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                }
+            ],
+            "id": "4a68ac6e-db8f-4efe-94b6-66dd06370fdb",
+            "regionName": "content",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "relatedlist-570"
+}

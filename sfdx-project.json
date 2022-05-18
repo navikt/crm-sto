@@ -42,7 +42,12 @@
                 {
                     "package": "crm-community-base",
                     "versionNumber": "0.48.0.LATEST"
+                },
+                {
+                    "package": "crm-nks-chat",
+                    "versionNumber": "0.1.0.LATEST"
                 }
+                
             ]
         }
     ],
@@ -59,6 +64,7 @@
         "crm-platform-oppgave": "0Ho2o000000fxXzCAI",
         "crm-shared-user-notification": "0Ho2o000000fxY4CAI",
         "crm-shared-flowComponents": "0Ho2o000000fxYJCAY",
+        "crm-nks-chat": "0Ho7U000000000GSAQ",
         "crm-sto": "0Ho2o000000fxXpCAI"
     }
 }
