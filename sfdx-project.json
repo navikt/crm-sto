@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.43.0.NEXT",
+            "versionNumber": "1.44.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
@@ -51,7 +51,6 @@
                     "package": "crm-nks-chat",
                     "versionNumber": "0.1.0.LATEST"
                 }
-                
             ]
         }
     ],
