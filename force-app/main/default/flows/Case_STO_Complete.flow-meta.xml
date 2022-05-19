@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Show_toast</name>
+        <label>Show toast</label>
+        <locationX>314</locationX>
+        <locationY>398</locationY>
+        <actionName>c:fcFlowToaster</actionName>
+        <actionType>component</actionType>
+        <connector>
+            <targetReference>Update_Case_Status</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>duration</name>
+            <value>
+                <stringValue>10</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>message</name>
+            <value>
+                <stringValue>Henvendelsen ble ferdigstilt</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>title</name>
+            <value>
+                <stringValue>Ferdigstilt</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>type</name>
+            <value>
+                <stringValue>success</stringValue>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
     <apiVersion>54.0</apiVersion>
     <decisions>
         <name>Check_Status</name>
@@ -7,7 +44,7 @@
         <locationX>182</locationX>
         <locationY>278</locationY>
         <defaultConnector>
-            <targetReference>Update_Case_Status</targetReference>
+            <targetReference>Show_toast</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -86,7 +123,7 @@
         <name>Update_Case_Status</name>
         <label>Update Case Status</label>
         <locationX>314</locationX>
-        <locationY>398</locationY>
+        <locationY>518</locationY>
         <connector>
             <targetReference>Close_Screen</targetReference>
         </connector>
@@ -126,7 +163,7 @@
         <name>Close_Screen</name>
         <label>Close Screen</label>
         <locationX>314</locationX>
-        <locationY>518</locationY>
+        <locationY>638</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>

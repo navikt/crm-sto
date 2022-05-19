@@ -16,6 +16,7 @@
         "Knowledge",
         "API",
         "ServiceCloud",
+        "Knowledge",
         "LiveAgent",
         "LightningServiceConsole",
         "ContactsToMultipleAccounts",
@@ -45,6 +46,10 @@
         },
         "languageSettings": {
             "enableTranslationWorkbench": true
+        },
+        "knowledgeSettings": {
+            "enableKnowledge": true,
+            "enableLightningKnowledge": true
         },
         "nameSettings": {
             "enableMiddleName": true

@@ -1,8 +1,8 @@
 {
     "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
     "componentName": "community_layout:sldsFlexibleLayout",
-    "id": "0bfa5786-f36c-4e19-b47a-63cd7bbe7859",
-    "label": "Conversation Note Detail",
+    "id": "3053dbfd-f680-45ff-89b3-a0c589b83c4a",
+    "label": "Chat Transcript Detail",
     "regions": [
         {
             "components": [
@@ -10,10 +10,10 @@
                     "componentAttributes": {
                         "backgroundImageConfig": "",
                         "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"d1e01447-722b-4f86-8076-4eaff55a6c1c\",\"columns\":[{\"UUID\":\"13049cf2-93c6-49e8-aa27-a4150049dac3\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+                        "sectionConfig": "{\"UUID\":\"0ced522f-bfa9-435e-83d9-7a60e4503e68\",\"columns\":[{\"UUID\":\"147d5dff-4f3e-4d14-8e08-f903134aa833\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
                     },
                     "componentName": "community_layout:section",
-                    "id": "d1e01447-722b-4f86-8076-4eaff55a6c1c",
+                    "id": "0ced522f-bfa9-435e-83d9-7a60e4503e68",
                     "regions": [
                         {
                             "components": [
@@ -21,20 +21,20 @@
                                     "componentAttributes": {
                                         "firstLevel": "Privatperson",
                                         "firstLevelLink": "https://nav.no",
-                                        "leafnode": "Samtalereferat",
+                                        "leafnode": "Chat",
                                         "secondLevel": "Ditt NAV",
                                         "secondLevelLink": "https://nav.no/dittnav",
                                         "thirdLevel": "Innboks",
-                                        "thirdLevelLink": "https://innboks.nav.no"
+                                        "thirdLevelLink": "https://innboks.nav.no/"
                                     },
                                     "componentName": "c:communityBreadCrumb",
-                                    "id": "6470db25-5622-43d3-ab06-a3041f18c000",
+                                    "id": "098c0a0c-dfa6-41e2-b495-550b2bd65eb1",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
                                 }
                             ],
-                            "id": "13049cf2-93c6-49e8-aa27-a4150049dac3",
+                            "id": "147d5dff-4f3e-4d14-8e08-f903134aa833",
                             "regionLabel": "Column 1",
                             "regionName": "col1",
                             "renditionMap": {},
@@ -50,13 +50,13 @@
                     "componentAttributes": {
                         "backgroundImageConfig": "",
                         "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"2db51da3-a826-47c6-a7b4-5e1fb1c82817\",\"columns\":[{\"UUID\":\"cc6da9d2-b17a-4532-ac33-9da7760136ce\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"21d2feef-c374-4c7f-ae52-f5800faccc76\",\"columnName\":\"Column 2\",\"columnKey\":\"c0b8b\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"5fd9ac1e-dad3-4c68-bd9b-2f897b564dd0\",\"columnName\":\"Column 3\",\"columnKey\":\"340be\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
+                        "sectionConfig": "{\"UUID\":\"2a41c81c-f086-4898-8836-571a01089d30\",\"columns\":[{\"UUID\":\"6f9a082c-c971-4b59-a41a-e774e466606e\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"ba451f1a-167a-444b-9ebf-7a15c01edbd9\",\"columnName\":\"Column 2\",\"columnKey\":\"38dae\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"5ff9a91d-f79e-4279-bccd-1fafe941c372\",\"columnName\":\"Column 3\",\"columnKey\":\"1ec56\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}"
                     },
                     "componentName": "community_layout:section",
-                    "id": "2db51da3-a826-47c6-a7b4-5e1fb1c82817",
+                    "id": "2a41c81c-f086-4898-8836-571a01089d30",
                     "regions": [
                         {
-                            "id": "cc6da9d2-b17a-4532-ac33-9da7760136ce",
+                            "id": "6f9a082c-c971-4b59-a41a-e774e466606e",
                             "regionLabel": "Column 1",
                             "regionName": "col1",
                             "renditionMap": {},
@@ -66,26 +66,25 @@
                             "components": [
                                 {
                                     "componentAttributes": {
-                                        "recordId": "{!recordId}",
-                                        "title": "Samtalereferat"
+                                        "recordId": "{!recordId}"
                                     },
-                                    "componentName": "c:communityConversationNote",
-                                    "id": "1d85d094-6777-4540-9e4d-91c6576228e3",
+                                    "componentName": "c:nksChatView",
+                                    "id": "0024650a-054e-4f5a-9795-aa0a095a3620",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
                                 }
                             ],
-                            "id": "21d2feef-c374-4c7f-ae52-f5800faccc76",
+                            "id": "ba451f1a-167a-444b-9ebf-7a15c01edbd9",
                             "regionLabel": "Column 2",
-                            "regionName": "c0b8b",
+                            "regionName": "38dae",
                             "renditionMap": {},
                             "type": "region"
                         },
                         {
-                            "id": "5fd9ac1e-dad3-4c68-bd9b-2f897b564dd0",
+                            "id": "5ff9a91d-f79e-4279-bccd-1fafe941c372",
                             "regionLabel": "Column 3",
-                            "regionName": "340be",
+                            "regionName": "1ec56",
                             "renditionMap": {},
                             "type": "region"
                         }
@@ -96,7 +95,7 @@
                     "type": "component"
                 }
             ],
-            "id": "2db96511-9e91-461d-9834-f94daf1c686b",
+            "id": "b8fdb892-f8ba-4147-8d51-959ab58ddcec",
             "regionName": "content",
             "type": "region"
         },
@@ -110,18 +109,18 @@
                         "recordId": "{!recordId}"
                     },
                     "componentName": "community_builder:seoAssistant",
-                    "id": "0679c994-c568-4efe-82a9-f0c63acb68ec",
+                    "id": "5347ff19-49bd-4a05-a536-5ea7389bf30f",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
                 }
             ],
-            "id": "e4b35d95-3cac-429f-beaa-0240a79fd414",
+            "id": "7b90a0c6-46ea-48d8-af4f-6534edf65028",
             "regionName": "sfdcHiddenRegion",
             "type": "region"
         }
     ],
     "themeLayoutType": "Inner",
     "type": "view",
-    "viewType": "detail-a1a"
+    "viewType": "detail-570"
 }

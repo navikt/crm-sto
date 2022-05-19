@@ -6,6 +6,6 @@
     <routingModel>MOST_AVAILABLE</routingModel>
     <routingPriority>5</routingPriority>
     <skills>
-        <skill>Ufoer</skill>
+        <skill>Ufoeretrygd</skill>
     </skills>
 </QueueRoutingConfig>
