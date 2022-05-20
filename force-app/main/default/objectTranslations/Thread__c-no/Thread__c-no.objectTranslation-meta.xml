@@ -5,4 +5,14 @@
         <label>Journalfør</label>
         <name>Journal</name>
     </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Fullfør sladding</label>
+        <name>STO_Complete_STO_STB_Redaction</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Kasser</label>
+        <name>STO_Discard_STO_STB_Messages</name>
+    </quickActions>
 </CustomObjectTranslation>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Complete redaction of a STO/STB thread</description>
+    <flowDefinition>STO_Thread_Screenflow_CompleteSTORedaction</flowDefinition>
+    <label>Complete Redaction</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

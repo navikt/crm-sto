@@ -25,6 +25,28 @@
         <value>Choose Language</value>
     </labels>
     <labels>
+        <fullName>STO_NewMessageNotification</fullName>
+        <categories>STO, User Notification</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO - New Message Notification</shortDescription>
+        <value>Du har mottatt en ny melding fra NAV som ligger i din innboks.</value>
+    </labels>
+    <labels>
+        <fullName>STO_RedactedMessageNotificationText</fullName>
+        <categories>STO, User Notification, Sladding, Samtaletråd</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO - Thread Redacted Message Notification Text</shortDescription>
+        <value>Deler av meldingen din har blitt sladdet.
+
+Vi har bare lov til å ta vare på opplysninger som er relevant for deg. Opplysninger som gjelder andre og som ikke har betydning i saken din slettes derfor, og vises som sladdet i meldinger.
+
+Andre opplysninger som sladdes er informasjon i saker som behandles, forvaltes og lagres av ditt lokale NAV-kontor. 
+
+For henvendelser som gjelder kommunale tjenester som økonomisk sosialhjelp, bostøtte, midlertidig botilbud, kvalifiseringsprogrammet, eller økonomisk rådgivning må du kontakte oss på chat eller telefon 55 55 33 33.</value>
+    </labels>
+    <labels>
         <fullName>STO_Incorrect_Category</fullName>
         <categories>Skriv til oss</categories>
         <language>en_US</language>
