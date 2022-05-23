@@ -3,7 +3,7 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
-import FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
+import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import userId from '@salesforce/user/Id';
 
@@ -172,17 +172,15 @@ export default class CrmStoMessaging extends LightningElement {
 
     @wire(getRecord, {
         recordId: '$personId',
-        fields: [FIRST_NAME]
+        fields: [PERSON_FULL_NAME]
     })
     wiredPerson({ error, data }) {
         if (error) {
             console.log(error);
         } else if (data) {
             if (this.accountId && this.personId) {
-                let list = [];
-                let firstName = getFieldValue(data, FIRST_NAME).toLowerCase().split(' ');
-                firstName.forEach((item) => list.push(item.charAt(0).toUpperCase() + item.slice(1)));
-                this.userName = list.join(' ');
+                let fullName = getFieldValue(data, PERSON_FULL_NAME);
+                this.userName = fullName ? fullName.split(' ').shift() : '';
             }
         }
     }

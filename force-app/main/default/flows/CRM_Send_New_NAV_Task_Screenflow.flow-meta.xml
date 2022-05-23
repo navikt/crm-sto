@@ -161,15 +161,6 @@
         <picklistField>CRM_Priority__c</picklistField>
         <picklistObject>NavTask__c</picklistObject>
     </dynamicChoiceSets>
-    <dynamicChoiceSets>
-        <description>Task type for the NAV task</description>
-        <name>Task_Type</name>
-        <dataType>Picklist</dataType>
-        <displayField xsi:nil="true"/>
-        <object xsi:nil="true"/>
-        <picklistField>NKS_Task_Type__c</picklistField>
-        <picklistObject>NavTask__c</picklistObject>
-    </dynamicChoiceSets>
     <formulas>
         <name>TASK_CREATED_MESSAGE</name>
         <dataType>String</dataType>

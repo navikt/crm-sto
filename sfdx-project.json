@@ -9,11 +9,11 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.153.0.LATEST"
+                    "versionNumber": "0.154.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.71.0.LATEST"
+                    "versionNumber": "0.78.0.LATEST"
                 },
                 {
                     "package": "crm-journal-utilities",
@@ -56,7 +56,7 @@
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "53.0",
+    "sourceApiVersion": "54.0",
     "packageAliases": {
         "crm-henvendelse": "0Ho2o000000fxXfCAI",
         "crm-community-base": "0Ho2o0000008OSzCAM",
