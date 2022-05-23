@@ -14,12 +14,7 @@
 									&apos; ulest melding&apos;
 								), 
 						&apos; (Lest&apos;
-					) +
-			IF(CRM_Is_Closed__c,
-						&apos; | AVSLUTTET&apos;,
-						&apos; | ÅPEN&apos;
-					) +
-			&apos;)&apos; ,
+					) +&apos;) &apos; + IF(CRM_isActive__c == true, IMAGE(&apos;/resource/caseStatusClosed&apos;, &apos;Lukket&apos;, 22, 53), IF(ISBLANK(CRM_Case__c), &apos;&apos;, CRM_Case__r.CRM_Status_Image__c)) ,
 			CASE(CRM_Thread_Type__c,
 								&quot;CHAT&quot;, &apos;Chatsamtale&apos;,
 								&quot;Tråd&quot;)

@@ -4,13 +4,13 @@
     <description>Displays a badge of the current Status for the case</description>
     <externalId>false</externalId>
     <formula>CASE(Status,
-&apos;New&apos;, IMAGE(&apos;/resource/caseStatusOpen&apos;, &apos;Åpen&apos;, 44, 22),
-&apos;Escalated&apos;, IMAGE(&apos;/resource/caseStatusOpen&apos;, &apos;Åpen&apos;, 44, 22),
-&apos;Forwarded&apos;, IMAGE(&apos;/resource/caseStatusOpen&apos;, &apos;Åpen&apos;, 44, 22),
-&apos;On Hold&apos;, IMAGE(&apos;/resource/caseStatusAnswered&apos;, &apos;Besvart&apos;, 58, 22),
-&apos;In progress&apos;, IMAGE(&apos;/resource/caseStatusinProgress&apos;, &apos;Under Arbeid&apos;, 86, 22),
-&apos;Reserved&apos;, IMAGE(&apos;/resource/caseStatusinProgress&apos;, &apos;Under Arbeid&apos;, 86, 22),
-&apos;Closed&apos;, IMAGE(&apos;/resource/caseStatusClosed&apos;, &apos;Lukket&apos;, 53, 22),
+&apos;New&apos;, IMAGE(&apos;/resource/caseStatusOpen&apos;, &apos;Åpen&apos;, 22, 44),
+&apos;Escalated&apos;, IMAGE(&apos;/resource/caseStatusOpen&apos;, &apos;Åpen&apos;, 22, 44),
+&apos;Forwarded&apos;, IMAGE(&apos;/resource/caseStatusOpen&apos;, &apos;Åpen&apos;, 22, 44),
+&apos;On Hold&apos;, IMAGE(&apos;/resource/caseStatusAnswered&apos;, &apos;Besvart&apos;, 22, 58),
+&apos;In progress&apos;, IMAGE(&apos;/resource/caseStatusinProgress&apos;, &apos;Under Arbeid&apos;, 22, 86),
+&apos;Reserved&apos;, IMAGE(&apos;/resource/caseStatusinProgress&apos;, &apos;Under Arbeid&apos;, 22, 86),
+&apos;Closed&apos;, IMAGE(&apos;/resource/caseStatusClosed&apos;, &apos;Lukket&apos;, 22, 53),
 &apos;&apos;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Status Image</label>
