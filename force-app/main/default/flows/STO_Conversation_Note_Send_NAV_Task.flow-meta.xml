@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>55.0</apiVersion>
+    <apiVersion>54.0</apiVersion>
     <assignments>
         <description>Sets the account and API reference the NAV Task should be related to.</description>
         <name>Set_NAV_Task_Fields</name>
