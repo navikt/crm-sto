@@ -29,7 +29,7 @@
             <targetReference>Create_DONE_Event</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
-        <filterLogic>1 AND 2 AND (3 OR 4)</filterLogic>
+        <filterLogic>1 AND (2 OR 3) AND ( (4 AND 5) OR (6 AND 7) )</filterLogic>
         <filters>
             <field>CRM_Read__c</field>
             <operator>EqualTo</operator>
@@ -38,10 +38,10 @@
             </value>
         </filters>
         <filters>
-            <field>CRM_Event_Type__c</field>
+            <field>CRM_Thread_Type__c</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>INTERNAL_MESSAGE</stringValue>
+                <stringValue>STO</stringValue>
             </value>
         </filters>
         <filters>
@@ -52,10 +52,31 @@
             </value>
         </filters>
         <filters>
-            <field>CRM_Thread_Type__c</field>
+            <field>CRM_Type__c</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>STO</stringValue>
+                <stringValue>Message</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Event_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>INTERNAL_MESSAGE</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Info</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Event_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>REDACTED</stringValue>
             </value>
         </filters>
         <object>Message__c</object>
