@@ -235,6 +235,12 @@
             </value>
         </filters>
         <inputAssignments>
+            <field>CRM_Case__c</field>
+            <value>
+                <elementReference>Create_STO_Case.Case.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>CRM_Related_Object__c</field>
             <value>
                 <elementReference>Create_STO_Case.Case.Id</elementReference>
