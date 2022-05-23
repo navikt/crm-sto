@@ -85,6 +85,7 @@
         <queriedFields>CRM_API_Reference__c</queriedFields>
         <queriedFields>CRM_Theme_Group__c</queriedFields>
         <queriedFields>CRM_Theme__c</queriedFields>
+        <queriedFields>CRM_Account__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <runInMode>SystemModeWithoutSharing</runInMode>
