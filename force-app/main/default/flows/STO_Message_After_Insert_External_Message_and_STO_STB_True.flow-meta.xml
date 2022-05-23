@@ -18,7 +18,7 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Set_case_status_to_in_progress</name>
+        <name>Set_case_status_to_new</name>
         <label>Set case status to in progress</label>
         <locationX>844</locationX>
         <locationY>1008</locationY>
@@ -27,6 +27,13 @@
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>RelatedCase.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>New</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -131,7 +138,7 @@
         <locationX>580</locationX>
         <locationY>888</locationY>
         <defaultConnector>
-            <targetReference>Set_case_status_to_in_progress</targetReference>
+            <targetReference>Set_case_status_to_new</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not in Queue</defaultConnectorLabel>
         <rules>
