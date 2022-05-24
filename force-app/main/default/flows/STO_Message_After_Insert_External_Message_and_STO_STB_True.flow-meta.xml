@@ -128,6 +128,10 @@
                 <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Related_NAV_Task.Id</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
         <connector>
             <targetReference>Send_NAV_Task_On_No_Task</targetReference>
         </connector>
