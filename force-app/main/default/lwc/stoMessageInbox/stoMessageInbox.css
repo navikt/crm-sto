@@ -26,3 +26,9 @@
     width: 65%;
     margin: auto;
 }
+
+@media only screen and (max-width: 1023px) {
+    .mobil-padding {
+        padding-left: 1rem;
+    }
+}

@@ -20,7 +20,7 @@
             </div>
             <template if:true={showrecentthreads}>
                 <div class="subheader">
-                    <h2 class="typo-undertittel">Siste meldinger</h2>
+                    <h2 class="typo-undertittel mobil-padding">Siste meldinger</h2>
                 </div>
                 <template for:each={recentthreads} for:item="thread">
                     <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
@@ -28,7 +28,7 @@
             </template>
             <template if:true={showthreads}>
                 <div class="subheader">
-                    <h2 class="typo-undertittel">Tidligere meldinger</h2>
+                    <h2 class="typo-undertittel mobil-padding">Tidligere meldinger</h2>
                 </div>
                 <template for:each={threads} for:item="thread">
                     <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
