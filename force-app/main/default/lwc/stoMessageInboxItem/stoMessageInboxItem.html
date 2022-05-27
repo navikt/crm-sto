@@ -1,13 +1,15 @@
 <template>
     <a class={className} href={linkUrl} key={thread.recordId} id="a" style="padding: 1rem 1rem 1rem 0rem">
         <lightning-layout vertical-align="center" class="slds-size_1-of-1">
-            <div class="slds-is-relative slds-size_2-of-12 slds-small-size_1-of-12">
+            <div
+                class="slds-is-relative slds-size_2-of-12 slds-small-size_2-of-12 slds-medium-size_2-of-12 slds-large-size_1-of-12"
+            >
                 <svg viewBox="0 0 100 100" class="centerCircle">
                     <path
                         d="M50 50 50 50"
                         stroke-linecap="round"
-                        stroke-width="55"
-                        stroke="#f7f7f7"
+                        stroke-width="90"
+                        stroke="#F1F1F1"
                         fill="none"
                         vector-effects="non-scaling-stroke"
                     ></path>
@@ -20,7 +22,7 @@
                     style="margin: auto; width: 24px"
                 />
             </div>
-            <div class="slds-size_9-of-12 slds-small-size_10-of-12">
+            <div class="slds-size_9-of-12 slds-small-size_9-of-12 slds-medium-size_9-of-12 slds-large-size_10-of-12">
                 <p class="typo-normal blokk-xxxs">
                     <lightning-formatted-date-time
                         value={thread.latestMessageDate}

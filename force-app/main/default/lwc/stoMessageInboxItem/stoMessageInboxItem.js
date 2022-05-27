@@ -5,7 +5,7 @@ import basepath from '@salesforce/community/basePath';
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
     linkUrl;
-    dialog = navlogos + '/Send.svg';
+    dialog = navlogos + '/send.svg';
     latestmessage;
     latestText;
     objectName;
