@@ -4,8 +4,8 @@
     <assignments>
         <name>Inherit_Thread_Theme</name>
         <label>Inherit Thread Theme</label>
-        <locationX>1636</locationX>
-        <locationY>1368</locationY>
+        <locationX>1380</locationX>
+        <locationY>1464</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -20,7 +20,7 @@
     <assignments>
         <name>Set_case_status_to_new</name>
         <label>Set case status to in progress</label>
-        <locationX>844</locationX>
+        <locationX>852</locationX>
         <locationY>1008</locationY>
         <assignmentItems>
             <assignToReference>RelatedCase.CRM_Run_Case_Assignment__c</assignToReference>
@@ -43,8 +43,8 @@
     <assignments>
         <name>Set_KNA_Theme</name>
         <label>Set KNA Theme</label>
-        <locationX>1900</locationX>
-        <locationY>1488</locationY>
+        <locationX>1644</locationX>
+        <locationY>1584</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -59,8 +59,8 @@
     <assignments>
         <name>Set_New_Task_Fields</name>
         <label>Set New Task Fields</label>
-        <locationX>1768</locationX>
-        <locationY>1704</locationY>
+        <locationX>1512</locationX>
+        <locationY>1800</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Status__c</assignToReference>
             <operator>Assign</operator>
@@ -139,7 +139,7 @@
     <decisions>
         <name>Check_Case_Owner</name>
         <label>Check Case Owner</label>
-        <locationX>580</locationX>
+        <locationX>588</locationX>
         <locationY>888</locationY>
         <defaultConnector>
             <targetReference>Set_case_status_to_new</targetReference>
@@ -174,7 +174,7 @@
         <description>If this if the first message in the thread, then the case or nav task routing is handled in the thread flow</description>
         <name>Check_if_first_message</name>
         <label>Check if first message</label>
-        <locationX>563</locationX>
+        <locationX>555</locationX>
         <locationY>408</locationY>
         <defaultConnector>
             <targetReference>Get_Thread</targetReference>
@@ -196,7 +196,7 @@
     <decisions>
         <name>Check_NAV_Task</name>
         <label>Check NAV Task</label>
-        <locationX>1570</locationX>
+        <locationX>1512</locationX>
         <locationY>888</locationY>
         <defaultConnector>
             <targetReference>Get_STB_NAV_Unit</targetReference>
@@ -219,6 +219,9 @@
                     <stringValue>FERDIGSTILT</stringValue>
                 </rightValue>
             </conditions>
+            <connector>
+                <targetReference>Get_STB_NAV_Unit</targetReference>
+            </connector>
             <label>Open NAV Task</label>
         </rules>
     </decisions>
@@ -226,7 +229,7 @@
         <description>If the Assignee NAV Unit is not set. The thread is to be handled by NKS and should always have a related case</description>
         <name>Check_Routing</name>
         <label>Check Routing</label>
-        <locationX>1075</locationX>
+        <locationX>1050</locationX>
         <locationY>648</locationY>
         <defaultConnector>
             <targetReference>Get_Related_NAV_Task</targetReference>
@@ -252,8 +255,8 @@
         <description>Verify if the thread theme has been set and the task should inherit this category</description>
         <name>Check_Thread_Theme</name>
         <label>Check Thread Theme</label>
-        <locationX>1768</locationX>
-        <locationY>1248</locationY>
+        <locationX>1512</locationX>
+        <locationY>1344</locationY>
         <defaultConnector>
             <targetReference>Get_Kontakt_NAV_Theme</targetReference>
         </defaultConnector>
@@ -298,7 +301,7 @@
     <recordCreates>
         <name>Create_Application_Log</name>
         <label>Create Application Log</label>
-        <locationX>1108</locationX>
+        <locationX>1116</locationX>
         <locationY>1248</locationY>
         <inputAssignments>
             <field>Application_Domain__c</field>
@@ -342,7 +345,7 @@
     <recordLookups>
         <name>Get_case</name>
         <label>Get case</label>
-        <locationX>580</locationX>
+        <locationX>588</locationX>
         <locationY>768</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -366,7 +369,7 @@
         <description>Run a query to get the first message in the thread</description>
         <name>Get_First_Message</name>
         <label>Get First Message</label>
-        <locationX>563</locationX>
+        <locationX>555</locationX>
         <locationY>288</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -390,8 +393,8 @@
     <recordLookups>
         <name>Get_Kontakt_NAV_Theme</name>
         <label>Get Kontakt NAV Theme</label>
-        <locationX>1900</locationX>
-        <locationY>1368</locationY>
+        <locationX>1644</locationX>
+        <locationY>1464</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_KNA_Theme</targetReference>
@@ -420,7 +423,7 @@
         <description>Check if the thread is related to a NAV task as process object</description>
         <name>Get_Related_NAV_Task</name>
         <label>Get Related NAV Task</label>
-        <locationX>1570</locationX>
+        <locationX>1512</locationX>
         <locationY>768</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -452,8 +455,8 @@
         <description>Get the reference to the NAV unit who initiated the dialogue</description>
         <name>Get_STB_NAV_Unit</name>
         <label>Get STB NAV Unit</label>
-        <locationX>1768</locationX>
-        <locationY>1008</locationY>
+        <locationX>1512</locationX>
+        <locationY>1104</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Vurder_Svar_Task_Type</targetReference>
@@ -474,7 +477,7 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>1075</locationX>
+        <locationX>1050</locationX>
         <locationY>528</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -495,8 +498,8 @@
     <recordLookups>
         <name>Get_Vurder_Svar_Task_Type</name>
         <label>Get Vurder Svar Task Type</label>
-        <locationX>1768</locationX>
-        <locationY>1128</locationY>
+        <locationX>1512</locationX>
+        <locationY>1224</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Thread_Theme</targetReference>
@@ -524,7 +527,7 @@
     <recordUpdates>
         <name>Update_Related_Case</name>
         <label>Update Related Case</label>
-        <locationX>844</locationX>
+        <locationX>852</locationX>
         <locationY>1128</locationY>
         <faultConnector>
             <targetReference>Create_Application_Log</targetReference>
@@ -535,8 +538,8 @@
         <description>Updated the related object when the new nav task is generated</description>
         <name>Update_Thread_Reference_On_No_Task</name>
         <label>Update Thread Reference</label>
-        <locationX>1768</locationX>
-        <locationY>1944</locationY>
+        <locationX>1512</locationX>
+        <locationY>2040</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -592,8 +595,8 @@
     <subflows>
         <name>Send_NAV_Task_On_No_Task</name>
         <label>Send NAV Task</label>
-        <locationX>1768</locationX>
-        <locationY>1824</locationY>
+        <locationX>1512</locationX>
+        <locationY>1920</locationY>
         <connector>
             <targetReference>Update_Thread_Reference_On_No_Task</targetReference>
         </connector>
