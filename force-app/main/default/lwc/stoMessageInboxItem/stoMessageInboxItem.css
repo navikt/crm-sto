@@ -37,4 +37,9 @@
     right: 0;
     bottom: 0;
     margin: auto;
+    border-radius: 100%;
+    background-color: #f1f1f1;
+    width: 100%;
+    max-width: 48px;
+    aspect-ratio: 1 / 1;
 }
