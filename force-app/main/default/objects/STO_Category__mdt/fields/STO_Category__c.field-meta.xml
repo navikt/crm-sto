@@ -41,6 +41,11 @@
                 <label>Pensjon</label>
             </value>
             <value>
+                <fullName>Pleiepenger</fullName>
+                <default>false</default>
+                <label>Pleiepenger</label>
+            </value>
+            <value>
                 <fullName>Hjelpemidler</fullName>
                 <default>false</default>
                 <label>Hjelpemidler</label>
