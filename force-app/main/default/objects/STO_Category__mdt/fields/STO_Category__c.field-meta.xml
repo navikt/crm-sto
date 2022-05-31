@@ -40,6 +40,11 @@
                 <default>false</default>
                 <label>Pensjon</label>
             </value>
+            <value>
+                <fullName>Pleiepenger</fullName>
+                <default>false</default>
+                <label>Pleiepenger</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

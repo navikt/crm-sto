@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>STO_Category__c</field>
-        <value xsi:type="xsd:string">Arbeid</value>
+        <value xsi:type="xsd:string">Internasjonal</value>
     </values>
     <values>
         <field>STO_Description__c</field>
@@ -17,5 +17,9 @@
     <values>
         <field>STO_Sort_Order__c</field>
         <value xsi:type="xsd:double">8.0</value>
+    </values>
+    <values>
+        <field>STO_Theme_Group__c</field>
+        <value xsi:type="xsd:string">OVRG</value>
     </values>
 </CustomMetadata>

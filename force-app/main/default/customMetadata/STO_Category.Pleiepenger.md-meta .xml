@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>Pensjonist</label>
+    <label>Syk</label>
     <protected>false</protected>
     <values>
         <field>STO_Category__c</field>
-        <value xsi:type="xsd:string">Pensjon</value>
+        <value xsi:type="xsd:string">Familie</value>
     </values>
     <values>
         <field>STO_Description__c</field>
-        <value xsi:type="xsd:string">Alderspensjon, barnepensjon, etterlattepensjon, supplerende stønad, krigspensjon, AFP fra Statens pensjonskasse mellom 62 og 65 år, AFP i privat sektor.</value>
+        <value xsi:type="xsd:string">Omsorgspenger- Pleiepenger og opplæringspenger</value>
     </values>
     <values>
         <field>STO_Language__c</field>
@@ -16,10 +16,10 @@
     </values>
     <values>
         <field>STO_Sort_Order__c</field>
-        <value xsi:type="xsd:double">6.0</value>
+        <value xsi:type="xsd:double">10.0</value>
     </values>
     <values>
         <field>STO_Theme_Group__c</field>
-        <value xsi:type="xsd:string">PENS</value>
+        <value xsi:type="xsd:string">FMLI</value>
     </values>
 </CustomMetadata>
