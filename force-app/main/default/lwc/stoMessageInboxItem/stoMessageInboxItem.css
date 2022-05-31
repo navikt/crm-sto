@@ -1,26 +1,45 @@
-.lenkepanel {
-    width: 100%;
-}
 .typo-undertittel {
-    width: inherit;
 }
 .dialog {
-    width: 100%;
     margin-bottom: 3px !important;
 }
 .unread {
-    border-style: hidden hidden hidden solid; 
-    border-width: .5em;
-    border-color: #0067C5;
+    border-style: hidden hidden hidden solid;
+    border-width: 0.5em;
+    border-color: #0067c5;
 }
 .read {
-    border-style: hidden hidden hidden solid; 
-    border-width: .5em;
+    border-style: hidden hidden hidden solid;
+    border-width: 0.5em;
     border-color: #ffffff;
 }
 .greenfont {
-    color: #06893A;
+    color: #06893a;
 }
 .iconclass:hover .iconcolor {
     filter: invert(26%) sepia(90%) saturate(1799%) hue-rotate(191deg) brightness(92%) contrast(106%);
+}
+.messagebox {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.centerCircle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border-radius: 100%;
+    background-color: #f1f1f1;
+    width: 100%;
+    max-width: 48px;
+    aspect-ratio: 1 / 1;
 }

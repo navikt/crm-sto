@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>53.0</apiVersion>
+    <assignments>
+        <name>Set_Case_Closed</name>
+        <label>Set Case Closed</label>
+        <locationX>50</locationX>
+        <locationY>695</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Case.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Case</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <description>Automatically close the case if still open</description>
+        <name>Check_Case_Status</name>
+        <label>Check Case Status</label>
+        <locationX>182</locationX>
+        <locationY>575</locationY>
+        <defaultConnectorLabel>Case Closed</defaultConnectorLabel>
+        <rules>
+            <name>Case_Open</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case.IsClosed</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Case_Closed</targetReference>
+            </connector>
+            <label>Case Open</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Related_Object_Null_Check</name>
+        <label>Related Object Null Check</label>
+        <locationX>380</locationX>
+        <locationY>335</locationY>
+        <defaultConnectorLabel>No Relation</defaultConnectorLabel>
+        <rules>
+            <name>Has_Related_Object</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.CRM_Related_Object__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Case</targetReference>
+            </connector>
+            <label>Has Related Object</label>
+        </rules>
+    </decisions>
+    <interviewLabel>Thread - After Update - On Set Active To False {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Thread - After Update - On Set Active To False</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Case</name>
+        <label>Get Case</label>
+        <locationX>182</locationX>
+        <locationY>455</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Case_Status</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.CRM_Related_Object__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Case</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>IsClosed</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Case</name>
+        <label>Update Case</label>
+        <locationX>50</locationX>
+        <locationY>815</locationY>
+        <inputReference>Get_Case</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>254</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Related_Object_Null_Check</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_isActive__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Thread_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </filters>
+        <object>Thread__c</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

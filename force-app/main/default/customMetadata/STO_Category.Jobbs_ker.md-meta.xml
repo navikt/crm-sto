@@ -7,16 +7,8 @@
         <value xsi:type="xsd:string">Arbeid</value>
     </values>
     <values>
-        <field>STO_Description__c</field>
-        <value xsi:type="xsd:string">Dagpenger, lønnskompensasjon for permitterte, arbeidsavklaringspenger, tiltakspenger, melde deg som jobbsøker, CV, kompensasjon til selvstendig næringsdrivende og frilansere.</value>
-    </values>
-    <values>
-        <field>STO_Language__c</field>
-        <value xsi:type="xsd:string">Norwegian</value>
-    </values>
-    <values>
-        <field>STO_Sort_Order__c</field>
-        <value xsi:type="xsd:double">1.0</value>
+        <field>STO_Theme_Group__c</field>
+        <value xsi:type="xsd:string">ARBD</value>
     </values>
     <values>
         <field>STO_Theme_Group__c</field>

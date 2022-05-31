@@ -2,13 +2,11 @@
     text-align: center;
     width: 100%;
     margin-bottom: 1em;
-   
 }
 .text-center {
     text-align: center;
 }
 .inputarea {
-    margin-top: 2em;
     margin-bottom: 2em;
 }
 .ficon {
@@ -33,25 +31,60 @@
     top: 1rem;
     right: 1rem;
 }
-.sendbutton{
+.sendbutton {
     margin-top: 1em;
+    justify-content: center;
 }
-.logo{
-    margin:1em;
+.logo {
+    margin: 1em;
 }
-.typo-undertittel{
-    color: #0067C5;
+.typo-undertittel_farge {
+    color: #0067c5;
     margin-bottom: 2em;
 }
-.descholder{
+.descholder {
     margin-top: 1em;
 }
-.skjemaelement{
+.skjemaelement {
     margin-top: 1em;
 }
 :host {
     --sds-c-textarea-sizing-min-height: 150px;
- }
- .decorator-wrapper{
-     margin-bottom: 4em;
- }
+}
+.decorator-wrapper {
+    margin-bottom: 4em;
+}
+
+.knapp-width {
+    justify-content: center;
+    width: 14em;
+}
+
+.list {
+    list-style-type: disc;
+}
+
+.listItem {
+    width: fit-content;
+    margin: auto;
+}
+
+.feilBoks {
+    border: var(--navds-global-color-nav-red) solid 3px;
+}
+
+.checkbox {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    justify-items: center;
+}
+
+.checkbox c-community-checkbox {
+    grid-column: 2;
+}
+
+.vilkar-link {
+    align-self: end;
+    justify-self: start;
+    border: 0px;
+}

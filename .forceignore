@@ -2,6 +2,7 @@
 # profiles
 # ----------------------------------------------------------------------------------------
 **/profiles/*
+**/fieldRestrictionRules/*
 
 
 # NOTE!! Do NOT use **/ before
@@ -23,6 +24,10 @@
 **/objects/Account/fields/YearStarted.field-meta.xml
 **/objects/Contact/fields/CleanStatus.field-meta.xml
 **/objects/Account/fields/AccountSource.field-meta.xml
+
+# Queues and assignment rules
+**/force-app/main/default/queues
+**/force-app/main/default/assignmentRules
 
 
 # flexipages
@@ -67,6 +72,9 @@
 **/workflows/CustomOpportunity__c*
 **/workflows/Contract__c*
 **/layouts/CustomOpportunity__c-Custom Opportunity Layout.layout-meta.xml
+
+## Handling entitlement processes
+sto_process*
 
 
 # # community classes

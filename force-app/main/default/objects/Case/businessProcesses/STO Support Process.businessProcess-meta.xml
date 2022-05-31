@@ -12,11 +12,23 @@
         <default>false</default>
     </values>
     <values>
+        <fullName>Forwarded</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>In progress</fullName>
+        <default>false</default>
+    </values>
+    <values>
         <fullName>New</fullName>
         <default>true</default>
     </values>
     <values>
         <fullName>On Hold</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Reserved</fullName>
         <default>false</default>
     </values>
 </BusinessProcess>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <assignments>
+        <description>Sets the account and API reference the NAV Task should be related to.</description>
+        <name>Set_NAV_Task_Fields</name>
+        <label>Set NAV Task Fields</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <assignmentItems>
+            <assignToReference>NAV_TASK.CRM_Account__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Conversation_Note.CRM_Account__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NAV_TASK.NKS_Henvendelse_BehandlingsId__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Conversation_Note.CRM_API_Reference__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NAV_TASK.NKS_Theme_Group__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Conversation_Note.CRM_Theme_Group__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NAV_TASK.NKS_Theme__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Conversation_Note.CRM_Theme__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>NAV_Task_Input_Screen</targetReference>
+        </connector>
+    </assignments>
+    <description>Screenflow to create a new NAV Task related to a conversation note.</description>
+    <interviewLabel>Screenflow to create a new NAV Task related to a thread. {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Conversation Note Send NAV Task</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordLookups>
+        <description>Query thread fields to be used for NAV Task</description>
+        <name>Get_Conversation_Note</name>
+        <label>Get Conversation Note</label>
+        <locationX>176</locationX>
+        <locationY>158</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Set_NAV_Task_Fields</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Conversation_Note__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>CRM_API_Reference__c</queriedFields>
+        <queriedFields>CRM_Theme_Group__c</queriedFields>
+        <queriedFields>CRM_Theme__c</queriedFields>
+        <queriedFields>CRM_Account__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <runInMode>SystemModeWithoutSharing</runInMode>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Conversation_Note</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <subflows>
+        <description>Navigates to the default input screen for NAV Task.</description>
+        <name>NAV_Task_Input_Screen</name>
+        <label>NAV Task Input Screen</label>
+        <locationX>176</locationX>
+        <locationY>398</locationY>
+        <flowName>CRM_Send_New_NAV_Task_Screenflow</flowName>
+        <inputAssignments>
+            <name>NavTask</name>
+            <value>
+                <elementReference>NAV_TASK</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
+    <variables>
+        <name>NAV_TASK</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>NavTask__c</objectType>
+    </variables>
+    <variables>
+        <description>ID of the conversation note record triggering the screenflow</description>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

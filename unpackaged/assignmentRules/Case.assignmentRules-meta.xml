@@ -4,6 +4,15 @@
         <fullName>STO Allocation</fullName>
         <active>true</active>
         <ruleEntry>
+            <assignedTo>STO_Hjelpemidler</assignedTo>
+            <assignedToType>Queue</assignedToType>
+            <criteriaItems>
+                <field>Case.STO_Category__c</field>
+                <operation>equals</operation>
+                <value>Hjelpemidler</value>
+            </criteriaItems>
+        </ruleEntry>
+        <ruleEntry>
             <assignedTo>STO_Pleiepenger</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>

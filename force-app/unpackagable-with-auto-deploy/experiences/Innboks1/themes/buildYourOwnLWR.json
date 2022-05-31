@@ -31,10 +31,10 @@
                                     "components": [
                                         {
                                             "componentAttributes": {
-                                                "NAVarea": "Privatperson"
+                                                "navareapicklist": "Privatperson"
                                             },
                                             "componentName": "c:globalCommunityHeader",
-                                            "id": "73600e05-0ef7-4e45-a024-9aefcfd07e61",
+                                            "id": "a015c8a1-2919-49fe-9f27-629adc8e66f3",
                                             "renditionMap": {},
                                             "type": "component"
                                         }
@@ -70,10 +70,10 @@
                                     "components": [
                                         {
                                             "componentAttributes": {
-                                                "NAVarea": "Privatperson"
+                                                "navareapicklist": "Privatperson"
                                             },
                                             "componentName": "c:globalCommunityFooter",
-                                            "id": "85ea6f9f-c3a1-4cf4-8e5a-c1c68aeb3db9",
+                                            "id": "96d046ac-30e1-445c-aa93-9e68b244c43a",
                                             "renditionMap": {},
                                             "type": "component"
                                         }
@@ -104,6 +104,17 @@
             "label": "Service Not Available Theme Layout",
             "regions": [
                 {
+                    "components": [
+                        {
+                            "componentAttributes": {
+                                "richTextValue": "<p>Use this HTML Editor to add your own markup.</p>"
+                            },
+                            "componentName": "community_builder:htmlEditor",
+                            "id": "f7baed55-cc5c-4f75-8b3b-f0bf252e92f2",
+                            "renditionMap": {},
+                            "type": "component"
+                        }
+                    ],
                     "id": "408dc540-1440-4527-8390-6db83b6148c8",
                     "regionName": "header",
                     "type": "region"
