@@ -1,5 +1,13 @@
 <template>
-    <c-crm-messaging-message-component record-id={recordId} single-thread={singleThread} card-title={cardTitle}>
+    <c-crm-messaging-message-component
+        record-id={threadReference}
+        single-thread={singleThread}
+        card-title={cardTitle}
+        text-template={textTemplate}
+        show-close={showClose}
+        english-text-template={englishTextTemplate}
+        onenglisheventtwo={handleEnglishEventTwo}
+    >
         <c-crm-sto-messaging-toolbar slot="toolbar" object-api-name={objectApiName}></c-crm-sto-messaging-toolbar>
     </c-crm-messaging-message-component>
 </template>

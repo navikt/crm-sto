@@ -2,17 +2,19 @@
     <aura:attribute name="showPanel" type="Boolean" default="false"></aura:attribute>
     <aura:attribute name="singleThread" type="Boolean" default="true"></aura:attribute>
     <aura:attribute name="cardTitle" type="String"></aura:attribute>
+    <aura:attribute name="showClose" type="Boolean" default="false"></aura:attribute>
 
     <c:crmStoMessaging
         recordId="{!v.recordId}"
         objectApiName="{!v.sObjectName}"
         singleThread="{!v.singleThread}"
         cardTitle="{!v.cardTitle}"
+        showClose="{!v.showClose}"
         onsto_toolbaraction="{!c.handleToolbarAction}"
     ></c:crmStoMessaging>
 
     <aura:if isTrue="{!v.showPanel}">
-        <div>
+        <div onkeyup="{!c.handleModalKey}">
             <section
                 role="dialog"
                 tabindex="-1"
@@ -23,9 +25,11 @@
             >
                 <div class="slds-modal__container">
                     <header class="slds-is-relative">
+                        <div tabindex="0" class="firstfocusable" aura:id="firstfocusable"></div>
                         <button
                             class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
                             title="Close"
+                            aura:id="focusElement"
                             onclick="{!c.closeModal}"
                         >
                             <lightning:icon iconName="utility:close" variant="inverse" size="small"> </lightning:icon>
@@ -42,6 +46,7 @@
                 </div>
             </section>
             <div class="slds-backdrop slds-backdrop_open"></div>
+            <div tabindex="0" class="lastfocusable"></div>
         </div>
     </aura:if>
 </aura:component>

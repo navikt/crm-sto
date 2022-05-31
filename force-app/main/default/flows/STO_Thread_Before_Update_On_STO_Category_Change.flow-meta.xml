@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>53.0</apiVersion>
+    <assignments>
+        <name>Blank_Theme</name>
+        <label>Blank Theme</label>
+        <locationX>50</locationX>
+        <locationY>671</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CRM_Theme__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <connector>
+            <targetReference>Set_Theme_Group</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Update the theme group lookup for the thread when category is changed.</description>
+        <name>Set_Theme_Group</name>
+        <label>Set Theme Group</label>
+        <locationX>182</locationX>
+        <locationY>887</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CRM_Theme_Group__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>THEME_GROUP_ID</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <description>Verify if the category change actually changed the theme group or not</description>
+        <name>Check_Theme_Group</name>
+        <label>Check Theme Group</label>
+        <locationX>182</locationX>
+        <locationY>551</locationY>
+        <defaultConnector>
+            <targetReference>Set_Theme_Group</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Same Theme Group</defaultConnectorLabel>
+        <rules>
+            <name>Changed_Theme_Group</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.CRM_Theme_Group__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>THEME_GROUP_ID</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Blank_Theme</targetReference>
+            </connector>
+            <label>Changed Theme Group</label>
+        </rules>
+    </decisions>
+    <interviewLabel>Thread - After Update - On STO Category Change {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Thread - Before Update - On STO Category Change</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <description>Query the STO Category custom metadata to get the correct theme group mapping</description>
+        <name>Get_STO_Category_Mapping</name>
+        <label>Get STO Category Mapping</label>
+        <locationX>182</locationX>
+        <locationY>311</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Theme_Group_ID</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>STO_Category__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.STO_Category__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>STO_Category__mdt</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Theme_Group_ID</name>
+        <label>Get Theme Group ID</label>
+        <locationX>182</locationX>
+        <locationY>431</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Theme_Group</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Code_Set__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Temagrupper</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Code__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_STO_Category_Mapping.STO_Theme_Group__c</elementReference>
+            </value>
+        </filters>
+        <object>Common_Code__c</object>
+        <outputAssignments>
+            <assignToReference>THEME_GROUP_ID</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
+    </recordLookups>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_STO_Category_Mapping</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>STO_Category__c</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>Thread__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>THEME_GROUP_ID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

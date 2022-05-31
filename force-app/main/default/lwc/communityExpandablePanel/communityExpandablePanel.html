@@ -1,18 +1,28 @@
 <template>
-    <button onclick={togglevisible} label={header} aria-expanded={showpanel} class="lenkepanel lenkepanel--border hoved-panel">
-        <lightning-layout>
-            <lightning-layout-item size=12>
-                <div class="link-header">
-                    <span class="typo-undertittel lenkepanel__heading slds-float_left">{header}</span>
-                    <span class="nav-frontend-chevron chevronboks chevron--ned slds-float_right"></span>
+    <div class="navds-accordion slds-var-m-bottom_large">
+        <div class="navds-accordion__item">
+            <button
+                onclick={togglevisible}
+                label={header}
+                aria-expanded={showpanel}
+                class="navds-accordion__header navds-heading navds-heading--small"
+            >
+                <div class="full-width">
+                    <span class="slds-float_left">{header}</span>
+                    <div>
+                        <span class={chevronClass}></span>
+                    </div>
                 </div>
-            </lightning-layout-item>
-        </lightning-layout>
-       <template if:true={showpanel}>
-        <div class="expandable-body">
-          <p class="typo-normal bodytext">
-            <lightning-formatted-rich-text value={body}></lightning-formatted-rich-text>
-           </p>
+            </button>
+            <div role="region" class={dropdownClass}>
+                <div class="expand-animation ReactCollapse--collapse" aria-hidden={inverseShowpanel}>
+                    <div class="ReactCollapse--content">
+                        <div class="navds-accordion__content lenkepanel__heading" padding-top="large">
+                            <lightning-formatted-rich-text value={body}></lightning-formatted-rich-text>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </template></button>
+    </div>
 </template>

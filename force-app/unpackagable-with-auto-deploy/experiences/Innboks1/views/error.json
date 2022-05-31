@@ -19,10 +19,18 @@
                             "components": [
                                 {
                                     "componentAttributes": {
-                                        "richTextValue": "<p style=\"text-align: center;\">Invalid Page</p>"
+                                        "richTextValue": "<p community_builder-richtexteditor_richtexteditor=\"\" style=\"text-align: center;\">Invalid Page</p>"
                                     },
                                     "componentName": "community_builder:richTextEditor",
                                     "id": "ac3cb944-6687-4b70-a971-1416d436afb9",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:communityRedirectError",
+                                    "id": "1acbe458-e352-40e0-9c98-6096046d687d",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"

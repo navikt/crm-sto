@@ -3,14 +3,37 @@
     margin-bottom: 3rem;
 }
 
-.panel {
+.panel-custom {
     background-color: #fff;
     display: block;
     border-radius: 4px;
-    padding: 1rem; 
+    padding: 2.5rem;
+    padding-bottom: 0px;
     font-size: 1.125rem;
 }
-.wrapper{
+
+.wrapper {
     margin-top: 3rem;
     margin-bottom: 3rem;
+}
+
+.linebreaks {
+    white-space: pre-wrap;
+}
+
+.inline-block {
+    display: block;
+    padding-bottom: 0.5rem;
+}
+
+.grey-border {
+    border-color: #b0b0b0;
+}
+
+.thick {
+    font-weight: bold;
+}
+
+.big-gap {
+    padding-bottom: 4.5rem;
 }

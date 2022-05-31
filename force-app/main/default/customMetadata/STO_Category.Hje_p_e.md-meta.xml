@@ -7,16 +7,8 @@
         <value xsi:type="xsd:string">Hjelpemidler</value>
     </values>
     <values>
-        <field>STO_Description__c</field>
-        <value xsi:type="xsd:string">Tekniske hjelpemidler, ortopediske hjelpemidler, bilstønad, tolk, tilrettelegging og tilpasning.</value>
-    </values>
-    <values>
-        <field>STO_Language__c</field>
-        <value xsi:type="xsd:string">Norwegian</value>
-    </values>
-    <values>
-        <field>STO_Sort_Order__c</field>
-        <value xsi:type="xsd:double">8.0</value>
+        <field>STO_Theme_Group__c</field>
+        <value xsi:type="xsd:string">HJLPM</value>
     </values>
     <values>
         <field>STO_Theme_Group__c</field>

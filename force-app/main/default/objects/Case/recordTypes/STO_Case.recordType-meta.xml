@@ -110,6 +110,10 @@
             <fullName>Ufør</fullName>
             <default>false</default>
         </values>
+        <values>
+            <fullName>Hjelpemidler</fullName>
+            <default>false</default>
+        </values>
     </picklistValues>
     <picklistValues>
         <picklist>Type</picklist>

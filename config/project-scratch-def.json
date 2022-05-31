@@ -15,6 +15,7 @@
         "ProcessBuilder",
         "API",
         "ServiceCloud",
+        "Knowledge",
         "LiveAgent",
         "LightningServiceConsole",
         "ContactsToMultipleAccounts",
@@ -38,8 +39,16 @@
         "languageSettings": {
             "enableTranslationWorkbench": true
         },
+        "knowledgeSettings": {
+            "enableKnowledge": true,
+            "enableLightningKnowledge": true
+        },
         "nameSettings": {
             "enableMiddleName": true
+        },
+        "entitlementSettings": {
+            "enableEntitlements": true,
+            "enableEntitlementVersioning": true
         },
         "fieldServiceSettings": {
             "fieldServiceOrgPref": true,
@@ -58,7 +67,8 @@
         },
         "omniChannelSettings": {
             "enableOmniChannel": true,
-            "enableOmniSkillsRouting": true
+            "enableOmniSkillsRouting": true,
+            "enableOmniSecondaryRoutingPriority": true
         }
     }
 }

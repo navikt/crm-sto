@@ -6,16 +6,16 @@
         <name>Thread_Close_Check</name>
         <label>Thread Close Check</label>
         <locationX>374</locationX>
-        <locationY>288</locationY>
+        <locationY>408</locationY>
         <defaultConnectorLabel>Has New Messages</defaultConnectorLabel>
         <rules>
             <name>Close_Thread</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.CRM_Thread__r.CRM_Latest_Message_Datetime__c</leftValueReference>
+                <leftValueReference>Get_Last_Message.Id</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>$Record.CreatedDate</elementReference>
+                    <elementReference>$Record.Id</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -45,11 +45,43 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <description>Query the latest message in the thread</description>
+        <name>Get_Last_Message</name>
+        <label>Get Last Message</label>
+        <locationX>374</locationX>
+        <locationY>288</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Thread_Close_Check</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Thread__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.CRM_Thread__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Message</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Message__c</object>
+        <queriedFields>Id</queriedFields>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>Update_Close_Thread</name>
         <label>Close Thread</label>
         <locationX>242</locationX>
-        <locationY>408</locationY>
+        <locationY>528</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -69,7 +101,7 @@
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
-        <filterLogic>1 AND (2 OR 3)</filterLogic>
+        <filterLogic>1 AND (2 OR 3) AND 4 AND 5</filterLogic>
         <filters>
             <field>CRM_External_Message__c</field>
             <operator>EqualTo</operator>
@@ -91,12 +123,26 @@
                 <stringValue>STB</stringValue>
             </value>
         </filters>
+        <filters>
+            <field>CRM_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Message</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_HenvendelseId__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
         <object>Message__c</object>
         <recordTriggerType>Create</recordTriggerType>
         <scheduledPaths>
             <name>Schedule_Thread_Close</name>
             <connector>
-                <targetReference>Thread_Close_Check</targetReference>
+                <targetReference>Get_Last_Message</targetReference>
             </connector>
             <label>Schedule Thread Close</label>
             <offsetNumber>7</offsetNumber>

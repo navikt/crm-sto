@@ -31,7 +31,7 @@
             <assignToReference>Case.Origin</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Web</stringValue>
+                <stringValue>STO</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -39,6 +39,34 @@
             <operator>Assign</operator>
             <value>
                 <elementReference>Thread.STO_Category__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Case.CRM_Person_Confidentiality__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Thread.CRM_Account__r.CRM_Person__r.INT_Confidential__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Case.CRM_Person_Is_NAV_Employee__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Thread.CRM_Account__r.CRM_Person__r.INT_IsNavEmployee__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Case.CRM_Run_Case_Assignment__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Case.NKS_Henvendelse_BehandlingsId__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Thread.CRM_API_Reference__c</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -68,10 +96,63 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordCreates>
+        <name>Create_Application_Log</name>
+        <label>Create Application Log</label>
+        <locationX>440</locationX>
+        <locationY>518</locationY>
+        <inputAssignments>
+            <field>Application_Domain__c</field>
+            <value>
+                <stringValue>NKS</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Category__c</field>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Level__c</field>
+            <value>
+                <stringValue>Critical</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Message__c</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_ID__c</field>
+            <value>
+                <elementReference>Thread.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_Info__c</field>
+            <value>
+                <stringValue>Thread__c</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Source_Class__c</field>
+            <value>
+                <stringValue>Thread - Subflow - Create STO Case</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Application_Log__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
         <name>Create_Case</name>
         <label>Create Case</label>
         <locationX>176</locationX>
         <locationY>398</locationY>
+        <faultConnector>
+            <targetReference>Create_Application_Log</targetReference>
+        </faultConnector>
         <inputReference>Case</inputReference>
     </recordCreates>
     <recordLookups>

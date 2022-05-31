@@ -1,8 +1,5 @@
 public with sharing class stoHelperClass {
-    private static final String STO_CASE_RECORD_TYPE = Schema.SObjectType.Case.getRecordTypeInfosByDeveloperName()
-        .get('STO_Case')
-        .getRecordTypeId();
-    private static final LoggerUtility logger = new LoggerUtility('Skriv til oss');
+    private static final LoggerUtility logger = new LoggerUtility('STO');
 
     private static Map<String, Id> commonCodeMap {
         get {
@@ -36,12 +33,7 @@ public with sharing class stoHelperClass {
             lang = 'English';
         }
 
-        return [
-            SELECT Id, Label, STO_Description__c, STO_Sort_Order__c, STO_Category__c
-            FROM STO_Category__mdt
-            WHERE STO_Language__c = :lang
-            ORDER BY STO_Sort_Order__c ASC
-        ];
+        return [SELECT Id, Label, STO_Category__c FROM STO_Category__mdt ORDER BY Id];
     }
     /**
      * Method to create case, thread and message when a user submits a write to us case
@@ -49,7 +41,7 @@ public with sharing class stoHelperClass {
      * @date 08.06.21
      */
     @AuraEnabled
-    public static Id createRequest(String theme, String msgText) {
+    public static Thread__c createRequest(String theme, String msgText) {
         String relatedObjId;
         Thread__c thread;
 
@@ -58,7 +50,7 @@ public with sharing class stoHelperClass {
         thread = createThread(null, theme, personUser);
         createMessage(thread, msgText, personUser.ContactId);
 
-        return thread.Id;
+        return thread;
     }
 
     private static Thread__c createThread(String relatedObjId, String theme, User personUser) {
@@ -76,13 +68,13 @@ public with sharing class stoHelperClass {
         thread.CRM_Related_Object__c = relatedObjId;
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
-        thread.Name = 'Skriv til oss - ' + theme;
+        thread.Name = 'Skriv til oss';
         thread.CRM_Thread_Type__c = 'STO';
         thread.STO_Category__c = theme;
         try {
             insert thread;
         } catch (DmlException e) {
-            logger.exception(e);
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
         return thread;
@@ -93,11 +85,12 @@ public with sharing class stoHelperClass {
         msg.CRM_Message_Text__c = msgText;
         msg.CRM_From_Contact__c = contactId;
         msg.CRM_Thread__c = thread.Id;
+        msg.CRM_Read__c = true;
+        msg.CRM_Read_Datetime__c = DateTime.now();
         try {
             insert msg;
         } catch (DmlException e) {
-            LoggerUtility logger = new LoggerUtility('Skriv til oss');
-            logger.exception(e);
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
     }
@@ -116,5 +109,20 @@ public with sharing class stoHelperClass {
             WHERE STO_Category__c = :category
         ];
         return news;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Id getOpenThread(String category) {
+        List<Thread__c> openThreads = [
+            SELECT Id
+            FROM Thread__c
+            WHERE CRM_Is_Closed__C = FALSE AND CRM_Thread_Type__c IN ('STO', 'STB') AND STO_Category__c = :category
+            ORDER BY CRM_Latest_Message_Datetime__c DESC
+            LIMIT 1
+        ];
+        if (openThreads.size() > 0) {
+            return openThreads[0].Id;
+        }
+        return null;
     }
 }

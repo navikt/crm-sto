@@ -13,6 +13,16 @@
         {
             "attributes": {
                 "type": "Common_Code__c",
+                "referenceId": "VURSVRref"
+            },
+            "Name": "Vurder svar",
+            "CRM_Code__c": "VUR_SVAR",
+            "CRM_Active__c": true,
+            "CRM_Code_Set__c": "Oppgavetyper"
+        },
+        {
+            "attributes": {
+                "type": "Common_Code__c",
                 "referenceId": "BEHHENVRef"
             },
             "Name": "Behandle henvendelse",

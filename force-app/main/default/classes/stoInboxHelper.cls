@@ -1,89 +1,176 @@
-public with sharing class stoInboxHelper {    
-    
-    //TODO: Use custom labels 
+public with sharing class stoInboxHelper {
+    //TODO: Use custom labels
 
     @AuraEnabled(cacheable=true)
     public static List<thread> getThreads() {
-        List<thread> inboxlist = new List <thread>(); 
+        List<thread> inboxlist = new List<thread>();
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c  
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Number_of_unread_Messages__c,
+                CRM_Latest_Message_Datetime__c,
+                CRM_Closed_Date__c,
+                STO_ExternalName__c,
+                CRM_Is_Closed__c,
+                CRM_Thread_Type__c,
+                CRM_Related_Object__c,
+                Name,
+                (
+                    SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
+                    FROM Messages__r
+                    WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
+                    ORDER BY CRM_Sent_Datetime_Formula__c DESC
+                    LIMIT 1
+                )
             FROM Thread__c
-            WHERE (CRM_Number_of_unread_Messages__c = 0 AND CRM_Closed_Date__c != null )
+            WHERE
+                CRM_Number_of_unread_Messages__c = 0
+                AND CRM_Is_Closed__C = TRUE
+                AND (CRM_Thread_Type__c = 'STO'
+                OR CRM_Thread_Type__c = 'STB'
+                OR CRM_Thread_Type__c = 'CHAT')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
-        for(Thread__c t : threadList){
-            thread i = new thread(); 
-            i.name = t.STO_ExternalName__c; 
-            i.recordId = t.Id; 
-            i.lastModifiedDate = t.LastModifiedDate; 
-            i.closeDate = t.CRM_Closed_Date__c; 
-            i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
-            i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
-            i.objectName = 'skriv-til-oss'; 
-            i.status = 'Lukket'; 
-            if(i.closeDate == null) i.status = 'Åpen'; 
-            inboxlist.add(i);  
+        for (Thread__c t : threadList) {
+            if (t.Messages__r != null && t.Messages__r.size() > 0) {
+                thread i = new thread();
+                message m = new message();
+                i.name = t.STO_ExternalName__c;
+                i.recordId = t.CRM_Thread_Type__c == 'CHAT' ? t.CRM_Related_Object__c : t.Id;
+                i.lastModifiedDate = t.LastModifiedDate;
+                i.closeDate = t.CRM_Closed_Date__c;
+                i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
+                i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
+                i.objectName = t.CRM_Thread_Type__c == 'CHAT' ? 'chat' : 'skriv-til-oss';
+                i.status = (t.CRM_Is_Closed__c) ? 'Lukket' : 'Åpen';
+                i.recordName = t.Name;
+                m.recordId = t.Messages__r[0]?.Id;
+                m.messageText = t.Messages__r[0]
+                    ?.CRM_Message_Text__c
+                    ?.replaceAll('<[^>]+>', ' ')
+                    .replaceAll('(\\r|\\n)+', ' ');
+                m.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
+                i.latestmessage = m;
+                inboxlist.add(i);
+            }
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c, CRM_Theme_Group__r.Name
-            FROM Conversation_Note__c WHERE CRM_Is_Read__c = true AND CRM_Created_By_Ident__c = null 
-            ORDER BY CreatedDate DESC
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Date_Time_Registered__c,
+                STO_External_Name__c,
+                CRM_Conversation_Note__c,
+                Name
+            FROM Conversation_Note__c
+            WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
+            ORDER BY CRM_Date_Time_Registered__c DESC
         ];
-        for(Conversation_Note__c t : noteList){
-            thread i = new thread(); 
-            i.name = t.CRM_Theme_Group__r.Name + ' - Samtalereferat'; 
-            i.recordId = t.Id; 
-            i.lastModifiedDate = t.LastModifiedDate; 
-            i.closeDate = t.CreatedDate; 
-            i.numberOfUnreadMessages = 0; 
-            i.latestMessageDate = t.CreatedDate;
-            i.objectName = 'samtalereferat'; 
-            i.status = 'Lukket'; 
-            inboxlist.add(i);  
+        for (Conversation_Note__c t : noteList) {
+            thread i = new thread();
+            message m = new message();
+            i.name = t.STO_External_Name__c;
+            i.recordId = t.Id;
+            i.lastModifiedDate = t.LastModifiedDate;
+            i.closeDate = t.CRM_Date_Time_Registered__c;
+            i.numberOfUnreadMessages = 0;
+            i.latestMessageDate = t.CRM_Date_Time_Registered__c;
+            i.objectName = 'samtalereferat';
+            i.status = 'Lukket';
+            i.recordName = t.Name;
+            m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
+            m.recordId = t.Id;
+            i.latestmessage = m;
+            inboxlist.add(i);
         }
         return inboxlist;
     }
 
     @AuraEnabled(cacheable=true)
     public static List<thread> getRecentThreads() {
-        List<thread> inboxlist = new List <thread>(); 
+        List<thread> inboxlist = new List<thread>();
         List<Thread__c> threadList = [
-            SELECT Id, Name, LastModifiedDate, CRM_Number_of_unread_Messages__c, CRM_Latest_Message_Datetime__c, CRM_Closed_Date__c, STO_ExternalName__c 
-            FROM Thread__c 
-            WHERE (CRM_Number_of_unread_Messages__c > 0 OR CRM_Closed_Date__c = null)
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Number_of_unread_Messages__c,
+                CRM_Latest_Message_Datetime__c,
+                CRM_Closed_Date__c,
+                STO_ExternalName__c,
+                CRM_Is_Closed__c,
+                CRM_Thread_Type__c,
+                CRM_Related_Object__c,
+                Name,
+                (
+                    SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
+                    FROM Messages__r
+                    WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
+                    ORDER BY CRM_Sent_Datetime_Formula__c DESC
+                    LIMIT 1
+                )
+            FROM Thread__c
+            WHERE
+                (CRM_Number_of_unread_Messages__c > 0
+                OR CRM_Is_Closed__c = FALSE)
+                AND (CRM_Thread_Type__c = 'STO'
+                OR CRM_Thread_Type__c = 'STB'
+                OR CRM_Thread_Type__c = 'CHAT')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
-        for(Thread__c t : threadList){
-            thread i = new thread(); 
-            i.name = t.STO_ExternalName__c; 
-            i.recordId = t.Id; 
-            i.lastModifiedDate = t.LastModifiedDate; 
-            i.closeDate = t.CRM_Closed_Date__c; 
-            i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c; 
-            i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
-            i.objectName = 'skriv-til-oss'; 
-            i.status = 'Lukket'; 
-            if(i.closeDate == null) i.status = 'Åpen'; 
-            inboxlist.add(i);  
+        for (Thread__c t : threadList) {
+            if (t.Messages__r != null && t.Messages__r.size() > 0) {
+                thread i = new thread();
+                message m = new message();
+                i.name = t.STO_ExternalName__c;
+                i.recordId = t.CRM_Thread_Type__c == 'CHAT' ? t.CRM_Related_Object__c : t.Id;
+                i.lastModifiedDate = t.LastModifiedDate;
+                i.closeDate = t.CRM_Closed_Date__c;
+                i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
+                i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
+                i.objectName = t.CRM_Thread_Type__c == 'CHAT' ? 'chat' : 'skriv-til-oss';
+                i.status = (t.CRM_Is_Closed__c) ? 'Lukket' : 'Åpen';
+                i.recordName = t.Name;
+                m.recordId = t.Messages__r[0]?.Id;
+                m.messageText = t.Messages__r[0]
+                    ?.CRM_Message_Text__c
+                    ?.replaceAll('<[^>]+>', ' ')
+                    .replaceAll('(\\r|\\n)+', ' ');
+                m.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
+                i.latestmessage = m;
+                inboxlist.add(i);
+            }
         }
         List<Conversation_Note__c> noteList = [
-            SELECT Id, Name, LastModifiedDate, CreatedDate, CRM_Is_Read__c, CRM_Theme_Group__r.Name
-            FROM Conversation_Note__c WHERE CRM_Is_Read__c = false AND CRM_Created_By_Ident__c = null 
-            ORDER BY CreatedDate DESC
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Date_Time_Registered__c,
+                STO_External_Name__c,
+                CRM_Conversation_Note__c,
+                Name
+            FROM Conversation_Note__c
+            WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
+            ORDER BY CRM_Date_Time_Registered__c DESC
         ];
-        for(Conversation_Note__c t : noteList){
-            thread i = new thread(); 
-            i.name = t.CRM_Theme_Group__r.Name + ' - Samtalereferat'; 
-            i.recordId = t.Id; 
-            i.lastModifiedDate = t.LastModifiedDate; 
-            i.closeDate = t.CreatedDate; 
-            i.numberOfUnreadMessages = 1; 
-            i.latestMessageDate = t.CreatedDate;
-            i.objectName = 'samtalereferat'; 
-            i.status = 'Lukket'; 
-            inboxlist.add(i);  
+        for (Conversation_Note__c t : noteList) {
+            thread i = new thread();
+            message m = new message();
+            i.name = t.STO_External_Name__c;
+            i.recordId = t.Id;
+            i.lastModifiedDate = t.LastModifiedDate;
+            i.closeDate = t.CRM_Date_Time_Registered__c;
+            i.numberOfUnreadMessages = 1;
+            i.latestMessageDate = t.CRM_Date_Time_Registered__c;
+            i.objectName = 'samtalereferat';
+            i.status = 'Lukket';
+            i.recordName = t.Name;
+            m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
+            m.recordId = t.Id;
+            i.latestmessage = m;
+            inboxlist.add(i);
         }
-        return inboxlist; 
+        return inboxlist;
     }
 
     public class thread {
@@ -103,46 +190,29 @@ public with sharing class stoInboxHelper {
         public String objectName;
         @AuraEnabled
         public String status;
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static message getLatestMessage(Id threadId) {
-        message returntext = new message(); 
-        String objectName = threadId.getSobjectType().getDescribe().getName(); 
-        if(objectName == 'Thread__c'){
-            objectName = 'skriv-til-oss'; 
-            Message__c messageList = [
-                SELECT Id, CRM_Message_Text__c, CRM_From_Contact__c
-                FROM Message__c
-                WHERE CRM_Thread__c = :threadId
-                ORDER BY CRM_Sent_Datetime_Formula__c DESC LIMIT 1
-            ];
-            returntext.fromContact = messageList.CRM_From_Contact__c; 
-            returntext.messageText = messageList.CRM_Message_Text__c; 
-            returntext.recordId = messageList.Id; 
-        }
-        if(objectName == 'Conversation_Note__c'){
-            objectName = 'samtalereferat'; 
-            Conversation_Note__c cn = [SELECT Id, Name, CRM_Conversation_Note__c FROM Conversation_Note__c WHERE Id =: threadId LIMIT 1]; 
-            returntext.fromContact = 'NAV'; 
-            returntext.messageText = cn.CRM_Conversation_Note__c; 
-            returntext.recordId = cn.Id; 
-        }
-        return returntext;
+        @AuraEnabled
+        public message latestmessage;
+        @AuraEnabled
+        public String recordName;
     }
 
     public class message {
         @AuraEnabled
-        public Id recordId; 
+        public Id recordId;
         @AuraEnabled
-        public String messageText; 
-        @AuraEnabled
-        public String fromContact; 
+        public String messageText;
+        @Auraenabled
+        public Boolean isExternal;
     }
 
     @AuraEnabled
     public static void markAsRead(Id conversationNoteId) {
-        List<Conversation_Note__c> noteList = [SELECT Id FROM Conversation_Note__c WHERE CRM_Is_Read__c = FALSE AND Id = :conversationNoteId LIMIT 1];
+        List<Conversation_Note__c> noteList = [
+            SELECT Id
+            FROM Conversation_Note__c
+            WHERE CRM_Is_Read__c = FALSE AND Id = :conversationNoteId
+            LIMIT 1
+        ];
         for (Conversation_Note__c cn : noteList) {
             cn.CRM_Is_Read__c = true;
             cn.CRM_Read_Date__c = DateTime.now();

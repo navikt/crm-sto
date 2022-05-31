@@ -45,6 +45,11 @@
                 <default>false</default>
                 <label>Pleiepenger</label>
             </value>
+            <value>
+                <fullName>Hjelpemidler</fullName>
+                <default>false</default>
+                <label>Hjelpemidler</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
