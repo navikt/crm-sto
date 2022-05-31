@@ -10,8 +10,4 @@
         <field>STO_Theme_Group__c</field>
         <value xsi:type="xsd:string">PENS</value>
     </values>
-    <values>
-        <field>STO_Theme_Group__c</field>
-        <value xsi:type="xsd:string">PENS</value>
-    </values>
 </CustomMetadata>
