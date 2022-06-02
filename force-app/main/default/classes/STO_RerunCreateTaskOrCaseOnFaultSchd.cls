@@ -2,14 +2,14 @@
  * @description Class for rerunning Task/Case creation and assignment to
  * thread, if original attempt failed.
  */
-public with sharing class STO_RerunCreateTaskOrCaseOnFaultSchd implements Database.Batchable<sObject>{
+public with sharing class STO_RerunCreateTaskOrCaseOnFaultSchd implements Database.Batchable<sObject> {
     public static final String JOB_NAME_PREFIX = 'RerunCreateTaskOrCase';
     public static final String SUCCESS = 'SUCCESS';
     public final String query;
     public final Id threadId;
     public STO_RerunCreateTaskOrCaseOnFaultSchd(Id thread) {
         threadId = thread;
-        query = 
+        query =
             'SELECT ' +
             'Id, ' +
             'Name, ' +
@@ -22,19 +22,21 @@ public with sharing class STO_RerunCreateTaskOrCaseOnFaultSchd implements Databa
             'FROM Thread__c ' +
             'WHERE Id = :threadId';
     }
-    public Database.QueryLocator start(Database.BatchableContext BC){
+    public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator(query);
     }
-    public void execute(Database.BatchableContext BC, List<sObject> scope){
+    public void execute(Database.BatchableContext BC, List<sObject> scope) {
         List<Thread__c> threads = new List<Thread__c>();
-        for(Sobject s : scope){
+        for (Sobject s : scope) {
             Map<String, Object> input = new Map<String, Object>();
             input.put('Thread', (Thread__c) s);
-            Flow.Interview.STO_Thread_CreateTaskOrCase reRunFlow = new Flow.Interview.STO_Thread_CreateTaskOrCase(input);
+            Flow.Interview.STO_Thread_CreateTaskOrCase reRunFlow = new Flow.Interview.STO_Thread_CreateTaskOrCase(
+                input
+            );
             reRunFlow.start();
         }
     }
-    public void finish(Database.BatchableContext BC){
+    public void finish(Database.BatchableContext BC) {
         // Not in use
     }
     /**
@@ -45,7 +47,7 @@ public with sharing class STO_RerunCreateTaskOrCaseOnFaultSchd implements Databa
     @InvocableMethod(label='RerunCreateTaskOrCase' description='Scheduled rerun of CreateTaskOrCase')
     public static List<String> scheduleCreateTaskOrCase(List<Id> threads) {
         List<String> returnValue = new List<String>();
-        if(threads == null || threads.size() != 1){
+        if (threads == null || threads.size() != 1) {
             returnValue.add('ERROR: One Thread__c Id should be provided.');
             return returnValue;
         }
@@ -53,16 +55,20 @@ public with sharing class STO_RerunCreateTaskOrCaseOnFaultSchd implements Databa
         List<CronTrigger> jobs = [
             SELECT Id, CronJobDetail.Name, NextFireTime, State
             FROM CronTrigger
-            WHERE 
-                CronJobDetail.Name = :cronJobName
-            ];
-        if(!jobs.isEmpty()){
-            returnValue.add('ERROR: job for thread ' + String.valueOf(threads[0]) + 'already exist. State: ' + jobs[0].State);
+            WHERE CronJobDetail.Name = :cronJobName
+        ];
+        if (!jobs.isEmpty()) {
+            returnValue.add(
+                'ERROR: job for thread ' +
+                String.valueOf(threads[0]) +
+                'already exist. State: ' +
+                jobs[0].State
+            );
             return returnValue;
         }
         STO_RerunCreateTaskOrCaseOnFaultSchd newJob = new STO_RerunCreateTaskOrCaseOnFaultSchd(threads[0]);
         System.scheduleBatch(newJob, cronJobName, 5);
         returnValue.add(SUCCESS);
         return returnValue;
-   }
+    }
 }
