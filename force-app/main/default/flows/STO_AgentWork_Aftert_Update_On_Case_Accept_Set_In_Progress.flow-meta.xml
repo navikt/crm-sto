@@ -23,35 +23,11 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordLookups>
-        <name>Get_Case</name>
-        <label>Get Case</label>
-        <locationX>176</locationX>
-        <locationY>455</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Set_Owner_On_Related_Cases</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.WorkItemId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Case</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <recordUpdates>
         <name>Set_Case_to_In_Progress</name>
         <label>Set Case to In Progress</label>
         <locationX>176</locationX>
         <locationY>335</locationY>
-        <connector>
-            <targetReference>Get_Case</targetReference>
-        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -93,30 +69,5 @@
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Active</status>
-    <subflows>
-        <name>Set_Owner_On_Related_Cases</name>
-        <label>Set Owner On Related Cases</label>
-        <locationX>176</locationX>
-        <locationY>575</locationY>
-        <flowName>STO_Case_Set_Owner</flowName>
-        <inputAssignments>
-            <name>RelatedAccountID</name>
-            <value>
-                <elementReference>Get_Case.AccountId</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>RelatedOwnerID</name>
-            <value>
-                <elementReference>Get_Case.OwnerId</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>RelatedSTOCategory</name>
-            <value>
-                <elementReference>$Record.PendingServiceRouting.QueueId</elementReference>
-            </value>
-        </inputAssignments>
-    </subflows>
+    <status>Draft</status>
 </Flow>

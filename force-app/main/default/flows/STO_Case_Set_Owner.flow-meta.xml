@@ -1,8 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>54.0</apiVersion>
+    <assignments>
+        <name>Assign_Owner_And_Status</name>
+        <label>Assign Owner And Status</label>
+        <locationX>264</locationX>
+        <locationY>638</locationY>
+        <assignmentItems>
+            <assignToReference>Iterate_Over_Related_Cases.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>RelatedOwnerID</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Iterate_Over_Related_Cases.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Reserved</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Collect_Related_Cases_Ids</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Collect_Related_Cases_Ids</name>
+        <label>Collect Related Cases Ids</label>
+        <locationX>264</locationX>
+        <locationY>758</locationY>
+        <assignmentItems>
+            <assignToReference>CasesToUpdate</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Iterate_Over_Related_Cases</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Iterate_Over_Related_Cases</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Error_Message</name>
+        <label>Set Error Message</label>
+        <locationX>440</locationX>
+        <locationY>1094</locationY>
+        <assignmentItems>
+            <assignToReference>ErrorMessage</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <formulas>
+        <name>QueueName</name>
+        <dataType>String</dataType>
+        <expression>{!CaseOrigin} + &apos;_&apos; + {!STOCategory}</expression>
+    </formulas>
     <interviewLabel>STO Case Set Owner {!$Flow.CurrentDateTime}</interviewLabel>
     <label>STO Case Set Owner</label>
+    <loops>
+        <name>Iterate_Over_Related_Cases</name>
+        <label>Iterate Over Related Cases</label>
+        <locationX>176</locationX>
+        <locationY>518</locationY>
+        <collectionReference>RelatedCases</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Assign_Owner_And_Status</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Pull_From_Queue_And_Update_Cases</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -22,11 +93,81 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordUpdates>
-        <name>Pull_From_Queue_And_Update_Cases</name>
-        <label>Pull From Queue And Update Cases</label>
+    <recordLookups>
+        <description>Get Queue ID</description>
+        <name>Get_Queue_Id</name>
+        <label>Get Queue Id</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Related_Cases_From_Queue</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>QueueName</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Type</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Queue</stringValue>
+            </value>
+        </filters>
+        <object>Group</object>
+        <outputAssignments>
+            <assignToReference>QueueId</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Related_Account_And_Owner</name>
+        <label>Get Related Account And Owner</label>
         <locationX>176</locationX>
         <locationY>158</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Queue_Id</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>WorkItemId</elementReference>
+            </value>
+        </filters>
+        <object>Case</object>
+        <outputAssignments>
+            <assignToReference>RelatedAccountID</assignToReference>
+            <field>AccountId</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>CaseOrigin</assignToReference>
+            <field>Origin</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>RelatedOwnerID</assignToReference>
+            <field>OwnerId</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>STOCategory</assignToReference>
+            <field>STO_Category__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Related_Cases_From_Queue</name>
+        <label>Get Related Cases From Queue</label>
+        <locationX>176</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Iterate_Over_Related_Cases</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>AccountId</field>
@@ -46,58 +187,118 @@
             <field>Origin</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>STO</stringValue>
+                <elementReference>CaseOrigin</elementReference>
             </value>
         </filters>
-        <inputAssignments>
-            <field>OwnerId</field>
-            <value>
-                <elementReference>RelatedOwnerID</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Status</field>
-            <value>
-                <stringValue>Reserved</stringValue>
-            </value>
-        </inputAssignments>
         <object>Case</object>
+        <outputReference>RelatedCases</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
+        <queriedFields>Status</queriedFields>
+    </recordLookups>
+    <recordUpdates>
+        <name>Pull_From_Queue_And_Update_Cases</name>
+        <label>Pull From Queue And Update Cases</label>
+        <locationX>176</locationX>
+        <locationY>974</locationY>
+        <faultConnector>
+            <targetReference>Set_Error_Message</targetReference>
+        </faultConnector>
+        <inputReference>CasesToUpdate</inputReference>
     </recordUpdates>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Pull_From_Queue_And_Update_Cases</targetReference>
+            <targetReference>Get_Related_Account_And_Owner</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>CaseOrigin</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>CasesToUpdate</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Case</objectType>
+    </variables>
+    <variables>
+        <name>ErrorMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <description>Pending Service Rounting ID</description>
+        <name>PSRID</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>QueueId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>RelatedAccountID</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>RelatedCases</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Case</objectType>
+    </variables>
+    <variables>
+        <name>RelatedCasesIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>RelatedOwnerID</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>STOCategory</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>WorkId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>UpdatedCases</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>Case</objectType>
+        <name>WorkItemId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
     </variables>
 </Flow>
