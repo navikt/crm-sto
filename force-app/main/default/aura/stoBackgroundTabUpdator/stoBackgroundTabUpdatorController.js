@@ -92,7 +92,7 @@
         );
         console.log("flow started");
     },
-    
+
     handleStatusChange : function (component, event) {
         console.log("flow status changed");
         console.log(event.getParam("status"));
@@ -109,8 +109,11 @@
                 // Pass the values to the component's attributes
                 if(outputVar.name === "CasesToUpdate") {
                     console.log("outputVar.value");
+                    
                     console.log(outputVar.value);
+                    if(!outputVar.value) return;
                     console.log(outputVar.value[0].Id);
+                    
                     childIds = outputVar.value.map(e => e.Id);
                     console.log(childIds);
                 } else if(outputVar.name === "WorkItemId"){
