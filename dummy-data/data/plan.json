@@ -16,11 +16,5 @@
         "saveRefs": false,
         "resolveRefs": false,
         "files": ["pushtopics.json"]
-    },
-    {
-        "sobject": "NavUnit__c",
-        "saveRefs": false,
-        "resolveRefs": false,
-        "files": ["navUnits.json"]
     }
 ]

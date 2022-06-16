@@ -31,7 +31,6 @@
                                     "components": [
                                         {
                                             "componentAttributes": {
-                                                "n-a-varea": "Privatperson",
                                                 "navareapicklist": "Privatperson"
                                             },
                                             "componentName": "c:globalCommunityHeader",
@@ -71,7 +70,6 @@
                                     "components": [
                                         {
                                             "componentAttributes": {
-                                                "n-a-varea": "Privatperson",
                                                 "navareapicklist": "Privatperson"
                                             },
                                             "componentName": "c:globalCommunityFooter",
@@ -106,6 +104,17 @@
             "label": "Service Not Available Theme Layout",
             "regions": [
                 {
+                    "components": [
+                        {
+                            "componentAttributes": {
+                                "richTextValue": "<p>Use this HTML Editor to add your own markup.</p>"
+                            },
+                            "componentName": "community_builder:htmlEditor",
+                            "id": "f7baed55-cc5c-4f75-8b3b-f0bf252e92f2",
+                            "renditionMap": {},
+                            "type": "component"
+                        }
+                    ],
                     "id": "408dc540-1440-4527-8390-6db83b6148c8",
                     "regionName": "header",
                     "type": "region"

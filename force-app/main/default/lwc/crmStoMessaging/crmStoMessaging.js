@@ -2,10 +2,8 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
-import getUnitName from '@salesforce/apex/STO_RecordInfoController.getUnitNameFromUnitNumber';
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
-import USER_DEPARTMENT from '@salesforce/schema/User.Department';
-import FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
+import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import userId from '@salesforce/user/Id';
 
@@ -20,9 +18,8 @@ export default class CrmStoMessaging extends LightningElement {
     accountId;
     userId;
     personId;
-    userName = '';
-    supervisorName = '';
-    supervisorDepartment = '';
+    userName;
+    supervisorName;
     accountApiName;
     threadId;
     englishTextTemplate = false;
@@ -81,15 +78,14 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get textTemplate() {
-        let salutation = 'Hei';
-        let regards = 'Med vennlig hilsen';
-
         if (this.englishTextTemplate == true) {
-            salutation = 'Hi';
-            regards = 'Kind regards';
+            let greeting = '';
+            greeting = this.userName == null ? 'Hi,' : 'Hi ' + this.userName + ',';
+            return greeting + '\n\n\nKind regards\n' + this.supervisorName + '\nNAV Call and Service Centre';
         }
-
-        return `${salutation}, ${this.userName},\n\n\n${regards}\n${this.supervisorName}\n${this.supervisorDepartment}`;
+        let greeting = '';
+        greeting = this.userName == null ? 'Hei,' : 'Hei ' + this.userName + ',';
+        return greeting + '\n\n\nMed vennlig hilsen\n' + this.supervisorName + '\nNAV Kontaktsenter';
     }
 
     get threadReference() {
@@ -176,36 +172,28 @@ export default class CrmStoMessaging extends LightningElement {
 
     @wire(getRecord, {
         recordId: '$personId',
-        fields: [FIRST_NAME]
+        fields: [PERSON_FULL_NAME]
     })
     wiredPerson({ error, data }) {
         if (error) {
             console.log(error);
         } else if (data) {
             if (this.accountId && this.personId) {
-                let list = [];
-                let firstName = getFieldValue(data, FIRST_NAME).toLowerCase().split(' ');
-                firstName.forEach((item) => list.push(item.charAt(0).toUpperCase() + item.slice(1)));
-                this.userName = list.join(' ');
+                let fullName = getFieldValue(data, PERSON_FULL_NAME);
+                this.userName = fullName ? fullName.split(' ').shift() : '';
             }
         }
     }
 
     @wire(getRecord, {
         recordId: '$userId',
-        fields: [NKS_FULL_NAME, USER_DEPARTMENT]
+        fields: [NKS_FULL_NAME]
     })
     wiredUser({ error, data }) {
         if (error) {
             console.log(error);
         } else if (data) {
             this.supervisorName = getFieldValue(data, NKS_FULL_NAME);
-
-            getUnitName({ unitNumber: getFieldValue(data, USER_DEPARTMENT) })
-                .then((response) => (this.supervisorDepartment = response))
-                .catch((error) => {
-                    console.log(error);
-                });
         }
     }
 

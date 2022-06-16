@@ -22,6 +22,6 @@ public with sharing class stoUtilityBackgroundController {
             [SELECT Id FROM ServicePresenceStatus WHERE DeveloperName = 'Skriv_til_oss']
             ?.Id
         );
-        return String.isNotBlank(statusId) ? statusId.substring(0, 15) : null;
+        return statusId.substring(0, 15);
     }
 }

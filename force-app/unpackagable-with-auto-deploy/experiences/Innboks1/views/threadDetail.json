@@ -67,7 +67,7 @@
                                 {
                                     "componentAttributes": {
                                         "alertopen": "Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.",
-                                        "alerttext": "Samtalen er avsluttet. Vil du <a href=\"https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss\">sende en ny melding</a>, kan du gjøre det her.",
+                                        "alerttext": "Samtalen er avsluttet. Vil du <a href=\"https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss\">sende en ny melding</a>, kan du gjøre det her.<br>Vi ønsker å forbedre oss og vil gjerne høre dine opplevelser fra din dialog med oss. <a href=\"https://forms.office.com/r/szyVW7AmCv\">Tilbakemeldingen din</a> er anonym.",
                                         "header": "Skriv til oss",
                                         "maxLength": 1000,
                                         "recordId": "{!recordId}"
@@ -126,5 +126,5 @@
     ],
     "themeLayoutType": "Inner",
     "type": "view",
-    "viewType": "detail-a0Q"
+    "viewType": "detail-a1j"
 }

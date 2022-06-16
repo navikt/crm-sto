@@ -13,7 +13,6 @@ public with sharing class stoInboxHelperTest {
             new Common_Code__c(Name = 'Spørsmål og Svar', CRM_Code__c = 'SPM_OG_SVR', CRM_Code_Set__c = 'Oppgavetyper')
         );
         Conversation_Note__c cn = new Conversation_Note__c(
-            CRM_Created_By_Ident__c = 'Z123455',
             CRM_Is_Read__c = false,
             CRM_Conversation_Note__c = 'this is a test message again'
         );
@@ -29,12 +28,22 @@ public with sharing class stoInboxHelperTest {
             LIMIT 1
         ];
         Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
-        t.CRM_Closed_Date__c = date.today();
+        stoHelperClass.createMessage(t, 'Dette er en test melding', personContact.Id);
+        t.CRM_Closed_Date__c = date.today().addDays(-1);
         update t;
+
+        Conversation_Note__c cn = new Conversation_Note__c(
+            CRM_Is_read__c = true,
+            CRM_Created_by_Ident__c = 'A123456',
+            CRM_Conversation_Note__c = 'this is a test message again'
+        );
+        insert cn;
+
         Test.startTest();
         List<stoInboxHelper.thread> tList = stoInboxHelper.getThreads();
         Test.stopTest();
         System.assertEquals(tList.isEmpty(), false);
+        System.assert(tList.size() == 2);
     }
     @isTest
     static void getRecentThreadsTest() {
@@ -45,34 +54,23 @@ public with sharing class stoInboxHelperTest {
             LIMIT 1
         ];
         Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = t.Id;
+        insert m;
+
+        Conversation_Note__c cn = new Conversation_Note__c(
+            CRM_Is_read__c = false,
+            CRM_Created_by_Ident__c = 'A123456',
+            CRM_Conversation_Note__c = 'this is a test message again'
+        );
+        insert cn;
+
         Test.startTest();
         List<stoInboxHelper.thread> tList = stoInboxHelper.getRecentThreads();
         Test.stopTest();
         System.assertEquals(tList.isEmpty(), false);
     }
-    @isTest
-    static void getLatestMessageTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
-        stoHelperClass.createMessage(t, 'this is a test message again', personContact.Id);
-        Test.startTest();
-        stoInboxHelper.message m = stoInboxHelper.getLatestMessage(t.Id);
-        Test.stopTest();
-        System.assertEquals('this is a test message again', m.messageText);
-    }
-    @isTest
-    static void getLatestMessageConversationNoteTest() {
-        Conversation_Note__c cn = [SELECT Id FROM Conversation_Note__c LIMIT 1];
-        Test.startTest();
-        stoInboxHelper.message m = stoInboxHelper.getLatestMessage(cn.Id);
-        Test.stopTest();
-        System.assertEquals('this is a test message again', m.messageText);
-    }
+
     @isTest
     static void markAsReadTest() {
         Conversation_Note__c cn = [SELECT Id FROM Conversation_Note__c LIMIT 1];
