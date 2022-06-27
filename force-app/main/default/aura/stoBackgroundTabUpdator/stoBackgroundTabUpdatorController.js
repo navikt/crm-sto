@@ -18,7 +18,6 @@
                     });
             }
         });
-
         workspace
             .getTabInfo({
                 tabId: newTabId
@@ -31,11 +30,6 @@
                         workspace.setTabLabel({
                             tabId: newTabId,
                             label: data.getReturnValue()
-                        });
-                        workspace.setTabIcon({
-                            tabId: newTabId,
-                            icon: response.icon,
-                            iconAlt: ' '
                         });
                     }
                 });
