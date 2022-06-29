@@ -9,7 +9,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.154.0.LATEST"
+                    "versionNumber": "0.158.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
@@ -25,7 +25,7 @@
                 },
                 {
                     "package": "crm-platform-access-control",
-                    "versionNumber": "0.83.0.LATEST"
+                    "versionNumber": "0.98.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -36,8 +36,12 @@
                     "versionNumber": "0.15.0.LATEST"
                 },
                 {
+                    "package": "crm-henvendelse-base",
+                    "versionNumber": "0.8.0.LATEST"
+                },
+                {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.58.0.LATEST"
+                    "versionNumber": "0.67.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
@@ -49,7 +53,7 @@
                 },
                 {
                     "package": "crm-nks-chat",
-                    "versionNumber": "0.1.0.LATEST"
+                    "versionNumber": "0.4.0.LATEST"
                 }
             ]
         }
@@ -58,6 +62,7 @@
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "54.0",
     "packageAliases": {
+        "crm-henvendelse-base": "0Ho7U000000000kSAA",
         "crm-henvendelse": "0Ho2o000000fxXfCAI",
         "crm-community-base": "0Ho2o0000008OSzCAM",
         "crm-journal-utilities": "0Ho2o000000fxXkCAI",
