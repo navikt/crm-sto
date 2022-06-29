@@ -1,10 +1,16 @@
 <template>
-    <a class={className} href={linkUrl} key={thread.recordId} id="a" style="padding: 1rem 1rem 1rem 0rem">
+    <a
+        class={className}
+        href={linkUrl}
+        key={thread.recordId}
+        id="a"
+        style="padding: 1rem 0rem 1rem 0rem; border: 1px solid var(--navds-color-gray-60, blue)"
+    >
         <lightning-layout vertical-align="center" class="slds-size_1-of-1">
             <div
                 class="slds-is-relative slds-size_2-of-12 slds-small-size_2-of-12 slds-medium-size_2-of-12 slds-large-size_1-of-12"
             >
-                <diV class="centerCircle"></diV>
+                <div class="centerCircle"></div>
                 <img
                     class="iconcolor slds-is-relative slds-show"
                     src={dialog}
@@ -13,7 +19,7 @@
                     style="margin: auto; width: 24px"
                 />
             </div>
-            <div class="slds-size_9-of-12 slds-small-size_9-of-12 slds-medium-size_9-of-12 slds-large-size_10-of-12">
+            <div class={contentClasses}>
                 <p class="typo-normal blokk-xxxs">
                     <lightning-formatted-date-time
                         value={thread.latestMessageDate}
@@ -28,9 +34,9 @@
                 <h3 class="typo-undertittel lenkepanel__heading">{itemTitle}</h3>
                 <p class="typo-normal tema-avsnitt messagebox">{latestText}</p>
             </div>
-            <lightning-layout-item size="1">
+            <slot name="endSection">
                 <span class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"></span>
-            </lightning-layout-item>
+            </slot>
         </lightning-layout>
     </a>
 </template>

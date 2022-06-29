@@ -61,6 +61,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     modalOpen = false;
     maxLength = 1000;
     openThreadList;
+    hideDeleteModal = true;
 
     @wire(MessageContext)
     messageContext;
@@ -114,6 +115,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this._wireThreadData = wireData;
         this.openThreadList = data;
     }
+
     get validparameter() {
         let valid = this.acceptedcategories.has(this.selectedTheme);
         return valid;
@@ -283,24 +285,66 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get openThreadText() {
-        return (
-            'Du har allerede en åpen samtale om ' +
-            this.selectedTheme.toLowerCase() +
-            '. Hvis du lurer på noe mer, kan du <a href="' +
-            // this.openThreadLink +
-            '">fortsette samtalen</a>.'
-        );
+        if (this.openThreadList.length < 5) {
+            return (
+                'Du har allerede en åpen samtale om ' +
+                this.selectedTheme.toLowerCase() +
+                '. Hvis du lurer på noe mer, kan du <a href="' +
+                this.openThreadLink +
+                '">fortsette samtalen</a>.'
+            );
+        }
+        return 'Du har 5 åpne samtaler på dette temaet. <br/> Hvis du vil opprette en ny samtale, så må du lukke en av de du allerede har.';
     }
 
-    // get openThreadLink() {
-    //     return basepath + '/skriv-til-oss/' + this.openThreadId;
-    // }
+    get openThreadLink() {
+        return basepath + '/skriv-til-oss/' + this.openThreadList[0].Id;
+    }
 
     get alertType() {
-        return this.openThreadList.length > 1 ? 'feil' : 'advarsel';
+        return this.openThreadList.length >= 5 ? 'advarsel' : 'info';
     }
 
     get showTextArea() {
+        console.log(this.openThreadList);
         return this.openThreadList === null || this.openThreadList === undefined || this.openThreadList.length < 5;
+    }
+
+    get mby() {
+        return false;
+    }
+
+    testington(e) {
+        e.preventDefault();
+        console.log('testington');
+        this.hideDeleteModal = false;
+    }
+
+    get backdropClass() {
+        return this.hideDeleteModal === true ? 'slds-hide' : 'backdrop';
+    }
+
+    get modalClass() {
+        return 'slds-modal slds-show uiPanel north' + (this.hideDeleteModal === true ? ' geir' : ' slds-fade-in-open');
+    }
+
+    closeModal() {
+        this.hideDeleteModal = true;
+        const btn = this.template.querySelector('.endDialogBtn');
+        btn.focus();
+    }
+
+    trapFocusStart() {
+        const firstElement = this.template.querySelector('.closeButton');
+        firstElement.focus();
+    }
+
+    confirmCloseThread(e) {
+        console.log('Bø');
+    }
+
+    trapFocusEnd() {
+        const lastElement = this.template.querySelector('.cancelButton');
+        lastElement.focus();
     }
 }

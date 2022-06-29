@@ -67,32 +67,7 @@
                                 </button>
                             </template>
                             <template if:false={showTextArea} for:each={openThreadList} for:item="thread">
-                                <div key={thread.recordId} style="display: flex; text-align: initial">
-                                    <c-sto-Message-Inbox-Item
-                                        style="flex-grow: 1"
-                                        class="override"
-                                        thread={thread}
-                                    ></c-sto-Message-Inbox-Item>
-                                    <button
-                                        class="lenkepanel"
-                                        onclick={shaggy}
-                                        data-id={thread.recordId}
-                                        type="button"
-                                        style="
-                                            padding-inline: 20px;
-                                            background: none;
-                                            border: none;
-                                            background: red;
-                                            border: 1px solid #8b0000;
-                                            margin-bottom: 3px;
-                                            display: flex;
-                                            border-bottom-left-radius: 0px;
-                                            border-top-left-radius: 0px;
-                                        "
-                                    >
-                                        <img src={deletepath} />
-                                    </button>
-                                </div>
+                                <c-sto-inbox-close-item key={thread.recordId}></c-sto-inbox-close-item>
                             </template>
                         </template>
                         <template if:true={showspinner}>

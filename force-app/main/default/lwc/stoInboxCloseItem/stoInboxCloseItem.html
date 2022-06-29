@@ -1,0 +1,47 @@
+<template>
+    <div style="display: flex; text-align: initial; position: relative; align-items: center" class="">
+        <c-sto-Message-Inbox-Item style="flex-grow: 1" class="override" thread={thread} content-size="7"
+            ><div slot="endSection" style="flex: 1; display: contents">
+                <span class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"></span>
+            </div>
+        </c-sto-Message-Inbox-Item>
+        <div>
+            <button
+                class="lenkepanel"
+                style="
+                    background: white;
+                    color: #8ca8cf;
+                    position: absolute;
+                    left: 75%;
+                    margin-right: auto;
+                    width: auto;
+                    transform: translateY(-50%);
+                    padding: 0px;
+                "
+                onclick={testington}
+            >
+                Avslutt dialog
+            </button>
+        </div>
+
+        <!-- <button
+                                        class="lenkepanel"
+                                        onclick={shaggy}
+                                        data-id={thread.recordId}
+                                        type="button"
+                                        style="
+                                            padding-inline: 20px;
+                                            background: none;
+                                            border: none;
+                                            background: white;
+                                            border: 1px solid #8b0000;
+                                            margin-bottom: 3px;
+                                            display: flex;
+                                            border-bottom-left-radius: 0px;
+                                            border-top-left-radius: 0px;
+                                        "
+                                    >
+                                        <img src={deletepath} />
+                                    </button> -->
+    </div>
+</template>

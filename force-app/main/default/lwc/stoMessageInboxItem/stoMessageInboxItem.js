@@ -4,6 +4,7 @@ import basepath from '@salesforce/community/basePath';
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
+    @api contentSize = 10;
     linkUrl;
     dialog = navlogos + '/send.svg';
     latestmessage;
@@ -67,5 +68,19 @@ export default class StoMessageInboxItem extends LightningElement {
 
     get showStatus() {
         return this.objectName != 'samtalereferat';
+    }
+
+    get contentClasses() {
+        return (
+            'slds-size_' +
+            (this.contentSize - 1) +
+            '-of-12 slds-small-size_' +
+            (this.contentSize - 1) +
+            '-of-12 slds-medium-size_' +
+            (this.contentSize - 1) +
+            '-of-12 slds-large-size_' +
+            this.contentSize +
+            '-of-12'
+        );
     }
 }
