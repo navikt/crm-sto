@@ -23,7 +23,7 @@
         <inputParameters>
             <name>title</name>
             <value>
-                <stringValue>Det oppstod en feil.</stringValue>
+                <stringValue>Det oppstod en feil!</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -57,7 +57,7 @@
         <inputParameters>
             <name>title</name>
             <value>
-                <stringValue>Sett til sladding</stringValue>
+                <stringValue>Vellykket!</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -105,10 +105,17 @@
             <name>isUpdated</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Set_Thread_Sensitive_Info</leftValueReference>
-                <operator>WasVisited</operator>
+                <leftValueReference>Get_Thread.STO_Sensitive_Information__c</leftValueReference>
+                <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread.Cause__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Thread_Cause</elementReference>
                 </rightValue>
             </conditions>
             <connector>
