@@ -58,7 +58,7 @@
             }
         });
         $A.enqueueAction(action);
-    },
+    }/*,
 
     onWorkAccepted : function(component, event, helper) {
         var workItemId = event.getParam('workItemId');
@@ -135,5 +135,5 @@
                 ;
             }
         }
-    },
+    }*/
 });
