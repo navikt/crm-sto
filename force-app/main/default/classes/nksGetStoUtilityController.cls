@@ -3,6 +3,30 @@ public with sharing class nksGetStoUtilityController {
     public class TooManyAttemptsException extends Exception {}
 
     @AuraEnabled
+    public static List<Record> getSto(){
+        List<Record> records = new List<Record>();
+        if(hasInProgress())
+            throw new AuraHandledException('hasInProgress');
+
+        Record newStoRecord = new Record();
+        newStoRecord.recordId = getNewSTO();
+        newStoRecord.status = 'In Progress';
+        records.add(newStoRecord);
+        Set<Id> relatedStoIds = new Set<Id>();
+        try{
+            relatedStoIds.addAll(getRelatedSTO(newStoRecord.recordId));
+        }catch(Exception e){
+            // exception on finding related stos
+        }
+        for(Id relatedStoId : relatedStoIds){
+            Record relatedStoRecord = new Record();
+            relatedStoRecord.recordId = relatedStoId;
+            relatedStoRecord.status = 'Reserved';
+            records.add(relatedStoRecord);
+        }
+        return records;
+    }
+    @AuraEnabled
     public static Id getNewSTO(){
         try {
             Integer attempt = 0;
@@ -72,7 +96,7 @@ public with sharing class nksGetStoUtilityController {
         List<Case> listtoreturn = 
             [
                 SELECT
-                    LastModifiedDate, CreatedDate, toLabel(Status), STO_Category__c
+                    LastModifiedDate, CreatedDate, toLabel(Status), STO_Category__c, CaseNumber
                 FROM
                     Case
                 WHERE
@@ -83,11 +107,23 @@ public with sharing class nksGetStoUtilityController {
                 LIMIT :Integer.valueOf(limitNumber)
             ]
         ;
-        
-        //Database.query(query);
-
         records = createRecords(listtoreturn);
         return records;
+    }
+    private static Boolean hasInProgress(){
+        List<Case> casesInProgress = 
+            [
+                SELECT
+                    Id
+                FROM
+                    Case
+                WHERE
+                    Status IN ('New', 'In progress')
+                    AND RecordType.DeveloperName='STO_Case'
+                    AND OwnerId = :UserInfo.getUserID()
+                LIMIT 1
+            ];
+        return casesInProgress.size() > 0 ? true : false;
     }
 
     public class Record {
@@ -99,6 +135,8 @@ public with sharing class nksGetStoUtilityController {
         public Datetime modifiedDate;
         @AuraEnabled
         public String status;
+        @AuraEnabled
+        public String casenumber;
     }
 
     private static List<Record> createRecords(
@@ -111,31 +149,14 @@ public with sharing class nksGetStoUtilityController {
             record.name = r.STO_Category__c;
             record.modifiedDate = Datetime.valueOf(r.CreatedDate);
             record.status = r.Status;
+            record.casenumber = r.CaseNumber;
             records.add(record);
         }
         return records;
     }
-    /**
-     * @Get the assigned service resource skills for the given user ID
-     * @author Stian Ruud Schikora | 05-10-2022
-     * @param userId
-     * @return Set<String>
-     **/
-    public static Set<String> getServiceResourceSkills(Id userId) {
-        Set<String> skills = new Set<String>();
 
-        for (ServiceResourceSkill srSkill : [
-            SELECT Id, Skill.DeveloperName
-            FROM ServiceResourceSkill
-            WHERE ServiceResource.RelatedRecordId = :userId
-        ]) {
-            skills.add(srSkill.Skill.DeveloperName);
-        }
-
-        return skills;
-    }
-
-    public static List<Id> getServiceResourceSkillIds(Id userId){
+    @TestVisible
+    private static List<Id> getServiceResourceSkillIds(Id userId){
         List<Id> skillIdList = new List<Id>();
             for(ServiceResourceSkill srs :
                 [
@@ -151,7 +172,7 @@ public with sharing class nksGetStoUtilityController {
             }
         return skillIdList;
     }
-    public static Id getNextSTOCase(List<Id> skillIdList){
+    private static Id getNextSTOCase(List<Id> skillIdList){
         PendingServiceRouting psr = [
                     SELECT
                         Id, WorkItemId

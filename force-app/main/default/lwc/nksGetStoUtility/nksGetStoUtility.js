@@ -1,10 +1,10 @@
 import { LightningElement, api, track } from 'lwc';
 import getList from '@salesforce/apex/nksGetStoUtilityController.getList';
-import getNewSTO from '@salesforce/apex/nksGetStoUtilityController.getNewSTO';
-import getRelatedSTO from '@salesforce/apex/nksGetStoUtilityController.getRelatedSTO';
+//import getNewSTO from '@salesforce/apex/nksGetStoUtilityController.getNewSTO';
+import getSto from    '@salesforce/apex/nksGetStoUtilityController.getSto';
+//import getRelatedSTO from '@salesforce/apex/nksGetStoUtilityController.getRelatedSTO';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { getDataConnectorSourceFields } from 'lightning/analyticsWaveApi';
 
 export default class NksGetStoUtility extends NavigationMixin(LightningElement) {
     listCount = 5;
@@ -37,25 +37,84 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
             this.loadList();
         }
     }
+
     getNewSTOHandler(){
+        console.log('click');
+        this.showSpinner = true;
+        getSto()
+            .then(
+                (records) =>{
+                    console.log(records);
+                    records.forEach(
+                        (record) => {
+                            this.openCase(
+                                record.recordId,
+                                record.status === 'In Progress' ? true : false
+                            );
+                        },this
+                    );
+                    this.minimizeSTOUtility();
+                },this
+            )
+            .catch(
+                (error) => {
+                    console.log(error);
+                    if(error.body.message === 'hasInProgress'){
+                        this.dispatchEvent(
+                            // TODO: make clear error/info messages :)
+                            new ShowToastEvent({
+                                title: 'Du har allerede STO under arbeid.',
+                                variant: 'warning'
+                            })
+                        );
+                    } else if (
+                        typeof error.body.message === 'string' && 
+                        error.message.startsWith('Max Attempt')
+                    ) {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Kunne ikke hente ny STO.',
+                                message: 'Prøv igjen.',
+                                variant: 'warning'
+                            })
+                        );
+                    } else {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Error.',
+                                message: error.body.message,
+                                variant: 'error'
+                            })
+                        );
+                    }
+                }
+            )
+            .finally(
+                () => {
+                    this.loadList();
+                },this
+            );
+            /*
         getNewSTO()
             .then(
                 (caseId) => {
-                    // TODO: Open Case, Open related cases, Close Utility bar
                     console.log(caseId);
-                    this.openCase(caseId);
+                    this.openCase(caseId,true);
                     getRelatedSTO({caseId : caseId})
-                            .then(
-                                (relatedCaseIds) => {
-                                    console.log(relatedCaseIds);
-                                    relatedCaseIds?.forEach( element => {
-                                        console.log(element);
-                                        this.openCase(element);                                        
-                                    });
-                                }
-                            )
-                        ;
-                }
+                        .then(
+                            (relatedCaseIds) => {
+                                console.log(relatedCaseIds);
+                                relatedCaseIds?.forEach( element => {
+                                    console.log(element);
+                                    this.openCase(element,false);                                       
+                                });
+                                this.refreshComponent();
+                            },this
+                        )
+                    ;
+                    console.log('minimize');
+                    this.minimizeSTOUtility();
+                },this
             )
             .catch(
                 (error) => {
@@ -63,24 +122,35 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                     console.log(error);
                 }
             )
+            .finally(
+            )
         ;
+        */
     }
-    openCase(caseId){
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: caseId,
-                actionName: 'view'
-            }
-        });
+    minimizeSTOUtility(){
+        this.invokeUtilityBarAPI('getAllUtilityInfo').then(
+            (allUtilityInfo) => {
+                var stoUtility = allUtilityInfo.find(
+                    (e) => {
+                        console.log(e.utilityLabel);
+                        return e.utilityLabel === 'GetSTOUtility'
+                    }
+                );
+                console.log(allUtilityInfo);
+                console.log(stoUtility);
+                if(stoUtility) this.invokeUtilityBarAPI('minimizeUtility',{utilityId: stoUtility.id});
+            },this
+        );
+    }
+    openCase(caseId,focus){
+        return this.invokeWorkspaceAPI('openTab',{recordId: caseId, focus: focus});
     }
     loadList() {
-        getList({
+        return getList({
             limitNumber: this.listCount
         })
             .then((data) => {
                 this.records = data;
-                return this.records;
             })
             .catch((error) => {
                 let message = 'Unknown error';
@@ -100,7 +170,6 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
             .finally(() => {
                 this.showSpinner = false;
             });
-
     }
 
     navigateToList() {
@@ -129,7 +198,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
 
     refreshComponent() {
         this.showSpinner = true;
-        this.loadList();
+        return this.loadList();
     }
 
     get hasRecord() {
@@ -155,13 +224,19 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
 
     //Helper method to invoke workspace API  from LWC
     invokeWorkspaceAPI(methodName, methodArgs) {
+        return this.invokeAPI('workspaceAPI',methodName,methodArgs);
+    }
+    invokeUtilityBarAPI(methodName, methodArgs){
+        return this.invokeAPI('utilityBarAPI',methodName,methodArgs);
+    }
+    invokeAPI(apiName, methodName, methodArgs) {
         return new Promise((resolve, reject) => {
             const apiEvent = new CustomEvent('internalapievent', {
                 bubbles: true,
                 composed: true,
                 cancelable: false,
                 detail: {
-                    category: 'workspaceAPI',
+                    category: apiName,
                     methodName: methodName,
                     methodArgs: methodArgs,
                     callback: (err, response) => {

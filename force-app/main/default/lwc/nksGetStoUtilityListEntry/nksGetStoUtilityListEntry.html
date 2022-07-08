@@ -2,7 +2,12 @@
     <div class={className}>
         <a href={recordUrl} onclick={navigateToPage}>
             <lightning-layout>
-                <lightning-layout-item class="slds-col">
+                <h3>
+                    <lightning-layout-item class="slds-col">
+                        {record.casenumber}
+                    </lightning-layout-item>
+                </h3>
+                <lightning-layout-item class="slds-col slds-var-p-left_large">
                     <lightning-formatted-date-time
                         class="slds-text-link"
                         value={record.modifiedDate}
