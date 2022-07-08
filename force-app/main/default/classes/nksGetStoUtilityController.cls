@@ -1,6 +1,7 @@
 public with sharing class nksGetStoUtilityController {
     private final static Integer MAX_ATTEMPTS = 5;
     public class TooManyAttemptsException extends Exception {}
+    public class NoCasesFoundException extends Exception {}
 
     @AuraEnabled
     public static List<Record> getSto(){
@@ -173,7 +174,7 @@ public with sharing class nksGetStoUtilityController {
         return skillIdList;
     }
     private static Id getNextSTOCase(List<Id> skillIdList){
-        PendingServiceRouting psr = [
+        List<PendingServiceRouting> psr = [
                     SELECT
                         Id, WorkItemId
                     FROM
@@ -199,9 +200,10 @@ public with sharing class nksGetStoUtilityController {
                         AND IsReadyForRouting = true
                         AND isPushed = false
                     ORDER BY
-                        RoutingPriority, CreatedDate,SecondaryRoutingPriority
+                        RoutingPriority, SecondaryRoutingPriority, CreatedDate
                     LIMIT 1
                 ];
-        return psr?.WorkItemId;
-            }
+        if(psr.size() == 0) throw new NoCasesFoundException('NotFound');
+        return psr[0].WorkItemId;
+        }
 }

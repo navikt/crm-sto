@@ -69,7 +69,18 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                         );
                     } else if (
                         typeof error.body.message === 'string' && 
-                        error.message.startsWith('Max Attempt')
+                        error.body.message.startsWith('Max Attempt')
+                    ) {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Kunne ikke hente ny STO.',
+                                message: 'Prøv igjen.',
+                                variant: 'warning'
+                            })
+                        );
+                    }else if (
+                        typeof error.body.message === 'string' && 
+                        error.body.message.startsWith('NotFound')
                     ) {
                         this.dispatchEvent(
                             new ShowToastEvent({
