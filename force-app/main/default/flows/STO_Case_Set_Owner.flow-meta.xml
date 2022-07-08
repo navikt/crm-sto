@@ -214,7 +214,7 @@
             <targetReference>Get_Related_Account_And_Owner</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>CaseId</name>
         <dataType>String</dataType>
