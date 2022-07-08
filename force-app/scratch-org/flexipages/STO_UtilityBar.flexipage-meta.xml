@@ -3,12 +3,6 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>runtime_service_omnichannel:omniWidget</componentName>
-                <identifier>runtime_service_omnichannel_omniWidget</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
                 <componentInstanceProperties>
                     <name>eager</name>
                     <type>decorator</type>
@@ -47,12 +41,6 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentName>nksBackgroundTabUpdator</componentName>
-                <identifier>nksBackgroundTabUpdator</identifier>
-            </componentInstance>
-        </itemInstances>
         <name>backgroundComponents</name>
         <type>Background</type>
     </flexiPageRegions>
