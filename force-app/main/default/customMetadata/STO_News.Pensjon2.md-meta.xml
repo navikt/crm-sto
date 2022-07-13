@@ -4,11 +4,7 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">&lt;ul&gt;
-&lt;li&gt;Lønnsslipp fra måneden før første uttak av AFP. &lt;/li&gt;
-&lt;li&gt;Lønnsslipp fra måneden etter opphør av AFP. &lt;/li&gt;
-&lt;li&gt;Lønns- og trekkoppgave for etteroppgjørsåret.&lt;/li&gt;
-&lt;/ul&gt;</value>
+        <value xsi:type="xsd:string">Se forklaringen i denne filmen: &lt;a href=&quot;https://vimeo.com/719784937/572cc4d415&quot;&gt;Trygdeoppgjøret&lt;/a&gt; (Vimeo)</value>
     </values>
     <values>
         <field>STO_Category__c</field>
@@ -16,6 +12,6 @@
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Eksempler på dokumentasjon som kan sendes inn:</value>
+        <value xsi:type="xsd:string">Lurer du på hvorfor utbetalingen i juli er lavere enn i juni?</value>
     </values>
 </CustomMetadata>
