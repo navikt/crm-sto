@@ -5,7 +5,7 @@
         <name>Set_Error_Message_0</name>
         <label>Set Error Message</label>
         <locationX>440</locationX>
-        <locationY>518</locationY>
+        <locationY>398</locationY>
         <assignmentItems>
             <assignToReference>ErrorMessage</assignToReference>
             <operator>Assign</operator>
@@ -18,7 +18,7 @@
         <name>Set_Return_Var</name>
         <label>Set Return Var</label>
         <locationX>176</locationX>
-        <locationY>638</locationY>
+        <locationY>518</locationY>
         <assignmentItems>
             <assignToReference>ReturnVar</assignToReference>
             <operator>Add</operator>
@@ -54,42 +54,13 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <description>Get Queue ID</description>
-        <name>Get_Queue_Id</name>
-        <label>Get Queue Id</label>
-        <locationX>176</locationX>
-        <locationY>278</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Update_Cases</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>DeveloperName</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>QueueName</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>Type</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Queue</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Group</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Related_Account_And_Owner</name>
         <label>Get Related Account And Owner</label>
         <locationX>176</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Queue_Id</targetReference>
+            <targetReference>Update_Cases</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -121,7 +92,7 @@
         <name>Reserved_Cases</name>
         <label>Reserved Cases</label>
         <locationX>176</locationX>
-        <locationY>518</locationY>
+        <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_Return_Var</targetReference>
@@ -164,7 +135,7 @@
         <name>Update_Cases</name>
         <label>Update Cases</label>
         <locationX>176</locationX>
-        <locationY>398</locationY>
+        <locationY>278</locationY>
         <connector>
             <targetReference>Reserved_Cases</targetReference>
         </connector>
@@ -180,10 +151,10 @@
             </value>
         </filters>
         <filters>
-            <field>OwnerId</field>
+            <field>CRM_In_Queue__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Queue_Id.Id</elementReference>
+                <booleanValue>true</booleanValue>
             </value>
         </filters>
         <filters>
@@ -191,6 +162,13 @@
             <operator>EqualTo</operator>
             <value>
                 <elementReference>CaseOrigin</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>STO_Category__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>STOCategory</elementReference>
             </value>
         </filters>
         <inputAssignments>

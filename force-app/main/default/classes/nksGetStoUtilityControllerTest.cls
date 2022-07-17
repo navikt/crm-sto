@@ -1,65 +1,73 @@
 @isTest
 public with sharing class nksGetStoUtilityControllerTest {
     @TestSetup
-    static void makeData(){
-        /*
+    static void makeData() {
         List<Person__c> persons = STO_TestDataFactory.createPersons(2);
         List<Id> personIds = new List<Id>();
-        for(Person__c p : persons){
+        for (Person__c p : persons) {
             personIds.add(p.Id);
         }
         List<Account> accs = [SELECT Id FROM Account WHERE CRM_Person__c IN :personIds];
+
+        Group testGroup = new Group(Name = 'TEST GROUP', Type = 'Queue');
+        insert testGroup;
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            QueuesObject testQueue = new QueueSObject(QueueID = testGroup.id, SObjectType = 'Case');
+            insert testQueue;
+        }
+
+        String STO_RECORD_TYPE = Case.getSObjectType()
+            .getDescribe()
+            .getRecordTypeInfosByDeveloperName()
+            .get('STO_Case')
+            .getRecordTypeId();
 
         Case c = new Case();
         c.AccountId = accs[0].Id;
         c.Status = 'New';
         c.Origin = 'STO';
         c.STO_Category__c = 'Familie';
-        c.CRM_Run_Case_Assignment__c = true;
+        c.OwnerId = testGroup.Id;
+        c.RecordTypeId = STO_RECORD_TYPE;
 
         insert c;
 
-        User usr = (User) STO_TestDataFactory.createRecord(new User(FirstName = 'SUPER', LastName = 'SKILLED'));
-        
-        ServiceResource sr = new ServiceResource();
-        sr.Name = 'TestResource';
-        sr.ResourceType = 'A';
-        sr.RelatedRecordId = usr.Id;
-        sr.IsActive = true;
-        insert sr;
+        Case c2 = new Case();
+        c2.AccountId = accs[0].Id;
+        c2.Status = 'New';
+        c2.Origin = 'STO';
+        c2.STO_Category__c = 'Familie';
+        c2.OwnerId = testGroup.Id;
+        c2.RecordTypeId = STO_RECORD_TYPE;
 
-
-        Skill s = [SELECT Id FROM Skill WHERE DeveloperName = 'Familie' LIMIT 1];
-
-        ServiceResourceSkill srs = new ServiceResourceSkill();
-        srs.ServiceResourceId = sr.Id;
-        srs.SkillId = s.Id;
-        srs.EffectiveStartDate = Date.today();
-
-        insert srs;
-        */
-
+        insert c2;
     }
 
     @isTest
-    static void testTest(){
-        /*
-        List<Case> c = [SELECT Id, CaseNumber, Status, OwnerId, STO_Category__c, AccountId, Origin, CRM_Run_Case_Assignment__c FROM Case];
-        System.debug(c);
-        List<SkillRequirement> skillr = [SELECT RelatedRecordId, SkillId, Skill.DeveloperName FROM SkillRequirement];
-        System.debug(skillr);
-        List<ServiceResourceSkill> srs = [SELECT Id, SkillId, ServiceResource.RelatedRecordId FROM ServiceResourceSkill];
-        System.debug(srs);
-        List<ServiceResource> sr = [SELECT Id, Name, ResourceType, RelatedRecord.FirstName FROM ServiceResource];
-        System.debug(sr);
-        */
-    }
-    @isTest
-    static void getServiceResourceSkillIdsTest(){
-        /*
-        User u = [SELECT Id FROM User WHERE FirstName = 'SUPER'];
-        List<Id> skillIdList = nksGetStoUtilityController.getServiceResourceSkillIds(u.Id);
-        System.assertEquals(1, skillIdList.size(), 'Service resource has one skill.');
-        */
+    static void testGetSto() {
+        User usr = (User) STO_TestDataFactory.createRecord(new User());
+        List<nksGetStoUtilityController.Record> records;
+        List<nksGetStoUtilityController.Record> noRecord;
+        List<nksGetStoUtilityController.Record> ownedList;
+
+        Test.startTest();
+        System.runAs(usr) {
+            records = nksGetStoUtilityController.getSto();
+            ownedList = nksGetStoUtilityController.getList('10');
+        }
+        delete [SELECT Id FROM Case];
+        System.runAs(usr) {
+            try {
+                noRecord = nksGetStoUtilityController.getSto();
+                System.assert(false);
+            } catch (AuraHandledException auraEx) {
+                System.assert(true);
+            }
+        }
+        Test.stopTest();
+
+        System.assertNotEquals(0, records.size());
+        System.assertEquals(2, ownedList.size());
     }
 }
