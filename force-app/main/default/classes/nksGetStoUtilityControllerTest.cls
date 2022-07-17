@@ -31,17 +31,7 @@ public with sharing class nksGetStoUtilityControllerTest {
         c.OwnerId = testGroup.Id;
         c.RecordTypeId = STO_RECORD_TYPE;
 
-        insert c;
-
-        Case c2 = new Case();
-        c2.AccountId = accs[0].Id;
-        c2.Status = 'New';
-        c2.Origin = 'STO';
-        c2.STO_Category__c = 'Familie';
-        c2.OwnerId = testGroup.Id;
-        c2.RecordTypeId = STO_RECORD_TYPE;
-
-        insert c2;
+        STO_TestDataFactory.createRecordList(c, 2);
     }
 
     @isTest
