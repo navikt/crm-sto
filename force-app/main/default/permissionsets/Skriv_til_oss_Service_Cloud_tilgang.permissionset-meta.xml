@@ -20,6 +20,10 @@
         <apexClass>stoUtilityBackgroundController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>nksGetStoUtilityController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <fieldPermissions>
         <editable>false</editable>
         <field>Case.STO_Category__c</field>
