@@ -1,8 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import getList from '@salesforce/apex/nksGetStoUtilityController.getList';
-//import getNewSTO from '@salesforce/apex/nksGetStoUtilityController.getNewSTO';
-import getSto from    '@salesforce/apex/nksGetStoUtilityController.getSto';
-//import getRelatedSTO from '@salesforce/apex/nksGetStoUtilityController.getRelatedSTO';
+import getSto from '@salesforce/apex/nksGetStoUtilityController.getSto';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -14,8 +12,10 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     isInitiated = false;
     pageurl;
     initRun = false;
+    utilityId;
 
     connectedCallback() {
+        this.getUtilityId();
         // Navigate to list
         this[NavigationMixin.GenerateUrl]({
             type: 'standard__objectPage',
@@ -38,123 +38,73 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
         }
     }
 
-    getNewSTOHandler(){
+    getNewSTOHandler() {
         console.log('click');
         this.showSpinner = true;
         getSto()
-            .then(
-                (records) =>{
-                    console.log(records);
-                    records.forEach(
-                        (record) => {
-                            this.openCase(
-                                record.recordId,
-                                record.status === 'In Progress' ? true : false
-                            );
-                        },this
+            .then((records) => {
+                console.log(records);
+                records.forEach((record) => {
+                    this.openCase(record.recordId, record.status === 'In Progress' ? true : false);
+                }, this);
+                this.minimizeSTOUtility();
+            }, this)
+            .catch((error) => {
+                console.log(error);
+                if (error.body.message === 'hasInProgress') {
+                    this.dispatchEvent(
+                        // TODO: make clear error/info messages :)
+                        new ShowToastEvent({
+                            title: 'Du har allerede STO under arbeid.',
+                            variant: 'warning'
+                        })
                     );
-                    this.minimizeSTOUtility();
-                },this
-            )
-            .catch(
-                (error) => {
-                    console.log(error);
-                    if(error.body.message === 'hasInProgress'){
-                        this.dispatchEvent(
-                            // TODO: make clear error/info messages :)
-                            new ShowToastEvent({
-                                title: 'Du har allerede STO under arbeid.',
-                                variant: 'warning'
-                            })
-                        );
-                    } else if (
-                        typeof error.body.message === 'string' && 
-                        error.body.message.startsWith('Max Attempt')
-                    ) {
-                        this.dispatchEvent(
-                            new ShowToastEvent({
-                                title: 'Kunne ikke hente ny STO.',
-                                message: 'Prøv igjen.',
-                                variant: 'warning'
-                            })
-                        );
-                    }else if (
-                        typeof error.body.message === 'string' && 
-                        error.body.message.startsWith('NotFound')
-                    ) {
-                        this.dispatchEvent(
-                            new ShowToastEvent({
-                                title: 'Kunne ikke hente ny STO.',
-                                message: 'Prøv igjen.',
-                                variant: 'warning'
-                            })
-                        );
-                    } else {
-                        this.dispatchEvent(
-                            new ShowToastEvent({
-                                title: 'Error.',
-                                message: error.body.message,
-                                variant: 'error'
-                            })
-                        );
-                    }
+                } else if (typeof error.body.message === 'string' && error.body.message.startsWith('Max Attempt')) {
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Kunne ikke hente ny STO.',
+                            message: 'Prøv igjen.',
+                            variant: 'warning'
+                        })
+                    );
+                } else if (typeof error.body.message === 'string' && error.body.message.startsWith('NotFound')) {
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Kunne ikke hente ny STO.',
+                            message: 'Prøv igjen.',
+                            variant: 'warning'
+                        })
+                    );
+                } else {
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Error.',
+                            message: error.body.message,
+                            variant: 'error'
+                        })
+                    );
                 }
-            )
-            .finally(
-                () => {
-                    this.loadList();
-                },this
-            );
-            /*
-        getNewSTO()
-            .then(
-                (caseId) => {
-                    console.log(caseId);
-                    this.openCase(caseId,true);
-                    getRelatedSTO({caseId : caseId})
-                        .then(
-                            (relatedCaseIds) => {
-                                console.log(relatedCaseIds);
-                                relatedCaseIds?.forEach( element => {
-                                    console.log(element);
-                                    this.openCase(element,false);                                       
-                                });
-                                this.refreshComponent();
-                            },this
-                        )
-                    ;
-                    console.log('minimize');
-                    this.minimizeSTOUtility();
-                },this
-            )
-            .catch(
-                (error) => {
-                    // TODO: error handler
-                    console.log(error);
-                }
-            )
-            .finally(
-            )
-        ;
-        */
+            })
+            .finally(() => {
+                this.loadList();
+            }, this);
     }
-    minimizeSTOUtility(){
-        this.invokeUtilityBarAPI('getAllUtilityInfo').then(
-            (allUtilityInfo) => {
-                var stoUtility = allUtilityInfo.find(
-                    (e) => {
-                        console.log(e.utilityLabel);
-                        return e.utilityLabel === 'GetSTOUtility'
-                    }
-                );
-                console.log(allUtilityInfo);
-                console.log(stoUtility);
-                if(stoUtility) this.invokeUtilityBarAPI('minimizeUtility',{utilityId: stoUtility.id});
-            },this
-        );
+    minimizeSTOUtility() {
+        if (this.utilityId) this.invokeUtilityBarAPI('minimizeUtility', { utilityId: this.utilityId });
     }
-    openCase(caseId,focus){
-        return this.invokeWorkspaceAPI('openTab',{recordId: caseId, focus: focus});
+
+    getUtilityId() {
+        this.invokeUtilityBarAPI('getAllUtilityInfo').then((allUtilityInfo) => {
+            var stoUtility = allUtilityInfo.find((e) => {
+                //Matches the label of the utility component defined in app manager
+                return e.utilityLabel === 'Skriv til oss';
+            });
+            if (stoUtility) this.utilityId = stoUtility.id;
+        }, this);
+    }
+
+    openCase(caseId, focus) {
+        return this.invokeWorkspaceAPI('openTab', { recordId: caseId, focus: focus });
     }
     loadList() {
         return getList({
@@ -199,7 +149,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     refreshList = () => {
         this.isInitiated = true;
         this.loadList();
-    }
+    };
 
     loadMoreList() {
         this.listCount += 3;
@@ -218,9 +168,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
 
     get hasCasesInProgress() {
         try {
-            return this.records.some(
-                e => e.status ===  'In progress' ||  e.status === 'New'
-            );
+            return this.records.some((e) => e.status === 'In progress' || e.status === 'New');
         } catch {
             // skip
         }
@@ -229,16 +177,16 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
 
     get lastIndex() {
         let index = 0;
-            index = this.records.length - 1;
+        index = this.records.length - 1;
         return index;
     }
 
     //Helper method to invoke workspace API  from LWC
     invokeWorkspaceAPI(methodName, methodArgs) {
-        return this.invokeAPI('workspaceAPI',methodName,methodArgs);
+        return this.invokeAPI('workspaceAPI', methodName, methodArgs);
     }
-    invokeUtilityBarAPI(methodName, methodArgs){
-        return this.invokeAPI('utilityBarAPI',methodName,methodArgs);
+    invokeUtilityBarAPI(methodName, methodArgs) {
+        return this.invokeAPI('utilityBarAPI', methodName, methodArgs);
     }
     invokeAPI(apiName, methodName, methodArgs) {
         return new Promise((resolve, reject) => {
