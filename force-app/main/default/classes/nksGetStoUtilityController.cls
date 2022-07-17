@@ -29,6 +29,7 @@ public without sharing class nksGetStoUtilityController {
         }
         return records;
     }
+
     @AuraEnabled
     public static Id getNewSTO() {
         try {
@@ -47,6 +48,7 @@ public without sharing class nksGetStoUtilityController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
     private static Boolean takeOwnership(Id caseId, Id userId) {
         try {
             Case c = [SELECT Id, OwnerId, Owner.Type, Status FROM Case WHERE Id = :caseId LIMIT 1 FOR UPDATE];
@@ -61,6 +63,7 @@ public without sharing class nksGetStoUtilityController {
         }
         return true;
     }
+
     @AuraEnabled
     public static List<Id> getRelatedSTO(Id caseId) {
         List<Id> relatedCaseIds = new List<Id>();
@@ -81,6 +84,7 @@ public without sharing class nksGetStoUtilityController {
         }
         return relatedCaseIds;
     }
+
     @AuraEnabled
     public static List<Record> getList(String limitNumber) {
         List<Record> records = new List<Record>();
@@ -97,6 +101,7 @@ public without sharing class nksGetStoUtilityController {
         records = createRecords(listtoreturn);
         return records;
     }
+
     private static Boolean hasInProgress() {
         List<Case> casesInProgress = [
             SELECT Id
