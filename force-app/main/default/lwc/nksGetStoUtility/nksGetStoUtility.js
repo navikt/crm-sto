@@ -3,6 +3,7 @@ import getList from '@salesforce/apex/nksGetStoUtilityController.getList';
 import getSto from '@salesforce/apex/nksGetStoUtilityController.getSto';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import hasStoBeta from '@salesforce/customPermission/STO_Beta';
 
 export default class NksGetStoUtility extends NavigationMixin(LightningElement) {
     listCount = 5;
@@ -13,6 +14,8 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     pageurl;
     initRun = false;
     utilityId;
+
+    betaPermission = hasStoBeta;
 
     connectedCallback() {
         this.getUtilityId();
