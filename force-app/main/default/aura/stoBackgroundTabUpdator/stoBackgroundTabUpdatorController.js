@@ -62,6 +62,14 @@
                         });
                 }, 2000);
             }
+            if (data.getState() === 'ERROR') {
+                console.log('LOGGING OUT');
+                setTimeout(function () {
+                    omniAPI.logout().then((result) => {
+                        console.log('SUCCESSFUL LOGOUT? ' + result);
+                    });
+                }, 2000);
+            }
         });
         $A.enqueueAction(action);
     }
