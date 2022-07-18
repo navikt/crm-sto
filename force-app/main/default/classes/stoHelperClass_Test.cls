@@ -80,7 +80,7 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void getSTONewsTest() {
         Test.startTest();
-        List<STO_News__mdt> newsList = stoHelperClass.getCategoryNews('Arbeid');
+        List<STO_News__mdt> newsList = stoHelperClass.getCategoryNews('Pensjon');
         System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
     }
