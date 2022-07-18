@@ -71,8 +71,8 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                     this.dispatchEvent(
                         new ShowToastEvent({
                             title: 'Kunne ikke hente ny STO.',
-                            message: 'Prøv igjen.',
-                            variant: 'warning'
+                            message: 'Ingen flere STOer på køer du behandler.',
+                            variant: 'info'
                         })
                     );
                 } else {

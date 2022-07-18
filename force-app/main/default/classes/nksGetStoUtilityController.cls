@@ -156,25 +156,29 @@ public without sharing class nksGetStoUtilityController {
     }
 
     private static Id getNextSTOCase(List<Id> skillIdList) {
-        List<PendingServiceRouting> psr = [
-            SELECT Id, WorkItemId
-            FROM PendingServiceRouting
-            WHERE
-                Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :skillIdList)
-                AND WorkitemId IN (
-                    SELECT Id
-                    FROM Case
-                    WHERE RecordType.DeveloperName = 'STO_Case' AND Owner.Type = 'Queue'
-                )
-                AND IsReadyForRouting = TRUE
-                AND isPushed = FALSE
-            ORDER BY RoutingPriority, SecondaryRoutingPriority, CreatedDate
-            LIMIT 1
-        ];
-        if (Test.isRunningTest()) {
-            return [SELECT Id FROM Case LIMIT 1]?.Id;
-        } else if (psr.size() == 0)
-            throw new NoCasesFoundException('NotFound');
-        return psr[0].WorkItemId;
+        try {
+            List<PendingServiceRouting> psr = [
+                SELECT Id, WorkItemId
+                FROM PendingServiceRouting
+                WHERE
+                    Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :skillIdList)
+                    AND WorkitemId IN (
+                        SELECT Id
+                        FROM Case
+                        WHERE RecordType.DeveloperName = 'STO_Case' AND Owner.Type = 'Queue'
+                    )
+                    AND IsReadyForRouting = TRUE
+                    AND isPushed = FALSE
+                ORDER BY RoutingPriority, SecondaryRoutingPriority, CreatedDate
+                LIMIT 1
+            ];
+            if (Test.isRunningTest()) {
+                return [SELECT Id FROM Case LIMIT 1]?.Id;
+            } else if (psr.size() == 0)
+                throw new NoCasesFoundException('NotFound');
+            return psr[0].WorkItemId;
+        } catch (QueryException queryEx) {
+            throw new AuraHandledException('En feil oppsto ved henting av ny STO, prøv igjen.');
+        }
     }
 }
