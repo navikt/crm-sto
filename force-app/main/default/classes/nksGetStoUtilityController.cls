@@ -5,6 +5,13 @@ public without sharing class nksGetStoUtilityController {
     public class NoCasesFoundException extends Exception {
     }
 
+    private static List<Id> skillIdList = new List<Id>();
+    private static List<Id> userConfidentialitySkills = new List<Id>();
+    private static final List<String> confidentialitySkills = new List<String>{
+        'Fortrolig_addresse',
+        'Skjermede_personer'
+    };
+
     @AuraEnabled
     public static List<Record> getSto() {
         List<Record> records = new List<Record>();
@@ -35,9 +42,9 @@ public without sharing class nksGetStoUtilityController {
         try {
             Integer attempt = 0;
             Id userId = UserInfo.getUserId();
-            List<Id> userSkillIds = getServiceResourceSkillIds(userId);
+            getServiceResourceSkillIds(userId);
             do {
-                Id nextCaseId = getNextSTOCase(userSkillIds);
+                Id nextCaseId = getNextSTOCase();
                 if (takeOwnership(nextCaseId, userId)) {
                     return nextCaseId;
                 }
@@ -143,35 +150,24 @@ public without sharing class nksGetStoUtilityController {
     }
 
     @TestVisible
-    private static List<Id> getServiceResourceSkillIds(Id userId) {
-        List<Id> skillIdList = new List<Id>();
+    private static void getServiceResourceSkillIds(Id userId) {
         for (ServiceResourceSkill srs : [
-            SELECT SkillId
+            SELECT SkillId, Skill.DeveloperName
             FROM ServiceResourceSkill
             WHERE ServiceResource.RelatedRecordId = :userId
         ]) {
-            skillIdList.add(srs.SkillId);
+            //Separating domain skills and person access skills
+            if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
+                userConfidentialitySkills.add(srs.SkillId);
+            } else {
+                skillIdList.add(srs.SkillId);
+            }
         }
-        return skillIdList;
     }
 
-    private static Id getNextSTOCase(List<Id> skillIdList) {
+    private static Id getNextSTOCase() {
         try {
-            List<PendingServiceRouting> psr = [
-                SELECT Id, WorkItemId
-                FROM PendingServiceRouting
-                WHERE
-                    Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :skillIdList)
-                    AND WorkitemId IN (
-                        SELECT Id
-                        FROM Case
-                        WHERE RecordType.DeveloperName = 'STO_Case' AND Owner.Type = 'Queue'
-                    )
-                    AND IsReadyForRouting = TRUE
-                    AND isPushed = FALSE
-                ORDER BY RoutingPriority, SecondaryRoutingPriority, CreatedDate
-                LIMIT 1
-            ];
+            List<PendingServiceRouting> psr = getPendingServiceRouting();
             if (Test.isRunningTest()) {
                 return [SELECT Id FROM Case LIMIT 1]?.Id;
             } else if (psr.size() == 0)
@@ -180,5 +176,34 @@ public without sharing class nksGetStoUtilityController {
         } catch (QueryException queryEx) {
             throw new AuraHandledException('En feil oppsto ved henting av ny STO, prøv igjen.');
         }
+    }
+
+    /**
+     * Queries the PSR with highest priority within your skill pool and ensures you have access to the person,
+     * that the case relates to
+     * @author Stian Ruud Schikora | 07-19-2022
+     * @return List<PendingServiceRouting>
+     **/
+    private static List<PendingServiceRouting> getPendingServiceRouting() {
+        return [
+            SELECT Id, WorkItemId
+            FROM PendingServiceRouting
+            WHERE
+                Id IN (
+                    SELECT RelatedRecordId
+                    FROM SkillRequirement
+                    WHERE SkillId IN :skillIdList OR SkillId IN :userConfidentialitySkills
+                )
+                AND ID NOT IN (
+                    SELECT RelatedRecordId
+                    FROM SkillRequirement
+                    WHERE SkillId NOT IN :userConfidentialitySkills AND Skill.DeveloperName IN :confidentialitySkills
+                )
+                AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
+                AND IsReadyForRouting = TRUE
+                AND isPushed = FALSE
+            ORDER BY RoutingPriority, SecondaryRoutingPriority, CreatedDate
+            LIMIT 1
+        ];
     }
 }
