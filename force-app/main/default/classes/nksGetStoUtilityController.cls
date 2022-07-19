@@ -167,22 +167,7 @@ public without sharing class nksGetStoUtilityController {
 
     private static Id getNextSTOCase() {
         try {
-            List<PendingServiceRouting> psr = [
-                SELECT Id, WorkItemId
-                FROM PendingServiceRouting
-                WHERE
-                    Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :skillIdList)
-                    AND ID IN (
-                        SELECT RelatedRecordId
-                        FROM SkillRequirement
-                        WHERE SkillId IN :userConfidentialitySkills OR Skill.DeveloperName NOT IN :confidentialitySkills
-                    )
-                    AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
-                    AND IsReadyForRouting = TRUE
-                    AND isPushed = FALSE
-                ORDER BY RoutingPriority, SecondaryRoutingPriority, CreatedDate
-                LIMIT 1
-            ];
+            List<PendingServiceRouting> psr = getPendingServiceRouting();
             if (Test.isRunningTest()) {
                 return [SELECT Id FROM Case LIMIT 1]?.Id;
             } else if (psr.size() == 0)
@@ -191,5 +176,28 @@ public without sharing class nksGetStoUtilityController {
         } catch (QueryException queryEx) {
             throw new AuraHandledException('En feil oppsto ved henting av ny STO, prøv igjen.');
         }
+    }
+
+    private static List<PendingServiceRouting> getPendingServiceRouting() {
+        return [
+            SELECT Id, WorkItemId
+            FROM PendingServiceRouting
+            WHERE
+                Id IN (
+                    SELECT RelatedRecordId
+                    FROM SkillRequirement
+                    WHERE SkillId IN :skillIdList OR SkillId IN :userConfidentialitySkills
+                )
+                AND ID NOT IN (
+                    SELECT RelatedRecordId
+                    FROM SkillRequirement
+                    WHERE SkillId NOT IN :userConfidentialitySkills AND Skill.DeveloperName IN :confidentialitySkills
+                )
+                AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
+                AND IsReadyForRouting = TRUE
+                AND isPushed = FALSE
+            ORDER BY RoutingPriority, SecondaryRoutingPriority, CreatedDate
+            LIMIT 1
+        ];
     }
 }
