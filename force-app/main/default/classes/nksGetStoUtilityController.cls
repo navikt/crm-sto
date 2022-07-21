@@ -189,11 +189,7 @@ public without sharing class nksGetStoUtilityController {
             SELECT Id, WorkItemId
             FROM PendingServiceRouting
             WHERE
-                Id IN (
-                    SELECT RelatedRecordId
-                    FROM SkillRequirement
-                    WHERE SkillId IN :skillIdList OR SkillId IN :userConfidentialitySkills
-                )
+                Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :skillIdList)
                 AND ID NOT IN (
                     SELECT RelatedRecordId
                     FROM SkillRequirement
