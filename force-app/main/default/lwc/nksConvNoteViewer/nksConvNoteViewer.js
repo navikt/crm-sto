@@ -1,7 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import getconvnote from '@salesforce/apex/NKS_DialogueViewController.getConvNote';
 
-export default class DiaConvNoteViewer extends LightningElement {
+export default class NksConvNoteViewer extends LightningElement {
     @api recordId;
 
     conversationNote;
