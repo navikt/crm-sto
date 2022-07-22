@@ -34,6 +34,14 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
         });
     }
 
+    registerClickHandler() {
+        let _this = this;
+        const eventHandler = (event) => {
+            _this.loadList();
+        };
+        this.invokeUtilityBarAPI('onUtilityClick', { utilityId: this.utilityId, eventHandler: eventHandler });
+    }
+
     renderedCallback() {
         if (this.initRun === false) {
             this.initRun = true;
@@ -102,7 +110,10 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                 //Matches the label of the utility component defined in app manager
                 return e.utilityLabel === 'Skriv til oss';
             });
-            if (stoUtility) this.utilityId = stoUtility.id;
+            if (stoUtility) {
+                this.utilityId = stoUtility.id;
+                this.registerClickHandler();
+            }
         }, this);
     }
 
