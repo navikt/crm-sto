@@ -14,7 +14,6 @@ export default class DiaConvNoteViewer extends LightningElement {
             console.log('Error: ' + JSON.stringify(error, null, 2));
         } else if (result.data) {
             this.conversationNote = result.data[0];
-            console.log(JSON.stringify(this.conversationNote, null, 2));
         }
     }
 
