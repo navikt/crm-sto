@@ -61,7 +61,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     modalOpen = false;
     maxLength = 1000;
     openThreadList;
-    hideDeleteModal = true;
 
     @wire(MessageContext)
     messageContext;
@@ -224,28 +223,21 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    shaggy(event) {
-        console.log('geir');
-        const t = event.currentTarget.dataset.id;
+    closeSelectedThread(selectedThreadId) {
         this.showspinner = true;
-        console.log(t);
-        closeThread({ id: t })
+        console.log(selectedThreadId);
+        closeThread({ id: selectedThreadId })
             .then(() => {
-                console.log('Kidney');
                 refreshApex(this._wireThreadData)
-                    .then((a) => {
-                        console.log('a');
-                        console.log(a);
+                    .then(() => {
                         this.showspinner = false;
                     })
-                    .catch((e) => {
-                        console.log('e');
-                        console.log(e);
+                    .catch((err) => {
+                        console.log(err);
                     });
             })
-            .catch((e) => {
-                console.log('g');
-                console.log(e);
+            .catch((err) => {
+                console.log(err);
             });
     }
 
@@ -298,7 +290,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get openThreadLink() {
-        return basepath + '/skriv-til-oss/' + this.openThreadList[0].Id;
+        console.log('this.openThreadList');
+        console.log(this.openThreadList);
+        return basepath + '/skriv-til-oss/' + this.openThreadList[0].recordId;
     }
 
     get alertType() {
@@ -310,41 +304,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.openThreadList === null || this.openThreadList === undefined || this.openThreadList.length < 5;
     }
 
-    get mby() {
-        return false;
-    }
-
-    testington(e) {
-        e.preventDefault();
-        console.log('testington');
-        this.hideDeleteModal = false;
-    }
-
     get backdropClass() {
         return this.hideDeleteModal === true ? 'slds-hide' : 'backdrop';
     }
 
-    get modalClass() {
-        return 'slds-modal slds-show uiPanel north' + (this.hideDeleteModal === true ? ' geir' : ' slds-fade-in-open');
-    }
-
-    closeModal() {
-        this.hideDeleteModal = true;
-        const btn = this.template.querySelector('.endDialogBtn');
-        btn.focus();
-    }
-
-    trapFocusStart() {
-        const firstElement = this.template.querySelector('.closeButton');
-        firstElement.focus();
-    }
-
-    confirmCloseThread(e) {
-        console.log('Bø');
-    }
-
-    trapFocusEnd() {
-        const lastElement = this.template.querySelector('.cancelButton');
-        lastElement.focus();
+    handleCloseThread(e) {
+        const selectedThread = this.openThreadList[e.detail];
+        if (selectedThread.recordId) {
+            this.closeSelectedThread(selectedThread.recordId);
+        }
     }
 }

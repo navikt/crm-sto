@@ -66,8 +66,18 @@
                                     Send
                                 </button>
                             </template>
-                            <template if:false={showTextArea} for:each={openThreadList} for:item="thread">
-                                <c-sto-inbox-close-item key={thread.recordId}></c-sto-inbox-close-item>
+                            <template
+                                if:false={showTextArea}
+                                for:each={openThreadList}
+                                for:item="thread"
+                                for:index="index"
+                            >
+                                <c-sto-inbox-close-item
+                                    thread={thread}
+                                    key={thread.recordId}
+                                    index={index}
+                                    onclosethread={handleCloseThread}
+                                ></c-sto-inbox-close-item>
                             </template>
                         </template>
                         <template if:true={showspinner}>

@@ -1,0 +1,46 @@
+.backdrop {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.uiPanelCopy {
+    border: 1px solid #b6b6b6;
+    border-radius: 5px;
+    background-color: #ffffff;
+    overflow: visible;
+    -webkit-transform: translate3d(0, 0, 0);
+}
+
+.uiPanelCopy .container {
+    position: relative;
+    z-index: 9002;
+}
+
+.uiPanelCopy .panel-content {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    height: 100%;
+}
+
+.uiPanelCopy.northCopy > .pointer {
+    border: 0;
+    border-bottom: 1px solid #d8dde6;
+    border-right: 1px solid #d8dde6;
+}
+
+.uiPanelCopy > .pointer {
+    z-index: 9001;
+    width: calc(1.25rem + 0.0625rem);
+    height: calc(1.25rem + 0.0625rem);
+    transform: rotate(45deg);
+    border-top: 1px solid #d8dde6;
+    border-left: 1px solid #d8dde6;
+    background: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+}

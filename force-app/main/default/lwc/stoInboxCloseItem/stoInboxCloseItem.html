@@ -7,7 +7,7 @@
         </c-sto-Message-Inbox-Item>
         <div>
             <button
-                class="lenkepanel"
+                class="lenkepanel endDialogBtn"
                 style="
                     background: white;
                     color: #8ca8cf;
@@ -18,30 +18,70 @@
                     transform: translateY(-50%);
                     padding: 0px;
                 "
-                onclick={testington}
+                onclick={openModal}
             >
                 Avslutt dialog
             </button>
         </div>
-
-        <!-- <button
-                                        class="lenkepanel"
-                                        onclick={shaggy}
-                                        data-id={thread.recordId}
-                                        type="button"
-                                        style="
-                                            padding-inline: 20px;
-                                            background: none;
-                                            border: none;
-                                            background: white;
-                                            border: 1px solid #8b0000;
-                                            margin-bottom: 3px;
-                                            display: flex;
-                                            border-bottom-left-radius: 0px;
-                                            border-top-left-radius: 0px;
-                                        "
-                                    >
-                                        <img src={deletepath} />
-                                    </button> -->
+        <template if:false={hideModal}>
+            <!-- Using a lot of uiOverlay classes to mimic chat close modal -->
+            <div
+                role="alertdialog"
+                tabindex="-1"
+                class={modalClass}
+                aria-describedby="text"
+                style="
+                    position: absolute;
+                    top: auto;
+                    right: 25%;
+                    bottom: calc(77% - var(--lwc-spacingXSmall, 0.5rem));
+                    left: auto;
+                    transform: translate(30%, 1px);
+                    border-color: var(--navds-popover-color-border, #8f8f8f);
+                "
+                aria-hidden={hideModal}
+                aria-modal="true"
+            >
+                <!-- transform: translateX(26%); -->
+                <div class="container">
+                    <div class="panel-content scrollable" id="text">
+                        <div class="slds-var-m-around_medium">
+                            <p>Er du sikker på at du vil avslutte denne samtalen?</p>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="slds-grid slds-grid_align-end">
+                            <div class="right slds-var-m-top_medium slds-var-m-right_large slds-var-m-bottom_large">
+                                <div tabindex="0" onfocus={trapFocusStart}></div>
+                                <button
+                                    type="button"
+                                    class="slds-button slds-button_neutral cancelButton"
+                                    onclick={closeModal}
+                                >
+                                    Avbryt</button
+                                ><button
+                                    type="button"
+                                    class="slds-button slds-button_destructive closeButton"
+                                    onclick={closeThread}
+                                >
+                                    Avslutt samtale
+                                </button>
+                                <div tabindex="0" onfocus={trapFocusEnd}></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="pointer"
+                    style="
+                        position: absolute;
+                        left: 80%;
+                        top: 92%;
+                        border-color: var(--navds-popover-color-border, #8f8f8f);
+                    "
+                ></div>
+            </div>
+            <div class={backdropClass} onclick={closeModal}></div>
+        </template>
     </div>
 </template>

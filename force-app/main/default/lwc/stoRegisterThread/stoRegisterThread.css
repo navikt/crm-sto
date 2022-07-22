@@ -93,12 +93,3 @@
     --override-border-top-right-radius: 0px;
     --override-border-bottom-right-radius: 0px;
 }
-
-.backdrop {
-    position: fixed;
-    z-index: 999;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
