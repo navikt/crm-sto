@@ -55,6 +55,7 @@ export default class NksDialogueViewer extends LightningElement {
         if (error) {
             //Something went wrong
             this.error = true;
+            console.log('Error: ' + JSON.stringify(error, null, 2));
         } else if (data) {
             this.apiReference = getFieldValue(data, NAV_TASK_API_REF_FIELD);
         }

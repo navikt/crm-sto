@@ -5,4 +5,9 @@
         <label>Journalfør</label>
         <name>Journal</name>
     </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Overfør</label>
+        <name>STO_Transfer_Case</name>
+    </quickActions>
 </CustomObjectTranslation>
