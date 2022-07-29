@@ -41,36 +41,5 @@
                 });
                 $A.enqueueAction(action);
             });
-    },
-
-    doInit: function (component, event, helper) {
-        var omniAPI = component.find('omniToolkit');
-        var action = component.get('c.getOnlineId');
-
-        action.setCallback(this, function (data) {
-            console.log(data.getReturnValue());
-            if (data.getReturnValue() != null && data.getReturnValue().length > 0) {
-                console.log('IN Polling');
-                var poll = setInterval(function () {
-                    omniAPI
-                        .login({ statusId: data.getReturnValue() })
-                        .then(function (result) {
-                            clearInterval(poll);
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                }, 2000);
-            }
-            if (data.getState() === 'ERROR') {
-                console.log('LOGGING OUT');
-                setTimeout(function () {
-                    omniAPI.logout().then((result) => {
-                        console.log('SUCCESSFUL LOGOUT? ' + result);
-                    });
-                }, 2000);
-            }
-        });
-        $A.enqueueAction(action);
     }
 });

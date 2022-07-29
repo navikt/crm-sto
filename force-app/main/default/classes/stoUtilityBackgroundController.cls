@@ -15,17 +15,4 @@ public with sharing class stoUtilityBackgroundController {
             throw new AuraHandledException(e.getMessage());
         }
     }
-
-    @AuraEnabled
-    public static string getOnlineId() {
-        if (FeatureManagement.checkPermission('NKS_Beta')) {
-            throw new AuraHandledException('BETA');
-        } else {
-            String statusId = String.valueOf(
-                [SELECT Id FROM ServicePresenceStatus WHERE DeveloperName = 'Skriv_til_oss']
-                ?.Id
-            );
-            return statusId.substring(0, 15);
-        }
-    }
 }
