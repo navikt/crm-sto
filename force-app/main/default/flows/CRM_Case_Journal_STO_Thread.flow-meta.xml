@@ -161,20 +161,6 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <fields>
-            <name>Journal_Title</name>
-            <dataType>String</dataType>
-            <fieldText>Title</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
-        </fields>
-        <fields>
-            <name>Journal_Sender_Receiver</name>
-            <dataType>String</dataType>
-            <fieldText>Sender/Receiver</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
-        </fields>
         <nextOrFinishButtonLabel>Journalfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -221,21 +207,9 @@
             </value>
         </inputAssignments>
         <inputAssignments>
-            <name>Journal_Sender_Receiver</name>
-            <value>
-                <elementReference>Journal_Sender_Receiver</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
             <name>Journal_Theme_Code</name>
             <value>
                 <elementReference>NAV_Case_Overview.selectedCaseTheme</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Journal_Title</name>
-            <value>
-                <elementReference>Journal_Title</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
