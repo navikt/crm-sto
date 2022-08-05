@@ -198,7 +198,7 @@ public without sharing class nksGetStoUtilityController {
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
                 AND isPushed = FALSE
-            ORDER BY RoutingPriority, SecondaryRoutingPriority, CreatedDate
+            ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
             LIMIT 1
         ];
     }
