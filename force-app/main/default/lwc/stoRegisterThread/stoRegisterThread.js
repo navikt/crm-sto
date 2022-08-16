@@ -30,6 +30,8 @@ import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
 
+const maxThreadCount = 3;
+const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     showspinner = false;
     selectedTheme;
@@ -188,6 +190,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.message.length <= this.maxLength
         ) {
             this.showspinner = true;
+            this.spinnerText = spinnerReasonTextMap['send'];
 
             createRecords({ theme: this.selectedTheme, msgText: this.message }).then((thread) => {
                 this.showspinner = false;
@@ -225,7 +228,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     closeSelectedThread(selectedThreadId) {
         this.showspinner = true;
-        console.log(selectedThreadId);
+        this.spinnerText = spinnerReasonTextMap['close'];
         closeThread({ id: selectedThreadId })
             .then(() => {
                 refreshApex(this._wireThreadData)
@@ -277,7 +280,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get openThreadText() {
-        if (this.openThreadList.length < 5) {
+        if (this.openThreadList.length < maxThreadCount) {
             return (
                 'Du har allerede en åpen samtale om ' +
                 this.selectedTheme.toLowerCase() +
@@ -286,7 +289,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 '">fortsette samtalen</a>.'
             );
         }
-        return 'Du har 5 åpne samtaler på dette temaet. <br/> Hvis du vil opprette en ny samtale, så må du lukke en av de du allerede har.';
+        return (
+            'Du har ' +
+            maxThreadCount +
+            ' åpne samtaler på dette temaet. <br/> Hvis du vil opprette en ny samtale, så må du lukke en av de du allerede har.'
+        );
     }
 
     get openThreadLink() {
@@ -296,12 +303,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get alertType() {
-        return this.openThreadList.length >= 5 ? 'advarsel' : 'info';
+        return this.openThreadList.length >= maxThreadCount ? 'advarsel' : 'info';
     }
 
     get showTextArea() {
         console.log(this.openThreadList);
-        return this.openThreadList === null || this.openThreadList === undefined || this.openThreadList.length < 5;
+        return (
+            this.openThreadList === null ||
+            this.openThreadList === undefined ||
+            this.openThreadList.length < maxThreadCount
+        );
     }
 
     get backdropClass() {

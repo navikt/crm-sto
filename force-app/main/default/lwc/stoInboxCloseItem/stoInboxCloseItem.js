@@ -1,55 +1,39 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
+
+import { publish, MessageContext } from 'lightning/messageService';
+import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 
 export default class StoInboxCloseItem extends LightningElement {
     @api thread;
     @api index;
-    hideModal = true;
-    bufferModalFocus = false;
+    modalOpen = false;
 
-    renderedCallback() {
-        //Fungerer ikke, må sjekke
-        console.log('Heisann');
-        if (this.bufferModalFocus === true) {
-            const modal = this.template.querySelector('.northCopy');
-            if (modal) {
-                console.log('Focusing');
-                modal.focus();
-                this.bufferModalFocus = false;
-            }
-        }
-    }
-
-    get modalClass() {
-        return 'slds-modal slds-show uiPanelCopy northCopy' + (this.hideModal === true ? '' : ' slds-fade-in-open');
-    }
+    @wire(MessageContext)
+    messageContext;
 
     get backdropClass() {
-        return this.hideModal === true ? 'slds-hide' : 'backdrop';
+        return this.modalOpen === false ? 'slds-hide' : 'backdrop';
     }
 
     //##################################//
     //########    MODAL    #############//
     //##################################//
 
+    get modal() {
+        return this.template.querySelector('c-community-modal');
+    }
+
     openModal() {
-        this.hideModal = false;
-        this.bufferModalFocus = true;
+        this.modalOpen = true;
+        this.modal.focusModal();
+        publish(this.messageContext, globalModalOpen, { status: 'true' });
     }
 
     closeModal() {
-        this.hideModal = true;
+        this.modalOpen = false;
         const btn = this.template.querySelector('.endDialogBtn');
         btn.focus();
-    }
-
-    trapFocusStart() {
-        const firstElement = this.template.querySelector('.closeButton');
-        firstElement.focus();
-    }
-
-    trapFocusEnd() {
-        const lastElement = this.template.querySelector('.cancelButton');
-        lastElement.focus();
+        publish(this.messageContext, globalModalOpen, { status: 'false' });
     }
 
     closeThread() {
@@ -57,5 +41,19 @@ export default class StoInboxCloseItem extends LightningElement {
             detail: this.index
         });
         this.dispatchEvent(closeThreadEvent);
+    }
+
+    handleKeyboardEvent(event) {
+        if (event.keyCode === 27 || event.code === 'Escape') {
+            this.closeModal();
+        } else if (event.keyCode === 9 || event.code === 'Tab') {
+            console.log(event.path[0]);
+            const el = event.path[0];
+            if (el.classList.contains('firstfocusable')) {
+                this.template.querySelector('.lastFocusElement').focus();
+            } else if (el.classList.contains('lastfocusable')) {
+                this.modal.focusLoop();
+            }
+        }
     }
 }

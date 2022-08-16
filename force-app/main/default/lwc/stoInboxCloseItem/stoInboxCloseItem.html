@@ -1,87 +1,74 @@
 <template>
     <div style="display: flex; text-align: initial; position: relative; align-items: center" class="">
-        <c-sto-Message-Inbox-Item style="flex-grow: 1" class="override" thread={thread} content-size="7"
-            ><div slot="endSection" style="flex: 1; display: contents">
-                <span class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"></span>
+        <c-sto-Message-Inbox-Item style="flex-grow: 1" class="override" thread={thread}>
+            <div slot="endSection" style="display: contents; margin-left: auto">
+                <!-- Fake invisible button to "reserve" enough space for the absolute button -->
+                <c-ds-button
+                    size="small"
+                    style="
+                        margin-right: 24px;
+                        margin-left: 10px;
+                        white-space: nowrap;
+                        text-align: center;
+                        visibility: hidden;
+                    "
+                    variant="secondary"
+                    text="Avslutt samtale"
+                >
+                </c-ds-button>
+                <span
+                    style="margin-right: 24px; margin-left: auto"
+                    class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"
+                ></span>
             </div>
         </c-sto-Message-Inbox-Item>
         <div>
-            <button
-                class="lenkepanel endDialogBtn"
+            <!-- The actual button, absolutely positioned above to avoid problems with having a button within a button -->
+            <c-ds-button
+                class="endDialogBtn"
+                size="small"
                 style="
-                    background: white;
-                    color: #8ca8cf;
                     position: absolute;
-                    left: 75%;
-                    margin-right: auto;
-                    width: auto;
+                    right: 69px;
                     transform: translateY(-50%);
-                    padding: 0px;
+                    white-space: nowrap;
+                    text-align: center;
                 "
-                onclick={openModal}
+                variant="secondary"
+                onbuttonclick={openModal}
+                text="Avslutt samtale"
             >
-                Avslutt dialog
-            </button>
+            </c-ds-button>
         </div>
-        <template if:false={hideModal}>
-            <!-- Using a lot of uiOverlay classes to mimic chat close modal -->
-            <div
-                role="alertdialog"
-                tabindex="-1"
-                class={modalClass}
-                aria-describedby="text"
-                style="
-                    position: absolute;
-                    top: auto;
-                    right: 25%;
-                    bottom: calc(77% - var(--lwc-spacingXSmall, 0.5rem));
-                    left: auto;
-                    transform: translate(30%, 1px);
-                    border-color: var(--navds-popover-color-border, #8f8f8f);
-                "
-                aria-hidden={hideModal}
-                aria-modal="true"
-            >
-                <!-- transform: translateX(26%); -->
-                <div class="container">
-                    <div class="panel-content scrollable" id="text">
-                        <div class="slds-var-m-around_medium">
-                            <p>Er du sikker på at du vil avslutte denne samtalen?</p>
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <div class="slds-grid slds-grid_align-end">
-                            <div class="right slds-var-m-top_medium slds-var-m-right_large slds-var-m-bottom_large">
-                                <div tabindex="0" onfocus={trapFocusStart}></div>
-                                <button
-                                    type="button"
-                                    class="slds-button slds-button_neutral cancelButton"
-                                    onclick={closeModal}
-                                >
-                                    Avbryt</button
-                                ><button
-                                    type="button"
-                                    class="slds-button slds-button_destructive closeButton"
-                                    onclick={closeThread}
-                                >
-                                    Avslutt samtale
-                                </button>
-                                <div tabindex="0" onfocus={trapFocusEnd}></div>
+        <div>
+            <c-community-modal show-modal={modalOpen} onmodalclosed={closeModal} onkeyup={handleKeyboardEvent}>
+                <h1 slot="modalHeader" class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">
+                    Avslutt samtale
+                </h1>
+                <div slot="modalContent">
+                    <section>
+                        <form class="betingelser-panel panel side-innhold">
+                            <div class="blokk-m slds-var-m-top_medium" style="text-align: left">
+                                <lightning-formatted-rich-text value="Hei"></lightning-formatted-rich-text>
                             </div>
-                        </div>
-                    </div>
+                        </form>
+                    </section>
                 </div>
-                <div
-                    class="pointer"
-                    style="
-                        position: absolute;
-                        left: 80%;
-                        top: 92%;
-                        border-color: var(--navds-popover-color-border, #8f8f8f);
-                    "
-                ></div>
-            </div>
-            <div class={backdropClass} onclick={closeModal}></div>
-        </template>
+                <div slot="modalFooter" style="display: flex; gap: 10px; justify-content: center">
+                    <c-ds-button size="medium" variant="primary" text="Ja, avslutt samtale" onbuttonclick={closeThread}>
+                    </c-ds-button>
+
+                    <c-ds-button
+                        size="medium"
+                        variant="secondary"
+                        text="Avbryt"
+                        onbuttonclick={closeModal}
+                        class="lastfocusable"
+                    >
+                    </c-ds-button>
+                </div>
+            </c-community-modal>
+        </div>
+        <div class={backdropClass} onclick={closeModal}></div>
     </div>
 </template>
