@@ -265,14 +265,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     handleKeyboardEvent(event) {
         if (event.keyCode === 27 || event.code === 'Escape') {
             this.closeTerms();
-        } else if (event.keyCode === 9 || event.code === 'Tab') {
-            const el = event.path[0];
-            if (el.classList.contains('firstfocusable')) {
-                this.template.querySelector('.lastFocusElement').focus();
-            } else if (el.classList.contains('lastfocusable')) {
-                this.termsModal.focusLoop();
-            }
         }
+    }
+
+    handleFocusLast() {
+        this.template.querySelector('.lastFocusElement').focus();
     }
 
     get showOpenThreadWarning() {

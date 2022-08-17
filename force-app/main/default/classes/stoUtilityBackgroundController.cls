@@ -15,13 +15,4 @@ public with sharing class stoUtilityBackgroundController {
             throw new AuraHandledException(e.getMessage());
         }
     }
-
-    @AuraEnabled
-    public static string getOnlineId() {
-        String statusId = String.valueOf(
-            [SELECT Id FROM ServicePresenceStatus WHERE DeveloperName = 'Skriv_til_oss']
-            ?.Id
-        );
-        return statusId.substring(0, 15);
-    }
 }

@@ -127,7 +127,12 @@
             </div>
         </div>
         <div>
-            <c-community-modal show-modal={modalOpen} onmodalclosed={closeTerms} onkeyup={handleKeyboardEvent}>
+            <c-community-modal
+                show-modal={modalOpen}
+                onmodalclosed={closeTerms}
+                onkeyup={handleKeyboardEvent}
+                onfocuslast={handleFocusLast}
+            >
                 <h1 slot="modalHeader" class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">
                     {label.SERVICE_TERMS_HEADER}
                 </h1>
