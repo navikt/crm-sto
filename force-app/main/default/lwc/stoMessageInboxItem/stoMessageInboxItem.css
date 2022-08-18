@@ -50,3 +50,9 @@
     max-width: 48px;
     aspect-ratio: 1 / 1;
 }
+
+@media only screen and (max-width: 480px) {
+    .hideMobile {
+        display: none;
+    }
+}

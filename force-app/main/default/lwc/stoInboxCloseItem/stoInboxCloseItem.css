@@ -44,3 +44,17 @@
     top: 0;
     left: 0;
 }
+
+.messagebox {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.centerText {
+    text-align: center;
+}

@@ -41,20 +41,33 @@
             </c-ds-button>
         </div>
         <div>
-            <c-community-modal show-modal={modalOpen} onmodalclosed={closeModal} onkeyup={handleKeyboardEvent}>
-                <h1 slot="modalHeader" class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">
-                    Avslutt samtale
-                </h1>
-                <div slot="modalContent">
-                    <section>
-                        <form class="betingelser-panel panel side-innhold">
-                            <div class="blokk-m slds-var-m-top_medium" style="text-align: left">
-                                <lightning-formatted-rich-text value="Hei"></lightning-formatted-rich-text>
-                            </div>
-                        </form>
-                    </section>
+            <c-community-modal
+                show-modal={modalOpen}
+                onmodalclosed={closeModal}
+                onkeyup={handleKeyboardEvent}
+                onfocuslast={handleFocusLast}
+                show-footer-line
+            >
+                <div slot="modalHeader" class="centerText">
+                    <h1 class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">Avslutt samtale</h1>
+                    <p>Er du sikker på at du vil avslutte denne samtalen?</p>
                 </div>
-                <div slot="modalFooter" style="display: flex; gap: 10px; justify-content: center">
+                <div slot="modalContent">
+                    <div
+                        class="navds-panel navds-panel--border"
+                        style="background: var(--navds-global-color-gray-100, #f1f1f1)"
+                    >
+                        <h2 class="navds-heading navds-heading--large">{threadName}</h2>
+                        <p class="navds-body-long messagebox">{thread.latestmessage.messageText}</p>
+                        <lightning-formatted-date-time
+                            value={thread.latestMessageDate}
+                            month="2-digit"
+                            day="2-digit"
+                            year="numeric"
+                        ></lightning-formatted-date-time>
+                    </div>
+                </div>
+                <div slot="modalFooter" style="display: flex; gap: 10px; justify-content: center; padding-top: 24px">
                     <c-ds-button size="medium" variant="primary" text="Ja, avslutt samtale" onbuttonclick={closeThread}>
                     </c-ds-button>
 
@@ -63,7 +76,7 @@
                         variant="secondary"
                         text="Avbryt"
                         onbuttonclick={closeModal}
-                        class="lastfocusable"
+                        class="lastFocusElement"
                     >
                     </c-ds-button>
                 </div>

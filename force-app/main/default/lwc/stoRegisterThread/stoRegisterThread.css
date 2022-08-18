@@ -93,3 +93,11 @@
     --override-border-top-right-radius: 0px;
     --override-border-bottom-right-radius: 0px;
 }
+
+.leftAlign {
+    text-align: left;
+}
+
+.topGap {
+    margin-top: 16px;
+}

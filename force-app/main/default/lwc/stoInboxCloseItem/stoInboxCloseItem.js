@@ -46,14 +46,14 @@ export default class StoInboxCloseItem extends LightningElement {
     handleKeyboardEvent(event) {
         if (event.keyCode === 27 || event.code === 'Escape') {
             this.closeModal();
-        } else if (event.keyCode === 9 || event.code === 'Tab') {
-            console.log(event.path[0]);
-            const el = event.path[0];
-            if (el.classList.contains('firstfocusable')) {
-                this.template.querySelector('.lastFocusElement').focus();
-            } else if (el.classList.contains('lastfocusable')) {
-                this.modal.focusLoop();
-            }
         }
+    }
+
+    handleFocusLast() {
+        this.template.querySelector('.lastFocusElement').focus();
+    }
+
+    get threadName() {
+        return this.thread.name + (this.isExternal === true ? ': Du sendte en melding' : ': NAV sendte en melding');
     }
 }
