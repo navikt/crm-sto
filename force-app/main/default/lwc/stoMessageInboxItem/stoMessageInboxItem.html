@@ -4,7 +4,7 @@
         href={linkUrl}
         key={thread.recordId}
         id="a"
-        style="padding: 1rem 0rem 1rem 0rem; border: 1px solid var(--navds-semantic-color-border, #707070)"
+        style="padding-left: 0rem; padding-right: 0rem; border: 1px solid var(--navds-semantic-color-border, #707070)"
     >
         <lightning-layout vertical-align="center" class="slds-size_1-of-1">
             <div class="slds-is-relative hideMobile" style="min-width: 88px">
@@ -30,7 +30,7 @@
                     </template>
                 </p>
                 <h3 class="typo-undertittel lenkepanel__heading">{itemTitle}</h3>
-                <p class="typo-normal tema-avsnitt messagebox">{latestText}</p>
+                <p class="typo-normal tema-avsnitt messagebox threeLinesMobile">{latestText}</p>
             </div>
             <slot name="endSection">
                 <span

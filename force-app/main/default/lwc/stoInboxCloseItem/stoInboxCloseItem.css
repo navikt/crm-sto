@@ -45,6 +45,10 @@
     left: 0;
 }
 
+.override {
+    --override-padding-bottom-mobile: 2rem;
+}
+
 .messagebox {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -57,4 +61,29 @@
 
 .centerText {
     text-align: center;
+}
+
+.absPositionBtn {
+    position: absolute;
+    right: 69px;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    text-align: center;
+}
+
+@media only screen and (max-width: 480px) {
+    .hideMobile {
+        display: none;
+    }
+
+    .absPositionBtn {
+        right: auto;
+        left: 0px;
+        bottom: 8px;
+        transform: translateY(0%);
+    }
+
+    .threeLinesMobile {
+        min-height: 4.125em;
+    }
 }

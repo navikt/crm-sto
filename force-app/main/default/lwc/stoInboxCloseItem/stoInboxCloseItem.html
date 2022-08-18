@@ -12,6 +12,7 @@
                         text-align: center;
                         visibility: hidden;
                     "
+                    class="hideMobile"
                     variant="secondary"
                     text="Avslutt samtale"
                 >
@@ -25,15 +26,8 @@
         <div>
             <!-- The actual button, absolutely positioned above to avoid problems with having a button within a button -->
             <c-ds-button
-                class="endDialogBtn"
+                class="endDialogBtn absPositionBtn"
                 size="small"
-                style="
-                    position: absolute;
-                    right: 69px;
-                    transform: translateY(-50%);
-                    white-space: nowrap;
-                    text-align: center;
-                "
                 variant="secondary"
                 onbuttonclick={openModal}
                 text="Avslutt samtale"
@@ -58,7 +52,7 @@
                         style="background: var(--navds-global-color-gray-100, #f1f1f1)"
                     >
                         <h2 class="navds-heading navds-heading--large">{threadName}</h2>
-                        <p class="navds-body-long messagebox">{thread.latestmessage.messageText}</p>
+                        <p class="navds-body-long messagebox threeLinesMobile">{thread.latestmessage.messageText}</p>
                         <lightning-formatted-date-time
                             value={thread.latestMessageDate}
                             month="2-digit"
@@ -82,6 +76,5 @@
                 </div>
             </c-community-modal>
         </div>
-        <div class={backdropClass} onclick={closeModal}></div>
     </div>
 </template>
