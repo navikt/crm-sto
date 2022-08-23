@@ -40,28 +40,34 @@
                 onmodalclosed={closeModal}
                 onkeyup={handleKeyboardEvent}
                 onfocuslast={handleFocusLast}
+                class="override"
                 show-footer-line
+                hide-padding
             >
-                <div slot="modalHeader" class="centerText">
-                    <h1 class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">Avslutt samtale</h1>
-                    <p>Er du sikker på at du vil avslutte denne samtalen?</p>
+                <div slot="modalHeader" class="centerText" style="margin-bottom: 0.5rem; margin-top: 0.5rem">
+                    <h1 class="navds-heading navds-heading--medium" style="margin: 0px">Avslutt samtale</h1>
+                    <p class="leftAlign-mobile topGap bottomGap">Er du sikker på at du vil avslutte denne samtalen?</p>
                 </div>
                 <div slot="modalContent">
                     <div
-                        class="navds-panel navds-panel--border"
+                        class="navds-panel navds-panel--border bigHorizontalMargin-noMobile"
                         style="background: var(--navds-global-color-gray-100, #f1f1f1)"
                     >
-                        <h2 class="navds-heading navds-heading--large">{threadName}</h2>
-                        <p class="navds-body-long messagebox threeLinesMobile">{thread.latestmessage.messageText}</p>
                         <lightning-formatted-date-time
                             value={thread.latestMessageDate}
                             month="2-digit"
                             day="2-digit"
                             year="numeric"
                         ></lightning-formatted-date-time>
+                        &nbsp;- <span class={statusColor}> {thread.status} </span>
+                        <h2 class="navds-heading navds-heading--small">{threadName}</h2>
+                        <p class="navds-body-long messagebox threeLinesMobile">{thread.latestmessage.messageText}</p>
                     </div>
                 </div>
-                <div slot="modalFooter" style="display: flex; gap: 10px; justify-content: center; padding-top: 24px">
+                <div
+                    slot="modalFooter"
+                    style="display: flex; gap: 10px; justify-content: center; padding-top: 24px; padding-bottom: 0.5rem"
+                >
                     <c-ds-button size="medium" variant="primary" text="Ja, avslutt samtale" onbuttonclick={closeThread}>
                     </c-ds-button>
 

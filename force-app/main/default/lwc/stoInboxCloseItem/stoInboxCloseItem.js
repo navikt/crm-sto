@@ -15,6 +15,10 @@ export default class StoInboxCloseItem extends LightningElement {
         return this.modalOpen === false ? 'slds-hide' : 'backdrop';
     }
 
+    get statusColor() {
+        return this.thread.status === 'Åpen' ? 'greenfont' : '';
+    }
+
     //##################################//
     //########    MODAL    #############//
     //##################################//

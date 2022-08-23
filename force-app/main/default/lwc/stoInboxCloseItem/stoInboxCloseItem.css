@@ -46,7 +46,7 @@
 }
 
 .override {
-    --override-padding-bottom-mobile: 2rem;
+    --override-padding-bottom-mobile: 3rem;
 }
 
 .messagebox {
@@ -71,6 +71,27 @@
     text-align: center;
 }
 
+.greenfont {
+    color: #06893a;
+}
+
+.override {
+    --override-max-width: calc(50% - 16px);
+}
+
+.topGap {
+    margin-top: 16px;
+}
+
+.bottomGap {
+    margin-bottom: 16px;
+}
+
+.bigHorizontalMargin-noMobile {
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
 @media only screen and (max-width: 480px) {
     .hideMobile {
         display: none;
@@ -78,12 +99,21 @@
 
     .absPositionBtn {
         right: auto;
-        left: 0px;
-        bottom: 8px;
+        left: 8px;
+        bottom: 16px;
         transform: translateY(0%);
     }
 
     .threeLinesMobile {
-        min-height: 4.125em;
+        -webkit-line-clamp: 3;
+    }
+
+    .leftAlign-mobile {
+        text-align: left;
+    }
+
+    .bigHorizontalMargin-noMobile {
+        margin-right: 0px;
+        margin-left: 0px;
     }
 }

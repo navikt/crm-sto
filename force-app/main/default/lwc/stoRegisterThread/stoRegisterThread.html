@@ -67,9 +67,9 @@
                                 </button>
                             </template>
                             <template if:false={showTextArea}>
-                                <h3 class="navds-heading navds-heading--medium leftAlign topGap">
+                                <h2 class="navds-heading navds-heading--medium leftAlign topBigGap">
                                     Dine åpne dialoger om {selectedTheme}
-                                </h3>
+                                </h2>
                                 <template for:each={openThreadList} for:item="thread" for:index="index">
                                     <c-sto-inbox-close-item
                                         thread={thread}
@@ -132,8 +132,12 @@
                 onmodalclosed={closeTerms}
                 onkeyup={handleKeyboardEvent}
                 onfocuslast={handleFocusLast}
+                hide-padding-mobile
             >
-                <h1 slot="modalHeader" class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">
+                <h1
+                    slot="modalHeader"
+                    class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l textLeftAlign-mobile leftMargin-mobile"
+                >
                     {label.SERVICE_TERMS_HEADER}
                 </h1>
                 <div slot="modalContent">
@@ -145,8 +149,8 @@
                         </form>
                     </section>
                 </div>
-                <div slot="modalFooter">
-                    <div class="slds-var-p-bottom_x-large svar-godta text-center blokk-m">
+                <div slot="modalFooter" class="btnPositioning topGap">
+                    <div class="svar-godta text-center blokk-m">
                         <button
                             class="navds-button navds-button--primary navds-button--medium knapp-width"
                             aria-controls="betingelser"
