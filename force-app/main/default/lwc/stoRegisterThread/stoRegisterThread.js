@@ -279,17 +279,19 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     get openThreadText() {
         if (this.openThreadList.length < maxThreadCount) {
             return (
-                'Du har allerede en åpen samtale om ' +
+                'Du har allerede åpne samtaler om ' +
                 this.selectedTheme.toLowerCase() +
                 '. Hvis du lurer på noe mer, kan du <a href="' +
                 this.openThreadLink +
-                '">fortsette samtalen</a>.'
+                '">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.'
             );
         }
         return (
             'Du har ' +
-            maxThreadCount +
-            ' åpne samtaler på dette temaet. <br/> Hvis du vil opprette en ny samtale, så må du lukke en av de du allerede har.'
+            this.openThreadList.length +
+            ' åpne samtaler om ' +
+            this.selectedTheme.toLowerCase() +
+            '. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor lukke noen av de du allerede har. Du kan også fortsette allerede åpne samtaler ved å klikke på de.'
         );
     }
 
