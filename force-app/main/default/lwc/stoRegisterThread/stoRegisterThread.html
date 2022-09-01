@@ -29,44 +29,59 @@
                             </template>
                             <template if:true={showOpenThreadWarning}>
                                 <div class="slds-var-m-top_xx-large slds-text-align_left">
-                                    <c-crm-community-alert-stripe type="advarsel" alerttext={openThreadText}>
+                                    <c-crm-community-alert-stripe type={alertType} alerttext={openThreadText}>
                                     </c-crm-community-alert-stripe>
                                 </div>
                             </template>
-                            <div class="slds-var-m-top_xx-large">
-                                <c-community-textarea
-                                    max-length={maxLength}
-                                    class="inputTextbox"
-                                    ontextchanged={handleTextChange}
-                                ></c-community-textarea>
-                            </div>
-                            <div class="skjemaelement checkbox">
-                                <c-community-checkbox
-                                    label-text={label.acceptermtext}
-                                    oncheckedchanged={handleChecked}
-                                    class="checkboxContainer"
-                                ></c-community-checkbox
-                                ><button
-                                    onclick={showTerms}
-                                    class="slds-var-m-left_small lenke vilkar-link focusBtn"
-                                    tabindex="0"
-                                >
-                                    {label.showtermstext}
-                                </button>
-                            </div>
+                            <template if:true={showTextArea}>
+                                <div class="slds-var-m-top_xx-large">
+                                    <c-community-textarea
+                                        max-length={maxLength}
+                                        class="inputTextbox"
+                                        ontextchanged={handleTextChange}
+                                    ></c-community-textarea>
+                                </div>
+                                <div class="skjemaelement checkbox">
+                                    <c-community-checkbox
+                                        label-text={label.acceptermtext}
+                                        oncheckedchanged={handleChecked}
+                                        class="checkboxContainer"
+                                    ></c-community-checkbox
+                                    ><button
+                                        onclick={showTerms}
+                                        class="slds-var-m-left_small lenke vilkar-link focusBtn"
+                                        tabindex="0"
+                                    >
+                                        {label.showtermstext}
+                                    </button>
+                                </div>
 
-                            <button
-                                class="sendbutton navds-button navds-button--primary navds-button--medium"
-                                type="submit"
-                                style="padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px) 2.5rem"
-                                aria-disabled="false"
-                                onclick={submitrequest}
-                            >
-                                Send
-                            </button>
+                                <button
+                                    class="sendbutton navds-button navds-button--primary navds-button--medium"
+                                    type="submit"
+                                    style="padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px) 2.5rem"
+                                    aria-disabled="false"
+                                    onclick={submitrequest}
+                                >
+                                    Send
+                                </button>
+                            </template>
+                            <template if:false={showTextArea}>
+                                <h2 class="navds-heading navds-heading--medium leftAlign topBigGap">
+                                    Dine åpne samtaler om {selectedTheme}
+                                </h2>
+                                <template for:each={openThreadList} for:item="thread" for:index="index">
+                                    <c-sto-inbox-close-item
+                                        thread={thread}
+                                        key={thread.recordId}
+                                        index={index}
+                                        onclosethread={handleCloseThread}
+                                    ></c-sto-inbox-close-item>
+                                </template>
+                            </template>
                         </template>
                         <template if:true={showspinner}>
-                            <div tabindex="0" class="spinner" aria-label="Sender melding. Vennligst vent.">
+                            <div tabindex="0" class="spinner" aria-label={spinnerText}>
                                 <div class="overflow-detector">
                                     <div class="overflow-detector__scroller">
                                         <div class="overflow-detector__inner">
@@ -117,8 +132,12 @@
                 onmodalclosed={closeTerms}
                 onkeyup={handleKeyboardEvent}
                 onfocuslast={handleFocusLast}
+                hide-padding-mobile
             >
-                <h1 slot="modalHeader" class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l">
+                <h1
+                    slot="modalHeader"
+                    class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l textLeftAlign-mobile leftMargin-mobile"
+                >
                     {label.SERVICE_TERMS_HEADER}
                 </h1>
                 <div slot="modalContent">
@@ -130,8 +149,8 @@
                         </form>
                     </section>
                 </div>
-                <div slot="modalFooter">
-                    <div class="slds-var-p-bottom_x-large svar-godta text-center blokk-m">
+                <div slot="modalFooter" class="btnPositioning topGap">
+                    <div class="svar-godta text-center blokk-m">
                         <button
                             class="navds-button navds-button--primary navds-button--medium knapp-width"
                             aria-controls="betingelser"

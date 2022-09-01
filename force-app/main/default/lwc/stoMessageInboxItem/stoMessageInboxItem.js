@@ -15,7 +15,7 @@ export default class StoMessageInboxItem extends LightningElement {
     hasunread = false;
     unreadmessage = 'lest';
 
-    className = 'lenkepanel dialog read iconclass';
+    className = 'lenkepanel dialog read iconclass overrides';
     statuscolor;
     get itemTitle() {
         if (this.objectName === 'samtalereferat') return this.thread.name;

@@ -6,7 +6,8 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
-import getOpenThread from '@salesforce/apex/stoHelperClass.getOpenThread';
+import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
+import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
 import welcomlabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
@@ -24,10 +25,13 @@ import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_
 import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
 import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 
+import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
 
+const maxThreadCount = 3;
+const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     showspinner = false;
     selectedTheme;
@@ -52,17 +56,19 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         INCORRECT_CATEGORY
     };
     logopath = navlogos + '/email.svg';
+    deletepath = navlogos + '/delete.svg';
     newslist;
     errorList = { title: '', errors: [] };
     message;
     modalOpen = false;
     maxLength = 1000;
-    openThreadId;
+    openThreadList;
 
     @wire(MessageContext)
     messageContext;
 
     connectedCallback() {
+        console.log('geir');
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
                 let categoryList = new Set();
@@ -101,15 +107,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    @wire(getOpenThread, { category: '$selectedTheme' })
-    openThread({ error, data }) {
-        console.log('Checked thread with ' + this.selectedTheme);
-        console.log('That got med: ' + data);
+    @wire(getOpenThreads, { category: '$selectedTheme' })
+    openThread(wireData) {
+        const { error, data } = wireData;
         if (error) {
             console.log(error);
         }
-        this.openThreadId = data;
+        this._wireThreadData = wireData;
+        this.openThreadList = data;
     }
+
     get validparameter() {
         let valid = this.acceptedcategories.has(this.selectedTheme);
         return valid;
@@ -183,8 +190,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.message.length <= this.maxLength
         ) {
             this.showspinner = true;
+            this.spinnerText = spinnerReasonTextMap['send'];
 
             createRecords({ theme: this.selectedTheme, msgText: this.message }).then((thread) => {
+                this.showspinner = false;
                 window.open(
                     (this.linkUrl = basepath + '/skriv-til-oss/' + thread.Id + '/' + encodeURIComponent(thread.Name)),
                     '_self'
@@ -217,6 +226,24 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
+    closeSelectedThread(selectedThreadId) {
+        this.showspinner = true;
+        this.spinnerText = spinnerReasonTextMap['close'];
+        closeThread({ id: selectedThreadId })
+            .then(() => {
+                refreshApex(this._wireThreadData)
+                    .then(() => {
+                        this.showspinner = false;
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
     handleErrorClick(event) {
         let item = this.template.querySelector(event.detail);
         item.focus();
@@ -246,20 +273,55 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get showOpenThreadWarning() {
-        return this.openThreadId !== null && this.openThreadId !== undefined;
+        return this.openThreadList !== null && this.openThreadList !== undefined;
     }
 
     get openThreadText() {
+        if (this.openThreadList.length < maxThreadCount) {
+            return (
+                'Du har allerede åpne samtaler om ' +
+                this.selectedTheme.toLowerCase() +
+                '. Hvis du lurer på noe mer, kan du <a href="' +
+                this.openThreadLink +
+                '">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.'
+            );
+        }
         return (
-            'Du har allerede en åpen samtale om ' +
+            'Du har ' +
+            this.openThreadList.length +
+            ' åpne samtaler om ' +
             this.selectedTheme.toLowerCase() +
-            '. Hvis du lurer på noe mer, kan du <a href="' +
-            this.openThreadLink +
-            '">fortsette samtalen</a>.'
+            '. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor lukke noen av de du allerede har. Du kan også fortsette allerede åpne samtaler ved å klikke på de.'
         );
     }
 
     get openThreadLink() {
-        return basepath + '/skriv-til-oss/' + this.openThreadId;
+        console.log('this.openThreadList');
+        console.log(this.openThreadList);
+        return basepath + '/skriv-til-oss/' + this.openThreadList[0].recordId;
+    }
+
+    get alertType() {
+        return this.openThreadList.length >= maxThreadCount ? 'advarsel' : 'info';
+    }
+
+    get showTextArea() {
+        console.log(this.openThreadList);
+        return (
+            this.openThreadList === null ||
+            this.openThreadList === undefined ||
+            this.openThreadList.length < maxThreadCount
+        );
+    }
+
+    get backdropClass() {
+        return this.hideDeleteModal === true ? 'slds-hide' : 'backdrop';
+    }
+
+    handleCloseThread(e) {
+        const selectedThread = this.openThreadList[e.detail];
+        if (selectedThread.recordId) {
+            this.closeSelectedThread(selectedThread.recordId);
+        }
     }
 }

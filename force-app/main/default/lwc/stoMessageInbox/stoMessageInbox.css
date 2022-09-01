@@ -1,7 +1,5 @@
 .header {
     text-align: center;
-    margin-bottom: 3rem;
-    margin-top: 3rem;
 }
 .ficon {
     vertical-align: middle;
@@ -27,8 +25,19 @@
     margin: auto;
 }
 
+.aroundGap {
+    margin: 1rem;
+}
+
 @media only screen and (max-width: 1023px) {
     .mobil-padding {
         padding-left: 1rem;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .horizontalMargin-mobile {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
     }
 }

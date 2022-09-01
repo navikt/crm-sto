@@ -33,27 +33,7 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
-            if (t.Messages__r != null && t.Messages__r.size() > 0) {
-                thread i = new thread();
-                message m = new message();
-                i.name = t.STO_ExternalName__c;
-                i.recordId = t.CRM_Thread_Type__c == 'CHAT' ? t.CRM_Related_Object__c : t.Id;
-                i.lastModifiedDate = t.LastModifiedDate;
-                i.closeDate = t.CRM_Closed_Date__c;
-                i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
-                i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
-                i.objectName = t.CRM_Thread_Type__c == 'CHAT' ? 'chat' : 'skriv-til-oss';
-                i.status = (t.CRM_Is_Closed__c) ? 'Lukket' : 'Åpen';
-                i.recordName = t.Name;
-                m.recordId = t.Messages__r[0]?.Id;
-                m.messageText = t.Messages__r[0]
-                    ?.CRM_Message_Text__c
-                    ?.replaceAll('<[^>]+>', ' ')
-                    .replaceAll('(\\r|\\n)+', ' ');
-                m.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
-                i.latestmessage = m;
-                inboxlist.add(i);
-            }
+            inboxlist.add(formatThread(t));
         }
         List<Conversation_Note__c> noteList = [
             SELECT
@@ -68,21 +48,7 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
-            thread i = new thread();
-            message m = new message();
-            i.name = t.STO_External_Name__c;
-            i.recordId = t.Id;
-            i.lastModifiedDate = t.LastModifiedDate;
-            i.closeDate = t.CRM_Date_Time_Registered__c;
-            i.numberOfUnreadMessages = 0;
-            i.latestMessageDate = t.CRM_Date_Time_Registered__c;
-            i.objectName = 'samtalereferat';
-            i.status = 'Lukket';
-            i.recordName = t.Name;
-            m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
-            m.recordId = t.Id;
-            i.latestmessage = m;
-            inboxlist.add(i);
+            inboxlist.add(formatConversationNote(t));
         }
         return inboxlist;
     }
@@ -119,27 +85,7 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
-            if (t.Messages__r != null && t.Messages__r.size() > 0) {
-                thread i = new thread();
-                message m = new message();
-                i.name = t.STO_ExternalName__c;
-                i.recordId = t.CRM_Thread_Type__c == 'CHAT' ? t.CRM_Related_Object__c : t.Id;
-                i.lastModifiedDate = t.LastModifiedDate;
-                i.closeDate = t.CRM_Closed_Date__c;
-                i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
-                i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
-                i.objectName = t.CRM_Thread_Type__c == 'CHAT' ? 'chat' : 'skriv-til-oss';
-                i.status = (t.CRM_Is_Closed__c) ? 'Lukket' : 'Åpen';
-                i.recordName = t.Name;
-                m.recordId = t.Messages__r[0]?.Id;
-                m.messageText = t.Messages__r[0]
-                    ?.CRM_Message_Text__c
-                    ?.replaceAll('<[^>]+>', ' ')
-                    .replaceAll('(\\r|\\n)+', ' ');
-                m.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
-                i.latestmessage = m;
-                inboxlist.add(i);
-            }
+            inboxlist.add(formatThread(t));
         }
         List<Conversation_Note__c> noteList = [
             SELECT
@@ -154,23 +100,52 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
-            thread i = new thread();
-            message m = new message();
-            i.name = t.STO_External_Name__c;
-            i.recordId = t.Id;
-            i.lastModifiedDate = t.LastModifiedDate;
-            i.closeDate = t.CRM_Date_Time_Registered__c;
-            i.numberOfUnreadMessages = 1;
-            i.latestMessageDate = t.CRM_Date_Time_Registered__c;
-            i.objectName = 'samtalereferat';
-            i.status = 'Lukket';
-            i.recordName = t.Name;
-            m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
-            m.recordId = t.Id;
-            i.latestmessage = m;
-            inboxlist.add(i);
+            inboxlist.add(formatConversationNote(t));
         }
         return inboxlist;
+    }
+
+    public static thread formatThread(Thread__c t) {
+        if (t.Messages__r != null && t.Messages__r.size() > 0) {
+            thread i = new thread();
+            message m = new message();
+            i.name = t.STO_ExternalName__c;
+            i.recordId = t.CRM_Thread_Type__c == 'CHAT' ? t.CRM_Related_Object__c : t.Id;
+            i.lastModifiedDate = t.LastModifiedDate;
+            i.closeDate = t.CRM_Closed_Date__c;
+            i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
+            i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
+            i.objectName = t.CRM_Thread_Type__c == 'CHAT' ? 'chat' : 'skriv-til-oss';
+            i.status = (t.CRM_Is_Closed__c) ? 'Lukket' : 'Åpen';
+            i.recordName = t.Name;
+            m.recordId = t.Messages__r[0]?.Id;
+            m.messageText = t.Messages__r[0]
+                ?.CRM_Message_Text__c
+                ?.replaceAll('<[^>]+>', ' ')
+                .replaceAll('(\\r|\\n)+', ' ');
+            m.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
+            i.latestmessage = m;
+            return i;
+        }
+        return null;
+    }
+
+    public static thread formatConversationNote(Conversation_Note__c t) {
+        thread i = new thread();
+        message m = new message();
+        i.name = t.STO_External_Name__c;
+        i.recordId = t.Id;
+        i.lastModifiedDate = t.LastModifiedDate;
+        i.closeDate = t.CRM_Date_Time_Registered__c;
+        i.numberOfUnreadMessages = 1;
+        i.latestMessageDate = t.CRM_Date_Time_Registered__c;
+        i.objectName = 'samtalereferat';
+        i.status = 'Lukket';
+        i.recordName = t.Name;
+        m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
+        m.recordId = t.Id;
+        i.latestmessage = m;
+        return i;
     }
 
     public class thread {

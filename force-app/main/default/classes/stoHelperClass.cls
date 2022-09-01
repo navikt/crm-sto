@@ -112,17 +112,52 @@ public with sharing class stoHelperClass {
     }
 
     @AuraEnabled(cacheable=true)
-    public static Id getOpenThread(String category) {
+    public static List<stoInboxHelper.thread> getOpenThreads(String category) {
         List<Thread__c> openThreads = [
-            SELECT Id
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Number_of_unread_Messages__c,
+                CRM_Latest_Message_Datetime__c,
+                CRM_Closed_Date__c,
+                STO_ExternalName__c,
+                CRM_Is_Closed__c,
+                CRM_Thread_Type__c,
+                CRM_Related_Object__c,
+                Name,
+                (
+                    SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
+                    FROM Messages__r
+                    WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
+                    ORDER BY CRM_Sent_Datetime_Formula__c DESC
+                    LIMIT 1
+                )
             FROM Thread__c
             WHERE CRM_Is_Closed__C = FALSE AND CRM_Thread_Type__c IN ('STO', 'STB') AND STO_Category__c = :category
             ORDER BY CRM_Latest_Message_Datetime__c DESC
-            LIMIT 1
         ];
         if (openThreads.size() > 0) {
-            return openThreads[0].Id;
+            List<stoInboxHelper.thread> threadList = new List<stoInboxHelper.thread>();
+            for (Thread__c t : openThreads) {
+                threadList.add(stoInboxHelper.formatThread(t));
+            }
+            return threadList;
         }
         return null;
+    }
+
+    @AuraEnabled
+    public static void closeThread(Id id) {
+        try {
+            if (id == null) {
+                return;
+            }
+            Thread__c thread = new Thread__c(Id = id);
+            thread.CRM_isActive__c = false;
+            update thread;
+        } catch (DmlException e) {
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
+            logger.publish();
+        }
     }
 }
