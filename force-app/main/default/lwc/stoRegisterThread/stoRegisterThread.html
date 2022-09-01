@@ -2,12 +2,15 @@
     <div class="decorator-wrapper">
         <div>
             <div class="header">
-                <h1 class="typo-sidetittel">Skriv til oss</h1>
+                <h1 class="navds-heading navds-heading--2xlarge">Skriv til oss</h1>
             </div>
-            <div class="panel text-center">
+            <div
+                class="text-center"
+                style="background-color: #fff; display: block; padding: 1rem 1rem 1rem 1rem; border-radius: 4px"
+            >
                 <template if:true={validparameter}>
                     <img aria-hidden="true" src={logopath} class="logo" />
-                    <h2 class="typo-undertittel typo-undertittel_farge blokk-s">{selectedTheme}</h2>
+                    <h2 class="navds-labels blokk-s" style="color: #0067c5">{selectedTheme}</h2>
                     <c-community-error-summary
                         error-list={errorList}
                         onclickedevent={handleErrorClick}
@@ -16,7 +19,7 @@
                     </c-community-error-summary>
 
                     <div class="descholder slds-var-m-bottom_xx-large">
-                        <p class="typo-normal blokk-xs description">{label.welcomlabel}</p>
+                        <p class="navds-body-short navds-body-short--small blokk-xs description">{label.welcomlabel}</p>
                     </div>
                     <div class="inputarea">
                         <template if:false={showspinner}>
@@ -33,6 +36,7 @@
                                     </c-crm-community-alert-stripe>
                                 </div>
                             </template>
+                            <!-- Textarea -->
                             <div class="slds-var-m-top_xx-large">
                                 <c-community-textarea
                                     max-length={maxLength}
@@ -40,6 +44,11 @@
                                     ontextchanged={handleTextChange}
                                 ></c-community-textarea>
                             </div>
+                            <!-- Medskriv radiobutton -->
+                            <div class="">
+                                <c-ds-radio style="text-align: left"></c-ds-radio>
+                            </div>
+                            <!-- Vilkaer checkbox -->
                             <div class="skjemaelement checkbox">
                                 <c-community-checkbox
                                     label-text={label.acceptermtext}
@@ -48,8 +57,9 @@
                                 ></c-community-checkbox
                                 ><button
                                     onclick={showTerms}
-                                    class="slds-var-m-left_small lenke vilkar-link focusBtn"
+                                    class="slds-var-m-left_small lenke vilkar-link navds-link focusBtn"
                                     tabindex="0"
+                                    style="background: none"
                                 >
                                     {label.showtermstext}
                                 </button>
