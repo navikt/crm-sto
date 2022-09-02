@@ -28,6 +28,10 @@ import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
 
+const medskrivOptions = [
+    { text: 'Ja', value: true, checked: true },
+    { text: 'Nei', value: false, checked: false }
+];
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     showspinner = false;
     selectedTheme;
@@ -74,6 +78,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             .catch((error) => {
                 //Failed getting sto categories
             });
+    }
+
+    get test() {
+        return medskrivOptions;
     }
 
     /**
@@ -182,9 +190,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.message.length != null &&
             this.message.length <= this.maxLength
         ) {
+            const medskriv = this.template.querySelector('c-ds-radio')?.getValue();
+
             this.showspinner = true;
 
-            createRecords({ theme: this.selectedTheme, msgText: this.message }).then((thread) => {
+            createRecords({ theme: this.selectedTheme, msgText: this.message, medskriv: medskriv }).then((thread) => {
                 window.open(
                     (this.linkUrl = basepath + '/skriv-til-oss/' + thread.Id + '/' + encodeURIComponent(thread.Name)),
                     '_self'
