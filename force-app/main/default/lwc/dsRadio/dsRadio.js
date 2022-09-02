@@ -1,4 +1,3 @@
-import ApiType from '@salesforce/schema/LoginHistory.ApiType';
 import { LightningElement, api } from 'lwc';
 
 export default class DsRadio extends LightningElement {
@@ -6,7 +5,7 @@ export default class DsRadio extends LightningElement {
     @api options; // List of label value objects
 
     connectedCallback() {
-        this.options.map((option, index) => ({ ...option, id: 'radio-navds-id-' + index }));
+        this.options = this.options.map((option, index) => ({ ...option, id: 'radio-navds-id-' + index }));
     }
 
     @api
