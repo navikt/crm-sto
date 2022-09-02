@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Pensjon3</label>
+    <protected>false</protected>
+    <values>
+        <field>STO_Body__c</field>
+        <value
+            xsi:type="xsd:string"
+        >For at du skal få riktig resultat på etteroppgjøret er det viktig at du sender dokumentasjon på inntekt siste måned før du startet uttak av AFP. Har du fått feriepenger eller annen lønn etter at du startet uttak av AFP må arbeidsgiveren din bekrefte utbetalingen. Se mer informasjon i brevet du har fått, og &lt;a href=&quot;https://www.nav.no/afp-offentlig#etteroppgjør&quot;&gt;informasjon på nav.no&lt;/a&gt;</value>
+    </values>
+    <values>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Pensjon</value>
+    </values>
+    <values>
+        <field>STO_Header__c</field>
+        <value xsi:type="xsd:string">Har du spørsmål om etteroppgjøret for AFP?</value>
+    </values>
+</CustomMetadata>
