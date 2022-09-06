@@ -171,6 +171,13 @@
                 <elementReference>STOCategory</elementReference>
             </value>
         </filters>
+        <filters>
+            <field>Status</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </filters>
         <inputAssignments>
             <field>OwnerId</field>
             <value>
