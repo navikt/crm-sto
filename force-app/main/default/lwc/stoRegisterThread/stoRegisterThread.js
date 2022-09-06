@@ -28,10 +28,6 @@ import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
 
-const medskrivOptions = [
-    { text: 'Ja', value: true, checked: true },
-    { text: 'Nei', value: false, checked: false }
-];
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     showspinner = false;
     selectedTheme;
@@ -55,6 +51,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         EMPTY_TEXT_FIELD_ERROR,
         INCORRECT_CATEGORY
     };
+    medskrivOptions = [
+        { text: 'Ja, jeg godtar.', value: true, checked: true },
+        { text: 'Nei, jeg godtar ikke.', value: false, checked: false }
+    ];
     logopath = navlogos + '/email.svg';
     newslist;
     errorList = { title: '', errors: [] };
@@ -78,10 +78,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             .catch((error) => {
                 //Failed getting sto categories
             });
-    }
-
-    get test() {
-        return medskrivOptions;
     }
 
     /**
