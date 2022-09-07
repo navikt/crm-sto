@@ -154,7 +154,12 @@ public without sharing class nksGetStoUtilityController {
         for (ServiceResourceSkill srs : [
             SELECT SkillId, Skill.DeveloperName
             FROM ServiceResourceSkill
-            WHERE ServiceResource.RelatedRecordId = :userId
+            WHERE
+                ServiceResource.RelatedRecordId = :userId
+                AND EffectiveStartDate <= TODAY
+                AND (EffectiveEndDate >= TODAY
+                OR EffectiveEndDate = NULL)
+                AND ServiceResource.IsActive = TRUE
         ]) {
             //Separating domain skills and person access skills
             if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
@@ -198,7 +203,7 @@ public without sharing class nksGetStoUtilityController {
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
                 AND isPushed = FALSE
-            ORDER BY RoutingPriority, SecondaryRoutingPriority, CreatedDate
+            ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
             LIMIT 1
         ];
     }

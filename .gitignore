@@ -11,6 +11,7 @@
 !**/unpackagable/profiles/* 
 # NOTE!! USE **/ before
 
+.sf/*
 
 # standard fields not needed in source control
 # ----------------------------------------------------------------------------------------
@@ -79,6 +80,7 @@ install.cmd
 
 # Salesforce cache
 .sfdx/
+.sf/
 
 # Logs
 logs

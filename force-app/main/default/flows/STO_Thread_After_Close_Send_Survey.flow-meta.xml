@@ -40,6 +40,18 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>CRM_From_Contact__c</field>
+            <value>
+                <elementReference>$User.ContactId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>CRM_From_User__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>CRM_Message_Text__c</field>
             <value>
                 <elementReference>Thread_Close_Event_Message</elementReference>
