@@ -82,28 +82,26 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     getNorwegianCompanyName() {
-        const cities = ['Finnmark', 'Romsdal', 'Telemark'];
+        const cities = ['Finnmark', 'Romsdal', 'Telemark', 'Telemark-sandefjord', 'Telemark-skien', 'Tasta'];
         const startWords = ['NAV', 'DIR', 'SEKSJON', 'YTELSE', 'HJELPEMIDDEL'];
         if (startWords.some((str) => this.companyName.startsWith(str))) {
             let listString = this.companyName.toLowerCase().split(' ');
             for (var i = 0; i < listString.length; i++) {
-                listString[i] = listString[i].charAt(0).toUpperCase() + listString[i].slice(1).toLowerCase();
-                if (listString[i].toUpperCase() === 'NAV' || listString[i].toUpperCase() === 'DIR') {
-                    listString[i] = listString[i].toUpperCase();
-                } else if (
-                    (i > 0 && listString[i - 1].toUpperCase() === 'SEKSJON') ||
-                    listString[i].toUpperCase() === 'OG' ||
-                    (i > 0 && listString[i - 1].toUpperCase() === 'OG' && !cities.includes(listString[i])) ||
-                    (i > 1 && listString[i - 2].toUpperCase() === 'OG' && listString[i] === 'Styringsenhet') ||
-                    listString[i] === 'Analyse'
-                ) {
-                    listString[i] = listString[i].toLowerCase();
-                } else if (listString[i].includes('-')) {
-                    var index = listString[i].indexOf('-');
-                    listString[i] =
-                        listString[i].slice(0, index + 1) +
-                        listString[i].charAt(index + 1).toUpperCase() +
-                        listString[i].slice(index + 2);
+                if (listString[i].length > 1) {
+                    listString[i] = listString[i].charAt(0).toUpperCase() + listString[i].slice(1).toLowerCase();
+                    if (listString[i].toUpperCase() === 'NAV' || listString[i].toUpperCase() === 'DIR') {
+                        listString[i] = listString[i].toUpperCase();
+                    } else if (
+                        (i > 0 && listString[i - 1].toUpperCase() === 'SEKSJON') ||
+                        listString[i].toUpperCase() === 'OG' ||
+                        (i > 0 && listString[i - 1].toUpperCase() === 'OG' && !cities.includes(listString[i])) ||
+                        (i > 1 && listString[i - 2].toUpperCase() === 'OG' && listString[i] === 'Styringsenhet') ||
+                        listString[i] === 'Analyse'
+                    ) {
+                        listString[i] = listString[i].toLowerCase();
+                    } else if (listString[i].includes('-') || listString[i].includes('/')) {
+                        listString[i] = listString[i].replaceAll(/[\-\/][a-z]/g, (match) => match.toUpperCase());
+                    }
                 }
             }
             //console.log(listString.join(' '));
@@ -114,65 +112,69 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     getEnglishCompanyName() {
-        let ecn = '';
-        let hasEnglishTranslation = true;
+        switch (this.norwegianCompanyName) {
+            case 'DIR Ytelsesavdelingen':
+                return 'Benefits department, Directorate of Labour and Welfare';
+            case 'Ytelseslinjen':
+                return 'NAV Benefits Administration';
+            case 'NAV Arbeid og ytelser styringsenhet':
+                return 'NAV Work and Benefits Management Unit';
+            case 'NAV Familie- og pensjonsytelser':
+                return 'NAV Family Benefits and Pensions Management Unit';
+            case 'NAV Kontroll Styringsenhet':
+                return 'NAV Control Management Unit';
+            case 'NAV Registerforvaltning':
+                return 'NAV Registry Management';
+            case 'NAV Medlemskap og avgift':
+                return 'NAV Social insurance and Contributions';
+            case 'NAV Styringsenhet Kontaktsenter':
+                return 'NAV Call and Service Centre Management Unit';
+            case 'Seksjon informasjonsforvaltning':
+                return 'Information Management';
+            case 'Seksjon styring':
+                return 'Governance';
+            case 'Seksjon kompetanseutvikling':
+                return 'Professional Development';
+            case 'Seksjon juridisk':
+                return 'Legal affairs';
+            case 'Seksjon fag- og ytelsesutvikling':
+                return 'Pensions and benefits - Legislation and development';
+            default:
+                let ecn = '';
+                let hasEnglishTranslation = true;
 
-        // managements
-        if (this.norwegianCompanyName === 'DIR Ytelsesavdelingen') {
-            ecn = 'Benefits department, Directorate of Labour and Welfare';
+                if (this.norwegianCompanyName.includes('Kontaktsenter')) {
+                    ecn = this.norwegianCompanyName.replace('Kontaktsenter', 'Call and Service Center');
+                } else if (this.norwegianCompanyName.includes('Hjelpemiddelsentral')) {
+                    ecn = this.norwegianCompanyName.replace(
+                        'Hjelpemiddelsentral',
+                        'Department of assistive technology'
+                    );
+                } else if (this.norwegianCompanyName.includes('Ytelseslinjen')) {
+                    ecn = this.norwegianCompanyName.replace('Ytelseslinjen', 'Benefits Administration');
+                } else if (this.norwegianCompanyName.includes('Arbeid og ytelser')) {
+                    ecn = this.norwegianCompanyName.replace('Arbeid og ytelser', 'Work and Benefits');
+                } else if (this.norwegianCompanyName.includes('Familie- og pensjonsytelser')) {
+                    ecn = this.norwegianCompanyName.replace(
+                        'Familie- og pensjonsytelser',
+                        'Family Benefits and Pensions'
+                    );
+                } else if (this.norwegianCompanyName.includes('Kontroll analyse')) {
+                    ecn = this.norwegianCompanyName.replace('Kontroll analyse', 'Control Analysis');
+                } else if (this.norwegianCompanyName.includes('Kontroll')) {
+                    ecn = this.norwegianCompanyName.replace('Kontroll', 'Control');
+                } else {
+                    hasEnglishTranslation = false;
+                    console.log('There is no translation for this CompanyName.');
+                    return this.norwegianCompanyName;
+                }
+                if (hasEnglishTranslation) {
+                    if (ecn.includes('og')) {
+                        ecn = ecn.replaceAll('og', 'and');
+                    }
+                }
+                return ecn;
         }
-        if (this.norwegianCompanyName === 'Ytelseslinjen') {
-            ecn = 'NAV Benefits Administration';
-        } else if (this.norwegianCompanyName === 'NAV Arbeid og ytelser styringsenhet') {
-            ecn = 'NAV Work and Benefits Management Unit';
-        } else if (this.norwegianCompanyName === 'NAV Familie- og pensjonsytelser') {
-            ecn = 'NAV Family Benefits and Pensions Management Unit';
-        } else if (this.norwegianCompanyName === 'NAV Kontroll Styringsenhet') {
-            ecn = 'NAV Control Management Unit';
-        } else if (this.norwegianCompanyName === 'NAV Registerforvaltning') {
-            ecn = 'NAV Registry Management';
-        } else if (this.norwegianCompanyName === 'NAV Medlemskap og avgift') {
-            ecn = 'NAV Social insurance and Contributions';
-        }
-
-        // sections
-        else if (this.norwegianCompanyName === 'Seksjon informasjonsforvaltning') {
-            ecn = 'Information Management';
-        } else if (this.norwegianCompanyName === 'Seksjon styring') {
-            ecn = 'Governance';
-        } else if (this.norwegianCompanyName === 'Seksjon kompetanseutvikling') {
-            ecn = 'Professional Development';
-        } else if (this.norwegianCompanyName === 'Seksjon juridisk') {
-            ecn = 'Legal affairs';
-        } else if (this.norwegianCompanyName === 'Seksjon fag- og ytelsesutvikling') {
-            ecn = 'Pensions and benefits - Legislation and development';
-
-            // units
-        } else if (this.norwegianCompanyName.includes('Kontaktsenter')) {
-            ecn = this.norwegianCompanyName.replace('Kontaktsenter', 'Call and Service Center');
-        } else if (this.norwegianCompanyName.includes('Hjelpemiddelsentral')) {
-            ecn = this.norwegianCompanyName.replace('Hjelpemiddelsentral', 'Department of assistive technology');
-        } else if (this.norwegianCompanyName.includes('Ytelseslinjen')) {
-            ecn = this.norwegianCompanyName.replace('Ytelseslinjen', 'Benefits Administration');
-        } else if (this.norwegianCompanyName.includes('Arbeid og ytelser')) {
-            ecn = this.norwegianCompanyName.replace('Arbeid og ytelser', 'Work and Benefits');
-        } else if (this.norwegianCompanyName.includes('Familie- og pensjonsytelser')) {
-            ecn = this.norwegianCompanyName.replace('Familie- og pensjonsytelser', 'Family Benefits and Pensions');
-        } else if (this.norwegianCompanyName.includes('Kontroll analyse')) {
-            ecn = this.norwegianCompanyName.replace('Kontroll analyse', 'Control Analysis');
-        } else if (this.norwegianCompanyName.includes('Kontroll')) {
-            ecn = this.norwegianCompanyName.replace('Kontroll', 'Control');
-        } else {
-            hasEnglishTranslation = false;
-            console.log('There is no translation for this CompanyName.');
-            return this.norwegianCompanyName;
-        }
-        if (hasEnglishTranslation) {
-            if (ecn.includes('og')) {
-                ecn = ecn.replaceAll('og', 'and');
-            }
-        }
-        return ecn;
     }
 
     get textTemplate() {
