@@ -151,6 +151,15 @@ export default class CrmStoMessaging extends LightningElement {
                 case 'NAV Familie- og pensjonsytelser':
                     return 'NAV Family Benefits and Pensions Management Unit';
 
+                case 'NAV Kontroll Øst':
+                    return 'NAV Control Eastern Norway';
+
+                case 'NAV Kontroll Vest':
+                    return 'NAV Control Western Norway';
+
+                case 'NAV Kontroll Nord':
+                    return 'NAV Control Northern Norway';
+
                 case 'NAV Kontroll Styringsenhet':
                     return 'NAV Control Management Unit';
 
@@ -202,8 +211,8 @@ export default class CrmStoMessaging extends LightningElement {
                         'NAV Røros, Os og Holtålen',
                         'NAV Troms og Finnmark',
                         'NAV Vestfold og Telemark',
-                        'NAV Våler i Hedmark',
-                        'NAV Øst i Agder'
+                        'NAV Våler i Hedmark'
+                        //'NAV Øst i Agder'
                     ];
 
                     if (this.norwegianCompanyName.includes('Arbeid og ytelser')) {
