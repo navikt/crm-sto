@@ -88,3 +88,12 @@
     justify-self: start;
     border: 0px;
 }
+
+.testClass {
+    background: none;
+}
+
+.testClass:active,
+.testClass:focus {
+    background: initial;
+}

@@ -13,6 +13,7 @@ export default class CrmStoMessaging extends LightningElement {
     @api singleThread;
     @api cardTitle;
     @api showClose = false;
+    @api checkMedskriv;
 
     wireField;
     accountId;

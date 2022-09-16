@@ -1,4 +1,5 @@
 <design:component label="STO Message Container">
     <design:attribute name="cardTitle" label="Header title"> </design:attribute>
     <design:attribute name="showClose" label="Show thread close button" default="false"> </design:attribute>
+    <design:attribute name="checkMedskriv" label="Check for medskriv" default="false"> </design:attribute>
 </design:component>

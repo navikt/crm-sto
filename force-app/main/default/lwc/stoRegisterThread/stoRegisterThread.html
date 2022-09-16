@@ -50,6 +50,13 @@
                                     style="text-align: left"
                                     title="Godtar du at NAV kan bruke samtalen til opplæring?"
                                     options={medskrivOptions}
+                                    ><div slot="legend" class="slds-grid">
+                                        <p>Godtar du at NAV kan bruke samtalen til opplæring?</p>
+                                        <c-ds-help-text
+                                            style="margin-left: 16px"
+                                            title="Hva betyr dette?"
+                                            text="Vi i NAV trenger mange god personer til å snakke med det gode folk som deg selv, dette trenger mye arbeid og vi prøver alltid å finne flere folk."
+                                        ></c-ds-help-text></div
                                 ></c-ds-radio>
                             </div>
                             <!-- Vilkaer checkbox -->
@@ -61,9 +68,8 @@
                                 ></c-community-checkbox
                                 ><button
                                     onclick={showTerms}
-                                    class="slds-var-m-left_small lenke vilkar-link navds-link focusBtn"
+                                    class="slds-var-m-left_small lenke vilkar-link navds-link focusBtn testClass"
                                     tabindex="0"
-                                    style="background: none"
                                 >
                                     {label.showtermstext}
                                 </button>

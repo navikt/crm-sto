@@ -4,7 +4,7 @@
             aria-invalid="false"
             class="navds-radio-group navds-radio-group--medium navds-fieldset navds-fieldset--medium"
         >
-            <legend class="navds-fieldset__legend navds-label">{title}</legend>
+            <legend class="navds-fieldset__legend navds-label"><slot name="legend">Mangler legend</slot></legend>
             <div class="navds-radio-buttons">
                 <template for:each={options} for:item="option">
                     <div class="navds-radio navds-radio--medium" key={option.value}>
