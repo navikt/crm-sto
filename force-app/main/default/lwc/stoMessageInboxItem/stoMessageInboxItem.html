@@ -1,19 +1,23 @@
 <template>
-    <a class={className} href={linkUrl} key={thread.recordId} id="a" style="padding: 1rem 1rem 1rem 0rem">
+    <a
+        class={className}
+        href={linkUrl}
+        key={thread.recordId}
+        id="a"
+        style="padding-left: 0rem; padding-right: 0rem; border: 1px solid var(--navds-semantic-color-border, #707070)"
+    >
         <lightning-layout vertical-align="center" class="slds-size_1-of-1">
-            <div
-                class="slds-is-relative slds-size_2-of-12 slds-small-size_2-of-12 slds-medium-size_2-of-12 slds-large-size_1-of-12"
-            >
-                <diV class="centerCircle"></diV>
+            <div class="slds-is-relative hideMobile" style="min-width: 88px">
+                <div class="centerCircle"></div>
                 <img
                     class="iconcolor slds-is-relative slds-show"
                     src={dialog}
                     alt={unreadmessage}
                     id="b"
-                    style="margin: auto; width: 24px"
+                    style="margin: auto; width: 24px; margin-right: 32px; margin-left: 32px"
                 />
             </div>
-            <div class="slds-size_9-of-12 slds-small-size_9-of-12 slds-medium-size_9-of-12 slds-large-size_10-of-12">
+            <div class="mobilePadding">
                 <p class="typo-normal blokk-xxxs">
                     <lightning-formatted-date-time
                         value={thread.latestMessageDate}
@@ -26,11 +30,14 @@
                     </template>
                 </p>
                 <h3 class="typo-undertittel lenkepanel__heading">{itemTitle}</h3>
-                <p class="typo-normal tema-avsnitt messagebox">{latestText}</p>
+                <p class="typo-normal tema-avsnitt messagebox threeLinesMobile">{latestText}</p>
             </div>
-            <lightning-layout-item size="1">
-                <span class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"></span>
-            </lightning-layout-item>
+            <slot name="endSection">
+                <span
+                    style="margin-right: 20px; padding-left: 10px; margin-left: auto"
+                    class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"
+                ></span>
+            </slot>
         </lightning-layout>
     </a>
 </template>

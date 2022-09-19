@@ -84,9 +84,51 @@
 }
 
 .vilkar-link {
-    align-self: end;
+    align-self: start;
     justify-self: start;
     border: 0px;
+    margin-top: 12px;
+}
+
+.override {
+    --override-border-top-right-radius: 0px;
+    --override-border-bottom-right-radius: 0px;
+}
+
+.leftAlign {
+    text-align: left;
+}
+
+.topGap {
+    margin-top: 16px;
+}
+
+.topBigGap {
+    margin-top: 32px;
+}
+
+.btnPositioning {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+@media only screen and (max-width: 480px) {
+    .textLeftAlign-mobile {
+        text-align: left;
+    }
+
+    .leftMargin-mobile {
+        margin-left: 16px !important;
+    }
+
+    .btnPositioning {
+        display: block;
+    }
+
+    .btnPositioning > *:first-child {
+        margin-bottom: 16px;
+    }
 }
 
 .testClass {

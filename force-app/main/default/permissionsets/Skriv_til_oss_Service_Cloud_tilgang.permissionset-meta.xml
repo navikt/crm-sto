@@ -5,7 +5,15 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>NKS_DialogueViewController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>STO_RecordInfoController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>nksGetStoUtilityController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -16,22 +24,14 @@
         <apexClass>stoInboxHelper</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <classAccesses>
-        <apexClass>nksGetStoUtilityController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>NKS_DialogueViewController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Case.STO_Category__c</field>
+        <field>Case.CRM_In_Queue__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Case.CRM_In_Queue__c</field>
+        <field>Case.STO_Category__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

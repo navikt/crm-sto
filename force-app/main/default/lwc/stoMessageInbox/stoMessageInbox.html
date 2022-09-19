@@ -3,7 +3,7 @@
         <div class="header">
             <h1 class="navds-heading navds-heading--2xlarge">{title}</h1>
         </div>
-        <div class="header">
+        <div class="header aroundGap">
             <c-nav-Button
                 url="https://www.nav.no/person/kontakt-oss/skriv-til-oss"
                 title="Skriv ny melding"
@@ -22,17 +22,22 @@
                 <div class="subheader">
                     <h2 class="typo-undertittel mobil-padding">Siste meldinger</h2>
                 </div>
-                <template for:each={recentthreads} for:item="thread">
-                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
-                </template>
+                <div class="horizontalMargin-mobile">
+                    <template for:each={recentthreads} for:item="thread">
+                        <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+                    </template>
+                </div>
             </template>
             <template if:true={showthreads}>
                 <div class="subheader">
                     <h2 class="typo-undertittel mobil-padding">Tidligere meldinger</h2>
                 </div>
-                <template for:each={threads} for:item="thread">
-                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
-                </template>
+
+                <div class="horizontalMargin-mobile">
+                    <template for:each={threads} for:item="thread">
+                        <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+                    </template>
+                </div>
             </template>
             <template if:true={noItems}>
                 <div class="slds-var-p-vertical_large centerInfobox">
