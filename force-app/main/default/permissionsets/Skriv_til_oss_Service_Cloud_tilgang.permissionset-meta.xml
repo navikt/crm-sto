@@ -41,6 +41,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Thread__c.CRM_Case__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Thread__c.CRM_Closed_Date__c</field>
         <readable>true</readable>
     </fieldPermissions>
