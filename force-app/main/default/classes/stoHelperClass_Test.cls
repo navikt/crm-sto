@@ -22,7 +22,7 @@ public with sharing class stoHelperClass_Test {
             WHERE Account.CRM_Person__r.Name = '12345678910'
             LIMIT 1
         ];
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id);
+        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id, true);
         Test.startTest();
         System.assertNotEquals(null, stoHelperClass.getOpenThreads('Arbeid'), 'Expected to get a thread');
         Test.stopTest();

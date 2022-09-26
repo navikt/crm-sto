@@ -5,13 +5,19 @@ export default class DsHelpText extends LightningElement {
     @api text = 'Mangler tekst';
     open = false;
 
-    test() {
+    clickHelpText() {
         this.open = !this.open;
     }
 
-    test2(event) {
+    keyboardHandler(event) {
+        if (event.key === 'Escape') {
+            this.open = false;
+        }
+    }
+
+    focusClose(event) {
         const div = this.template.querySelector('.tester1');
-        this.open = event.relatedTarget !== null && div.contains(event.relatedTarget);
+        if (event.relatedTarget === null || !div.contains(event.relatedTarget)) this.open = false;
     }
 
     get popoverClasses() {

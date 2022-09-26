@@ -1,7 +1,7 @@
 <template>
-    <div class="navds-help-text tester1" style="position: relative" onfocusout={test2}>
+    <div class="navds-help-text tester1" style="position: relative" onfocusout={focusClose} onkeydown={keyboardHandler}>
         <!-- <button class="navds-help-text__button" type="button" aria-expanded="false"> -->
-        <button class="navds-help-text__button" type="button" aria-expanded={open} onclick={test}>
+        <button class="navds-help-text__button" type="button" aria-expanded={open} onclick={clickHelpText}>
             <svg
                 width="1em"
                 height="1em"
