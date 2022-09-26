@@ -88,6 +88,15 @@
     justify-self: start;
     border: 0px;
     margin-top: 12px;
+    background-color: transparent;
+}
+
+.vilkar-link:active {
+    background-color: var(--navds-link-color-background-active);
+}
+
+.vilkar-link:focus {
+    background-color: var(--navds-link-color-background-focus);
 }
 
 .override {
