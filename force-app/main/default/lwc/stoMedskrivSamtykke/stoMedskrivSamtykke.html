@@ -1,0 +1,16 @@
+<template>
+    <template if:true={showPanel}>
+        <div class="navds-panel slds-var-m-horizontal_medium" style="margin-top: -3.5rem; margin-bottom: 5.5rem">
+            <h2 class="navds-heading navds-heading--xsmall navds-typo--spacing">{title}</h2>
+            <p class="navds-body-long navds-body-long--small">{text}</p>
+            <c-ds-button
+                style="margin-top: 0.5rem"
+                class={btnClasses}
+                variant="secondary"
+                size="small"
+                onclick={revokeMedskriv}
+                text="FJERN MIN GODKJENNING"
+            ></c-ds-button>
+        </div>
+    </template>
+</template>
