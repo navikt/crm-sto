@@ -37,11 +37,14 @@ export default class CommunityExpandablePanel extends LightningElement {
                 let boundingRect = content.getBoundingClientRect();
                 content.style.height = '0px';
                 console.log('Animating to ' + boundingRect.height);
-                window
-                    .requestAnimationFrame(function () {
-                        content.style.height = boundingRect.height + 'px';
-                    })
-                    .then(() => console.log('test'));
+                window.requestAnimationFrame(function () {
+                    content.style.height = boundingRect.height + 'px';
+                });
+                setTimeout(() => {
+                    if (this.showpanel) {
+                        content.style.height = 'auto';
+                    }
+                }, 250);
             } else {
                 content.style.height = '0px';
             }
