@@ -38,6 +38,7 @@
 .expand-animation {
     overflow: hidden;
     height: 0px;
+    transition: height 250ms ease 0ms;
 }
 
 .active {
