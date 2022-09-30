@@ -93,14 +93,16 @@
                                 <h2 class="navds-heading navds-heading--medium leftAlign topBigGap">
                                     Dine åpne samtaler om {selectedTheme}
                                 </h2>
-                                <template for:each={openThreadList} for:item="thread" for:index="index">
-                                    <c-sto-inbox-close-item
-                                        thread={thread}
-                                        key={thread.recordId}
-                                        index={index}
-                                        onclosethread={handleCloseThread}
-                                    ></c-sto-inbox-close-item>
-                                </template>
+                                <div class="decorator-wrapper">
+                                    <template for:each={openThreadList} for:item="thread" for:index="index">
+                                        <c-sto-inbox-close-item
+                                            thread={thread}
+                                            key={thread.recordId}
+                                            index={index}
+                                            onclosethread={handleCloseThread}
+                                        ></c-sto-inbox-close-item>
+                                    </template>
+                                </div>
                             </template>
                         </template>
                         <template if:true={showspinner}>
