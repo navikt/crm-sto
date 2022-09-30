@@ -10,12 +10,8 @@ export default class CommunityExpandablePanel extends LightningElement {
         this.performAnimation();
     }
 
-    get chevronClass() {
-        return (
-            'nav-frontend-chevron slds-float_right ' +
-            (this.showpanel ? 'chevron--opp' : 'chevron--ned') +
-            ' chevronboks'
-        );
+    get accordianClass() {
+        return 'navds-accordion__item ' + (this.showpanel ? 'navds-accordion__item--open' : '');
     }
 
     get dropdownClass() {
@@ -36,7 +32,6 @@ export default class CommunityExpandablePanel extends LightningElement {
                 content.style.height = 'auto';
                 let boundingRect = content.getBoundingClientRect();
                 content.style.height = '0px';
-                console.log('Animating to ' + boundingRect.height);
                 window.requestAnimationFrame(function () {
                     content.style.height = boundingRect.height + 'px';
                 });
@@ -46,21 +41,12 @@ export default class CommunityExpandablePanel extends LightningElement {
                     }
                 }, 250);
             } else {
-                content.style.height = '0px';
+                let boundingRect = content.getBoundingClientRect();
+                content.style.height = boundingRect.height + 'px';
+                window.requestAnimationFrame(function () {
+                    content.style.height = '0px';
+                });
             }
         }
-    }
-
-    // NEW SHIT //
-    get testNewClasses() {
-        return 'navds-accordion__item ' + (this.showpanel ? 'navds-accordion__item--open' : '');
-    }
-
-    // get testStyles() {
-    //     return this.showpanel ? 'height: auto' : 'height: 0px; overflow: hidden;';
-    // }
-
-    get testStyles2() {
-        return this.showpanel ? '' : 'display: none;';
     }
 }
