@@ -22,8 +22,8 @@
                                         "firstLevel": "Privatperson",
                                         "firstLevelLink": "https://nav.no",
                                         "leafnode": "Innboks",
-                                        "secondLevel": "Ditt NAV",
-                                        "secondLevelLink": "https://nav.no/dittnav"
+                                        "secondLevel": "Min side",
+                                        "secondLevelLink": "https://www.nav.no/minside/"
                                     },
                                     "componentName": "c:communityBreadCrumb",
                                     "id": "1602883c-eee1-474d-975f-1b3913246b4e",
