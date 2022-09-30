@@ -4,8 +4,8 @@
     <assignments>
         <name>Set_Thread_Category</name>
         <label>Set Thread Category</label>
-        <locationX>50</locationX>
-        <locationY>758</locationY>
+        <locationX>176</locationX>
+        <locationY>638</locationY>
         <assignmentItems>
             <assignToReference>Get_Thread.STO_Category__c</assignToReference>
             <operator>Assign</operator>
@@ -18,14 +18,6 @@
         </connector>
     </assignments>
     <choices>
-        <name>Transfer_to_NAV_Unit</name>
-        <choiceText>NAV-enhet</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>NAV_UNIT_TRANSFER</stringValue>
-        </value>
-    </choices>
-    <choices>
         <name>Transfer_to_Queue</name>
         <choiceText>Annen kø</choiceText>
         <dataType>String</dataType>
@@ -33,32 +25,6 @@
             <stringValue>QUEUE_TRANSFER</stringValue>
         </value>
     </choices>
-    <decisions>
-        <description>Check if the inquiry should be transferred to a Salesforce queue or to another NAV unit (via NAV Task)</description>
-        <name>Transfer_Decision</name>
-        <label>Transfer Decision</label>
-        <locationX>182</locationX>
-        <locationY>518</locationY>
-        <defaultConnector>
-            <targetReference>Initiate_NAVUnit_Transfer</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Transfer to NAV Unit</defaultConnectorLabel>
-        <rules>
-            <name>Queue_Transfer</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Transfer_to</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Transfer_to_Queue</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_Case_to_Queue</targetReference>
-            </connector>
-            <label>Queue Transfer</label>
-        </rules>
-    </decisions>
     <dynamicChoiceSets>
         <name>STO_Categories</name>
         <dataType>Picklist</dataType>
@@ -67,11 +33,6 @@
         <picklistField>STO_Category__c</picklistField>
         <picklistObject>Case</picklistObject>
     </dynamicChoiceSets>
-    <formulas>
-        <name>NAV_Unit_Transfer_Text</name>
-        <dataType>String</dataType>
-        <expression>{!NAV_Unit_Allocator.selectedUnitName}</expression>
-    </formulas>
     <formulas>
         <name>Queue_Transfer_Text</name>
         <dataType>String</dataType>
@@ -102,7 +63,7 @@
         <description>Query the case information</description>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>182</locationX>
+        <locationX>176</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -124,7 +85,7 @@
         <description>Get the STO Thread information</description>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>182</locationX>
+        <locationX>176</locationX>
         <locationY>278</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -145,8 +106,8 @@
     <recordUpdates>
         <name>Assign_Case_to_Queue</name>
         <label>Assign Case to Queue</label>
-        <locationX>50</locationX>
-        <locationY>638</locationY>
+        <locationX>176</locationX>
+        <locationY>518</locationY>
         <connector>
             <targetReference>Set_Thread_Category</targetReference>
         </connector>
@@ -181,8 +142,8 @@
     <recordUpdates>
         <name>Update_thread</name>
         <label>Update thread</label>
-        <locationX>50</locationX>
-        <locationY>998</locationY>
+        <locationX>176</locationX>
+        <locationY>878</locationY>
         <inputReference>Get_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
@@ -190,24 +151,14 @@
         <description>Screen including transfer options.</description>
         <name>Transfer_Screen</name>
         <label>Transfer Screen</label>
-        <locationX>182</locationX>
+        <locationX>176</locationX>
         <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Transfer_Decision</targetReference>
+            <targetReference>Assign_Case_to_Queue</targetReference>
         </connector>
-        <fields>
-            <name>Transfer_to</name>
-            <choiceReferences>Transfer_to_Queue</choiceReferences>
-            <choiceReferences>Transfer_to_NAV_Unit</choiceReferences>
-            <dataType>String</dataType>
-            <defaultSelectedChoiceReference>Transfer_to_Queue</defaultSelectedChoiceReference>
-            <fieldText>Sett over til:</fieldText>
-            <fieldType>RadioButtons</fieldType>
-            <isRequired>false</isRequired>
-        </fields>
         <fields>
             <name>STO_Category_Picklist</name>
             <choiceReferences>STO_Categories</choiceReferences>
@@ -218,114 +169,12 @@
             <fieldText>Kø:</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Transfer_to</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <elementReference>Transfer_to_Queue</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>Transfer_Screen_Section1</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>Transfer_Screen_Section1_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>NAV_Task_Categorization</name>
-                    <extensionName>c:crmThemeCategorization</extensionName>
-                    <fieldType>ComponentInstance</fieldType>
-                    <inputParameters>
-                        <name>themeGroup</name>
-                        <value>
-                            <elementReference>Get_Thread.CRM_Theme_Group__c</elementReference>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>theme</name>
-                        <value>
-                            <elementReference>Get_Thread.CRM_Theme__c</elementReference>
-                        </value>
-                    </inputParameters>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
-                </fields>
-                <fields>
-                    <name>Task_Type_Selection</name>
-                    <extensionName>c:crmTaskTypePicklist</extensionName>
-                    <fieldType>ComponentInstance</fieldType>
-                    <inputParameters>
-                        <name>showcomponent</name>
-                        <value>
-                            <booleanValue>true</booleanValue>
-                        </value>
-                    </inputParameters>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
-                </fields>
-                <fields>
-                    <name>Task_Comment</name>
-                    <fieldText>Kommentar</fieldText>
-                    <fieldType>LargeTextArea</fieldType>
-                    <isRequired>false</isRequired>
-                </fields>
-                <fields>
-                    <name>NAV_Unit_Allocator</name>
-                    <extensionName>c:crmNavTaskWorkAllocation</extensionName>
-                    <fieldType>ComponentInstance</fieldType>
-                    <inputParameters>
-                        <name>personId</name>
-                        <value>
-                            <elementReference>Get_Thread.CRM_Account__r.CRM_Person__c</elementReference>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>hideDelegateToSelf</name>
-                        <value>
-                            <booleanValue>true</booleanValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>disableConditionalRendering</name>
-                        <value>
-                            <booleanValue>true</booleanValue>
-                        </value>
-                    </inputParameters>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Transfer_to</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <elementReference>Transfer_to_NAV_Unit</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Case</targetReference>
@@ -333,72 +182,11 @@
     </start>
     <status>Active</status>
     <subflows>
-        <name>Initiate_NAVUnit_Transfer</name>
-        <label>Initiate NAV Unit Transfer</label>
-        <locationX>314</locationX>
-        <locationY>638</locationY>
-        <flowName>STO_Transfer_to_NAV_Unit_Auto</flowName>
-        <inputAssignments>
-            <name>recordId</name>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>TASK_COMMENTS</name>
-            <value>
-                <elementReference>Task_Comment</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>TASK_SUBTHEME_ID</name>
-            <value>
-                <elementReference>NAV_Task_Categorization.subtheme</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>TASK_SUBTYPE_ID</name>
-            <value>
-                <elementReference>NAV_Task_Categorization.subtype</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>TASK_TASKTYPE_ID</name>
-            <value>
-                <elementReference>Task_Type_Selection.selectedTaskTypeId</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>TASK_THEME_GROUP_ID</name>
-            <value>
-                <elementReference>NAV_Task_Categorization.themeGroup</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>TASK_THEME_ID</name>
-            <value>
-                <elementReference>NAV_Task_Categorization.theme</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Thread_ID</name>
-            <value>
-                <elementReference>Get_Thread.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>TRANSFER_TO_UNIT_NUMBER</name>
-            <value>
-                <elementReference>NAV_Unit_Allocator.selectedUnitNumber</elementReference>
-            </value>
-        </inputAssignments>
-    </subflows>
-    <subflows>
         <description>Add a transfer event message to the thread</description>
         <name>Submit_Transfer_Event</name>
         <label>Submit Transfer Event</label>
-        <locationX>50</locationX>
-        <locationY>878</locationY>
+        <locationX>176</locationX>
+        <locationY>758</locationY>
         <connector>
             <targetReference>Update_thread</targetReference>
         </connector>
@@ -443,15 +231,6 @@
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <description>NAV task to be generated when transferring STO to another NAV Unit</description>
-        <name>STO_NAV_TASK</name>
-        <dataType>SObject</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>NavTask__c</objectType>
     </variables>
     <variables>
         <name>STO_QUEUES</name>
