@@ -104,46 +104,32 @@
                             </template>
                         </template>
                         <template if:true={showspinner}>
-                            <div tabindex="0" class="spinner" aria-label={spinnerText}>
-                                <div class="overflow-detector">
-                                    <div class="overflow-detector__scroller">
-                                        <div class="overflow-detector__inner">
-                                            <div class="example__inner">
-                                                <svg
-                                                    kind="spinner-negativ"
-                                                    class="spinner spinner--m"
-                                                    focusable="false"
-                                                    height="32"
-                                                    width="32"
-                                                    viewBox="0 0 50 50"
-                                                    preserveAspectRatio="xMidYMid"
-                                                >
-                                                    <title></title>
-                                                    <circle
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        cx="25"
-                                                        cy="25"
-                                                        r="20"
-                                                        stroke="#eee"
-                                                        fill="none"
-                                                        stroke-width="5"
-                                                    ></circle>
-                                                    <circle
-                                                        cx="25"
-                                                        cy="25"
-                                                        r="20"
-                                                        stroke="#888"
-                                                        fill="none"
-                                                        stroke-width="5"
-                                                        stroke-dasharray="50 155"
-                                                        stroke-linecap="round"
-                                                    ></circle>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <svg
+                                tabindex="0"
+                                aria-labelledby="loader-navds-id-4"
+                                class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
+                                focusable="false"
+                                viewBox="0 0 50 50"
+                                preserveAspectRatio="xMidYMid"
+                            >
+                                <title id="loader-navds-id-4">{spinnerText}</title>
+                                <circle
+                                    class="navds-loader__background"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    cx="25"
+                                    cy="25"
+                                    r="20"
+                                    fill="none"
+                                ></circle>
+                                <circle
+                                    class="navds-loader__foreground"
+                                    cx="25"
+                                    cy="25"
+                                    r="20"
+                                    fill="none"
+                                    stroke-dasharray="50 155"
+                                ></circle>
+                            </svg>
                         </template>
                     </div>
                 </template>
