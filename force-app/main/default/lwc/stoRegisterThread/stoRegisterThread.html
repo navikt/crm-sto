@@ -23,13 +23,15 @@
                     </div>
                     <div class="inputarea">
                         <template if:false={showspinner}>
-                            <template for:each={newslist} for:item="news">
-                                <c-community-expandable-panel
-                                    header={news.STO_Header__c}
-                                    body={news.STO_Body__c}
-                                    key={news.id}
-                                ></c-community-expandable-panel>
-                            </template>
+                            <div class="navds-accordion leftAlign">
+                                <template for:each={newslist} for:item="news">
+                                    <c-community-expandable-panel
+                                        header={news.STO_Header__c}
+                                        body={news.STO_Body__c}
+                                        key={news.id}
+                                    ></c-community-expandable-panel>
+                                </template>
+                            </div>
                             <template if:true={showOpenThreadWarning}>
                                 <div class="slds-var-m-top_xx-large slds-text-align_left">
                                     <c-crm-community-alert-stripe type={alertType} alerttext={openThreadText}>
@@ -51,6 +53,7 @@
                                         style="text-align: left"
                                         title="Godtar du at NAV kan bruke samtalen til opplæring?"
                                         options={medskrivOptions}
+                                        class="radioFocus"
                                         ><div slot="legend" class="slds-grid">
                                             <p>Godtar du at NAV kan bruke samtalen til opplæring?</p>
                                             <c-ds-help-text

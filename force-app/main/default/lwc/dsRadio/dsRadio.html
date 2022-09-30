@@ -3,13 +3,15 @@
         <fieldset
             aria-invalid="false"
             class="navds-radio-group navds-radio-group--medium navds-fieldset navds-fieldset--medium"
+            onchange={trest}
         >
             <legend class="navds-fieldset__legend navds-label"><slot name="legend">Mangler legend</slot></legend>
             <div class="navds-radio-buttons">
-                <template for:each={options} for:item="option">
+                <template for:each={_options} for:item="option">
                     <div class="navds-radio navds-radio--medium" key={option.value}>
                         <input
                             id={option.id}
+                            data-id={option.id}
                             aria-invalid="false"
                             name="radioGroupName-navds"
                             type="radio"

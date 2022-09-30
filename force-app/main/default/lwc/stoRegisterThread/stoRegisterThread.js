@@ -56,7 +56,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         INCORRECT_CATEGORY
     };
     medskrivOptions = [
-        { text: 'Ja, jeg godtar.', value: true, checked: true },
+        { text: 'Ja, jeg godtar.', value: true, checked: false },
         { text: 'Nei, jeg godtar ikke.', value: false, checked: false }
     ];
     logopath = navlogos + '/email.svg';
@@ -72,7 +72,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     messageContext;
 
     connectedCallback() {
-        console.log('geir');
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
                 let categoryList = new Set();
@@ -187,14 +186,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitrequest() {
+        const medskriv = this.template.querySelector('c-ds-radio')?.getValue();
         if (
             this.acceptedTerms == true &&
             this.message &&
             this.message.length != null &&
-            this.message.length <= this.maxLength
+            this.message.length <= this.maxLength &&
+            medskriv != null
         ) {
-            const medskriv = this.template.querySelector('c-ds-radio')?.getValue();
-
             this.showspinner = true;
             this.spinnerText = spinnerReasonTextMap['send'];
 
@@ -225,6 +224,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     Id: 3,
                     EventItem: '.checkboxContainer',
                     Text: 'Du må godta vilkårene for å sende beskjeden.'
+                });
+            }
+            if (medskriv == null) {
+                this.errorList.errors.push({
+                    Id: 4,
+                    EventItem: '.radioFocus',
+                    Text: 'Du må velge et alternativ for medskriv'
                 });
             }
             let errorSummary = this.template.querySelector('.errorSummary');
