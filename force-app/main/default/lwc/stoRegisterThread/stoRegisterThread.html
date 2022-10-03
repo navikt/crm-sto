@@ -15,6 +15,7 @@
                         error-list={errorList}
                         onclickedevent={handleErrorClick}
                         class="errorSummary"
+                        style="text-align: left"
                     >
                     </c-community-error-summary>
 
@@ -51,15 +52,17 @@
                                 <div class="">
                                     <c-ds-radio
                                         style="text-align: left"
-                                        title="Godtar du at NAV kan bruke samtalen til opplæring?"
+                                        title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i NAV?"
                                         options={medskrivOptions}
                                         class="radioFocus"
                                         ><div slot="legend" class="slds-grid">
-                                            <p>Godtar du at NAV kan bruke samtalen til opplæring?</p>
+                                            <p>
+                                                Godtar du at vi kan bruke samtalen din til opplæring av veiledere i NAV?
+                                            </p>
                                             <c-ds-help-text
                                                 style="margin-left: 16px"
                                                 title="Hva betyr dette?"
-                                                text="Vi i NAV trenger mange god personer til å snakke med det gode folk som deg selv, dette trenger mye arbeid og vi prøver alltid å finne flere folk."
+                                                text="For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt."
                                             ></c-ds-help-text></div
                                     ></c-ds-radio>
                                 </div>
