@@ -1,10 +1,61 @@
 {
-  "authenticationType" : "AUTHENTICATED",
-  "forgotPasswordRouteId" : null,
-  "isFilteredComponentsView" : false,
-  "isProgressiveRenderingEnabled" : false,
-  "mainAppPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
-  "preferredDomain" : "none",
-  "selfRegistrationRouteId" : null,
-  "type" : "site"
+    "authenticationType": "AUTHENTICATED",
+    "forgotPasswordRouteId": null,
+    "isFilteredComponentsView": false,
+    "isProgressiveRenderingEnabled": false,
+    "mainAppPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+    "preferredDomain": "none",
+    "selfRegistrationRouteId": null,
+    "trustedSitesForScript": [
+        {
+            "id": "c72f84e2-4042-422c-b0a6-fb76ac5dfcbb",
+            "isActive": true,
+            "trustedSiteName": "nav_no",
+            "trustedSiteUrl": "https://www.nav.no",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "668f44ff-90ac-4ed8-a558-8ce072ca7aa9",
+            "isActive": true,
+            "trustedSiteName": "google_tag_manager",
+            "trustedSiteUrl": "https://www.googletagmanager.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "b3aff44a-ffb8-471e-bede-3532e9118d12",
+            "isActive": true,
+            "trustedSiteName": "account.psplugin.com",
+            "trustedSiteUrl": "https://account.psplugin.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "246d1f0e-0268-4a3b-8c11-33ae02516295",
+            "isActive": true,
+            "trustedSiteName": "in2.taskanalytics.com",
+            "trustedSiteUrl": "https://in2.taskanalytics.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "4e928fdc-9637-45d0-b5d2-89516a768c21",
+            "isActive": true,
+            "trustedSiteName": "www.google-analytics.com",
+            "trustedSiteUrl": "https://www.google-analytics.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "45c9303b-6ac6-4496-b506-4cf9d1d03835",
+            "isActive": true,
+            "trustedSiteName": "static.hotjar.com",
+            "trustedSiteUrl": "https://static.hotjar.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "8668b0d2-dabf-4db2-9bb8-62144319018f",
+            "isActive": true,
+            "trustedSiteName": "script.hotjar.com",
+            "trustedSiteUrl": "https://script.hotjar.com",
+            "type": "trustedSitesForScripts"
+        }
+    ],
+    "type": "site"
 }
