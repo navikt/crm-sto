@@ -2,6 +2,7 @@ import { getFieldValue, getRecord, updateRecord } from 'lightning/uiRecordApi';
 import { LightningElement, api, wire } from 'lwc';
 import MEDSKRIV_FIELD from '@salesforce/schema/Thread__c.CRM_Medskriv__c';
 import ID_FIELD from '@salesforce/schema/Thread__c.Id';
+import LoggerUtility from 'c/loggerUtility';
 
 const titlesConst = {
     false: 'Du har godkjent at denne samtalen kan brukes til opplæring av ansatte i NAV.',
@@ -26,14 +27,9 @@ export default class StoMedskrivSamtykke extends LightningElement {
         const recordInput = { fields };
         setTimeout(() => (this.buttonPushed = true), 100);
 
-        updateRecord(recordInput)
-            .then((a) => {
-                console.log('Updated');
-                console.log(a);
-            })
-            .catch(() => {
-                console.log('Tester');
-            });
+        updateRecord(recordInput).catch((error) => {
+            LoggerUtility.logError('NKS', 'STO', error, 'Kunne ikke fjerne medskriv', this.recordId);
+        });
     }
 
     @wire(getRecord, { recordId: '$recordId', fields: MEDSKRIV_FIELD })
