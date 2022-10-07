@@ -77,6 +77,16 @@
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "recordId": "{!recordId}"
+                                    },
+                                    "componentName": "c:stoMedskrivSamtykke",
+                                    "id": "1110f66c-435f-47d9-86d8-997027054c2f",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
                                 }
                             ],
                             "id": "71dddfb3-f13a-4e13-8313-985a55c8398b",
