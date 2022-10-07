@@ -3,6 +3,7 @@ import { LightningElement, api } from 'lwc';
 export default class DsRadio extends LightningElement {
     @api title;
     @api options; // List of label value objects
+    showErrorText = false;
 
     connectedCallback() {
         this._options = this.options.map((option, index) => ({ ...option, id: 'radio-navds-id-' + index }));
@@ -10,10 +11,6 @@ export default class DsRadio extends LightningElement {
 
     getSelectedButton() {
         return this.template.querySelector('input[type=radio][name=radioGroupName-navds]:checked');
-    }
-
-    renderedCallback() {
-        console.log(JSON.stringify(this._options));
     }
 
     @api
@@ -27,9 +24,17 @@ export default class DsRadio extends LightningElement {
         test?.focus();
     }
 
-    trest(e) {
+    checkForError(e) {
+        this.updateErrorText();
+    }
+
+    handleChange(e) {
         const dataId = this.getSelectedButton().getAttribute('data-id');
-        console.log(JSON.stringify(this._options));
         this._options.forEach((option) => (option.checked = option.id === dataId));
+        this.updateErrorText();
+    }
+
+    updateErrorText() {
+        this.showErrorText = this.getValue() == null;
     }
 }

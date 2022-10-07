@@ -3,10 +3,10 @@
         <fieldset
             aria-invalid="false"
             class="navds-radio-group navds-radio-group--medium navds-fieldset navds-fieldset--medium"
-            onchange={trest}
+            onchange={handleChange}
         >
             <legend class="navds-fieldset__legend navds-label"><slot name="legend">Mangler legend</slot></legend>
-            <div class="navds-radio-buttons">
+            <div class="navds-radio-buttons" onfocusout={checkForError}>
                 <template for:each={_options} for:item="option">
                     <div class="navds-radio navds-radio--medium" key={option.value}>
                         <input
@@ -26,7 +26,16 @@
                     </div>
                 </template>
             </div>
-            <div aria-relevant="additions removals" aria-live="polite" class="navds-fieldset__error"></div>
+            <div
+                id="fieldset-error-navds-id-4"
+                aria-relevant="additions removals"
+                aria-live="polite"
+                class="navds-fieldset__error"
+            >
+                <template if:true={showErrorText}>
+                    <p class="navds-error-message navds-label">Du må velge et av alternativene</p>
+                </template>
+            </div>
         </fieldset>
     </div>
 </template>

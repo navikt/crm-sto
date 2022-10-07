@@ -205,7 +205,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 );
             });
         } else {
-            this.errorList = { title: '', errors: [] };
+            this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
             if (!this.message || this.message.length == null) {
                 this.errorList.errors.push({
                     Id: 1,
@@ -223,14 +223,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.errorList.errors.push({
                     Id: 3,
                     EventItem: '.checkboxContainer',
-                    Text: 'Du må godta vilkårene for å sende beskjeden.'
+                    Text: 'Du må godta vilkårene.'
                 });
             }
             if (medskriv == null) {
                 this.errorList.errors.push({
                     Id: 4,
                     EventItem: '.radioFocus',
-                    Text: 'Du må velge et alternativ for medskriv'
+                    Text: 'Du må velge et av alternativene.'
                 });
             }
             let errorSummary = this.template.querySelector('.errorSummary');
