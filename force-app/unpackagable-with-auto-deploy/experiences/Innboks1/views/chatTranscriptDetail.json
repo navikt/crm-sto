@@ -22,8 +22,8 @@
                                         "firstLevel": "Privatperson",
                                         "firstLevelLink": "https://nav.no",
                                         "leafnode": "Chat",
-                                        "secondLevel": "Ditt NAV",
-                                        "secondLevelLink": "https://nav.no/dittnav",
+                                        "secondLevel": "Min side",
+                                        "secondLevelLink": "https://www.nav.no/minside/",
                                         "thirdLevel": "Innboks",
                                         "thirdLevelLink": "https://innboks.nav.no/"
                                     },
