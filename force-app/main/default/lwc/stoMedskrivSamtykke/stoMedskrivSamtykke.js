@@ -1,6 +1,6 @@
 import { getFieldValue, getRecord, updateRecord } from 'lightning/uiRecordApi';
 import { LightningElement, api, wire } from 'lwc';
-import MEDSKRIV_FIELD from '@salesforce/schema/Thread__c.CRM_Medskriv__c';
+import MEDSKRIV_FIELD from '@salesforce/schema/Thread__c.STO_Medskriv__c';
 import ID_FIELD from '@salesforce/schema/Thread__c.Id';
 import LoggerUtility from 'c/loggerUtility';
 

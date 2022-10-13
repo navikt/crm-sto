@@ -91,7 +91,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Thread__c.CRM_Medskriv__c</field>
+        <field>Thread__c.STO_Medskriv__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
