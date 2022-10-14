@@ -38,8 +38,8 @@
                 ></path>
             </svg>
         </button>
-        <div aria-hidden={inverseShowpanel} class={dropdownClass}>
-            <div class="expand-animation">
+        <div class="expand-animation" style="height: 0px">
+            <div class="dropdown" aria-hidden={inverseShowpanel} style="display: none">
                 <div class="navds-accordion__content navds-body-long">
                     <lightning-formatted-rich-text value={body}></lightning-formatted-rich-text>
                 </div>
