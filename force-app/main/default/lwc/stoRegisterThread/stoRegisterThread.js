@@ -55,6 +55,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         EMPTY_TEXT_FIELD_ERROR,
         INCORRECT_CATEGORY
     };
+    medskrivOptions = [
+        { text: 'Ja, jeg godtar.', value: true, checked: false },
+        { text: 'Nei, jeg godtar ikke.', value: false, checked: false }
+    ];
     logopath = navlogos + '/email.svg';
     deletepath = navlogos + '/delete.svg';
     newslist;
@@ -68,7 +72,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     messageContext;
 
     connectedCallback() {
-        console.log('geir');
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
                 let categoryList = new Set();
@@ -183,16 +186,18 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitrequest() {
+        const medskriv = this.template.querySelector('c-ds-radio')?.getValue();
         if (
             this.acceptedTerms == true &&
             this.message &&
             this.message.length != null &&
-            this.message.length <= this.maxLength
+            this.message.length <= this.maxLength &&
+            medskriv != null
         ) {
             this.showspinner = true;
             this.spinnerText = spinnerReasonTextMap['send'];
 
-            createRecords({ theme: this.selectedTheme, msgText: this.message }).then((thread) => {
+            createRecords({ theme: this.selectedTheme, msgText: this.message, medskriv: medskriv }).then((thread) => {
                 this.showspinner = false;
                 window.open(
                     (this.linkUrl = basepath + '/skriv-til-oss/' + thread.Id + '/' + encodeURIComponent(thread.Name)),
@@ -200,7 +205,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 );
             });
         } else {
-            this.errorList = { title: '', errors: [] };
+            this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
             if (!this.message || this.message.length == null) {
                 this.errorList.errors.push({
                     Id: 1,
@@ -218,7 +223,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.errorList.errors.push({
                     Id: 3,
                     EventItem: '.checkboxContainer',
-                    Text: 'Du må godta vilkårene for å sende beskjeden.'
+                    Text: 'Du må godta vilkårene.'
+                });
+            }
+            if (medskriv == null) {
+                this.errorList.errors.push({
+                    Id: 4,
+                    EventItem: '.radioFocus',
+                    Text: 'Du må velge et av alternativene.'
                 });
             }
             let errorSummary = this.template.querySelector('.errorSummary');

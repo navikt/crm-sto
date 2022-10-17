@@ -3,6 +3,7 @@
     <aura:attribute name="singleThread" type="Boolean" default="true"></aura:attribute>
     <aura:attribute name="cardTitle" type="String"></aura:attribute>
     <aura:attribute name="showClose" type="Boolean" default="false"></aura:attribute>
+    <aura:attribute name="checkMedskriv" type="Boolean" default="false"></aura:attribute>
 
     <c:crmStoMessaging
         recordId="{!v.recordId}"
@@ -10,6 +11,7 @@
         singleThread="{!v.singleThread}"
         cardTitle="{!v.cardTitle}"
         showClose="{!v.showClose}"
+        checkMedskriv="{!v.checkMedskriv}"
         onsto_toolbaraction="{!c.handleToolbarAction}"
     ></c:crmStoMessaging>
 

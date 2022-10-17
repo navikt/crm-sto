@@ -36,14 +36,6 @@
 }
 
 .expand-animation {
+    transition: height 250ms ease 0ms;
     overflow: hidden;
-    height: 0px;
-}
-
-.active {
-    visibility: visible;
-}
-
-.hidden {
-    visibility: hidden;
 }

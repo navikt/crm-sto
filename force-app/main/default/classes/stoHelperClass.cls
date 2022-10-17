@@ -41,20 +41,20 @@ public with sharing class stoHelperClass {
      * @date 08.06.21
      */
     @AuraEnabled
-    public static Thread__c createRequest(String theme, String msgText) {
+    public static Thread__c createRequest(String theme, String msgText, Boolean medskriv) {
         String relatedObjId;
         Thread__c thread;
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
 
-        thread = createThread(null, theme, personUser);
+        thread = createThread(null, theme, personUser, medskriv);
         createMessage(thread, msgText, personUser.ContactId);
 
         return thread;
     }
 
-    private static Thread__c createThread(String relatedObjId, String theme, User personUser) {
-        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId);
+    private static Thread__c createThread(String relatedObjId, String theme, User personUser, Boolean medskriv) {
+        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId, medskriv);
     }
 
     /**
@@ -63,7 +63,13 @@ public with sharing class stoHelperClass {
      * @date 08.06.2021
      */
     @TestVisible
-    private static Thread__c createThread(String relatedObjId, String theme, String accountId, String contactId) {
+    private static Thread__c createThread(
+        String relatedObjId,
+        String theme,
+        String accountId,
+        String contactId,
+        Boolean medskriv
+    ) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = relatedObjId;
         thread.CRM_Contact__c = contactId;
@@ -71,6 +77,7 @@ public with sharing class stoHelperClass {
         thread.Name = 'Skriv til oss';
         thread.CRM_Thread_Type__c = 'STO';
         thread.STO_Category__c = theme;
+        thread.STO_Medskriv__c = medskriv;
         try {
             insert thread;
         } catch (DmlException e) {

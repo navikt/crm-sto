@@ -9,11 +9,11 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.171.0.LATEST"
+                    "versionNumber": "0.175.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.83.0.LATEST"
+                    "versionNumber": "0.86.0.LATEST"
                 },
                 {
                     "package": "crm-journal-utilities",
@@ -25,7 +25,7 @@
                 },
                 {
                     "package": "crm-platform-oppgave",
-                    "versionNumber": "0.40.0.LATEST"
+                    "versionNumber": "0.41.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -45,11 +45,11 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.82.0.LATEST"
+                    "versionNumber": "0.86.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.72.0.LATEST"
+                    "versionNumber": "0.76.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",

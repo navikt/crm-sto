@@ -10,16 +10,8 @@ export default class CommunityExpandablePanel extends LightningElement {
         this.performAnimation();
     }
 
-    get chevronClass() {
-        return (
-            'nav-frontend-chevron slds-float_right ' +
-            (this.showpanel ? 'chevron--opp' : 'chevron--ned') +
-            ' chevronboks'
-        );
-    }
-
-    get dropdownClass() {
-        return 'dropdown ' + (this.showpanel ? 'active' : 'hidden');
+    get accordianClass() {
+        return 'navds-accordion__item ' + (this.showpanel ? 'navds-accordion__item--open' : '');
     }
 
     get inverseShowpanel() {
@@ -29,18 +21,31 @@ export default class CommunityExpandablePanel extends LightningElement {
     // To perform animations we can't use height:auto, so we use auto to get the height
     // and set the height to that value.
     performAnimation() {
+        let expand = this.template.querySelector('.expand-animation');
         let wrapper = this.template.querySelector('.dropdown');
-        if (wrapper) {
-            let content = wrapper.children[0];
+        if (wrapper && expand) {
             if (this.showpanel) {
-                content.style.height = 'auto';
-                let boundingRect = content.getBoundingClientRect();
-                content.style.height = '0px';
+                wrapper.style.display = null;
+                expand.style.height = 'auto';
+                let boundingRect = expand.getBoundingClientRect();
+                expand.style.height = '0px';
                 window.requestAnimationFrame(function () {
-                    content.style.height = boundingRect.height + 'px';
+                    expand.style.height = boundingRect.height + 'px';
                 });
+                setTimeout(() => {
+                    if (this.showpanel) {
+                        expand.style.height = 'auto';
+                    }
+                }, 250);
             } else {
-                content.style.height = '0px';
+                let boundingRect = expand.getBoundingClientRect();
+                expand.style.height = boundingRect.height + 'px';
+                window.requestAnimationFrame(function () {
+                    expand.style.height = '0px';
+                });
+                setTimeout(() => {
+                    wrapper.display = 'none';
+                }, 250);
             }
         }
     }

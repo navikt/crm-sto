@@ -1,32 +1,38 @@
 <template>
-    <div class="decorator-wrapper">
+    <div style="margin-bottom: 4rem">
         <div>
             <div class="header">
-                <h1 class="typo-sidetittel">Skriv til oss</h1>
+                <h1 class="navds-heading navds-heading--2xlarge">Skriv til oss</h1>
             </div>
-            <div class="panel text-center">
+            <div
+                class="text-center"
+                style="background-color: #fff; display: block; padding: 1rem 1rem 1rem 1rem; border-radius: 4px"
+            >
                 <template if:true={validparameter}>
                     <img aria-hidden="true" src={logopath} class="logo" />
-                    <h2 class="typo-undertittel typo-undertittel_farge blokk-s">{selectedTheme}</h2>
+                    <h2 class="navds-labels blokk-s" style="color: #0067c5">{selectedTheme}</h2>
                     <c-community-error-summary
                         error-list={errorList}
                         onclickedevent={handleErrorClick}
                         class="errorSummary"
+                        style="text-align: left"
                     >
                     </c-community-error-summary>
 
                     <div class="descholder slds-var-m-bottom_xx-large">
-                        <p class="typo-normal blokk-xs description">{label.welcomlabel}</p>
+                        <p class="navds-body-short navds-body-short--small blokk-xs description">{label.welcomlabel}</p>
                     </div>
                     <div class="inputarea">
                         <template if:false={showspinner}>
-                            <template for:each={newslist} for:item="news">
-                                <c-community-expandable-panel
-                                    header={news.STO_Header__c}
-                                    body={news.STO_Body__c}
-                                    key={news.id}
-                                ></c-community-expandable-panel>
-                            </template>
+                            <div class="navds-accordion leftAlign">
+                                <template for:each={newslist} for:item="news">
+                                    <c-community-expandable-panel
+                                        header={news.STO_Header__c}
+                                        body={news.STO_Body__c}
+                                        key={news.id}
+                                    ></c-community-expandable-panel>
+                                </template>
+                            </div>
                             <template if:true={showOpenThreadWarning}>
                                 <div class="slds-var-m-top_xx-large slds-text-align_left">
                                     <c-crm-community-alert-stripe type={alertType} alerttext={openThreadText}>
@@ -34,6 +40,7 @@
                                 </div>
                             </template>
                             <template if:true={showTextArea}>
+                                <!-- Textarea -->
                                 <div class="slds-var-m-top_xx-large">
                                     <c-community-textarea
                                         max-length={maxLength}
@@ -41,6 +48,25 @@
                                         ontextchanged={handleTextChange}
                                     ></c-community-textarea>
                                 </div>
+                                <!-- Medskriv radiobutton -->
+                                <div class="">
+                                    <c-ds-radio
+                                        style="text-align: left"
+                                        title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i NAV?"
+                                        options={medskrivOptions}
+                                        class="radioFocus"
+                                        ><div slot="legend" class="slds-grid">
+                                            <p>
+                                                Godtar du at vi kan bruke samtalen din til opplæring av veiledere i NAV?
+                                            </p>
+                                            <c-ds-help-text
+                                                style="margin-left: 16px"
+                                                title="Hva betyr dette?"
+                                                text="For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt."
+                                            ></c-ds-help-text></div
+                                    ></c-ds-radio>
+                                </div>
+                                <!-- Vilkaer checkbox -->
                                 <div class="skjemaelement checkbox">
                                     <c-community-checkbox
                                         label-text={label.acceptermtext}
@@ -49,7 +75,7 @@
                                     ></c-community-checkbox
                                     ><button
                                         onclick={showTerms}
-                                        class="slds-var-m-left_small lenke vilkar-link focusBtn"
+                                        class="slds-var-m-left_small vilkar-link navds-link focusBtn"
                                         tabindex="0"
                                     >
                                         {label.showtermstext}
@@ -70,57 +96,45 @@
                                 <h2 class="navds-heading navds-heading--medium leftAlign topBigGap">
                                     Dine åpne samtaler om {selectedTheme}
                                 </h2>
-                                <template for:each={openThreadList} for:item="thread" for:index="index">
-                                    <c-sto-inbox-close-item
-                                        thread={thread}
-                                        key={thread.recordId}
-                                        index={index}
-                                        onclosethread={handleCloseThread}
-                                    ></c-sto-inbox-close-item>
-                                </template>
+                                <div class="decorator-wrapper">
+                                    <template for:each={openThreadList} for:item="thread" for:index="index">
+                                        <c-sto-inbox-close-item
+                                            thread={thread}
+                                            key={thread.recordId}
+                                            index={index}
+                                            onclosethread={handleCloseThread}
+                                        ></c-sto-inbox-close-item>
+                                    </template>
+                                </div>
                             </template>
                         </template>
                         <template if:true={showspinner}>
-                            <div tabindex="0" class="spinner" aria-label={spinnerText}>
-                                <div class="overflow-detector">
-                                    <div class="overflow-detector__scroller">
-                                        <div class="overflow-detector__inner">
-                                            <div class="example__inner">
-                                                <svg
-                                                    kind="spinner-negativ"
-                                                    class="spinner spinner--m"
-                                                    focusable="false"
-                                                    height="32"
-                                                    width="32"
-                                                    viewBox="0 0 50 50"
-                                                    preserveAspectRatio="xMidYMid"
-                                                >
-                                                    <title></title>
-                                                    <circle
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        cx="25"
-                                                        cy="25"
-                                                        r="20"
-                                                        stroke="#eee"
-                                                        fill="none"
-                                                        stroke-width="5"
-                                                    ></circle>
-                                                    <circle
-                                                        cx="25"
-                                                        cy="25"
-                                                        r="20"
-                                                        stroke="#888"
-                                                        fill="none"
-                                                        stroke-width="5"
-                                                        stroke-dasharray="50 155"
-                                                        stroke-linecap="round"
-                                                    ></circle>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <svg
+                                tabindex="0"
+                                aria-labelledby="loader-navds-id-4"
+                                class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
+                                focusable="false"
+                                viewBox="0 0 50 50"
+                                preserveAspectRatio="xMidYMid"
+                            >
+                                <title id="loader-navds-id-4">{spinnerText}</title>
+                                <circle
+                                    class="navds-loader__background"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    cx="25"
+                                    cy="25"
+                                    r="20"
+                                    fill="none"
+                                ></circle>
+                                <circle
+                                    class="navds-loader__foreground"
+                                    cx="25"
+                                    cy="25"
+                                    r="20"
+                                    fill="none"
+                                    stroke-dasharray="50 155"
+                                ></circle>
+                            </svg>
                         </template>
                     </div>
                 </template>
