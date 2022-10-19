@@ -9,19 +9,6 @@
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
     </actionCalls>
-    <actionCalls>
-        <description>Logout from OmniChannel to stop receiving new cases</description>
-        <name>OmniChannel_Logout</name>
-        <label>OmniChannel Logout</label>
-        <locationX>352</locationX>
-        <locationY>398</locationY>
-        <actionName>c:nksOmniLogout</actionName>
-        <actionType>component</actionType>
-        <connector>
-            <targetReference>Update_Case</targetReference>
-        </connector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-    </actionCalls>
     <apiVersion>52.0</apiVersion>
     <choices>
         <name>End_Of_Session</name>
@@ -120,7 +107,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>OmniChannel_Logout</targetReference>
+                <targetReference>Update_Case</targetReference>
             </connector>
             <label>End Of Session</label>
         </rules>
@@ -162,7 +149,7 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>88</locationX>
+        <locationX>132</locationX>
         <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -216,7 +203,7 @@
     <recordUpdates>
         <name>Update_STO_category</name>
         <label>Update STO category</label>
-        <locationX>88</locationX>
+        <locationX>132</locationX>
         <locationY>518</locationY>
         <connector>
             <targetReference>Submit_Transfer_Event</targetReference>
@@ -337,7 +324,7 @@
         <description>Add a transfer event message to the thread</description>
         <name>Submit_Transfer_Event</name>
         <label>Submit Transfer Event</label>
-        <locationX>88</locationX>
+        <locationX>132</locationX>
         <locationY>638</locationY>
         <connector>
             <targetReference>Update_Case</targetReference>
