@@ -1,0 +1,30 @@
+<template>
+    <lightning-layout class="slds-box slds-theme_default slds-grid slds-wrap body">
+        <lightning-layout-item size="1" class="">
+            <lightning-icon class="icon" icon-name="utility:info" alternative-text="Infomasjon!"></lightning-icon>
+        </lightning-layout-item>
+        <lightning-layout-item size="11" class="">
+            <template if:true={showOpenText}>
+                <span>
+                    Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du
+                    ikke har flere spørsmål, og lagres i din innboks.
+                </span>
+            </template>
+            <template if:true={showCloseText}>
+                <template if:true={limitExceeded}>
+                    <span>Samtalen er avsluttet. Vil du </span>&nbsp;
+                    <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss"> sende en ny melding</a>
+                    <span>, kan du gjøre det her.</span>
+                </template>
+                <template if:false={limitExceeded}>
+                    <span
+                        >Samtalen er avsluttet. Vil du
+                        <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>
+                        , kan du gjøre det her.<br />Vi ønsker å forbedre oss og vil gjerne høre dine opplevelser fra
+                        din dialog med oss. <a href="https://tilbakemelding.nav.no">Tilbakemeldingen din</a> er anonym.
+                    </span>
+                </template>
+            </template>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

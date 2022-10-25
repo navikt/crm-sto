@@ -194,4 +194,13 @@ public with sharing class stoInboxHelper {
         }
         update noteList;
     }
+
+    @AuraEnabled
+    public static Integer countSurveyResponses() {
+        try {
+            return [SELECT COUNT() FROM SurveyResponse];
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }

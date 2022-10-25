@@ -1,0 +1,11 @@
+.body {
+    background-color: rgb(235, 252, 255, 1);
+    border: solid 1px;
+    border-radius: 0.25rem;
+}
+
+.icon {
+    --sds-c-icon-color-foreground-default: #004989;
+    height: 2rem;
+    width: 2rem;
+}

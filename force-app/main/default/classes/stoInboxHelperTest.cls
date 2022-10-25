@@ -80,4 +80,14 @@ public with sharing class stoInboxHelperTest {
         Boolean updatedcn = [SELECT CRM_Is_Read__c FROM Conversation_Note__c WHERE Id = :cn.Id]?.CRM_Is_Read__c;
         System.assertEquals(true, updatedcn, 'Conversation note not marked as read');
     }
+
+    @isTest
+    static void testCountSurveyResponses() {
+        Integer countLimit = 0;
+        Test.startTest();
+        countLimit = stoInboxHelper.countSurveyResponses();
+        Test.stopTest();
+
+        System.assertNotEquals(null, countLimit);
+    }
 }
