@@ -65,6 +65,9 @@
         "liveAgentSettings": {
             "enableLiveAgent": true
         },
+        "surveySettings": {
+            "enableSurvey": true
+        },
         "omniChannelSettings": {
             "enableOmniChannel": true,
             "enableOmniSkillsRouting": true,
