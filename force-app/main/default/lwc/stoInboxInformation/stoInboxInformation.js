@@ -39,9 +39,12 @@ export default class StoInboxInformation extends LightningElement {
     threadRecord;
 
     get infoText() {
-        let retText = '';
+        let retText;
         if (this.threadRecord) {
-            if (getFieldValue(this.threadRecord.data, THREAD_IS_CLOSED_FIELD === true)) {
+            if (
+                getFieldValue(this.threadRecord.data, THREAD_IS_CLOSED_FIELD) === true &&
+                getFieldValue(this.threadRecord.data, THREAD_TYPE_FIELD) === 'STO'
+            ) {
                 retText =
                     'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.';
                 retText +=
