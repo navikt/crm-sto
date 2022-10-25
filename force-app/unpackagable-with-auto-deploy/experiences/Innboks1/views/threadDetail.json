@@ -66,14 +66,22 @@
                             "components": [
                                 {
                                     "componentAttributes": {
-                                        "alertopen": "Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.",
-                                        "alerttext": "Samtalen er avsluttet. Vil du <a href=\"https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss\">sende en ny melding</a>, kan du gjøre det her.<br>Vi ønsker å forbedre oss og vil gjerne høre dine opplevelser fra din dialog med oss. <a href=\"https://tilbakmelding.nav.no\">Tilbakemeldingen din</a> er anonym.",
+                                        "alertopen": "",
+                                        "alerttext": "",
                                         "header": "Skriv til oss",
                                         "maxLength": 1000,
                                         "recordId": "{!recordId}"
                                     },
                                     "componentName": "c:crmMessagingCommunityThreadViewer",
                                     "id": "ea7bd4c2-36fc-4b81-abe1-6ebafbce0b28",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:stoInboxInformation",
+                                    "id": "0c6e8861-98ff-4cde-a5dd-9651b21908e5",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
@@ -136,5 +144,5 @@
     ],
     "themeLayoutType": "Inner",
     "type": "view",
-    "viewType": "detail-a1j"
+    "viewType": "detail-a0R"
 }
