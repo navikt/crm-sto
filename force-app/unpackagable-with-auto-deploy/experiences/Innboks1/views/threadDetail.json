@@ -66,14 +66,23 @@
                             "components": [
                                 {
                                     "componentAttributes": {
-                                        "alertopen": "Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.",
-                                        "alerttext": "Samtalen er avsluttet. Vil du <a href=\"https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss\">sende en ny melding</a>, kan du gjøre det her.<br>Vi ønsker å forbedre oss og vil gjerne høre dine opplevelser fra din dialog med oss. <a href=\"https://tilbakmelding.nav.no\">Tilbakemeldingen din</a> er anonym.",
-                                        "header": "Skriv til oss",
-                                        "maxLength": 1000,
+                                        "alertopen": "",
+                                        "alerttext": "",
+                                        "maxLength": 0,
                                         "recordId": "{!recordId}"
                                     },
                                     "componentName": "c:crmMessagingCommunityThreadViewer",
-                                    "id": "ea7bd4c2-36fc-4b81-abe1-6ebafbce0b28",
+                                    "id": "0bf2b937-1ad9-47fd-a89c-c15c3280c259",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "recordId": "{!recordId}"
+                                    },
+                                    "componentName": "c:stoInboxInformation",
+                                    "id": "186bf9f1-bbfe-4324-b52e-1ef8d7cf9115",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
@@ -83,7 +92,7 @@
                                         "recordId": "{!recordId}"
                                     },
                                     "componentName": "c:stoMedskrivSamtykke",
-                                    "id": "1110f66c-435f-47d9-86d8-997027054c2f",
+                                    "id": "08c78565-de24-42b2-a3af-14654878cca5",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
