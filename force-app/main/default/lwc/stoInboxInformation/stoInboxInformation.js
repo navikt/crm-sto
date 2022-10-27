@@ -41,18 +41,15 @@ export default class StoInboxInformation extends LightningElement {
     get infoText() {
         let retText;
         if (this.threadRecord) {
-            if (
-                getFieldValue(this.threadRecord.data, THREAD_IS_CLOSED_FIELD) === true &&
-                getFieldValue(this.threadRecord.data, THREAD_TYPE_FIELD) === 'STO'
-            ) {
+            if (getFieldValue(this.threadRecord.data, THREAD_IS_CLOSED_FIELD) === true) {
                 retText =
                     'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.';
-                retText +=
-                    this.canSendSurvey === true
-                        ? '<br>Vi ønsker å forbedre oss og vil gjerne høre dine opplevelser fra din dialog med oss. <a href="' +
-                          this.surveyLink +
-                          '">Tilbakemeldingen din</a> er anonym.'
-                        : '';
+                if (getFieldValue(this.threadRecord.data, THREAD_TYPE_FIELD) === 'STO' && this.canSendSurvey) {
+                    retText +=
+                        '<br>Vi ønsker å forbedre oss og vil gjerne høre dine opplevelser fra din dialog med oss. <a href="' +
+                        this.surveyLink +
+                        '">Tilbakemeldingen din</a> er anonym.';
+                }
             } else {
                 retText =
                     'Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
