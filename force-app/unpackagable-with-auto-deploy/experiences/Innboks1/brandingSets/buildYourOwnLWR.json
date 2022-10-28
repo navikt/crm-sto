@@ -95,6 +95,8 @@
         "HeadingSmallLineHeight": "1.25",
         "HeadingSmallTextDecoration": "none",
         "HeadingSmallTextTransform": "none",
+        "HorizontalRowPaddingDesktop": "0rem",
+        "HorizontalRowPaddingMobile": "0rem",
         "LinkColor": "var(--dxp-g-brand)",
         "LinkHoverColor": "var(--dxp-s-link-text-color-1)",
         "LinkTextDecoration": "none",
