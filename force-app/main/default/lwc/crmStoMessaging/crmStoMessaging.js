@@ -15,6 +15,7 @@ export default class CrmStoMessaging extends LightningElement {
     @api cardTitle;
     @api showClose = false;
     @api checkMedskriv;
+    acceptedMedskriv;
 
     wireField;
     accountId;
@@ -397,5 +398,24 @@ export default class CrmStoMessaging extends LightningElement {
 
     handleEnglishEventTwo(event) {
         this.englishTextTemplate = event.detail;
+    }
+
+    handleMedskrivClick() {
+        this.renderSlotContent = true;
+    }
+
+    fakeMedskrivField = true;
+
+    get showMedskrivBlocker() {
+        // return this.checkMedskriv === true && this.acceptedMedskriv === false && this.thread.STO_Medskriv__c === false;
+        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.fakeMedskrivField === false;
+    }
+
+    renderSlotContent = true;
+
+    handleClick() {
+        this.renderSlotContent = !this.renderSlotContent;
+        const child = this.template.querySelector('c-crm-messaging-message-component');
+        child.checkSlotChange();
     }
 }
