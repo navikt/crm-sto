@@ -6,10 +6,11 @@
             title="titleName"
             onclick={handleClick}
         ></lightning-button>
-        <p>{renderSlotContent}</p>
+        <p>{acceptedMedskriv}</p>
+        <p>{showMedskrivBlocker}</p>
     </lightning-card>
     <c-crm-messaging-message-component
-        record-id={threadReference}
+        record-id={threadId}
         single-thread={singleThread}
         card-title={cardTitle}
         text-template={textTemplate}

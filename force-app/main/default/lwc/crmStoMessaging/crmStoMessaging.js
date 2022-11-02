@@ -6,6 +6,7 @@ import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import COMPANY_NAME from '@salesforce/schema/User.CompanyName';
 import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
+import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
 import userId from '@salesforce/user/Id';
 
 export default class CrmStoMessaging extends LightningElement {
@@ -14,8 +15,7 @@ export default class CrmStoMessaging extends LightningElement {
     @api singleThread;
     @api cardTitle;
     @api showClose = false;
-    @api checkMedskriv;
-    acceptedMedskriv;
+    @api checkMedskriv = false;
 
     wireField;
     accountId;
@@ -29,6 +29,8 @@ export default class CrmStoMessaging extends LightningElement {
     accountApiName;
     threadId;
     englishTextTemplate = false;
+    acceptedMedskriv = false;
+    medskriv = false;
 
     connectedCallback() {
         this.template.addEventListener('toolbaraction', (event) => {
@@ -274,10 +276,6 @@ export default class CrmStoMessaging extends LightningElement {
         }`;
     }
 
-    get threadReference() {
-        return this.threadId ? this.threadId : this.recordId;
-    }
-
     getAccountApiName() {
         if (this.objectApiName === 'Case') {
             return 'AccountId';
@@ -327,6 +325,8 @@ export default class CrmStoMessaging extends LightningElement {
             if (this.objectApiName === 'Case') {
                 let ThreadApiReference = getFieldValue(data, CASE_THREAD_API_REFERENCE);
                 this.getThreadId(ThreadApiReference);
+            } else if (this.objectApiName === 'Thread__c') {
+                this.threadId = this.recordId;
             }
             this.getAccountId();
         }
@@ -390,6 +390,17 @@ export default class CrmStoMessaging extends LightningElement {
         }
     }
 
+    @wire(getRecord, { recordId: '$threadId', fields: [THREAD_MEDSKRIV_REFERENCE] })
+    wiredThread({ error, data }) {
+        if (error) {
+            console.log('Medskriv error:');
+            console.log(error);
+        }
+        if (data) {
+            this.medskriv = getFieldValue(data, 'Thread__c.STO_Medskriv__c');
+        }
+    }
+
     resolve(path, obj) {
         return path.split('.').reduce(function (prev, curr) {
             return prev ? prev[curr] : null;
@@ -401,20 +412,17 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     handleMedskrivClick() {
-        this.renderSlotContent = true;
+        this.acceptedMedskriv = true;
+        const child = this.template.querySelector('c-crm-messaging-message-component');
+        child.checkSlotChange();
     }
-
-    fakeMedskrivField = true;
 
     get showMedskrivBlocker() {
-        // return this.checkMedskriv === true && this.acceptedMedskriv === false && this.thread.STO_Medskriv__c === false;
-        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.fakeMedskrivField === false;
+        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
     }
 
-    renderSlotContent = true;
-
     handleClick() {
-        this.renderSlotContent = !this.renderSlotContent;
+        this.acceptedMedskriv = !this.acceptedMedskriv;
         const child = this.template.querySelector('c-crm-messaging-message-component');
         child.checkSlotChange();
     }
