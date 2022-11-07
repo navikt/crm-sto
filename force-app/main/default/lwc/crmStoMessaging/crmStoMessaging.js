@@ -167,6 +167,9 @@ export default class CrmStoMessaging extends LightningElement {
                 case 'NAV Medlemskap og avgift':
                     return 'NAV Social insurance and Contributions';
 
+                case 'NAV Oppfølging utland':
+                    return 'Norwegian Labour and rehabilitation unit';
+
                 case 'NAV Registerforvaltning':
                     return 'NAV Registry Management';
 
@@ -236,6 +239,8 @@ export default class CrmStoMessaging extends LightningElement {
                         ecn = this.norwegianCompanyName.replace('Kontroll Analyse', 'Control Analysis');
                     } else if (this.norwegianCompanyName.includes('Kontroll')) {
                         ecn = this.norwegianCompanyName.replace('Kontroll', 'Control');
+                    } else if (this.norwegianCompanyName.includes('Tiltak')) {
+                        ecn = this.norwegianCompanyName.replace('Tiltak', 'Department for employment measures');
                     } else if (this.norwegianCompanyName.includes('Ytelseslinjen')) {
                         ecn = this.norwegianCompanyName.replace('Ytelseslinjen', 'Benefits Administration');
                     } else {
