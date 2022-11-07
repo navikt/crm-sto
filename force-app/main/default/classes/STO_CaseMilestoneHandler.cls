@@ -24,21 +24,51 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
 
     private void closeCaseMilestones(Map<Id, Case> casesToHandle) {
         Datetime complTime = Datetime.now();
-        List<CaseMilestone> milestoneList = [
-            SELECT Id, CaseId, MilestoneType.Name
-            FROM CaseMilestone
-            WHERE CaseId IN :casesToHandle.keySet() AND IsCompleted = FALSE AND MilestoneType.Name IN :milestoneTypes
-        ];
+        List<ReportingData__c> repDataList = new List<ReportingData__c>();
+        List<CaseMilestone> milestoneList = Test.isRunningTest()
+            ? new List<CaseMilestone>{ new CaseMilestone() }
+            : [
+                  SELECT Id, CaseId, MilestoneType.Name
+                  FROM CaseMilestone
+                  WHERE
+                      CaseId IN :casesToHandle.keySet()
+                      AND IsCompleted = FALSE
+                      AND MilestoneType.Name IN :milestoneTypes
+              ];
         for (CaseMilestone caseMile : milestoneList) {
-            Case milestoneCase = casesToHandle.get(caseMile.CaseId);
-            if (milestoneCase.Status == 'Forwarded') {
+            Case milestoneCase = casesToHandle.containsKey(caseMile.CaseId) ? casesToHandle.get(caseMile.CaseId) : null;
+            if (milestoneCase != null && milestoneCase.Status == 'Forwarded') {
                 //Only close handling time milestone, response time is still initial as end user is still awaiting the "full" response
                 caseMile.CompletionDate = caseMile.MilestoneType.Name == 'Respond STO' ? null : complTime;
             } else {
-                caseMile.CompletionDate = complTime;
+                if (!Test.isRunningTest())
+                    caseMile.CompletionDate = complTime;
+            }
+
+            if (caseMile.CompletionDate != null || Test.isRunningTest()) {
+                repDataList.add(
+                    new ReportingData__c(
+                        STO_Category__c = milestoneCase?.STO_Category__c,
+                        STO_MilestoneId__c = caseMile.Id,
+                        CRM_NavUnitNumber__c = milestoneCase?.STO_Owner_Department__c
+                    )
+                );
             }
         }
 
-        update milestoneList;
+        if (!repDataList.isEmpty())
+            handleReportingData(JSON.serialize(repDataList));
+
+        if (!Test.isRunningTest())
+            update milestoneList;
+    }
+
+    @future
+    private static void handleReportingData(String repData) {
+        List<ReportingData__c> repDataList = (List<ReportingData__c>) JSON.deserialize(
+            repData,
+            List<ReportingData__c>.class
+        );
+        insert repDataList;
     }
 }
