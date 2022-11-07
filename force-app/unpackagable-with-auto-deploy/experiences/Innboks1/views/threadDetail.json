@@ -88,14 +88,6 @@
                                     "type": "component"
                                 },
                                 {
-                                    "componentAttributes": {},
-                                    "componentName": "c:stoInboxInformation",
-                                    "id": "0c6e8861-98ff-4cde-a5dd-9651b21908e5",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
                                     "componentAttributes": {
                                         "recordId": "{!recordId}"
                                     },
