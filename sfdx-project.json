@@ -1,79 +1,79 @@
 {
-    "packageDirectories": [
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true,
+      "versionName": "ver 1.0",
+      "versionNumber": "1.73.0.NEXT",
+      "package": "crm-sto",
+      "dependencies": [
         {
-            "path": "force-app",
-            "default": true,
-            "versionName": "ver 1.0",
-            "versionNumber": "1.72.0.NEXT",
-            "package": "crm-sto",
-            "dependencies": [
-                {
-                    "package": "crm-platform-base",
-                    "versionNumber": "0.175.0.LATEST"
-                },
-                {
-                    "package": "crm-platform-integration",
-                    "versionNumber": "0.86.0.LATEST"
-                },
-                {
-                    "package": "crm-journal-utilities",
-                    "versionNumber": "0.17.0.LATEST"
-                },
-                {
-                    "package": "crm-shared-flowComponents",
-                    "versionNumber": "0.3.0.LATEST"
-                },
-                {
-                    "package": "crm-platform-oppgave",
-                    "versionNumber": "0.41.0.LATEST"
-                },
-                {
-                    "package": "crm-platform-access-control",
-                    "versionNumber": "0.102.0.LATEST"
-                },
-                {
-                    "package": "crm-shared-user-notification",
-                    "versionNumber": "0.17.0.LATEST"
-                },
-                {
-                    "package": "crm-henvendelse-base",
-                    "versionNumber": "0.8.0.LATEST"
-                },
-                {
-                    "package": "crm-henvendelse",
-                    "versionNumber": "0.86.0.LATEST"
-                },
-                {
-                    "package": "crm-community-base",
-                    "versionNumber": "0.76.0.LATEST"
-                },
-                {
-                    "package": "crm-nks-base-components",
-                    "versionNumber": "0.6.0.LATEST"
-                },
-                {
-                    "package": "crm-nks-chat",
-                    "versionNumber": "0.7.0.LATEST"
-                }
-            ]
+          "package": "crm-platform-base",
+          "versionNumber": "0.175.0.LATEST"
+        },
+        {
+          "package": "crm-platform-integration",
+          "versionNumber": "0.86.0.LATEST"
+        },
+        {
+          "package": "crm-journal-utilities",
+          "versionNumber": "0.17.0.LATEST"
+        },
+        {
+          "package": "crm-shared-flowComponents",
+          "versionNumber": "0.3.0.LATEST"
+        },
+        {
+          "package": "crm-platform-oppgave",
+          "versionNumber": "0.41.0.LATEST"
+        },
+        {
+          "package": "crm-platform-access-control",
+          "versionNumber": "0.102.0.LATEST"
+        },
+        {
+          "package": "crm-shared-user-notification",
+          "versionNumber": "0.17.0.LATEST"
+        },
+        {
+          "package": "crm-henvendelse-base",
+          "versionNumber": "0.8.0.LATEST"
+        },
+        {
+          "package": "crm-henvendelse",
+          "versionNumber": "0.86.0.LATEST"
+        },
+        {
+          "package": "crm-community-base",
+          "versionNumber": "0.76.0.LATEST"
+        },
+        {
+          "package": "crm-nks-base-components",
+          "versionNumber": "0.6.0.LATEST"
+        },
+        {
+          "package": "crm-nks-chat",
+          "versionNumber": "0.7.0.LATEST"
         }
-    ],
-    "namespace": "",
-    "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "54.0",
-    "packageAliases": {
-        "crm-henvendelse": "0Ho2o000000fxXfCAI",
-        "crm-henvendelse-base": "0Ho7U000000000kSAA",
-        "crm-community-base": "0Ho2o0000008OSzCAM",
-        "crm-journal-utilities": "0Ho2o000000fxXkCAI",
-        "crm-platform-base": "0Ho2o0000008ORmCAM",
-        "crm-platform-access-control": "0Ho2o0000008OR3CAM",
-        "crm-platform-integration": "0Ho2o0000008ORrCAM",
-        "crm-platform-oppgave": "0Ho2o000000fxXzCAI",
-        "crm-shared-user-notification": "0Ho2o000000fxY4CAI",
-        "crm-shared-flowComponents": "0Ho2o000000fxYJCAY",
-        "crm-nks-chat": "0Ho7U000000000GSAQ",
-        "crm-nks-base-components": "0Ho7U000000000LSAQ",
-        "crm-sto": "0Ho2o000000fxXpCAI"
+      ]
     }
+  ],
+  "namespace": "",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "54.0",
+  "packageAliases": {
+    "crm-henvendelse": "0Ho2o000000fxXfCAI",
+    "crm-henvendelse-base": "0Ho7U000000000kSAA",
+    "crm-community-base": "0Ho2o0000008OSzCAM",
+    "crm-journal-utilities": "0Ho2o000000fxXkCAI",
+    "crm-platform-base": "0Ho2o0000008ORmCAM",
+    "crm-platform-access-control": "0Ho2o0000008OR3CAM",
+    "crm-platform-integration": "0Ho2o0000008ORrCAM",
+    "crm-platform-oppgave": "0Ho2o000000fxXzCAI",
+    "crm-shared-user-notification": "0Ho2o000000fxY4CAI",
+    "crm-shared-flowComponents": "0Ho2o000000fxYJCAY",
+    "crm-nks-chat": "0Ho7U000000000GSAQ",
+    "crm-nks-base-components": "0Ho7U000000000LSAQ",
+    "crm-sto": "0Ho2o000000fxXpCAI"
+  }
 }
