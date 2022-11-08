@@ -48,6 +48,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             if (caseMile.CompletionDate != null || Test.isRunningTest()) {
                 repDataList.add(
                     new ReportingData__c(
+                        CRM_Category__c = 'STO',
                         STO_Category__c = milestoneCase?.STO_Category__c,
                         STO_MilestoneId__c = caseMile.Id,
                         CRM_NavUnitNumber__c = milestoneCase?.STO_Owner_Department__c
