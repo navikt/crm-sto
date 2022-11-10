@@ -3,6 +3,8 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
     private static final String HANDLING_TIME_TYPE_NAME = 'Handling Time';
     private static final Set<String> milestoneTypes = new Set<String>{ RESPOND_STO_TYPE_NAME, HANDLING_TIME_TYPE_NAME };
     private static final Set<String> triggerStatuses = new Set<String>{ 'On Hold', 'Forwarded', 'Closed' };
+    private static LoggerUtility logger = new LoggerUtility('STO Milestones');
+    private static final CRM_ApplicationDomain.Domain domain = CRM_ApplicationDomain.Domain.NKS;
 
     global override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<String> fieldNamesToCheck = new List<String>{ 'Status' };
@@ -70,6 +72,12 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             repData,
             List<ReportingData__c>.class
         );
-        insert repDataList;
+        try {
+            insert repDataList;
+        } catch (Exception ex) {
+            logger.critical(JSON.serializePretty(repDataList), null, domain);
+        } finally {
+            logger.publish();
+        }
     }
 }
