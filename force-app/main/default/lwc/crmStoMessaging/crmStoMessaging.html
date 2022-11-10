@@ -1,14 +1,4 @@
 <template>
-    <lightning-card variant="Narrow" title="Hello" icon-name="standard:account">
-        <lightning-button
-            variant="base"
-            label="Switch slot content"
-            title="titleName"
-            onclick={handleClick}
-        ></lightning-button>
-        <p>{acceptedMedskriv}</p>
-        <p>{showMedskrivBlocker}</p>
-    </lightning-card>
     <c-crm-messaging-message-component
         record-id={threadId}
         single-thread={singleThread}
@@ -29,7 +19,6 @@
                         onclick={handleMedskrivClick}
                     ></lightning-button>
                 </div>
-                <!-- Messages End-->
             </div>
         </template>
     </c-crm-messaging-message-component>

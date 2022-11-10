@@ -414,16 +414,10 @@ export default class CrmStoMessaging extends LightningElement {
     handleMedskrivClick() {
         this.acceptedMedskriv = true;
         const child = this.template.querySelector('c-crm-messaging-message-component');
-        child.checkSlotChange();
+        child.checkSlotChange('messages');
     }
 
     get showMedskrivBlocker() {
         return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
-    }
-
-    handleClick() {
-        this.acceptedMedskriv = !this.acceptedMedskriv;
-        const child = this.template.querySelector('c-crm-messaging-message-component');
-        child.checkSlotChange();
     }
 }
