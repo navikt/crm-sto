@@ -60,18 +60,13 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
         }
 
         if (!repDataList.isEmpty())
-            handleReportingData(JSON.serialize(repDataList));
+            handleReportingData(repDataList);
 
         if (!Test.isRunningTest())
             update milestoneList;
     }
 
-    @future
-    private static void handleReportingData(String repData) {
-        List<ReportingData__c> repDataList = (List<ReportingData__c>) JSON.deserialize(
-            repData,
-            List<ReportingData__c>.class
-        );
+    private static void handleReportingData(List<ReportingData__c> repDataList) {
         try {
             insert repDataList;
         } catch (Exception ex) {
