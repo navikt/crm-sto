@@ -1,7 +1,7 @@
 public without sharing class STO_SurveyHelper {
     @AuraEnabled
     public static Boolean canSendSurvey() {
-        return [SELECT COUNT() FROM SurveyResponse] < 300;
+        return true;
     }
 
     @AuraEnabled
