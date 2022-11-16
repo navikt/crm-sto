@@ -4,7 +4,9 @@ public class STO_CaseMilestoneHandler_Test {
     static void makeData() {
         Account acc = (Account) STO_TestDataFactory.createRecord(new Account());
         Entitlement entl = (Entitlement) STO_TestDataFactory.createRecord(new Entitlement(AccountId = acc.Id));
-        STO_TestDataFactory.createRecord(new Case(AccountId = acc.Id, EntitlementId = entl.Id, Origin = 'STO'));
+        Case casy = (Case) STO_TestDataFactory.createRecord(
+            new Case(AccountId = acc.Id, EntitlementId = entl.Id, Origin = 'STO')
+        );
     }
 
     @isTest

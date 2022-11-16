@@ -1,14 +1,25 @@
 <template>
     <c-crm-messaging-message-component
-        record-id={threadReference}
+        record-id={threadId}
         single-thread={singleThread}
         card-title={cardTitle}
         text-template={textTemplate}
         show-close={showClose}
         english-text-template={englishTextTemplate}
         onenglisheventtwo={handleEnglishEventTwo}
-        check-medskriv={checkMedskriv}
     >
         <c-crm-sto-messaging-toolbar slot="toolbar" object-api-name={objectApiName}></c-crm-sto-messaging-toolbar>
+        <template if:true={showMedskrivBlocker}>
+            <div slot="messages">
+                <div class="slds-align_absolute-center slds-grid_vertical medskrivBlocker scroller">
+                    <p class="slds-text-body_regular slds-m-bottom_small">Brukeren har ikke samtykket til medskriv</p>
+                    <lightning-button
+                        variant="brand"
+                        label="Vis melding"
+                        onclick={handleMedskrivClick}
+                    ></lightning-button>
+                </div>
+            </div>
+        </template>
     </c-crm-messaging-message-component>
 </template>
