@@ -4,12 +4,16 @@
       "path": "force-app",
       "default": true,
       "versionName": "ver 1.0",
-      "versionNumber": "1.73.0.NEXT",
+      "versionNumber": "1.76.0.NEXT",
       "package": "crm-sto",
       "dependencies": [
         {
           "package": "crm-platform-base",
           "versionNumber": "0.175.0.LATEST"
+        },
+        {
+          "package": "crm-platform-reporting",
+          "versionNumber": "0.29.0.LATEST"
         },
         {
           "package": "crm-platform-integration",
@@ -67,6 +71,7 @@
     "crm-community-base": "0Ho2o0000008OSzCAM",
     "crm-journal-utilities": "0Ho2o000000fxXkCAI",
     "crm-platform-base": "0Ho2o0000008ORmCAM",
+    "crm-platform-reporting": "0Ho2o0000008OSfCAM",
     "crm-platform-access-control": "0Ho2o0000008OR3CAM",
     "crm-platform-integration": "0Ho2o0000008ORrCAM",
     "crm-platform-oppgave": "0Ho2o000000fxXzCAI",
