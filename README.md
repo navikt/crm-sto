@@ -53,7 +53,12 @@ sfdx sfpowerkit:package:dependencies:install -u scratch_org -r -a -w 60 -k ${key
 sfdx force:source:push
 sfdx force:org:open
 ```
+# Henvendelser
 
-## Other
+Enten:
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub
 
-Questions? Ask on #crm-platform-team on Slack.
+## For NAV-ansatte
+
+Interne henvendelser kan sendes via Slack i kanalen #crm-nks.
+
