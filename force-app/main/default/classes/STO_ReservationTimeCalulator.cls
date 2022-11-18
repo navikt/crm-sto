@@ -1,36 +1,34 @@
 global without sharing class STO_ReservationTimeCalulator implements Support.MilestoneTriggerTimeCalculator {
 
-    private static final Integer DEFAULT_TIME = 5;
+    private Id STO_BUSINESS_HOURS_ID {
+        get {
+            if (STO_BUSINESS_HOURS_ID == null) {
+                Id stoBusId = [SELECT Id FROM BusinessHours WHERE Name = 'STO Business Hours']?.Id;
+                if (stoBusId == null) {
+                    stoBusId = [SELECT Id FROM BusinessHours WHERE IsDefault = TRUE]?.Id;
+                }
+                STO_BUSINESS_HOURS_ID = stoBusId;
+            }
+            return STO_BUSINESS_HOURS_ID;
+        }
+        private set {
+        }
+    }
 
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
 
-        if(milestoneTypeId == null) return DEFAULT_TIME;
-
         Datetime now = Datetime.now();
         Datetime nextStartDate;
-        BusinessHours bh;
-        try{
-            String query = 
-                'SELECT Id ' +
-                'FROM BusinessHours ' +
-                'WHERE Id IN (' +
-                    'SELECT BusinessHoursId ' +
-                    'FROM CaseMilestone ' +
-                    'WHERE  MilestoneTypeId = :milestoneTypeId' +
-                ') ' +
-                'LIMIT 1';
-            bh = ((BusinessHours)Database.query(query)[0]);
-        }catch(Exception e){
-            return DEFAULT_TIME;
-        }
+        Id bhId = STO_BUSINESS_HOURS_ID;
+        
         nextStartDate = BusinessHours.nextStartDate(
-            bh.Id,
+            bhId,
             Datetime.newInstance(
                 now.date().addDays(1),
                 Time.newInstance(0,0,0,0)
             )
         );
-        Long diff = BusinessHours.diff(bh.Id, now, nextStartDate);
+        Long diff = BusinessHours.diff(bhId, now, nextStartDate);
         return (diff /1000 /60).intValue();
     }
 }
