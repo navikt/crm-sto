@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
-        <locationX>176</locationX>
-        <locationY>974</locationY>
+        <locationX>182</locationX>
+        <locationY>1310</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -43,9 +43,34 @@
         </value>
     </choices>
     <decisions>
+        <name>Check</name>
+        <label>Check Selected Queue</label>
+        <locationX>182</locationX>
+        <locationY>518</locationY>
+        <defaultConnector>
+            <targetReference>Update_Case</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Changed_Queue</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case.STO_Category__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>Chosen_Queue</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Thread</targetReference>
+            </connector>
+            <label>Changed Queue</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Check_Put_Back_Decision</name>
         <label>Check Put Back Decision</label>
-        <locationX>176</locationX>
+        <locationX>182</locationX>
         <locationY>278</locationY>
         <defaultConnector>
             <targetReference>Update_Case</targetReference>
@@ -92,7 +117,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Thread</targetReference>
+                <targetReference>Get_Case</targetReference>
             </connector>
             <label>Wrong Queue</label>
         </rules>
@@ -147,10 +172,33 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
+        <name>Get_Case</name>
+        <label>Get Case</label>
+        <locationX>182</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Case</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>STO_Category__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>132</locationX>
-        <locationY>398</locationY>
+        <locationX>50</locationX>
+        <locationY>638</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Update_STO_category</targetReference>
@@ -173,8 +221,8 @@
         <description>Updates the case to retrigger assignment to be put back to queue.</description>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>176</locationX>
-        <locationY>854</locationY>
+        <locationX>182</locationX>
+        <locationY>1190</locationY>
         <connector>
             <targetReference>Close_workspace_tab</targetReference>
         </connector>
@@ -203,8 +251,8 @@
     <recordUpdates>
         <name>Update_STO_category</name>
         <label>Update STO category</label>
-        <locationX>132</locationX>
-        <locationY>518</locationY>
+        <locationX>50</locationX>
+        <locationY>758</locationY>
         <connector>
             <targetReference>Submit_Transfer_Event</targetReference>
         </connector>
@@ -228,7 +276,7 @@
     <screens>
         <name>Put_Back_Screen</name>
         <label>Put Back Screen</label>
-        <locationX>176</locationX>
+        <locationX>182</locationX>
         <locationY>158</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -313,7 +361,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Put_Back_Screen</targetReference>
@@ -324,8 +372,8 @@
         <description>Add a transfer event message to the thread</description>
         <name>Submit_Transfer_Event</name>
         <label>Submit Transfer Event</label>
-        <locationX>132</locationX>
-        <locationY>638</locationY>
+        <locationX>50</locationX>
+        <locationY>878</locationY>
         <connector>
             <targetReference>Update_Case</targetReference>
         </connector>
