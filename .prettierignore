@@ -12,6 +12,7 @@ jsconfig.json
 
 **/*.apex
 **/staticresources/*
+**/post-scratch
 
 # flows in permsets will break the xml
 **/permissionsets/*
