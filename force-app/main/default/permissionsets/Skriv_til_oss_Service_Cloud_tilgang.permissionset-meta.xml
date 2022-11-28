@@ -126,6 +126,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Thread__c.CRM_Theme_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.CRM_Theme_Group_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Thread__c.CRM_isActive__c</field>
         <readable>true</readable>
     </fieldPermissions>
