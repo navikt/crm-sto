@@ -4,7 +4,7 @@
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
         <locationX>176</locationX>
-        <locationY>974</locationY>
+        <locationY>734</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -92,7 +92,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Thread</targetReference>
+                <targetReference>Update_STO_category</targetReference>
             </connector>
             <label>Wrong Queue</label>
         </rules>
@@ -146,35 +146,12 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
-    <recordLookups>
-        <name>Get_Thread</name>
-        <label>Get Thread</label>
-        <locationX>132</locationX>
-        <locationY>398</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Update_STO_category</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Related_Object__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <object>Thread__c</object>
-        <outputAssignments>
-            <assignToReference>ThreadID</assignToReference>
-            <field>Id</field>
-        </outputAssignments>
-    </recordLookups>
     <recordUpdates>
         <description>Updates the case to retrigger assignment to be put back to queue.</description>
         <name>Update_Case</name>
         <label>Update Case</label>
         <locationX>176</locationX>
-        <locationY>854</locationY>
+        <locationY>614</locationY>
         <connector>
             <targetReference>Close_workspace_tab</targetReference>
         </connector>
@@ -204,9 +181,9 @@
         <name>Update_STO_category</name>
         <label>Update STO category</label>
         <locationX>132</locationX>
-        <locationY>518</locationY>
+        <locationY>398</locationY>
         <connector>
-            <targetReference>Submit_Transfer_Event</targetReference>
+            <targetReference>Update_Case</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -320,48 +297,12 @@
         </connector>
     </start>
     <status>Active</status>
-    <subflows>
-        <description>Add a transfer event message to the thread</description>
-        <name>Submit_Transfer_Event</name>
-        <label>Submit Transfer Event</label>
-        <locationX>132</locationX>
-        <locationY>638</locationY>
-        <connector>
-            <targetReference>Update_Case</targetReference>
-        </connector>
-        <flowName>CRM_Create_Thread_Event</flowName>
-        <inputAssignments>
-            <name>Event_Message</name>
-            <value>
-                <elementReference>Queue_Transfer_Text</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Event_Type</name>
-            <value>
-                <stringValue>QUEUE_TRANSFER</stringValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>Thread_ID</name>
-            <value>
-                <elementReference>ThreadID</elementReference>
-            </value>
-        </inputAssignments>
-    </subflows>
     <variables>
         <description>ID of the case to be assigned back to the original queue.</description>
         <name>recordId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>ThreadID</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
 </Flow>
