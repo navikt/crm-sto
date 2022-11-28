@@ -25,7 +25,7 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
         // and we calculating minutes form CaseMilestone StartDate.
 
         CaseMilestone cs = [
-            SELECT Id,TimeRemainingInMins
+            SELECT Id,TargetResponseInMins
             FROM CaseMilestone
             WHERE CaseId = :caseId 
                 AND MilestoneType.Name = 'Handling time' 
@@ -34,7 +34,7 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
         ];
 
         if(cs?.TimeRemainingInMins != null){
-            return cs.TimeRemainingInMins;
+            return cs.TargetResponseInMins;
         }
 
         Datetime now = Datetime.now();
