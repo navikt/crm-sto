@@ -62,3 +62,27 @@ Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Git
 
 Interne henvendelser kan sendes via Slack i kanalen #crm-nks.
 
+## Experience setup
+
+To set up the "innboks" experience you need to go through a couple of easy steps.
+
+1. Kjør scratchSetup filen med kommandone `npm run scratchSetup`
+1. Aktiver community
+    1. Gå til Setup -> All Sites -> Workspaces -> Administation
+    1. I settings så trykk Activate
+    1. I members legg til Permissionsettet Skriv til Oss - Experience Cloud Access
+    1. Gå tilbake til All Sites og åpne builderen
+    1. Publish siden
+1. Gå til kontoen Doktor Proktor for å logge inn i innboksen
+
+## Sider i innboksen
+
+Liste over alle sidene (der BASE_URL er miljøet, eks: https://ruby-data-3845.scratch.my.site.com/Innboks/s/, https://sit2-navdialog.cs162.force.com/Innboks/s/, https://innboks.nav.no/s/):
+
+| Navn                  | URl                               | Parametere                                                                                                                                                                                      |
+| --------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Innboksen             | {BASE_URL}                        |                                                                                                                                                                                                 |
+| Skriv ny STO          | {BASE_URL}/skriv-til-oss?category | Category: Forteller hvilket tema/kategori STOen skal lages på, se [metadata filen](force-app/main/default/objects/STO_Category__mdt/fields/STO_Category__c.field-meta.xml) for gyldige verdier. |
+| Vis en STO/STB        | {BASE_URL}/skriv-til-oss/&lt;id>  | Id: Id til en STO/STB thread.                                                                                                                                                                   |
+| Vis en chat           | {BASE_URL}/chat/&lt;id>           | Id: Id til en chat-thread.                                                                                                                                                                      |
+| Vis et samtalereferat | {BASE_URL}/samtalereferat/&lt;id> | Id: Id til et samtalereferat.                                                                                                                                                                   |
