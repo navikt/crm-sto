@@ -31,10 +31,11 @@
                                     "components": [
                                         {
                                             "componentAttributes": {
-                                                "navareapicklist": "Privatperson"
+                                                "context": "Privatperson",
+                                                "env": "Dev"
                                             },
-                                            "componentName": "c:globalCommunityHeader",
-                                            "id": "a015c8a1-2919-49fe-9f27-629adc8e66f3",
+                                            "componentName": "c:salesforceHeader",
+                                            "id": "c06bf6fd-3065-4a14-8504-0abf25126d14",
                                             "renditionMap": {},
                                             "type": "component"
                                         }
@@ -69,11 +70,9 @@
                                 {
                                     "components": [
                                         {
-                                            "componentAttributes": {
-                                                "navareapicklist": "Privatperson"
-                                            },
-                                            "componentName": "c:globalCommunityFooter",
-                                            "id": "96d046ac-30e1-445c-aa93-9e68b244c43a",
+                                            "componentAttributes": {},
+                                            "componentName": "c:salesforceFooter",
+                                            "id": "077c5811-f367-4dff-85ef-3da1b0ed1f1d",
                                             "renditionMap": {},
                                             "type": "component"
                                         }

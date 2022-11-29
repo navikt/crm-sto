@@ -1,8 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { NavigationMixin } from 'lightning/navigation';
-import dekoratoren from '@salesforce/resourceUrl/dekoratoren';
-import { loadStyle } from 'lightning/platformResourceLoader';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
@@ -130,7 +128,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     renderedCallback() {
-        loadStyle(this, dekoratoren);
         if (this.showspinner) {
             let spinner = this.template.querySelector('.spinner');
             spinner.focus();

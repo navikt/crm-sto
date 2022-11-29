@@ -1,25 +1,26 @@
 <template>
-    <div class="decorator-wrapper">
+    <div class="nav-wrapper">
         <div class="decorator-utils-container">
             <div class="decorator-utils-content">
                 <nav class="brodsmulesti" aria-label="Brødsmulesti" itemprop="breadcrumb">
                     <a href="https://www.nav.no" class="lenke brodsmulesti__home typo-normal"
-                        ><img src={homelogo} alt="" class="homeicon" /><span>nav.no</span
-                        ></a>
-                        <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
+                        ><img src={homelogo} alt="" class="homeicon" /><span>nav.no</span></a
+                    >
+                    <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
                     <template if:true={firstLevel}>
-                        <a href={firstLevelLink} class="lenke typo-normal"
-                            ><span>{firstLevel}</span></a>
-                            <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
+                        <a href={firstLevelLink} class="lenke typo-normal"><span>{firstLevel}</span></a>
+                        <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
                     </template>
                     <template if:true={secondLevel}>
                         <a href={secondLevelLink} class="lenke brodsmulesti__transfor typo-normal"
-                            ><span>{secondLevel}</span></a>
-                            <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
+                            ><span>{secondLevel}</span></a
+                        >
+                        <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
                     </template>
                     <template if:true={thirdLevel}>
                         <a href={thirdLevelLink} class="lenke brodsmulesti__transform typo-normal"
-                            ><span>{thirdLevel}</span></a>
+                            ><span>{thirdLevel}</span></a
+                        >
                         <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
                     </template>
                     <template if:true={leafnode}>

@@ -55,6 +55,13 @@
             "trustedSiteName": "script.hotjar.com",
             "trustedSiteUrl": "https://script.hotjar.com",
             "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "9ec5162f-b41f-4372-8d47-72b8a2571c14",
+            "isActive": true,
+            "trustedSiteName": "dekoratoren.ekstern.dev.nav.no",
+            "trustedSiteUrl": "https://dekoratoren.ekstern.dev.nav.no/",
+            "type": "trustedSitesForScripts"
         }
     ],
     "type": "site"
