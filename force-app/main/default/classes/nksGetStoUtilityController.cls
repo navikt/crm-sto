@@ -43,6 +43,7 @@ public without sharing class nksGetStoUtilityController {
             Integer attempt = 0;
             Id userId = UserInfo.getUserId();
             getServiceResourceSkillIds(userId);
+
             do {
                 Id nextCaseId = getNextSTOCase();
                 if (takeOwnership(nextCaseId, userId)) {
@@ -56,10 +57,22 @@ public without sharing class nksGetStoUtilityController {
         }
     }
 
-    private static Boolean takeOwnership(Id caseId, Id userId) {
+    public static Boolean takeOwnership(Id caseId, Id userId) {
         try {
-            Case c = [SELECT Id, OwnerId, Owner.Type, Status FROM Case WHERE Id = :caseId LIMIT 1 FOR UPDATE];
+            Case c = [
+                SELECT Id, OwnerId, Owner.Type, Status, NKS_Incompetent_IDs__c
+                FROM Case
+                WHERE Id = :caseId
+                LIMIT 1
+                FOR UPDATE
+            ];
             if (c.Owner.Type != 'Queue') {
+                return false;
+            }
+            // check if user id exists in incompetent ids for this Case: return false if exists otherwise true
+            String incompetentIDs = c.NKS_Incompetent_IDs__c;
+            List<String> incompetentIDList = incompetentIDs.split(',');
+            if (incompetentIDs.contains(userId)) {
                 return false;
             }
             c.OwnerId = userId;
