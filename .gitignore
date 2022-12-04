@@ -9,6 +9,7 @@
 
 # NOTE!! USE **/ before
 !**/unpackagable/profiles/* 
+!**/scratch-org/profiles/* 
 # NOTE!! USE **/ before
 
 .sf/*
