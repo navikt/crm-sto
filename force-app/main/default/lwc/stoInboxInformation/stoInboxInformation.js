@@ -29,17 +29,19 @@ export default class StoInboxInformation extends LightningElement {
     })
     threadRecord;
 
+    get isSTO() {
+        return getFieldValue(this.threadRecord.data, THREAD_TYPE_FIELD) === 'STO';
+    }
+
     get infoText() {
         let retText;
         if (this.threadRecord) {
             if (getFieldValue(this.threadRecord.data, THREAD_IS_CLOSED_FIELD) === true) {
                 retText =
                     'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.';
-                if (getFieldValue(this.threadRecord.data, THREAD_TYPE_FIELD) === 'STO') {
-                    retText +=
-                        '<br>Vi ønsker å forbedre oss og vil gjerne høre dine opplevelser fra din dialog med oss. <a href="' +
-                        this.surveyLink +
-                        '">Tilbakemeldingen din</a> er anonym.';
+                if (this.isSTO) {
+                    retText =
+                        '<br>Vi ønsker å bli bedre. <a href="' + this.surveyLink + '">Send din tilbakemelding her.</a>';
                 }
             } else {
                 retText =
