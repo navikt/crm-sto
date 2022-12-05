@@ -46,7 +46,7 @@ public without sharing class nksGetStoUtilityController {
 
             do {
                 Id nextCaseId = getNextSTOCase();
-                if (takeOwnership(nextCaseId, userId)) {
+                if (takeOwnership(nextCaseId, userId) && !isIncompetent(nextCaseId, userId)) {
                     return nextCaseId;
                 }
                 attempt += 1;
@@ -55,6 +55,29 @@ public without sharing class nksGetStoUtilityController {
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
+    }
+
+    /**
+     * @description Function to check if user id exists in incompetent ids for this Case
+     * @param caseId
+     * @param userId
+     * @return return false if exists, otherwise true
+     */
+    public static Boolean isIncompetent(Id caseId, Id userId) {
+        Boolean isIncompetent = false;
+        try {
+            Case enCase = [SELECT Id, NKS_Incompetent_IDs__c FROM Case WHERE Id = :caseId LIMIT 1];
+            String incompetentIDs = enCase.NKS_Incompetent_IDs__c;
+            if (incompetentIDs != null) {
+                List<String> incompetentIDList = incompetentIDs.split(',');
+                if (incompetentIDList.contains(userId)) {
+                    isIncompetent = true;
+                }
+            }
+        } catch (Exception ex) {
+            System.debug('Problem getting incompetent IDs: ' + ex.getMessage());
+        }
+        return isIncompetent;
     }
 
     public static Boolean takeOwnership(Id caseId, Id userId) {
@@ -67,12 +90,6 @@ public without sharing class nksGetStoUtilityController {
                 FOR UPDATE
             ];
             if (c.Owner.Type != 'Queue') {
-                return false;
-            }
-            // check if user id exists in incompetent ids for this Case: return false if exists otherwise true
-            String incompetentIDs = c.NKS_Incompetent_IDs__c;
-            List<String> incompetentIDList = incompetentIDs.split(',');
-            if (incompetentIDs.contains(userId)) {
                 return false;
             }
             c.OwnerId = userId;

@@ -60,4 +60,17 @@ public with sharing class nksGetStoUtilityControllerTest {
         System.assertNotEquals(0, records.size());
         System.assertEquals(2, ownedList.size());
     }
+
+    @isTest
+    static void testIsIncompetent() {
+        Case testCase = [SELECT Id, NKS_Incompetent_IDs__c FROM Case LIMIT 1];
+        User testUser = (User) STO_TestDataFactory.createRecord(new User());
+        Boolean res;
+
+        Test.startTest();
+        res = nksGetStoUtilityController.isIncompetent(testCase.Id, testUser.Id);
+        Test.stopTest();
+
+        System.assertEquals(false, res);
+    }
 }
