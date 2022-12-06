@@ -34,7 +34,7 @@
                                                 "context": "Privatperson",
                                                 "env": "Dev"
                                             },
-                                            "componentName": "c:salesforceHeader",
+                                            "componentName": "c:decoratorHeader",
                                             "id": "c06bf6fd-3065-4a14-8504-0abf25126d14",
                                             "renditionMap": {},
                                             "type": "component"
@@ -71,7 +71,7 @@
                                     "components": [
                                         {
                                             "componentAttributes": {},
-                                            "componentName": "c:salesforceFooter",
+                                            "componentName": "c:decoratorFooter",
                                             "id": "077c5811-f367-4dff-85ef-3da1b0ed1f1d",
                                             "renditionMap": {},
                                             "type": "component"
