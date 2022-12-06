@@ -32,7 +32,7 @@
                                         {
                                             "componentAttributes": {
                                                 "context": "Privatperson",
-                                                "env": "Dev"
+                                                "env": "Prod"
                                             },
                                             "componentName": "c:decoratorHeader",
                                             "id": "c06bf6fd-3065-4a14-8504-0abf25126d14",

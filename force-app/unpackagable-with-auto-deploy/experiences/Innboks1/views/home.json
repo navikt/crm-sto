@@ -63,6 +63,14 @@
                         {
                             "components": [
                                 {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "fc98effe-44c4-45e3-9997-e7c0a7f0c2cc",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
                                     "componentAttributes": {
                                         "title": "Innboks"
                                     },

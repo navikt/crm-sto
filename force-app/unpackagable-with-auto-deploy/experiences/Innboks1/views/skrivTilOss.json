@@ -66,6 +66,14 @@
                             "components": [
                                 {
                                     "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "040ac751-32c7-432d-8d59-7b606616130a",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
                                     "componentName": "c:stoRegisterThread",
                                     "id": "f307ae96-b785-45ce-aeeb-95eab0030eda",
                                     "renderPriority": "NEUTRAL",

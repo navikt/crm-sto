@@ -65,6 +65,14 @@
                         {
                             "components": [
                                 {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "f9dc7e34-1fd5-40bd-86db-4734c157baf8",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
                                     "componentAttributes": {
                                         "recordId": "{!recordId}",
                                         "title": "Samtalereferat"
