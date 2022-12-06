@@ -8,59 +8,45 @@
     "selfRegistrationRouteId": null,
     "trustedSitesForScript": [
         {
-            "id": "c72f84e2-4042-422c-b0a6-fb76ac5dfcbb",
+            "id": "3200c9a2-4c1f-4130-a09a-5c8f10aa9d34",
             "isActive": true,
-            "trustedSiteName": "nav_no",
-            "trustedSiteUrl": "https://www.nav.no",
+            "trustedSiteName": "*.nav.no",
+            "trustedSiteUrl": "https://*.nav.no",
             "type": "trustedSitesForScripts"
         },
         {
-            "id": "668f44ff-90ac-4ed8-a558-8ce072ca7aa9",
+            "id": "11653371-c208-426b-8dbf-d13773fc5160",
             "isActive": true,
-            "trustedSiteName": "google_tag_manager",
-            "trustedSiteUrl": "https://www.googletagmanager.com",
+            "trustedSiteName": "*.psplugin.com",
+            "trustedSiteUrl": "https://*.psplugin.com",
             "type": "trustedSitesForScripts"
         },
         {
-            "id": "b3aff44a-ffb8-471e-bede-3532e9118d12",
+            "id": "09e4c7e3-93ff-4335-aad3-ee08576146fd",
             "isActive": true,
-            "trustedSiteName": "account.psplugin.com",
-            "trustedSiteUrl": "https://account.psplugin.com",
+            "trustedSiteName": "*.googletagmanager.com",
+            "trustedSiteUrl": "https://*.googletagmanager.com",
             "type": "trustedSitesForScripts"
         },
         {
-            "id": "246d1f0e-0268-4a3b-8c11-33ae02516295",
+            "id": "45f38aa1-b889-4d6c-8142-92232b4f0d2a",
             "isActive": true,
-            "trustedSiteName": "in2.taskanalytics.com",
-            "trustedSiteUrl": "https://in2.taskanalytics.com",
+            "trustedSiteName": "*.google-analytics.com",
+            "trustedSiteUrl": "https://*.google-analytics.com",
             "type": "trustedSitesForScripts"
         },
         {
-            "id": "4e928fdc-9637-45d0-b5d2-89516a768c21",
+            "id": "3b2f93ce-30dc-4015-8e85-8fd275fe54b2",
             "isActive": true,
-            "trustedSiteName": "www.google-analytics.com",
-            "trustedSiteUrl": "https://www.google-analytics.com",
+            "trustedSiteName": "*.hotjar.com",
+            "trustedSiteUrl": "https://*.hotjar.com",
             "type": "trustedSitesForScripts"
         },
         {
-            "id": "45c9303b-6ac6-4496-b506-4cf9d1d03835",
+            "id": "ebbcef74-3bfc-4166-9700-2178d39a57cc",
             "isActive": true,
-            "trustedSiteName": "static.hotjar.com",
-            "trustedSiteUrl": "https://static.hotjar.com",
-            "type": "trustedSitesForScripts"
-        },
-        {
-            "id": "8668b0d2-dabf-4db2-9bb8-62144319018f",
-            "isActive": true,
-            "trustedSiteName": "script.hotjar.com",
-            "trustedSiteUrl": "https://script.hotjar.com",
-            "type": "trustedSitesForScripts"
-        },
-        {
-            "id": "9ec5162f-b41f-4372-8d47-72b8a2571c14",
-            "isActive": true,
-            "trustedSiteName": "dekoratoren.ekstern.dev.nav.no",
-            "trustedSiteUrl": "https://dekoratoren.ekstern.dev.nav.no/",
+            "trustedSiteName": "*.taskanalytics.com",
+            "trustedSiteUrl": "https://*.taskanalytics.com",
             "type": "trustedSitesForScripts"
         }
     ],
