@@ -46,7 +46,7 @@ public without sharing class nksGetStoUtilityController {
 
             do {
                 Id nextCaseId = getNextSTOCase();
-                if (takeOwnership(nextCaseId, userId) && !isIncompetent(nextCaseId, userId)) {
+                if (takeOwnership(nextCaseId, userId)) {
                     return nextCaseId;
                 }
                 attempt += 1;
@@ -57,38 +57,9 @@ public without sharing class nksGetStoUtilityController {
         }
     }
 
-    /**
-     * @description Function to check if user id exists in incompetent ids for this Case
-     * @param caseId
-     * @param userId
-     * @return return false if exists, otherwise true
-     */
-    public static Boolean isIncompetent(Id caseId, Id userId) {
-        Boolean isIncompetent = false;
-        try {
-            Case enCase = [SELECT Id, NKS_Incompetent_IDs__c FROM Case WHERE Id = :caseId LIMIT 1];
-            String incompetentIDs = enCase.NKS_Incompetent_IDs__c;
-            if (incompetentIDs != null) {
-                List<String> incompetentIDList = incompetentIDs.split(',');
-                if (incompetentIDList.contains(userId)) {
-                    isIncompetent = true;
-                }
-            }
-        } catch (Exception ex) {
-            System.debug('Problem getting incompetent IDs: ' + ex.getMessage());
-        }
-        return isIncompetent;
-    }
-
     public static Boolean takeOwnership(Id caseId, Id userId) {
         try {
-            Case c = [
-                SELECT Id, OwnerId, Owner.Type, Status, NKS_Incompetent_IDs__c
-                FROM Case
-                WHERE Id = :caseId
-                LIMIT 1
-                FOR UPDATE
-            ];
+            Case c = [SELECT Id, OwnerId, Owner.Type, Status FROM Case WHERE Id = :caseId LIMIT 1 FOR UPDATE];
             if (c.Owner.Type != 'Queue') {
                 return false;
             }
@@ -220,6 +191,12 @@ public without sharing class nksGetStoUtilityController {
      * @return List<PendingServiceRouting>
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
+        String userId = '%' + UserInfo.getUserID() + '%';
+        List<id> caseIds = new List<id>();
+        for (Case c : [SELECT Id, NKS_Incompetent_IDs__c FROM Case WHERE NOT NKS_Incompetent_IDs__c LIKE :userId]) {
+            caseIds.add(c.id);
+        }
+
         return [
             SELECT Id, WorkItemId
             FROM PendingServiceRouting
@@ -233,6 +210,7 @@ public without sharing class nksGetStoUtilityController {
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
                 AND isPushed = FALSE
+                AND WorkItemId IN :caseIds
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
             LIMIT 1
         ];
