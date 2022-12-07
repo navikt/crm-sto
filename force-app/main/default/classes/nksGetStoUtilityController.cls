@@ -57,7 +57,7 @@ public without sharing class nksGetStoUtilityController {
         }
     }
 
-    public static Boolean takeOwnership(Id caseId, Id userId) {
+    private static Boolean takeOwnership(Id caseId, Id userId) {
         try {
             Case c = [SELECT Id, OwnerId, Owner.Type, Status FROM Case WHERE Id = :caseId LIMIT 1 FOR UPDATE];
             if (c.Owner.Type != 'Queue') {
