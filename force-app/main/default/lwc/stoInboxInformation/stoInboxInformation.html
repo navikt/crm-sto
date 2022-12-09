@@ -1,8 +1,23 @@
 <template>
-    <div if:true={infoText} class="slds-var-p-horizontal_medium spacing">
-        <c-crm-community-alert-stripe class="alertbox" type="info" alerttext={infoText}></c-crm-community-alert-stripe>
-        <template if:true={isSTO}>
-            <p>Tilbakemeldingen din er anonym.</p>
-        </template>
-    </div>
+    <template if:false={isClosedSTO}>
+        <div if:true={infoText} class="slds-var-p-horizontal_medium spacing">
+            <c-crm-community-alert-stripe
+                class="alertbox"
+                type="info"
+                alerttext={infoText}
+            ></c-crm-community-alert-stripe>
+        </div>
+    </template>
+    <template if:true={isClosedSTO}>
+        <div class="slds-var-p-horizontal_medium slds-var-p-bottom_xx-large cssPadding">
+            <h2 class="navds-heading navds-heading--medium navds-typo--spacing">Fikk du svar på det du lurte på?</h2>
+            <c-ds-button
+                variant="primary"
+                size="medium"
+                onclick={navigateToSurvey}
+                text="Gi tilbakemelding"
+            ></c-ds-button>
+            <p class="navds-body-short navds-body-short--medium slds-var-p-top_medium">Tilbakemeldingen er anonym.</p>
+        </div>
+    </template>
 </template>

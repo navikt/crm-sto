@@ -29,8 +29,15 @@ export default class StoInboxInformation extends LightningElement {
     })
     threadRecord;
 
-    get isSTO() {
-        return getFieldValue(this.threadRecord.data, THREAD_TYPE_FIELD) === 'STO';
+    navigateToSurvey() {
+        window.open(this.surveyLink);
+    }
+
+    get isClosedSTO() {
+        return (
+            getFieldValue(this.threadRecord.data, THREAD_TYPE_FIELD) === 'STO' &&
+            getFieldValue(this.threadRecord.data, THREAD_IS_CLOSED_FIELD) === true
+        );
     }
 
     get infoText() {
@@ -39,10 +46,6 @@ export default class StoInboxInformation extends LightningElement {
             if (getFieldValue(this.threadRecord.data, THREAD_IS_CLOSED_FIELD) === true) {
                 retText =
                     'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.';
-                if (this.isSTO) {
-                    retText =
-                        '<br>Vi ønsker å bli bedre. <a href="' + this.surveyLink + '">Send din tilbakemelding her.</a>';
-                }
             } else {
                 retText =
                     'Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
