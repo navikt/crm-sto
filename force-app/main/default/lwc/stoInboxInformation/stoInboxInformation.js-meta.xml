@@ -3,7 +3,7 @@
     <apiVersion>55.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>STO Inbox Information</masterLabel>
-     <targets>
+    <targets>
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
     </targets>
