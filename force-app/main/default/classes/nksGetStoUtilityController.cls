@@ -193,12 +193,18 @@ public without sharing class nksGetStoUtilityController {
     private static List<PendingServiceRouting> getPendingServiceRouting() {
         String userId = '%' + UserInfo.getUserID() + '%';
         List<id> caseIds = new List<id>();
-        for (Case c : [SELECT Id, NKS_Incompetent_IDs__c FROM Case WHERE NOT NKS_Incompetent_IDs__c LIKE :userId]) {
-            caseIds.add(c.id);
+        for (Case c : [
+            SELECT Id, NKS_Incompetent_IDs__c
+            FROM Case
+            WHERE
+                RecordType.DeveloperName = 'STO_Case'
+                AND (NOT Status = 'Closed')
+                AND (NOT NKS_Incompetent_IDs__c LIKE :userId)
+        ]) {
+            caseIds.add(c.Id);
         }
 
-        List<PendingServiceRouting> resList = new List<PendingServiceRouting>();
-        List<PendingServiceRouting> psrList = [
+        return [
             SELECT Id, WorkItemId
             FROM PendingServiceRouting
             WHERE
@@ -213,25 +219,7 @@ public without sharing class nksGetStoUtilityController {
                 AND isPushed = FALSE
                 AND WorkItemId IN :caseIds
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
-            LIMIT 5
+            LIMIT 1
         ];
-
-        Map<Id, PendingServiceRouting> psrByCaseIdMap = new Map<Id, PendingServiceRouting>();
-        for (PendingServiceRouting psr : psrList) {
-            psrByCaseIdMap.put(psr.WorkItemId, psr);
-        }
-
-        List<Case> cases = [SELECT Id, NKS_Incompetent_IDs__c FROM Case WHERE ID IN :psrByCaseIdMap.keySet()];
-        for (Case casy : cases) {
-            String str = '';
-            try {
-                str += casy.NKS_Incompetent_IDs__c;
-                if (!str.contains(UserInfo.getUserID()))
-                    resList.add(psrByCaseIdMap.get(casy.Id));
-            } catch (Exception ex) {
-                throw new AuraHandledException('Det har oppstått en feil ved henting av ny STO.');
-            }
-        }
-        return resList;
     }
 }
