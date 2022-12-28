@@ -198,7 +198,7 @@ public without sharing class nksGetStoUtilityController {
             FROM Case
             WHERE
                 RecordType.DeveloperName = 'STO_Case'
-                AND (NOT Status = 'Closed')
+                AND Status IN ('New', 'Forwarded', 'Escalated')
                 AND (NOT NKS_Incompetent_IDs__c LIKE :userId)
         ]) {
             caseIds.add(c.Id);
