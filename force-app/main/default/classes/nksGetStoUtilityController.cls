@@ -192,17 +192,6 @@ public without sharing class nksGetStoUtilityController {
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
         String userId = '%' + UserInfo.getUserID() + '%';
-        List<id> caseIds = new List<id>();
-        for (Case c : [
-            SELECT Id, NKS_Incompetent_IDs__c
-            FROM Case
-            WHERE
-                RecordType.DeveloperName = 'STO_Case'
-                AND Status IN ('New', 'Forwarded', 'Escalated')
-                AND (NOT NKS_Incompetent_IDs__c LIKE :userId)
-        ]) {
-            caseIds.add(c.Id);
-        }
 
         return [
             SELECT Id, WorkItemId
@@ -217,7 +206,7 @@ public without sharing class nksGetStoUtilityController {
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
                 AND isPushed = FALSE
-                AND WorkItemId IN :caseIds
+                AND (NOT WorkItem.NKS_Incompetent_IDs__c LIKE :userId)
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
             LIMIT 1
         ];
