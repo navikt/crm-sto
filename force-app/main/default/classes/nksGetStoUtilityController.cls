@@ -43,6 +43,7 @@ public without sharing class nksGetStoUtilityController {
             Integer attempt = 0;
             Id userId = UserInfo.getUserId();
             getServiceResourceSkillIds(userId);
+
             do {
                 Id nextCaseId = getNextSTOCase();
                 if (takeOwnership(nextCaseId, userId)) {
@@ -190,6 +191,8 @@ public without sharing class nksGetStoUtilityController {
      * @return List<PendingServiceRouting>
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
+        String userId = '%' + UserInfo.getUserID() + '%';
+
         return [
             SELECT Id, WorkItemId
             FROM PendingServiceRouting
@@ -203,6 +206,7 @@ public without sharing class nksGetStoUtilityController {
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
                 AND isPushed = FALSE
+                AND (NOT WorkItem.NKS_Incompetent_IDs__c LIKE :userId)
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
             LIMIT 1
         ];

@@ -3,7 +3,7 @@
     <actionCalls>
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
-        <locationX>176</locationX>
+        <locationX>490</locationX>
         <locationY>734</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
@@ -45,7 +45,7 @@
     <decisions>
         <name>Check_Put_Back_Decision</name>
         <label>Check Put Back Decision</label>
-        <locationX>176</locationX>
+        <locationX>490</locationX>
         <locationY>278</locationY>
         <defaultConnector>
             <targetReference>Update_Case</targetReference>
@@ -62,7 +62,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Update_Case</targetReference>
+                <targetReference>Get_Case</targetReference>
             </connector>
             <label>Incompetent</label>
         </rules>
@@ -121,6 +121,11 @@
         <picklistObject>Case</picklistObject>
     </dynamicChoiceSets>
     <formulas>
+        <name>Incompetent_Value_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF(CONTAINS({!Prior_Incompetent_Values},CASESAFEID({!$User.Id})), {!Prior_Incompetent_Values}, {!Prior_Incompetent_Values}&amp;CASESAFEID({!$User.Id})&amp;&apos;,&apos;)</expression>
+    </formulas>
+    <formulas>
         <name>Queue_Transfer_Text</name>
         <dataType>String</dataType>
         <expression>{!Chosen_Queue}</expression>
@@ -146,11 +151,34 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Case</name>
+        <label>Get Case</label>
+        <locationX>50</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Update_Case</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>Case</object>
+        <outputAssignments>
+            <assignToReference>Prior_Incompetent_Values</assignToReference>
+            <field>NKS_Incompetent_IDs__c</field>
+        </outputAssignments>
+    </recordLookups>
     <recordUpdates>
         <description>Updates the case to retrigger assignment to be put back to queue.</description>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>176</locationX>
+        <locationX>490</locationX>
         <locationY>614</locationY>
         <connector>
             <targetReference>Close_workspace_tab</targetReference>
@@ -170,6 +198,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>NKS_Incompetent_IDs__c</field>
+            <value>
+                <elementReference>Incompetent_Value_Formula</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Status</field>
             <value>
                 <stringValue>Forwarded</stringValue>
@@ -180,7 +214,7 @@
     <recordUpdates>
         <name>Update_STO_category</name>
         <label>Update STO category</label>
-        <locationX>132</locationX>
+        <locationX>490</locationX>
         <locationY>398</locationY>
         <connector>
             <targetReference>Update_Case</targetReference>
@@ -205,7 +239,7 @@
     <screens>
         <name>Put_Back_Screen</name>
         <label>Put Back Screen</label>
-        <locationX>176</locationX>
+        <locationX>490</locationX>
         <locationY>158</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -290,13 +324,20 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>364</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Put_Back_Screen</targetReference>
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>Prior_Incompetent_Values</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <description>ID of the case to be assigned back to the original queue.</description>
         <name>recordId</name>
