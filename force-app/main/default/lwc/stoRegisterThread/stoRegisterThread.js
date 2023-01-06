@@ -135,7 +135,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             let spinner = this.template.querySelector('.spinner');
             spinner.focus();
         }
-        console.log(this.validparameter);
     }
     /**
      *  Handle Terms Modal Start
@@ -308,8 +307,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get openThreadLink() {
-        console.log('this.openThreadList');
-        console.log(this.openThreadList);
         return basepath + '/skriv-til-oss/' + this.openThreadList[0].recordId;
     }
 
@@ -318,7 +315,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get showTextArea() {
-        console.log(this.openThreadList);
         return (
             this.openThreadList === null ||
             this.openThreadList === undefined ||
