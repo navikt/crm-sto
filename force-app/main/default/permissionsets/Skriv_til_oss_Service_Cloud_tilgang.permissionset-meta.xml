@@ -35,7 +35,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>STO_Internal_Comment__c.Case__c</field>
         <readable>true</readable>
     </fieldPermissions>
