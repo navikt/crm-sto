@@ -4,26 +4,36 @@ export default class DsHelpText extends LightningElement {
     @api title = 'Mangler tittel';
     @api text = 'Mangler tekst';
     open = false;
+    ariaExpanded = false;
 
-    clickHelpText() {
-        this.open = !this.open;
+    helpTextClick() {
+        const hidden = this.template.querySelector('.navds-popover--hidden');
+        if (hidden === null) {
+            this.helpTextBlur();
+        } else {
+            this.ariaExpanded = true;
+        }
+    }
+
+    helpTextBlur() {
+        this.ariaExpanded = false;
     }
 
     keyboardHandler(event) {
         if (event.key === 'Escape') {
-            this.open = false;
+            this.ariaExpanded = false;
         }
     }
 
     focusClose(event) {
         const div = this.template.querySelector('.tester1');
-        if (event.relatedTarget === null || !div.contains(event.relatedTarget)) this.open = false;
+        if (event.relatedTarget === null || !div.contains(event.relatedTarget)) this.ariaExpanded = false;
     }
 
     get popoverClasses() {
         return (
             'navds-popover navds-help-text__popover overrideableClasses popoverTop popoverRight--mobile popoverPosition' +
-            (this.open === true ? '' : ' navds-popover--hidden')
+            (this.ariaExpanded === true ? '' : ' navds-popover--hidden')
         );
     }
 }
