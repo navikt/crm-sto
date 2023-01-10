@@ -32,7 +32,7 @@
     </caseValues>
     <gender>Masculine</gender>
     <layouts>
-        <layout>Case Comment Layout</layout>
+        <layout>Internal Comment Layout</layout>
         <sections>
             <label></label>
             <section>Custom Links</section>
@@ -42,5 +42,5 @@
             <section>Details</section>
         </sections>
     </layouts>
-    <nameFieldLabel>Kommentar</nameFieldLabel>
+    <nameFieldLabel>Intern Kommentar</nameFieldLabel>
 </CustomObjectTranslation>

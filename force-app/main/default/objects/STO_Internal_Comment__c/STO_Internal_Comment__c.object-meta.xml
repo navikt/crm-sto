@@ -154,10 +154,10 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>ReadWrite</externalSharingModel>
-    <label>Internal Comment</label>
+    <label>Comment</label>
     <nameField>
         <displayFormat>IC-{000000}</displayFormat>
-        <label>Internal Comment Name</label>
+        <label>Internal Comment</label>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Internal Comments</pluralLabel>
