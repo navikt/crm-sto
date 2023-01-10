@@ -23,8 +23,8 @@
             <label>No</label>
         </rules>
     </decisions>
-    <interviewLabel>STO Case Delete Case Comments {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>STO Case Delete Case Comments</label>
+    <interviewLabel>Case STO Delete Internal Comments {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Case STO Delete Internal Comments</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
