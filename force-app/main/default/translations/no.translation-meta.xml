@@ -79,11 +79,11 @@
         <name>Errors_InvalidSettingConfiguration</name>
     </customLabels>
     <customLabels>
-        <label>Jeg godkjenner vilkårene</label>
+        <label>Godkjenn</label>
         <name>STO_Skriv_til_oss_Accept_Terms_Button</name>
     </customLabels>
     <customLabels>
-        <label>Jeg godkjenner ikke vilkårene</label>
+        <label>Avslå</label>
         <name>STO_Skriv_til_oss_Deny_Terms_Button</name>
     </customLabels>
     <customLabels>
@@ -92,16 +92,30 @@
     </customLabels>
     <customLabels>
         <label>&lt;div style=&quot;font-family: sans-serif&quot;&gt;
-Denne tjenesten gjelder deg som privatperson. Du kan ikke bruke den på vegne av andre. Vi ber deg derfor bare sende opplysninger som gjelder deg, og opplysninger vi trenger for å behandle saken eller spørsmålet ditt. &lt;br /&gt;&lt;br /&gt;
-NAV har bare lov til å ta vare på opplysninger som er relevant for deg. Hvis opplysninger gjelder andre og det ikke har betydning i saken din, blir opplysninger slettet. &lt;br /&gt; &lt;br /&gt;
-Opplysninger du sender om deg selv blir brukt når vi behandler saken din. &lt;br /&gt; &lt;br /&gt;
-I tillegg til de som hjelper deg i saken din, kan også andre NAV-medarbeidere se opplysninger du skriver hvis de trenger det for å løse sine arbeidsoppgaver. Det kan for eksempel være ved arkivering eller retting av feil i IT-systemene våre. &lt;br /&gt; &lt;br /&gt;</label>
+            Denne tjenesten gjelder deg som privatperson. Du kan ikke bruke den på vegne av andre.
+            Vi ber deg derfor bare sende opplysninger som gjelder deg, og opplysninger vi trenger
+            for å behandle saken eller spørsmålet ditt. &lt;br /&gt;&lt;br /&gt;
+            NAV har bare lov til å ta vare på opplysninger som er relevant for deg. Hvis
+            opplysninger gjelder andre og det ikke har betydning i saken din, blir opplysninger
+            slettet. &lt;br /&gt; &lt;br /&gt;
+            Opplysninger du sender om deg selv blir brukt når vi behandler saken din. &lt;br /&gt;
+            &lt;br /&gt;
+            I tillegg til de som hjelper deg i saken din, kan også andre NAV-medarbeidere se
+            opplysninger du skriver hvis de trenger det for å løse sine arbeidsoppgaver. Det kan for
+            eksempel være ved arkivering eller retting av feil i IT-systemene våre. &lt;br /&gt;
+            &lt;br /&gt;</label>
         <name>STO_Skriv_til_oss_terms_og_use_text</name>
     </customLabels>
     <customLabels>
-        <label>Du kan lese mer &lt;a href=&quot;https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten/personvernerklaering-for-arbeids-og-velferdsetaten&quot;&gt;om hva personopplysninger brukes til i NAV, i vår personvernerklæring&lt;/a&gt;. &lt;br /&gt; &lt;br /&gt;
-Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 33 33&lt;/a&gt; (tastevalg 1) hvis henvendelsen gjelder kommunale tjenester som økonomisk sosialhjelp, bostøtte, midlertidig botilbud, kvalifiseringsprogrammet, eller økonomisk rådgivning.
-&lt;/div&gt;</label>
+        <label>Du kan lese mer &lt;a
+            href=&quot;https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten/personvernerklaering-for-arbeids-og-velferdsetaten&quot;&gt;om
+            hva personopplysninger brukes til i NAV, i vår personvernerklæring&lt;/a&gt;. &lt;br
+            /&gt; &lt;br /&gt;
+            Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 33
+            33&lt;/a&gt; (tastevalg 1) hvis henvendelsen gjelder kommunale tjenester som økonomisk
+            sosialhjelp, bostøtte, midlertidig botilbud, kvalifiseringsprogrammet, eller økonomisk
+            rådgivning.
+            &lt;/div&gt;</label>
         <name>STO_Skriv_til_oss_terms_og_use_text_2</name>
     </customLabels>
     <customLabels>
@@ -129,7 +143,9 @@ Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 
         <name>Skriv_til_oss_headline</name>
     </customLabels>
     <customLabels>
-        <label>Send bare spørsmål eller opplysninger som gjelder din sak. Husk å få med alle opplysninger som kan være relevant for saken. Du kan skrive maksimalt 1000 tegn. Det er cirka en halv A4-side.</label>
+        <label>Send bare spørsmål eller opplysninger som gjelder din sak. Husk å få med alle
+            opplysninger som kan være relevant for saken. Du kan skrive maksimalt 1000 tegn. Det er
+            cirka en halv A4-side.</label>
         <name>Skriv_til_oss_intro_text</name>
     </customLabels>
     <customLabels>
