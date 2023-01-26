@@ -29,7 +29,7 @@
         "**/.vscode": true,
         "**/.idea": true
     },
-    "unpackagable.location": "/unpackaged",
+    "unpackagable.location": "unpackaged",
     "scratch.default.permissionsets": [
         "Messaging_Read_and_Write_Messages_and_Threads",
         "Skriv_til_Oss",

@@ -1,3 +1,11 @@
 .spacing {
     padding-bottom: 5.5em;
 }
+
+.cssFont {
+    font-size: 1.5rem;
+}
+
+.cssPadding {
+    margin-top: -0.5rem;
+}

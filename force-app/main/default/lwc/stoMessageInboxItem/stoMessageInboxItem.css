@@ -4,9 +4,7 @@
     margin-bottom: 8px !important;
 }
 .unread {
-    border-style: hidden hidden hidden solid;
-    border-width: 0.5em;
-    border-color: #0067c5;
+    border-left: 0.5em solid #0067c5 !important;
 }
 .read {
     border-style: hidden hidden hidden solid;

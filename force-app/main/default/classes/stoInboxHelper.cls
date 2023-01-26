@@ -116,7 +116,7 @@ public with sharing class stoInboxHelper {
             i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
             i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
             i.objectName = t.CRM_Thread_Type__c == 'CHAT' ? 'chat' : 'skriv-til-oss';
-            i.status = (t.CRM_Is_Closed__c) ? 'Lukket' : 'Åpen';
+            i.status = (t.CRM_Is_Closed__c) ? 'Avsluttet' : 'Åpen';
             i.recordName = t.Name;
             m.recordId = t.Messages__r[0]?.Id;
             m.messageText = t.Messages__r[0]
@@ -140,7 +140,7 @@ public with sharing class stoInboxHelper {
         i.numberOfUnreadMessages = 1;
         i.latestMessageDate = t.CRM_Date_Time_Registered__c;
         i.objectName = 'samtalereferat';
-        i.status = 'Lukket';
+        i.status = 'Avsluttet';
         i.recordName = t.Name;
         m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
         m.recordId = t.Id;
