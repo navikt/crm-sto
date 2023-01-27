@@ -10,8 +10,6 @@ export default class NksFlowButtonContainer extends LightningElement {
     status;
     closed;
 
-    connectedCallback() {}
-
     @wire(getRecord, { recordId: '$recordId', fields: [STATUS_FIELD, ISCLOSED_FIELD] })
     wiredRecord(result) {
         this.wiredCase = result;
