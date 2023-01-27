@@ -1,7 +1,5 @@
 <template>
-    <!--Container-->
     <lightning-layout multiple-rows="true" size="12">
-        <!--Button group 1-->
         <lightning-layout-item class="slds-size_12-of-12">
             <lightning-layout class="slds-var-m-bottom_small" size="12">
                 <lightning-layout-item class="slds-size_6-of-12" style="padding-right: 5px">
@@ -24,8 +22,7 @@
                 </lightning-layout-item>
             </lightning-layout>
         </lightning-layout-item>
-        <!--Button group 2-->
-        <lightning-layout-item class="slds-size_12-of-12 slds-var-m-bottom_small">
+        <lightning-layout-item class="slds-size_12-of-12">
             <lightning-layout multiple-rows="true" class="" size="12">
                 <lightning-layout-item class="slds-size_12-of-12" style="margin-bottom: 5px">
                     <c-nks-flow-button
@@ -35,17 +32,7 @@
                         input-variables={inputVariables}
                     ></c-nks-flow-button>
                 </lightning-layout-item>
-                <!--
                 <lightning-layout-item class="slds-size_12-of-12" style="margin-bottom: 5px">
-                    <c-nks-flow-button
-                        flow-name="NKS_Case_Send_NAV_Task"
-                        button-label="Opprett oppgave"
-                        button-color=""
-                        input-variables={inputVariables}
-                    ></c-nks-flow-button>
-                </lightning-layout-item>
-                -->
-                <lightning-layout-item class="slds-size_12-of-12">
                     <c-nks-flow-button
                         flow-name="Case_STO_Put_Back"
                         button-label="Legg tilbake"
@@ -54,16 +41,15 @@
                         is-disabled={disabledPutBack}
                     ></c-nks-flow-button>
                 </lightning-layout-item>
+                <lightning-layout-item class="slds-size_12-of-12">
+                    <c-nks-flow-button
+                        flow-name="Case_STO_Sladd"
+                        button-label="Sladd"
+                        button-color=""
+                        input-variables={inputVariables}
+                    ></c-nks-flow-button>
+                </lightning-layout-item>
             </lightning-layout>
-        </lightning-layout-item>
-        <!--Button group 3-->
-        <lightning-layout-item class="slds-size_12-of-12">
-            <c-nks-flow-button
-                flow-name="Case_STO_Sladd"
-                button-label="Sladd"
-                button-color="blue"
-                input-variables={inputVariables}
-            ></c-nks-flow-button>
         </lightning-layout-item>
     </lightning-layout>
 </template>
