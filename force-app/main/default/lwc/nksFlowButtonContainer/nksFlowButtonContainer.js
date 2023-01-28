@@ -32,15 +32,15 @@ export default class NksFlowButtonContainer extends LightningElement {
         ];
     }
 
-    get disabledComplete() {
+    get completeDisabled() {
         return this.status !== 'In progress' && this.status !== 'Reserved';
     }
 
-    get disabledReserve() {
+    get reserveDisabled() {
         return this.status !== 'In progress' || this.closed === true;
     }
 
-    get disabledPutBack() {
+    get putBackDisabled() {
         return this.status === 'Forwarded' || this.closed === true;
     }
 }
