@@ -4,21 +4,16 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">&lt;p&gt;Det er bestemt at alle som mottar uføretrygd med minstesats skal få en
-engangsutbetaling på 3000 kroner. Beløpet er ikke skattepliktig.&lt;/p&gt;
+        <value xsi:type="xsd:string">&lt;p&gt;Mottar du eller er du innvilget uføretrygd med minstesats per januar 2023? Da vil du få en engangsutbetaling på 3000 kroner senest i løpet av fredag 10.februar. Beløpet er skatt og trekkfritt.&lt;/p&gt;
 &lt;br /&gt;
-&lt;p&gt;Minstesats for 100 prosent uføretrygd er for tiden:
 &lt;ul&gt;
-  &lt;li&gt;Bor alene: 23 039 kroner&lt;/li&gt;
-  &lt;li&gt;Har ektefelle, partner eller samboer: 21 181 kroner&lt;/li&gt;
-  &lt;li&gt;Ung uføre som bor alene: 27 033 kroner&lt;/li&gt;
-  &lt;li&gt;Ung uføre med partner, ektefelle eller samboer: 24 711 kroner&lt;/li&gt;
-&lt;/ul&gt;&lt;/p&gt;
-&lt;p&gt;Det er usikkert når beløpet vil bli utbetalt. Informasjon på nav.no oppdateres når vi vet mer om når utbetalingen kommer.&lt;/p&gt; &lt;br /&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.nav.no/uforetrygd#satser&quot;&gt;Minstesats for 100 prosent uføretrygd&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Utbetalingen regnes ikke som inntekt og fører derfor ikke til reduksjon i uføretrygden eller barnetillegget. Engangsutbetalingen vil heller ikke påvirke etteroppgjøret for 2023.&lt;/p&gt; &lt;br /&gt;
 
  
 
-&lt;p&gt;Lurer du på om du mottar minstesats, kan du sende oss en melding.&lt;/p&gt;</value>
+&lt;p&gt;Lurer du fortsatt på om du mottar minstesats, kan du sende oss en melding.&lt;/p&gt;</value>
     </values>
     <values>
         <field>STO_Category__c</field>
