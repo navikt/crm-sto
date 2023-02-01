@@ -1,0 +1,51 @@
+<template>
+    <lightning-layout multiple-rows="true" size="12">
+        <lightning-layout-item class="slds-size_12-of-12">
+            <lightning-layout class="slds-var-m-bottom_small" size="12">
+                <lightning-layout-item class="slds-size_6-of-12" style="padding-right: 5px">
+                    <c-nks-flow-button
+                        flow-name="Case_STO_Complete"
+                        button-label="Ferdigstill"
+                        button-color="green"
+                        input-variables={inputVariables}
+                        is-disabled={completeDisabled}
+                    ></c-nks-flow-button>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-size_6-of-12">
+                    <c-nks-flow-button
+                        flow-name="STO_Case_Set_Reserved"
+                        button-label="Reserver til meg"
+                        button-color="green"
+                        input-variables={inputVariables}
+                        is-disabled={reserveDisabled}
+                    ></c-nks-flow-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-size_12-of-12" style="margin-bottom: 5px">
+            <c-nks-flow-button
+                flow-name="Case_STO_Put_Back"
+                button-label="Legg tilbake"
+                button-color=""
+                input-variables={inputVariables}
+                is-disabled={putBackDisabled}
+            ></c-nks-flow-button>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-size_12-of-12" style="margin-bottom: 5px">
+            <c-nks-flow-button
+                flow-name="CRM_Case_Journal_STO_Thread"
+                button-label="Journalfør"
+                button-color=""
+                input-variables={inputVariables}
+            ></c-nks-flow-button>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-size_12-of-12">
+            <c-nks-flow-button
+                flow-name="Case_STO_Sladd"
+                button-label="Sladd"
+                button-color=""
+                input-variables={inputVariables}
+            ></c-nks-flow-button>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
