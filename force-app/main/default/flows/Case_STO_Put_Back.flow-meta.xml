@@ -98,7 +98,7 @@
     </choices>
     <choices>
         <name>Wrong_Queue</name>
-        <choiceText>Feil temagruppe</choiceText>
+        <choiceText>Legg til kø</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>Wrong_Queue</stringValue>
