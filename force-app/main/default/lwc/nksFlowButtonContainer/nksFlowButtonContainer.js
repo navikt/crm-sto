@@ -1,5 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { refreshApex } from '@salesforce/apex';
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
 import ISCLOSED_FIELD from '@salesforce/schema/Case.IsClosed';
 
@@ -21,6 +22,10 @@ export default class NksFlowButtonContainer extends LightningElement {
             console.log(error.body.message);
         }
     }
+
+    refreshRecord = () => {
+        return refreshApex(this.wiredCase);
+    };
 
     get inputVariables() {
         return [
