@@ -6,7 +6,6 @@ export default class NksFlowButton extends LightningElement {
     @api buttonColor;
     @api inputVariables;
     @api isDisabled = false;
-    @api refreshRecord;
 
     showFlow = false;
 
@@ -37,6 +36,6 @@ export default class NksFlowButton extends LightningElement {
         if (flowStatus === 'FINISHED' || flowStatus === 'FINISHED_SCREEN') {
             this.showFlow = false;
         }
-        this.refreshRecord();
+        this.dispatchEvent(new CustomEvent('flowfinished'));
     }
 }

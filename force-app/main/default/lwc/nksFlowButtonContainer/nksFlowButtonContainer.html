@@ -8,7 +8,7 @@
                         button-label="Ferdigstill"
                         button-color="green"
                         input-variables={inputVariables}
-                        refresh-record={refreshRecord}
+                        onflowfinished={flowFinishHandler}
                         is-disabled={completeDisabled}
                     ></c-nks-flow-button>
                 </lightning-layout-item>
@@ -18,7 +18,7 @@
                         button-label="Reserver til meg"
                         button-color="green"
                         input-variables={inputVariables}
-                        refresh-record={refreshRecord}
+                        onflowfinished={flowFinishHandler}
                         is-disabled={reserveDisabled}
                     ></c-nks-flow-button>
                 </lightning-layout-item>
@@ -30,7 +30,7 @@
                 button-label="Legg tilbake"
                 button-color=""
                 input-variables={inputVariables}
-                refresh-record={refreshRecord}
+                onflowfinished={flowFinishHandler}
                 is-disabled={putBackDisabled}
             ></c-nks-flow-button>
         </lightning-layout-item>
@@ -40,7 +40,7 @@
                 button-label="Journalfør"
                 button-color=""
                 input-variables={inputVariables}
-                refresh-record={refreshRecord}
+                onflowfinished={flowFinishHandler}
             ></c-nks-flow-button>
         </lightning-layout-item>
         <lightning-layout-item class="slds-size_12-of-12">
@@ -49,7 +49,7 @@
                 button-label="Sladd"
                 button-color=""
                 input-variables={inputVariables}
-                refresh-record={refreshRecord}
+                onflowfinished={flowFinishHandler}
             ></c-nks-flow-button>
         </lightning-layout-item>
     </lightning-layout>
