@@ -6,7 +6,11 @@
         <field>STO_Body__c</field>
         <value xsi:type="xsd:string">&lt;p&gt;Mottar du eller er du innvilget uføretrygd med minstesats per januar 2023? Da vil du få en engangsutbetaling på 3000 kroner i løpet av februar. Flere har allerede mottatt utbetalingen, men på grunn av en feil vil noen måtte regne med å få utbetaling i løpet av uke 7. Vi beklager forsinkelsen.&lt;/p&gt;
 &lt;br /&gt;
-&lt;p&gt;Engangsutbetalingen gjelder for de med minstesats, uavhengig av utbetalingsgrad, institusjonsopphold eller bosted. Beløpet er skatt og trekkfritt.&lt;/p&gt;</value>
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.nav.no/uforetrygd#satser&quot;&gt;Minstesats for 100 prosent uføretrygd&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Utbetalingen regnes ikke som inntekt og fører derfor ikke til reduksjon i uføretrygden eller barnetillegget. Engangsutbetalingen vil heller ikke påvirke etteroppgjøret for 2023.&lt;/p&gt; &lt;br /&gt;
+&lt;p&gt;Lurer du fortsatt på om du mottar minstesats, kan du sende oss en melding.&lt;/p&gt;</value>
     </values>
     <values>
         <field>STO_Category__c</field>
