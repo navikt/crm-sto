@@ -23,9 +23,9 @@ export default class NksFlowButtonContainer extends LightningElement {
         }
     }
 
-    refreshRecord = () => {
-        return refreshApex(this.wiredCase);
-    };
+    flowFinishHandler() {
+        refreshApex(this.wiredCase);
+    }
 
     get inputVariables() {
         return [
