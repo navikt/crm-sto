@@ -1,73 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <actionCalls>
-        <name>Show_Fail_Toast_Message</name>
-        <label>Show Fail Toast Message</label>
-        <locationX>578</locationX>
-        <locationY>998</locationY>
-        <actionName>c:fcFlowToaster</actionName>
-        <actionType>component</actionType>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>duration</name>
-            <value>
-                <stringValue>10</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>message</name>
-            <value>
-                <stringValue>Klarte ikke å sette henvendelsen til sladding.</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>title</name>
-            <value>
-                <stringValue>Det oppstod en feil!</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>type</name>
-            <value>
-                <stringValue>error</stringValue>
-            </value>
-        </inputParameters>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
-    <actionCalls>
-        <name>Show_Success_Toast_Message</name>
-        <label>Show Success Toast Message</label>
-        <locationX>314</locationX>
-        <locationY>998</locationY>
-        <actionName>c:fcFlowToaster</actionName>
-        <actionType>component</actionType>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>duration</name>
-            <value>
-                <stringValue>10</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>message</name>
-            <value>
-                <stringValue>Henvendelsen ble satt til sladding.</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>title</name>
-            <value>
-                <stringValue>Vellykket!</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>type</name>
-            <value>
-                <stringValue>success</stringValue>
-            </value>
-        </inputParameters>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
     <apiVersion>54.0</apiVersion>
     <assignments>
         <name>Set_Thread_Sensitive_Info</name>
@@ -98,7 +30,7 @@
         <locationX>446</locationX>
         <locationY>878</locationY>
         <defaultConnector>
-            <targetReference>Show_Fail_Toast_Message</targetReference>
+            <targetReference>Error_Toast</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -119,7 +51,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Show_Success_Toast_Message</targetReference>
+                <targetReference>Success_Toast</targetReference>
             </connector>
             <label>isUpdated</label>
         </rules>
@@ -152,8 +84,8 @@
     <dynamicChoiceSets>
         <name>Thread_Cause</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true" />
-        <object xsi:nil="true" />
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
         <picklistField>Cause__c</picklistField>
         <picklistObject>Thread__c</picklistObject>
     </dynamicChoiceSets>
@@ -255,6 +187,55 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>Error_Toast</name>
+        <label>Error Toast</label>
+        <locationX>578</locationX>
+        <locationY>998</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Error_toast_finisher</name>
+            <extensionName>c:fcFlowCloseWithToast</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>closeModal</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>mode</name>
+                <value>
+                    <stringValue>dismissible</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>message</name>
+                <value>
+                    <stringValue>Klarte ikke å sette henvendelsen til sladding.</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>title</name>
+                <value>
+                    <stringValue>Det oppstod en feil!</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>variant</name>
+                <value>
+                    <stringValue>success</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Message_Screen</name>
         <label>Message Screen</label>
         <locationX>50</locationX>
@@ -264,10 +245,59 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Redacted_Message_Info</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede satt til sladding.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Henvendelsen er allerede satt til sladding.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Success_Toast</name>
+        <label>Success Toast</label>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>Success_toast_finisher</name>
+            <extensionName>c:fcFlowCloseWithToast</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>closeModal</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>mode</name>
+                <value>
+                    <stringValue>dismissible</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>message</name>
+                <value>
+                    <stringValue>Henvendelsen ble satt til sladding.</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>title</name>
+                <value>
+                    <stringValue>Vellykket!</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>variant</name>
+                <value>
+                    <stringValue>success</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>

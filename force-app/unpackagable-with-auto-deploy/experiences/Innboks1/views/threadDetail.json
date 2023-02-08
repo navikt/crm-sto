@@ -68,7 +68,7 @@
                                     "componentAttributes": {
                                         "alertopen": "",
                                         "alerttext": "",
-                                        "maxLength": 0,
+                                        "maxLength": 1000,
                                         "recordId": "{!recordId}"
                                     },
                                     "componentName": "c:crmMessagingCommunityThreadViewer",

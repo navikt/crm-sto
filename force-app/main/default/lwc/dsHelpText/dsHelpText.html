@@ -1,7 +1,12 @@
 <template>
     <div class="navds-help-text tester1" style="position: relative" onfocusout={focusClose} onkeydown={keyboardHandler}>
-        <!-- <button class="navds-help-text__button" type="button" aria-expanded="false"> -->
-        <button class="navds-help-text__button" type="button" aria-expanded={open} onclick={clickHelpText}>
+        <button
+            class="navds-help-text__button"
+            type="button"
+            aria-expanded={ariaExpanded}
+            onclick={helpTextClick}
+            onblur={helpTextBlur}
+        >
             <svg
                 width="1em"
                 height="1em"
@@ -40,8 +45,15 @@
                 ></path>
             </svg>
         </button>
-        <div class={popoverClasses} data-placement="top" aria-hidden="false" tabindex="-1">
-            <div class="navds-popover__content navds-body-short">{text}</div>
+        <div
+            class={popoverClasses}
+            role="tooltip"
+            data-popper-reference-hidden="false"
+            data-popper-escaped="false"
+            data-popper-placement="top"
+            tabindex="-1"
+        >
+            <div class="navds-popover__content navds-body-short" role="alert" aria-live="polite">{text}</div>
             <div class="navds-popover__arrow popoverTop popoverRight--mobile"></div>
         </div>
     </div>
