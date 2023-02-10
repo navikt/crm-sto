@@ -1,5 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
-import dekoratoren from '@salesforce/resourceUrl/dekoratoren';
+import navStyling from '@salesforce/resourceUrl/navStyling';
 import veiledericon from '@salesforce/resourceUrl/female';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import markasread from '@salesforce/apex/stoInboxHelper.markAsRead';
@@ -28,7 +28,7 @@ export default class CommunityConversationNote extends LightningElement {
     }
 
     connectedCallback() {
-        loadStyle(this, dekoratoren);
+        loadStyle(this, navStyling);
         markasread({ conversationNoteId: this.recordId });
     }
 
