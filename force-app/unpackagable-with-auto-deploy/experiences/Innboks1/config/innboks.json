@@ -48,6 +48,55 @@
             "trustedSiteName": "*.taskanalytics.com",
             "trustedSiteUrl": "https://*.taskanalytics.com",
             "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "a441e700-091f-4f83-9bfe-b23c7c171b4e",
+            "isActive": true,
+            "trustedSiteName": "Dekoratoren",
+            "trustedSiteUrl": "https://dekoratoren.ekstern.dev.nav.no/",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "9a9f7355-8caa-44e3-8399-b834b354e0bc",
+            "isActive": true,
+            "trustedSiteName": "Account_psplugin",
+            "trustedSiteUrl": "https://account.psplugin.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "65a2f45a-e815-4b82-b1fc-9f987900698a",
+            "isActive": true,
+            "trustedSiteName": "in2_taskanalytics",
+            "trustedSiteUrl": "https://in2.taskanalytics.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "cec38c81-8f7f-46a3-bcca-a9f6d6c62087",
+            "isActive": true,
+            "trustedSiteName": "Static_Hotjar",
+            "trustedSiteUrl": "https://static.hotjar.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "ab662e77-9197-49e1-ba4f-8e7aa74a154e",
+            "isActive": true,
+            "trustedSiteName": "Script_Hotjar",
+            "trustedSiteUrl": "https://script.hotjar.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "d7e15a15-c5a5-4277-a65f-c106ac254527",
+            "isActive": true,
+            "trustedSiteName": "NAV",
+            "trustedSiteUrl": "https://www.nav.no/",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "3332b1da-eb3b-41e5-8f73-845157bb20c0",
+            "isActive": true,
+            "trustedSiteName": "Aksel",
+            "trustedSiteUrl": "https://*.cdn.nav.no",
+            "type": "trustedSitesForScripts"
         }
     ],
     "type": "site"
