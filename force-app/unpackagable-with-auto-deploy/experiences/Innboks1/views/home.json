@@ -1,6 +1,7 @@
 {
     "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
     "componentName": "community_layout:sldsFlexibleLayout",
+    "dataProviders": [],
     "id": "82f01e5d-2104-4b82-8375-c105b8118167",
     "label": "Home",
     "regions": [
@@ -17,6 +18,14 @@
                     "regions": [
                         {
                             "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "d37697d8-8894-40bd-a3b8-3d3d58db4ab6",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
                                 {
                                     "componentAttributes": {
                                         "firstLevel": "Privatperson",
