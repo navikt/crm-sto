@@ -12,7 +12,7 @@
     "views": [
         {
             "componentAttributes": {},
-            "componentName": "community_byo:scopedHeaderAndFooter",
+            "componentName": "community_layout:simpleThemeLayout",
             "id": "f886bca1-a0fa-40d7-b09b-c53d108b59c1",
             "label": "Scoped Header and Footer",
             "regions": [
@@ -32,10 +32,10 @@
                                         {
                                             "componentAttributes": {
                                                 "context": "Privatperson",
-                                                "env": "Prod"
+                                                "env": "Dev"
                                             },
                                             "componentName": "c:decoratorHeader",
-                                            "id": "c06bf6fd-3065-4a14-8504-0abf25126d14",
+                                            "id": "b27b80d2-6208-4f06-a922-6039be6c96ba",
                                             "renditionMap": {},
                                             "type": "component"
                                         }
@@ -72,7 +72,7 @@
                                         {
                                             "componentAttributes": {},
                                             "componentName": "c:decoratorFooter",
-                                            "id": "077c5811-f367-4dff-85ef-3da1b0ed1f1d",
+                                            "id": "7ccb4264-3940-4ffd-a647-6decfc558b42",
                                             "renditionMap": {},
                                             "type": "component"
                                         }
@@ -91,6 +91,11 @@
                     ],
                     "id": "1da3bf6e-0eef-4de3-af4e-ae5d599d3670",
                     "regionName": "footer",
+                    "type": "region"
+                },
+                {
+                    "id": "79a2d8f1-1dae-41ac-b0d8-78bfa5790ca3",
+                    "regionName": "default",
                     "type": "region"
                 }
             ],
