@@ -122,7 +122,7 @@
     gap: 16px;
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 576px) {
     .textLeftAlign-mobile {
         text-align: left;
     }

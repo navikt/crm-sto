@@ -4,40 +4,40 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.78.0.NEXT",
+            "versionNumber": "1.85.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.175.0.LATEST"
+                    "versionNumber": "0.183.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
-                    "versionNumber": "0.29.0.LATEST"
+                    "versionNumber": "0.30.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.86.0.LATEST"
+                    "versionNumber": "0.94.0.LATEST"
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.17.0.LATEST"
+                    "versionNumber": "0.18.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
-                    "versionNumber": "0.3.0.LATEST"
+                    "versionNumber": "0.4.0.LATEST"
                 },
                 {
                     "package": "crm-platform-oppgave",
-                    "versionNumber": "0.41.0.LATEST"
+                    "versionNumber": "0.44.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
-                    "versionNumber": "0.102.0.LATEST"
+                    "versionNumber": "0.106.0.LATEST"
                 },
                 {
                     "package": "crm-shared-user-notification",
-                    "versionNumber": "0.17.0.LATEST"
+                    "versionNumber": "0.21.0.LATEST"
                 },
                 {
                     "package": "crm-henvendelse-base",
@@ -45,19 +45,19 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.86.0.LATEST"
+                    "versionNumber": "0.91.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.78.0.LATEST"
+                    "versionNumber": "0.79.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
-                    "versionNumber": "0.6.0.LATEST"
+                    "versionNumber": "0.20.0.LATEST"
                 },
                 {
                     "package": "crm-nks-chat",
-                    "versionNumber": "0.7.0.LATEST"
+                    "versionNumber": "0.10.0.LATEST"
                 }
             ]
         }
