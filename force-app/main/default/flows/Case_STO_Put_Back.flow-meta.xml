@@ -377,7 +377,6 @@
                 <isRequired>false</isRequired>
             </fields>
             <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
         <nextOrFinishButtonLabel>Legg tilbake</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>

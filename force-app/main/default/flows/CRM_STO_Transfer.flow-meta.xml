@@ -207,7 +207,6 @@
                 <isRequired>false</isRequired>
             </fields>
             <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
         <nextOrFinishButtonLabel>Overfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
