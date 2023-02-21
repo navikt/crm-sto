@@ -7,5 +7,6 @@
     <routingPriority>5</routingPriority>
     <skills>
         <skill>Ufoeretrygd</skill>
+        <skill>BTO_Ufoeretrygd</skill>
     </skills>
 </QueueRoutingConfig>

@@ -7,5 +7,6 @@
     <routingPriority>4</routingPriority>
     <skills>
         <skill>Internasjonal</skill>
+        <skill>BTO_Internasjonal</skill>
     </skills>
 </QueueRoutingConfig>

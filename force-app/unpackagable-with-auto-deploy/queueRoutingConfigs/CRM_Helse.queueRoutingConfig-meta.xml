@@ -7,5 +7,6 @@
     <routingPriority>5</routingPriority>
     <skills>
         <skill>Helse</skill>
+        <skill>BTO_Helse</skill>
     </skills>
 </QueueRoutingConfig>

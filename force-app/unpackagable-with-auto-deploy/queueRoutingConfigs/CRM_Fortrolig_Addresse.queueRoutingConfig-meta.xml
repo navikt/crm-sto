@@ -7,5 +7,6 @@
     <routingPriority>3</routingPriority>
     <skills>
         <skill>Fortrolig_addresse</skill>
+        <skill>BTO_Fortrolig_addresse</skill>
     </skills>
 </QueueRoutingConfig>

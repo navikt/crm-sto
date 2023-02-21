@@ -7,5 +7,6 @@
     <routingPriority>3</routingPriority>
     <skills>
         <skill>Pleiepenger</skill>
+        <skill>BTO_Pleiepenger</skill>
     </skills>
 </QueueRoutingConfig>
