@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AssignmentRules xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignmentRule>
-        <fullName>STO/BTO Allocation</fullName>
+        <fullName>STO Allocation</fullName>
         <active>true</active>
         <ruleEntry>
             <assignedTo>STO_Hjelpemidler</assignedTo>
@@ -10,6 +10,11 @@
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Hjelpemidler</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -20,6 +25,11 @@
                 <operation>equals</operation>
                 <value>Pleiepenger</value>
             </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
+            </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>STO_Arbeid</assignedTo>
@@ -28,6 +38,11 @@
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Arbeid</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -38,6 +53,11 @@
                 <operation>equals</operation>
                 <value>Familie</value>
             </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
+            </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>STO_Helse</assignedTo>
@@ -46,6 +66,11 @@
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Helse</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -56,6 +81,11 @@
                 <operation>equals</operation>
                 <value>Internasjonal</value>
             </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
+            </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>STO_Pensjon</assignedTo>
@@ -64,6 +94,11 @@
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Pensjon</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -74,77 +109,123 @@
                 <operation>equals</operation>
                 <value>Ufør</value>
             </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
+            </criteriaItems>
         </ruleEntry>
+
         <ruleEntry>
             <assignedTo>BTO_Hjelpemidler</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>Hjelpemidler</value>
+                <value>Ufør</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>BTO_Pleiepenger</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Pleiepenger</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>BTO_Arbeid</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Arbeid</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>BTO_Familie</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Familie</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>BTO_Helse</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Helse</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>BTO_Internasjonal</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Internasjonal</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>BTO_Pensjon</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Pensjon</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>BTO_Ufoer</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Ufør</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
     </assignmentRule>
