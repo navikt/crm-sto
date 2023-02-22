@@ -7,6 +7,8 @@
     <routingPriority>5</routingPriority>
     <skills>
         <skill>Pensjon</skill>
+    </skills>
+    <skills>
         <skill>BTO_Pensjon</skill>
     </skills>
 </QueueRoutingConfig>

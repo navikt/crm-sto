@@ -7,6 +7,8 @@
     <routingPriority>4</routingPriority>
     <skills>
         <skill>Familie</skill>
+    </skills>
+    <skills>
         <skill>BTO_Familie</skill>
     </skills>
 </QueueRoutingConfig>

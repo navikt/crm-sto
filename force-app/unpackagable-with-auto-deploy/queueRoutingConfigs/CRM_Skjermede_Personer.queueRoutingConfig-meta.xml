@@ -7,6 +7,8 @@
     <routingPriority>3</routingPriority>
     <skills>
         <skill>Skjermede_personer</skill>
+    </skills>
+    <skills>
         <skill>BTO_Skjermede_personer</skill>
     </skills>
 </QueueRoutingConfig>

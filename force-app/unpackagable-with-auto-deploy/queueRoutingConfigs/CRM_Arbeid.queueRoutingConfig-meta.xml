@@ -7,6 +7,8 @@
     <routingPriority>5</routingPriority>
     <skills>
         <skill>Arbeid</skill>
+    </skills>
+    <skills>
         <skill>BTO_Arbeid</skill>
     </skills>
 </QueueRoutingConfig>
