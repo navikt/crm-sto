@@ -1,5 +1,4 @@
 import { LightningElement, api } from 'lwc';
-0;
 export default class NavButton extends LightningElement {
     @api title;
     @api url;
