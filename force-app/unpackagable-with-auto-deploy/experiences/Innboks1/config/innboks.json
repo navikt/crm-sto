@@ -85,13 +85,6 @@
             "type": "trustedSitesForScripts"
         },
         {
-            "id": "d7e15a15-c5a5-4277-a65f-c106ac254527",
-            "isActive": true,
-            "trustedSiteName": "NAV",
-            "trustedSiteUrl": "https://www.nav.no/",
-            "type": "trustedSitesForScripts"
-        },
-        {
             "id": "3332b1da-eb3b-41e5-8f73-845157bb20c0",
             "isActive": true,
             "trustedSiteName": "Aksel",
