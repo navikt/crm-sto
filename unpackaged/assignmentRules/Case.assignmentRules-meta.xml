@@ -115,13 +115,14 @@
                 <value>STO</value>
             </criteriaItems>
         </ruleEntry>
+
         <ruleEntry>
             <assignedTo>BTO_Hjelpemidler</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>Ufør</value>
+                <value>BTO Hjelpemidler</value>
             </criteriaItems>
             <criteriaItems>
                 <field>Case.Origin</field>
@@ -133,9 +134,9 @@
             <assignedTo>BTO_Pleiepenger</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>Pleiepenger</value>
+                <value>BTO Pleiepenger</value>
             </criteriaItems>
             <criteriaItems>
                 <field>Case.Origin</field>
@@ -147,9 +148,9 @@
             <assignedTo>BTO_Arbeid</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>Arbeid</value>
+                <value>BTO Arbeid</value>
             </criteriaItems>
             <criteriaItems>
                 <field>Case.Origin</field>
@@ -161,9 +162,9 @@
             <assignedTo>BTO_Familie</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>Familie</value>
+                <value>BTO Familie</value>
             </criteriaItems>
             <criteriaItems>
                 <field>Case.Origin</field>
@@ -175,9 +176,9 @@
             <assignedTo>BTO_Helse</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>Helse</value>
+                <value>BTO Helse</value>
             </criteriaItems>
             <criteriaItems>
                 <field>Case.Origin</field>
@@ -189,9 +190,9 @@
             <assignedTo>BTO_Internasjonal</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>Internasjonal</value>
+                <value>BTO Internasjonal</value>
             </criteriaItems>
             <criteriaItems>
                 <field>Case.Origin</field>
@@ -203,9 +204,9 @@
             <assignedTo>BTO_Pensjon</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>Pensjon</value>
+                <value>BTO Pensjon</value>
             </criteriaItems>
             <criteriaItems>
                 <field>Case.Origin</field>
@@ -217,9 +218,9 @@
             <assignedTo>BTO_Ufoer</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
-                <field>Case.BTO_Category__c</field>
+                <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>Ufør</value>
+                <value>BTO Ufør</value>
             </criteriaItems>
             <criteriaItems>
                 <field>Case.Origin</field>
