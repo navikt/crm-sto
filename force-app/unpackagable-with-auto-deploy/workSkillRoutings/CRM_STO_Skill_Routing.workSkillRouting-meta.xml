@@ -6,6 +6,13 @@
     <workSkillRoutingAttributes>
         <field>Case.STO_Category__c</field>
         <isAdditionalSkill>false</isAdditionalSkill>
+        <skill>Arbeid</skill>
+        <skillLevel>0</skillLevel>
+        <value>Arbeid</value>
+    </workSkillRoutingAttributes>
+    <workSkillRoutingAttributes>
+        <field>Case.STO_Category__c</field>
+        <isAdditionalSkill>false</isAdditionalSkill>
         <skill>Familie</skill>
         <skillLevel>0</skillLevel>
         <value>Familie</value>
@@ -16,13 +23,6 @@
         <skill>Helse</skill>
         <skillLevel>0</skillLevel>
         <value>Helse</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>Arbeid</skill>
-        <skillLevel>0</skillLevel>
-        <value>Arbeid</value>
     </workSkillRoutingAttributes>
     <workSkillRoutingAttributes>
         <field>Case.STO_Category__c</field>
@@ -62,6 +62,13 @@
     <workSkillRoutingAttributes>
         <field>Case.STO_Category__c</field>
         <isAdditionalSkill>false</isAdditionalSkill>
+        <skill>BTO_Arbeid</skill>
+        <skillLevel>0</skillLevel>
+        <value>BTO Arbeid</value>
+    </workSkillRoutingAttributes>
+    <workSkillRoutingAttributes>
+        <field>Case.STO_Category__c</field>
+        <isAdditionalSkill>false</isAdditionalSkill>
         <skill>BTO_Familie</skill>
         <skillLevel>0</skillLevel>
         <value>BTO Familie</value>
@@ -72,13 +79,6 @@
         <skill>BTO_Helse</skill>
         <skillLevel>0</skillLevel>
         <value>BTO Helse</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>BTO_Arbeid</skill>
-        <skillLevel>0</skillLevel>
-        <value>BTO Arbeid</value>
     </workSkillRoutingAttributes>
     <workSkillRoutingAttributes>
         <field>Case.STO_Category__c</field>
