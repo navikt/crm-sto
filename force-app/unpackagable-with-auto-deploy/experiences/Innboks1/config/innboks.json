@@ -90,6 +90,20 @@
             "trustedSiteName": "Aksel",
             "trustedSiteUrl": "https://*.cdn.nav.no",
             "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "4039cbbc-8039-4f87-9ed1-b96d1a56dd20",
+            "isActive": true,
+            "trustedSiteName": "navtest.boost.ai",
+            "trustedSiteUrl": "https://navtest.boost.ai/chatPanel/chatPanel.js",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "9a63015e-94b3-4a56-9fc3-fd832cd000c9",
+            "isActive": true,
+            "trustedSiteName": "nav.boost.ai",
+            "trustedSiteUrl": "https://nav.boost.ai/chatPanel/chatPanel.js",
+            "type": "trustedSitesForScripts"
         }
     ],
     "type": "site"
