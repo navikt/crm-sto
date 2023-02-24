@@ -122,4 +122,11 @@
         <skillLevel>0</skillLevel>
         <value>FORTROLIG</value>
     </workSkillRoutingAttributes>
+    <workSkillRoutingAttributes>
+        <field>Case.CRM_Person_Is_NAV_Employee__c</field>
+        <isAdditionalSkill>false</isAdditionalSkill>
+        <skill>Skjermede_personer</skill>
+        <skillLevel>0</skillLevel>
+        <value>True</value>
+    </workSkillRoutingAttributes>
 </WorkSkillRouting>
