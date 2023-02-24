@@ -15,4 +15,5 @@ jobs:
       packageId: ${{ inputs.packageId }}
       org: prod
       unpackagable: ./force-app/unpackagable-with-auto-deploy
+      SFDX_ENV: HEADER_ENV_REPLACER='"Prod"' DEPLOY_DESTINATION=PROD
     secrets: inherit

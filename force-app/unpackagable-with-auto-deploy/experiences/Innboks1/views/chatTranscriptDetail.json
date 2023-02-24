@@ -65,6 +65,14 @@
                         {
                             "components": [
                                 {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "cdc524dd-191f-4381-818d-cc36580a58b0",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
                                     "componentAttributes": {
                                         "recordId": "{!recordId}"
                                     },
