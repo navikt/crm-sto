@@ -1,14 +1,21 @@
 import { LightningElement, api } from 'lwc';
 import navlogos from '@salesforce/resourceUrl/homelogo';
+import navStyling from '@salesforce/resourceUrl/navStyling';
+import index from '@salesforce/resourceUrl/index';
+import { loadStyle } from 'lightning/platformResourceLoader';
 
 export default class CommunityBreadCrumb extends LightningElement {
     @api firstLevel;
     @api firstLevelLink;
-    @api secondLevel
-    @api secondLevelLink
+    @api secondLevel;
+    @api secondLevelLink;
     @api thirdLevel;
     @api thirdLevelLink;
-    @api leafnode
+    @api leafnode;
     homelogo = navlogos;
 
+    renderedCallback() {
+        loadStyle(this, index);
+        loadStyle(this, navStyling);
+    }
 }
