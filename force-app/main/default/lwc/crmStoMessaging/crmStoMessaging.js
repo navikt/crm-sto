@@ -268,7 +268,7 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get textTemplate() {
-        let salutation = this.userName == null ? 'Hei,' : 'Hei ' + this.userName + ',';
+        let salutation = this.userName == null ? 'Hei,' : 'Hei, ' + this.userName;
         let regards = 'Med vennlig hilsen';
 
         if (this.englishTextTemplate === true) {
