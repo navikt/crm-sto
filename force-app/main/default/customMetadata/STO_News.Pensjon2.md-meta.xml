@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">Vi oppfordrer deg til å beregne pensjonen din i vår &lt;a href=&quot;https://www.nav.no/no/ditt-nav/flere-tjenester/din-pensjon&quot;&gt;pensjonskalkulator i Din pensjon&lt;/a&gt;. Hvis du ikke får beregnet pensjon i kalkulatoren, for eksempel fordi du allerede har en pensjonsutbetaling fra oss, må du ringe oss på telefon 55 55 33 34 for at vi skal kunne gi deg en beregning.</value>
+        <value xsi:type="xsd:string">Står det 0 kroner utbetalt i mars på din utbetalingsoversikt? Det betyr at NAV har vurdert om du har rett til høyere pensjon. Det er kun enslige minstepensjonister som har rett til høyere pensjon og etterbetaling. Står det 0 kroner betyr det at du ikke har rett på etterbetaling. Ordinær utbetaling av pensjon for mars vil gå som normalt. Denne ser du under &quot;dine utbetalinger&quot;. Mer informasjon om &lt;a href=&quot;https://www.nav.no/mer-i-pensjon&quot;&gt;økt pensjon for enslige minstepensjonister finner du på nav.no&lt;/a&gt;.</value>
     </values>
     <values>
         <field>STO_Category__c</field>
@@ -12,6 +12,6 @@
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Ønsker du beregning av pensjonen din?</value>
+        <value xsi:type="xsd:string">Utbetaling av pensjon for mars</value>
     </values>
 </CustomMetadata>
