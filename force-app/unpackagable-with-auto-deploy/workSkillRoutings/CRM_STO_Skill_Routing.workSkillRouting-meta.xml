@@ -4,6 +4,34 @@
     <masterLabel>STO Skill Routing</masterLabel>
     <relatedEntity>Case</relatedEntity>
     <workSkillRoutingAttributes>
+        <field>Case.Origin</field>
+        <isAdditionalSkill>false</isAdditionalSkill>
+        <skill>BTO</skill>
+        <skillLevel>0</skillLevel>
+        <value>BTO</value>
+    </workSkillRoutingAttributes>
+    <workSkillRoutingAttributes>
+        <field>Case.Origin</field>
+        <isAdditionalSkill>false</isAdditionalSkill>
+        <skill>STO</skill>
+        <skillLevel>0</skillLevel>
+        <value>STO</value>
+    </workSkillRoutingAttributes>
+    <workSkillRoutingAttributes>
+        <field>Case.CRM_Person_Confidentiality__c</field>
+        <isAdditionalSkill>false</isAdditionalSkill>
+        <skill>Fortrolig_addresse</skill>
+        <skillLevel>0</skillLevel>
+        <value>FORTROLIG</value>
+    </workSkillRoutingAttributes>
+    <workSkillRoutingAttributes>
+        <field>Case.CRM_Person_Is_NAV_Employee__c</field>
+        <isAdditionalSkill>false</isAdditionalSkill>
+        <skill>Skjermede_personer</skill>
+        <skillLevel>0</skillLevel>
+        <value>True</value>
+    </workSkillRoutingAttributes>
+    <workSkillRoutingAttributes>
         <field>Case.STO_Category__c</field>
         <isAdditionalSkill>false</isAdditionalSkill>
         <skill>Arbeid</skill>
@@ -58,75 +86,5 @@
         <skill>Pleiepenger</skill>
         <skillLevel>0</skillLevel>
         <value>Pleiepenger</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>BTO_Arbeid</skill>
-        <skillLevel>0</skillLevel>
-        <value>BTO Arbeid</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>BTO_Familie</skill>
-        <skillLevel>0</skillLevel>
-        <value>BTO Familie</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>BTO_Helse</skill>
-        <skillLevel>0</skillLevel>
-        <value>BTO Helse</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>BTO_Hjelpemidler</skill>
-        <skillLevel>0</skillLevel>
-        <value>BTO Hjelpemidler</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>BTO_Internasjonal</skill>
-        <skillLevel>0</skillLevel>
-        <value>BTO Internasjonal</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>BTO_Pensjon</skill>
-        <skillLevel>0</skillLevel>
-        <value>BTO Pensjon</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>BTO_Ufoeretrygd</skill>
-        <skillLevel>0</skillLevel>
-        <value>BTO Ufør</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.STO_Category__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>BTO_Pleiepenger</skill>
-        <skillLevel>0</skillLevel>
-        <value>BTO Pleiepenger</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.CRM_Person_Confidentiality__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>Fortrolig_addresse</skill>
-        <skillLevel>0</skillLevel>
-        <value>FORTROLIG</value>
-    </workSkillRoutingAttributes>
-    <workSkillRoutingAttributes>
-        <field>Case.CRM_Person_Is_NAV_Employee__c</field>
-        <isAdditionalSkill>false</isAdditionalSkill>
-        <skill>Skjermede_personer</skill>
-        <skillLevel>0</skillLevel>
-        <value>True</value>
     </workSkillRoutingAttributes>
 </WorkSkillRouting>
