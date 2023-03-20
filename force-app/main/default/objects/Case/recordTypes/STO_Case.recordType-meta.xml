@@ -26,6 +26,10 @@
     <picklistValues>
         <picklist>Origin</picklist>
         <values>
+            <fullName>BTO</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Chatter Answers</fullName>
             <default>false</default>
         </values>
@@ -95,6 +99,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Hjelpemidler</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Internasjonal</fullName>
             <default>false</default>
         </values>
@@ -108,10 +116,6 @@
         </values>
         <values>
             <fullName>Ufør</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Hjelpemidler</fullName>
             <default>false</default>
         </values>
     </picklistValues>
