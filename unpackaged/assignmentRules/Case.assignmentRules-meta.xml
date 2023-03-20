@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AssignmentRules xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignmentRule>
-        <fullName>STO/BTO Allocation</fullName>
+        <fullName>STO%2FBTO Allocation</fullName>
         <active>true</active>
         <ruleEntry>
             <assignedTo>STO_Hjelpemidler</assignedTo>
@@ -10,6 +10,11 @@
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Hjelpemidler</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -20,6 +25,11 @@
                 <operation>equals</operation>
                 <value>Pleiepenger</value>
             </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
+            </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>STO_Arbeid</assignedTo>
@@ -28,6 +38,11 @@
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Arbeid</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -38,6 +53,11 @@
                 <operation>equals</operation>
                 <value>Familie</value>
             </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
+            </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>STO_Helse</assignedTo>
@@ -46,6 +66,11 @@
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Helse</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -56,6 +81,11 @@
                 <operation>equals</operation>
                 <value>Internasjonal</value>
             </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
+            </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>STO_Pensjon</assignedTo>
@@ -64,6 +94,11 @@
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
                 <value>Pensjon</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -74,6 +109,11 @@
                 <operation>equals</operation>
                 <value>Ufør</value>
             </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>STO</value>
+            </criteriaItems>
         </ruleEntry>
         <ruleEntry>
             <assignedTo>BTO_Hjelpemidler</assignedTo>
@@ -81,7 +121,12 @@
             <criteriaItems>
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>BTO Hjelpemidler</value>
+                <value>Hjelpemidler</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -90,7 +135,12 @@
             <criteriaItems>
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>BTO Pleiepenger</value>
+                <value>Pleiepenger</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -99,7 +149,12 @@
             <criteriaItems>
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>BTO Arbeid</value>
+                <value>Arbeid</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -108,7 +163,12 @@
             <criteriaItems>
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>BTO Familie</value>
+                <value>Familie</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -117,7 +177,12 @@
             <criteriaItems>
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>BTO Helse</value>
+                <value>Helse</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -126,7 +191,12 @@
             <criteriaItems>
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>BTO Internasjonal</value>
+                <value>Internasjonal</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -135,7 +205,12 @@
             <criteriaItems>
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>BTO Pensjon</value>
+                <value>Pensjon</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
         <ruleEntry>
@@ -144,7 +219,12 @@
             <criteriaItems>
                 <field>Case.STO_Category__c</field>
                 <operation>equals</operation>
-                <value>BTO Ufør</value>
+                <value>Ufør</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Origin</field>
+                <operation>equals</operation>
+                <value>BTO</value>
             </criteriaItems>
         </ruleEntry>
     </assignmentRule>
