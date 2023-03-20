@@ -2,7 +2,7 @@
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>BTO Familie</name>
-    <queueRoutingConfig>CRM_Familie</queueRoutingConfig>
+    <queueRoutingConfig>BTO_Familie</queueRoutingConfig>
     <queueSobject>
         <sobjectType>Case</sobjectType>
     </queueSobject>
