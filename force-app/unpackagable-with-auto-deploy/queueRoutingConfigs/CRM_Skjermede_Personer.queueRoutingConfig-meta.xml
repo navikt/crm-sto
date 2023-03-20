@@ -2,13 +2,13 @@
 <QueueRoutingConfig xmlns="http://soap.sforce.com/2006/04/metadata">
     <capacityWeight>10.0</capacityWeight>
     <isAttributeBased>true</isAttributeBased>
-    <label>Skjermede Personer</label>
+    <label>STO Skjermede Personer</label>
     <routingModel>MOST_AVAILABLE</routingModel>
     <routingPriority>3</routingPriority>
     <skills>
         <skill>Skjermede_personer</skill>
     </skills>
     <skills>
-        <skill>BTO_Skjermede_personer</skill>
+        <skill>STO</skill>
     </skills>
 </QueueRoutingConfig>
