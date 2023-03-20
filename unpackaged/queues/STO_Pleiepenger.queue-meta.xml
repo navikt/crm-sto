@@ -2,7 +2,7 @@
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>STO Pleiepenger</name>
-    <queueRoutingConfig>CRM_Pleiepenger</queueRoutingConfig>
+    <queueRoutingConfig>STO_Pleiepenger</queueRoutingConfig>
     <queueSobject>
         <sobjectType>Case</sobjectType>
     </queueSobject>
