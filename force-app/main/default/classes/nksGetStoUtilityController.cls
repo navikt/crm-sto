@@ -19,7 +19,7 @@ public without sharing class nksGetStoUtilityController {
         'Fortrolig_addresse',
         'Skjermede_personer'
     };
-    private static final List<String> originSkills = new List<String>{ 'BTO', 'STB' };
+    private static final List<String> originSkills = new List<String>{ 'BTO', 'STO' };
 
     @AuraEnabled
     public static List<Record> getSto() {
@@ -209,11 +209,14 @@ public without sharing class nksGetStoUtilityController {
             FROM PendingServiceRouting
             WHERE
                 Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :skillIdList)
-                AND Id IN (SELECT RelatedRecorId FROM SkillRequirement WHERE SkillId IN :userOriginSkills)
                 AND ID NOT IN (
                     SELECT RelatedRecordId
                     FROM SkillRequirement
-                    WHERE SkillId NOT IN :userConfidentialitySkills AND Skill.DeveloperName IN :confidentialitySkills
+                    WHERE
+                        (SkillId NOT IN :userConfidentialitySkills
+                        AND Skill.DeveloperName IN :confidentialitySkills)
+                        OR (SkillId NOT IN :userOriginSkills
+                        AND Skill.DeveloperName IN :originSkills)
                 )
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
