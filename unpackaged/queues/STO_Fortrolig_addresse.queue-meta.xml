@@ -2,7 +2,7 @@
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>STO Fortrolig addresse</name>
-    <queueRoutingConfig>STO_Fortrolig_Addresse</queueRoutingConfig>
+    <queueRoutingConfig>CRM_Fortrolig_Addresse</queueRoutingConfig>
     <queueSobject>
         <sobjectType>Case</sobjectType>
     </queueSobject>
