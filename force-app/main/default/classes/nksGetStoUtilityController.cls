@@ -1,3 +1,10 @@
+/**
+ * @description       :
+ * @author            : mamikals
+ * @group             :
+ * @last modified on  : 21-03-2023
+ * @last modified by  : mamikals
+ **/
 public without sharing class nksGetStoUtilityController {
     private final static Integer MAX_ATTEMPTS = 5;
     public class TooManyAttemptsException extends Exception {
@@ -7,10 +14,12 @@ public without sharing class nksGetStoUtilityController {
 
     private static List<Id> skillIdList = new List<Id>();
     private static List<Id> userConfidentialitySkills = new List<Id>();
+    private static List<Id> userOriginSkills = new List<Id>();
     private static final List<String> confidentialitySkills = new List<String>{
         'Fortrolig_addresse',
         'Skjermede_personer'
     };
+    private static final List<String> originSkills = new List<String>{ 'BTO', 'STB' };
 
     @AuraEnabled
     public static List<Record> getSto() {
@@ -165,6 +174,8 @@ public without sharing class nksGetStoUtilityController {
             //Separating domain skills and person access skills
             if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
                 userConfidentialitySkills.add(srs.SkillId);
+            } else if (originSkills.contains(srs.Skill.DeveloperName)) {
+                userOriginSkills.add(srs.SkillId);
             } else {
                 skillIdList.add(srs.SkillId);
             }
@@ -198,6 +209,7 @@ public without sharing class nksGetStoUtilityController {
             FROM PendingServiceRouting
             WHERE
                 Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :skillIdList)
+                AND Id IN (SELECT RelatedRecorId FROM SkillRequirement WHERE SkillId IN :userOriginSkills)
                 AND ID NOT IN (
                     SELECT RelatedRecordId
                     FROM SkillRequirement
