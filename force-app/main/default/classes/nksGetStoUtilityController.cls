@@ -87,10 +87,10 @@ public without sharing class nksGetStoUtilityController {
         try {
             Map<String, Object> flowParams = new Map<String, Object>();
             flowParams.put('CaseId', caseId);
+            flowParams.put('UserOriginSkills', userOriginSkills);
             Flow.Interview.STO_Case_Set_Owner setOwnerFlow = new Flow.Interview.STO_Case_Set_Owner(flowParams);
             setOwnerFlow.start();
             List<Case> relatedCases = (List<Case>) setOwnerFlow.getVariableValue('ReturnVar');
-            System.debug(relatedCases);
             if (relatedCases == null)
                 return relatedCaseIds;
             for (Case c : relatedCases) {
@@ -175,7 +175,7 @@ public without sharing class nksGetStoUtilityController {
             if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
                 userConfidentialitySkills.add(srs.SkillId);
             } else if (originSkills.contains(srs.Skill.DeveloperName)) {
-                userOriginSkills.add(srs.SkillId);
+                userOriginSkills.add(srs.Skill.DeveloperName);
             } else {
                 skillIdList.add(srs.SkillId);
             }
@@ -215,7 +215,7 @@ public without sharing class nksGetStoUtilityController {
                     WHERE
                         (SkillId NOT IN :userConfidentialitySkills
                         AND Skill.DeveloperName IN :confidentialitySkills)
-                        OR (SkillId NOT IN :userOriginSkills
+                        OR (Skill.DeveloperName NOT IN :userOriginSkills
                         AND Skill.DeveloperName IN :originSkills)
                 )
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
