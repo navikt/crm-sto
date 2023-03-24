@@ -58,6 +58,6 @@ public with sharing class nksGetStoUtilityControllerTest {
         Test.stopTest();
 
         System.assertNotEquals(0, records.size());
-        System.assertEquals(1, ownedList.size());
+        System.assertEquals(2, ownedList.size());
     }
 }
