@@ -50,6 +50,46 @@
                 <default>false</default>
                 <label>Hjelpemidler</label>
             </value>
+            <value>
+                <fullName>BTO_Arbeid</fullName>
+                <default>false</default>
+                <label>BTO Arbeid</label>
+            </value>
+            <value>
+                <fullName>BTO_Familie</fullName>
+                <default>false</default>
+                <label>BTO Familie</label>
+            </value>
+            <value>
+                <fullName>BTO_Helse</fullName>
+                <default>false</default>
+                <label>BTO Helse</label>
+            </value>
+            <value>
+                <fullName>BTO_Ufør</fullName>
+                <default>false</default>
+                <label>BTO Ufør</label>
+            </value>
+            <value>
+                <fullName>BTO_Internasjonal</fullName>
+                <default>false</default>
+                <label>BTO Internasjonal</label>
+            </value>
+            <value>
+                <fullName>BTO_Pensjon</fullName>
+                <default>false</default>
+                <label>BTO Pensjon</label>
+            </value>
+            <value>
+                <fullName>BTO_Pleiepenger</fullName>
+                <default>false</default>
+                <label>BTO Pleiepenger</label>
+            </value>
+            <value>
+                <fullName>BTO_Hjelpemidler</fullName>
+                <default>false</default>
+                <label>BTO Hjelpemidler</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
