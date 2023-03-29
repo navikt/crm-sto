@@ -30,6 +30,7 @@ import basepath from '@salesforce/community/basePath';
 
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
+
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     showspinner = false;
     selectedTheme;
@@ -95,6 +96,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.setParametersBasedOnUrl();
         }
     }
+
     /**
      * Finds if there are any news based on the selected theme.
      *  @author Lars Petter Johnsen
@@ -133,9 +135,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             spinner.focus();
         }
     }
-    /**
-     *  Handle Terms Modal Start
-     */
+
+    //  Handle Terms Modal Start
 
     togglechecked() {
         this.acceptedTerms = !this.acceptedTerms;
@@ -173,9 +174,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.closeTerms();
         this.sendChecked();
     }
-    /**
-     * Handles terms modal end
-     */
+
+    // Handles terms modal end
 
     /**
      * Creates a Thread record, with an message attached, and then navigates the user to the record page
