@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# create BTO category metadata matching STO category metadata
+
+shopt -s extglob
+
+for f in STO_Category.!(BTO*)
+do
+    xq '(.CustomMetadata.values[] | select(.field == "STO_Category__c") | .value."#text") |= (sub("^"; "BTO_")) |
+        (.CustomMetadata.label) |= (sub("^"; "BTO — "))' "$f" |
+        toxml > STO_Category.BTO_"${f#STO_Category.}"
+done
