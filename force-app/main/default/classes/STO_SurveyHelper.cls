@@ -1,20 +1,15 @@
 public without sharing class STO_SurveyHelper {
-    @AuraEnabled
-    public static Boolean canSendSurvey() {
-        return true;
+    @AuraEnabled(cacheable=true)
+    public static String getSurveyLink(Id caseId) {
+        return [SELECT InvitationLink FROM SurveyInvitation WHERE Case__c = :caseId LIMIT 1]?.InvitationLink;
     }
 
-    @AuraEnabled
-    public static String getSurveyLink() {
-        return [
-            SELECT Id, InvitationLink
-            FROM SurveyInvitation
-            WHERE
-                OptionsAllowGuestUserResponse = TRUE
-                AND IsDefault = TRUE
-                AND Survey.DeveloperName = 'nks_service_survey'
-            LIMIT 1
-        ]
-        ?.InvitationLink;
+    @invocableMethod(label='Generate SurveyInvitationLink')
+    public static List<String> generateSurveyLink(List<Id> caseIds) {
+        List<String> surveyLinks = new List<String>();
+        Id surveyId = [SELECT Id, DeveloperName FROM Survey WHERE DeveloperName = 'nks_service_survey' LIMIT 1]?.Id;
+        String surveyLink = NKS_SurveyController.createSurveyInvitation(surveyId, caseIds[0]);
+        surveyLinks.add(surveyLink);
+        return surveyLinks;
     }
 }
