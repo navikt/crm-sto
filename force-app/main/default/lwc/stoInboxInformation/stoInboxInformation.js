@@ -31,10 +31,12 @@ export default class StoInboxInformation extends LightningElement {
         }
     }
 
-    @wire(getSurvey, { threadId: '$recordId' })
+    @wire(getSurvey, { caseId: '$caseId' })
     wiredLink({ data, error }) {
         if (data) {
-            this.surveyLink = data;
+            if (this.caseId) {
+                this.surveyLink = data;
+            }
         } else if (error) {
             console.log('Problem fetching SurveyInvitationLink in inbox: ' + JSON.stringify(error, null, 2));
         }
