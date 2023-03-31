@@ -12,4 +12,14 @@ public without sharing class STO_SurveyHelper {
         surveyLinks.add(surveyLink);
         return surveyLinks;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static string getURL() {
+        return NKS_SurveyController.getBaseURL() + 's/completed';
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Boolean checkResponse(Id caseId) {
+        return NKS_SurveyController.checkSurveyResponse(caseId);
+    }
 }

@@ -31,4 +31,21 @@ public class STO_SurveyHelper_Test {
 
         System.assertEquals(1, surveyLinks.size(), 'List has one element (exception as link).');
     }
+
+    @isTest
+    static void testGetURL() {
+        Test.startTest();
+        String url = STO_SurveyHelper.getURL();
+        Test.stopTest();
+        System.assertEquals('testUrls/completed', url, 'Test Data');
+    }
+
+    @isTest
+    static void testCheckResponse() {
+        Id caseId = [SELECT Id FROM Case LIMIT 1]?.Id;
+        Test.startTest();
+        Boolean completed = STO_SurveyHelper.checkResponse(caseId);
+        Test.stopTest();
+        System.assertEquals(false, completed, 'Test Data');
+    }
 }

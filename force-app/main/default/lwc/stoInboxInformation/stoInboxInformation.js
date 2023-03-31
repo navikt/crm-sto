@@ -4,8 +4,8 @@ import THREAD_IS_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__
 import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
 import THREAD_RELATED_OBJECT_FIELD from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
 import getSurvey from '@salesforce/apex/STO_SurveyHelper.getSurveyLink';
-import checkResponse from '@salesforce/apex/NKS_SurveyController.checkSurveyResponse';
-import getBaseURL from '@salesforce/apex/NKS_SurveyController.getBaseURL';
+import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
+import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
 
 export default class StoInboxInformation extends LightningElement {
     type;
@@ -43,9 +43,9 @@ export default class StoInboxInformation extends LightningElement {
     }
 
     connectedCallback() {
-        getBaseURL()
+        getURL()
             .then((url) => {
-                this.url = url + 's/completed';
+                this.url = url;
             })
             .catch((error) => {
                 console.log('Problem getting Base URL for Feedback Community: ' + JSON.stringify(error, null, 2));
