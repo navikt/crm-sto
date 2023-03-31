@@ -1,3 +1,10 @@
+/**
+ * @description       :
+ * @author            : mamikals
+ * @group             :
+ * @last modified on  : 31-03-2023
+ * @last modified by  : mamikals
+ **/
 public without sharing class nksGetStoUtilityController {
     private final static Integer MAX_ATTEMPTS = 5;
     public class TooManyAttemptsException extends Exception {
@@ -103,6 +110,7 @@ public without sharing class nksGetStoUtilityController {
                 Status IN ('New', 'In progress', 'Reserved')
                 AND RecordType.DeveloperName = 'STO_Case'
                 AND OwnerId = :UserInfo.getUserID()
+                AND CRM_Run_case_Assignment__c = FALSE
             ORDER BY CreatedDate DESC
             LIMIT :Integer.valueOf(limitNumber)
         ];
