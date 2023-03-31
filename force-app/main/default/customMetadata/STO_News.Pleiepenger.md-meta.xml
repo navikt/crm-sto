@@ -5,8 +5,8 @@
     <values>
         <field>STO_Body__c</field>
         <value xsi:type="xsd:string">&lt;ul&gt;
-&lt;li&gt;Du må oppgi endringer i arbeidstid eller tilsyn av barn i antall timer per uke.&lt;/li&gt;
-&lt;li&gt;Arbeidstakere som vil melde om endring i arbeidstid kan bruke endringsmelding. &lt;a href=&quot;https://www.nav.no/familie/sykdom-i-familien/soknad/endringsmelding-pleiepenger&quot;&gt;Se hvordan du melder om endring i arbeidstid.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Du må oppgi endringer i arbeidstid i antall timer per uke.&lt;/li&gt;
+&lt;li&gt;Arbeidstakere som vil melde om ferie og/eller endring i arbeidstid kan bruke endringsmelding. &lt;a href=&quot;https://www.nav.no/familie/sykdom-i-familien/soknad/endringsmelding-pleiepenger&quot;&gt;Se hvordan du melder om endring i arbeidstid.&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</value>
     </values>
     <values>
