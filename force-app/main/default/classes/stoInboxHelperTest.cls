@@ -27,7 +27,14 @@ public with sharing class stoInboxHelperTest {
             WHERE Account.CRM_Person__r.Name = '12345678910'
             LIMIT 1
         ];
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id, true);
+        Thread__c t = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            personContact.AccountId,
+            personContact.Id,
+            true,
+            'STO'
+        );
         stoHelperClass.createMessage(t, 'Dette er en test melding', personContact.Id);
         t.CRM_Closed_Date__c = date.today().addDays(-1);
         update t;
@@ -53,7 +60,14 @@ public with sharing class stoInboxHelperTest {
             WHERE Account.CRM_Person__r.Name = '12345678910'
             LIMIT 1
         ];
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id, true);
+        Thread__c t = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            personContact.AccountId,
+            personContact.Id,
+            true,
+            'STO'
+        );
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         insert m;
