@@ -36,10 +36,53 @@
                                 },
                                 {
                                     "componentAttributes": {
-                                        "title": "Beskjed til oss"
+                                        "sectionConfig": "{\"UUID\":\"a7be8060-0b08-4747-b4ee-81b9fb82f86c\",\"columns\":[{\"UUID\":\"caccacb9-e146-4a06-a6ff-1e9115ebfd24\",\"columnName\":\"Column 1\",\"columnKey\":\"col2\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"8b1245c2-b74d-4fb3-aa10-74fccbb0ccd8\",\"columnName\":\"Column 2\",\"columnKey\":\"236a7\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"9986b87e-2ee5-408c-9312-317db1ae05a6\",\"columnName\":\"Column 3\",\"columnKey\":\"14c38\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
                                     },
-                                    "componentName": "c:stoRegisterThread",
-                                    "id": "b3ce4a58-5176-4c06-bf3a-8232036178b0",
+                                    "componentName": "dxp_layout:columns",
+                                    "id": "a7be8060-0b08-4747-b4ee-81b9fb82f86c",
+                                    "regions": [
+                                        {
+                                            "id": "caccacb9-e146-4a06-a6ff-1e9115ebfd24",
+                                            "regionLabel": "Column 1",
+                                            "regionName": "col2",
+                                            "renditionMap": {},
+                                            "type": "region"
+                                        },
+                                        {
+                                            "components": [
+                                                {
+                                                    "componentAttributes": {
+                                                        "title": "Beskjed til oss"
+                                                    },
+                                                    "componentName": "c:stoRegisterThread",
+                                                    "id": "b3ce4a58-5176-4c06-bf3a-8232036178b0",
+                                                    "renderPriority": "NEUTRAL",
+                                                    "renditionMap": {},
+                                                    "type": "component"
+                                                }
+                                            ],
+                                            "id": "8b1245c2-b74d-4fb3-aa10-74fccbb0ccd8",
+                                            "regionLabel": "Column 2",
+                                            "regionName": "236a7",
+                                            "renditionMap": {},
+                                            "type": "region"
+                                        },
+                                        {
+                                            "id": "9986b87e-2ee5-408c-9312-317db1ae05a6",
+                                            "regionLabel": "Column 3",
+                                            "regionName": "14c38",
+                                            "renditionMap": {},
+                                            "type": "region"
+                                        }
+                                    ],
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:decoratorFooter",
+                                    "id": "b3d897db-c80b-435d-9dba-70f99188267e",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
@@ -83,7 +126,7 @@
             "type": "region"
         }
     ],
-    "themeLayoutType": "Inner",
+    "themeLayoutType": "jPiiZMQiGriX9GfIlxHl4CgQhsYs8r",
     "type": "view",
     "viewType": "custom-beskjed-til-oss"
 }

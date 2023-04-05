@@ -72,7 +72,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     messageContext;
 
     connectedCallback() {
-        console.log(this.caseType);
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
                 let categoryList = new Set();
@@ -94,7 +93,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
-            this.caseType = currentPageReference.name;
+            this.caseType = currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? 'BTO' : 'STO';
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
         }
