@@ -1,0 +1,89 @@
+{
+    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+    "componentName": "community_layout:sldsFlexibleLayout",
+    "dataProviders": [],
+    "id": "20acd9b5-86ea-4220-9084-b71e0f2b6279",
+    "label": "Beskjed til oss",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "sectionConfig": "{\"UUID\":\"e33baca5-c424-40aa-978a-8a720d3efb5e\",\"columns\":[{\"UUID\":\"f8781d4e-9365-4bc5-92cb-8185cd5f2aae\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "e33baca5-c424-40aa-978a-8a720d3efb5e",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {
+                                        "firstLevel": "Privatperson",
+                                        "firstLevelLink": "https://nav.no",
+                                        "leafnode": "Beskjed til oss",
+                                        "secondLevel": "Min side",
+                                        "secondLevelLink": "https://www.nav.no/minside/",
+                                        "thirdLevel": "Innboks",
+                                        "thirdLevelLink": "https://innboks.nav.no"
+                                    },
+                                    "componentName": "c:communityBreadCrumb",
+                                    "id": "dc04d17e-49a4-412c-953a-6b31a7f4208a",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "title": "Beskjed til oss"
+                                    },
+                                    "componentName": "c:stoRegisterThread",
+                                    "id": "b3ce4a58-5176-4c06-bf3a-8232036178b0",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "f8781d4e-9365-4bc5-92cb-8185cd5f2aae",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                }
+            ],
+            "id": "39ef2e68-1fd4-4bd9-bbee-8d2c88f79a7a",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "pageTitle": "Beskjed til oss",
+                        "recordId": "{!recordId}"
+                    },
+                    "componentName": "community_builder:seoAssistant",
+                    "id": "0b0c497a-5b52-4b8c-a4df-04cac8e1d88d",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "6b8a329a-31b1-43be-acd3-95607f597789",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-beskjed-til-oss"
+}
