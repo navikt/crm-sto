@@ -1,7 +1,7 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { NavigationMixin } from 'lightning/navigation';
-import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
+import createThreadWithCase from '@salesforce/apex/stoHelperClass.createThreadWithCase';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
@@ -31,11 +31,13 @@ import basepath from '@salesforce/community/basePath';
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
+    @api title;
     showspinner = false;
     selectedTheme;
     acceptedcategories = new Set();
     currentPageReference = null;
     urlStateParameters;
+    caseType;
     acceptedTerms = false;
     label = {
         welcomlabel,
@@ -70,6 +72,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     messageContext;
 
     connectedCallback() {
+        console.log(this.caseType);
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
                 let categoryList = new Set();
@@ -91,6 +94,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
+            this.caseType = currentPageReference.name;
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
         }
@@ -193,7 +197,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showspinner = true;
             this.spinnerText = spinnerReasonTextMap['send'];
 
-            createRecords({ theme: this.selectedTheme, msgText: this.message, medskriv: medskriv }).then((thread) => {
+            createThreadWithCase({
+                theme: this.selectedTheme,
+                msgText: this.message,
+                medskriv: medskriv,
+                type: this.caseType
+            }).then((thread) => {
                 this.showspinner = false;
                 window.open(
                     (this.linkUrl = basepath + '/skriv-til-oss/' + thread.Id + '/' + encodeURIComponent(thread.Name)),

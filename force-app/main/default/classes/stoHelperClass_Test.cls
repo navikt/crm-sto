@@ -22,7 +22,14 @@ public with sharing class stoHelperClass_Test {
             WHERE Account.CRM_Person__r.Name = '12345678910'
             LIMIT 1
         ];
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id, true);
+        Thread__c t = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            personContact.AccountId,
+            personContact.Id,
+            true,
+            'STO'
+        );
         Test.startTest();
         System.assertNotEquals(null, stoHelperClass.getOpenThreads('Arbeid'), 'Expected to get a thread');
         Test.stopTest();
@@ -47,7 +54,14 @@ public with sharing class stoHelperClass_Test {
         ];
 
         Test.startTest();
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id, true);
+        Thread__c t = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            personContact.AccountId,
+            personContact.Id,
+            true,
+            'STO'
+        );
         Test.stopTest();
         System.assertNotEquals(null, t.Id);
     }
@@ -60,7 +74,14 @@ public with sharing class stoHelperClass_Test {
             LIMIT 1
         ];
 
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', personContact.AccountId, personContact.Id, true);
+        Thread__c t = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            personContact.AccountId,
+            personContact.Id,
+            true,
+            'STO'
+        );
         Test.startTest();
         stoHelperClass.createMessage(t, 'this is a test message', personContact.Id);
         Test.stopTest();
@@ -69,9 +90,9 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void createRequestTest() {
+    static void createThreadWithCaseTest() {
         Test.startTest();
-        Thread__c thread = stoHelperClass.createRequest('Arbeid', 'This is the message', true);
+        Thread__c thread = stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
         Test.stopTest();
         List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
         System.assertEquals(1, msgList.size());

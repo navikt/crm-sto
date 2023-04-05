@@ -36,25 +36,31 @@ public with sharing class stoHelperClass {
         return [SELECT Id, Label, STO_Category__c FROM STO_Category__mdt ORDER BY Id];
     }
     /**
-     * Method to create case, thread and message when a user submits a write to us case
+     * Method to create case, thread and message when a user submits a write to us case. Case is created through flow on trigger.
      * @author Lars Petter Johnsen
      * @date 08.06.21
      */
     @AuraEnabled
-    public static Thread__c createRequest(String theme, String msgText, Boolean medskriv) {
+    public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type) {
         String relatedObjId;
         Thread__c thread;
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
 
-        thread = createThread(null, theme, personUser, medskriv);
+        thread = createThread(null, theme, personUser, medskriv, type);
         createMessage(thread, msgText, personUser.ContactId);
 
         return thread;
     }
 
-    private static Thread__c createThread(String relatedObjId, String theme, User personUser, Boolean medskriv) {
-        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId, medskriv);
+    private static Thread__c createThread(
+        String relatedObjId,
+        String theme,
+        User personUser,
+        Boolean medskriv,
+        String type
+    ) {
+        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId, medskriv, type);
     }
 
     /**
@@ -68,14 +74,15 @@ public with sharing class stoHelperClass {
         String theme,
         String accountId,
         String contactId,
-        Boolean medskriv
+        Boolean medskriv,
+        String type
     ) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = relatedObjId;
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
         thread.Name = 'Skriv til oss';
-        thread.CRM_Thread_Type__c = 'STO';
+        thread.CRM_Thread_Type__c = type;
         thread.STO_Category__c = theme;
         thread.STO_Medskriv__c = medskriv;
         try {
@@ -140,7 +147,10 @@ public with sharing class stoHelperClass {
                     LIMIT 1
                 )
             FROM Thread__c
-            WHERE CRM_Is_Closed__C = FALSE AND CRM_Thread_Type__c IN ('STO', 'STB') AND STO_Category__c = :category
+            WHERE
+                CRM_Is_Closed__C = FALSE
+                AND CRM_Thread_Type__c IN ('STO', 'STB', 'BTO')
+                AND STO_Category__c = :category
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         if (openThreads.size() > 0) {
