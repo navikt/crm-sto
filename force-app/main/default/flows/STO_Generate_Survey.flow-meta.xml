@@ -66,7 +66,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Update_SurveySubject</targetReference>
+                <targetReference>Update_SurveyInvitation</targetReference>
             </connector>
             <label>Has NAV Ident</label>
         </rules>
@@ -136,13 +136,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
-        <name>Update_SurveySubject</name>
-        <label>Update SurveySubject</label>
+        <name>Update_SurveyInvitation</name>
+        <label>Update SurveyInvitation</label>
         <locationX>242</locationX>
         <locationY>935</locationY>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>SubjectId</field>
+            <field>Name</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>Get_Case.Id</elementReference>
@@ -160,7 +160,7 @@
                 <elementReference>$User.Department</elementReference>
             </value>
         </inputAssignments>
-        <object>SurveySubject</object>
+        <object>SurveyInvitation</object>
     </recordUpdates>
     <start>
         <locationX>50</locationX>
