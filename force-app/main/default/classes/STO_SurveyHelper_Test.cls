@@ -29,7 +29,8 @@ public class STO_SurveyHelper_Test {
         List<String> surveyLinks = STO_SurveyHelper.generateSurveyLink(new List<Id>{ caseId });
         Test.stopTest();
 
-        System.assertEquals(1, surveyLinks.size(), 'List has one element (exception as link).');
+        System.assertEquals(1, surveyLinks.size(), 'List has one element.');
+        System.assertEquals('testSurveyLink', surveyLinks[0]);
     }
 
     @isTest
