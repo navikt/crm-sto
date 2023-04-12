@@ -74,6 +74,7 @@
             <label>SUCCESS</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <interviewLabel>STO thread create Task or Case {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Thread - Subflow - Create STO create Task or Case</label>
     <processMetadataValues>
@@ -193,11 +194,32 @@
         <object>Application_Log__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
+    <recordLookups>
+        <name>Get_Nav_Task</name>
+        <label>Get Nav Task</label>
+        <locationX>50</locationX>
+        <locationY>398</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Set_related_record_NAV_Task</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Create_STO_NAV_Task.NavTaskId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>NavTask__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>Set_related_record_NAV_Task</name>
         <label>Set related record NAV Task</label>
         <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationY>518</locationY>
         <faultConnector>
             <isGoTo>true</isGoTo>
             <targetReference>Create_Error_Log</targetReference>
@@ -210,6 +232,12 @@
                 <elementReference>Thread.Id</elementReference>
             </value>
         </filters>
+        <inputAssignments>
+            <field>CRM_Assignee_NAV_Unit__c</field>
+            <value>
+                <elementReference>Get_Nav_Task.CRM_NavUnit__r.INT_UnitNumber__c</elementReference>
+            </value>
+        </inputAssignments>
         <inputAssignments>
             <field>CRM_Related_Object__c</field>
             <value>
@@ -279,7 +307,7 @@
         <locationX>50</locationX>
         <locationY>278</locationY>
         <connector>
-            <targetReference>Set_related_record_NAV_Task</targetReference>
+            <targetReference>Get_Nav_Task</targetReference>
         </connector>
         <flowName>STO_Thread_Subflow_CreateNavTask</flowName>
         <inputAssignments>
