@@ -36,7 +36,8 @@ public with sharing class stoHelperClass {
         return [SELECT Id, Label, STO_Category__c FROM STO_Category__mdt ORDER BY Id];
     }
     /**
-     * Method to create case, thread and message when a user submits a write to us case. Case is created through flow on trigger.
+     * Method to create case, thread and message when a user submits a write to us case. Case is created through
+     * flow "On New STO Thread Create Task Or Case" on after-insert trigger.
      * @author Lars Petter Johnsen
      * @date 08.06.21
      */
