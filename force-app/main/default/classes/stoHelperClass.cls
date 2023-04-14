@@ -81,7 +81,7 @@ public with sharing class stoHelperClass {
         thread.CRM_Related_Object__c = relatedObjId;
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
-        thread.Name = 'Skriv til oss'; // TODO: Change this. Check if it has any dependencies
+        thread.Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss';
         thread.CRM_Thread_Type__c = type;
         thread.STO_Category__c = theme;
         thread.STO_Medskriv__c = medskriv;

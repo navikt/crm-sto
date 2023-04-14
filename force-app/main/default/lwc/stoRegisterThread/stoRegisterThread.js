@@ -38,6 +38,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     currentPageReference = null;
     urlStateParameters;
     caseType;
+    subpath;
     acceptedTerms = false;
     label = {
         welcomlabel,
@@ -94,6 +95,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
             this.caseType = currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? 'BTO' : 'STO';
+            this.subpath =
+                currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
         }
@@ -184,7 +187,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * Creates a Thread record, with an message attached, and then navigates the user to the record page
      * @Author Lars Petter Johnsen
      */
-    submitrequest() {
+    submitRequest() {
         const medskriv = this.template.querySelector('c-ds-radio')?.getValue();
         if (
             this.acceptedTerms == true &&
@@ -204,7 +207,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }).then((thread) => {
                 this.showspinner = false;
                 window.open(
-                    (this.linkUrl = basepath + '/skriv-til-oss/' + thread.Id + '/' + encodeURIComponent(thread.Name)),
+                    (this.linkUrl = basepath + this.subpath + thread.Id + '/' + encodeURIComponent(thread.Name)),
                     '_self'
                 );
             });
@@ -312,7 +315,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get openThreadLink() {
-        return basepath + '/skriv-til-oss/' + this.openThreadList[0].recordId;
+        return basepath + this.subpath + this.openThreadList[0].recordId;
     }
 
     get alertType() {
