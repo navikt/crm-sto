@@ -31,7 +31,7 @@
             <assignToReference>Case.Origin</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>STO</stringValue>
+                <elementReference>Thread.CRM_Thread_Type__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -74,6 +74,7 @@
         </connector>
     </assignments>
     <description>Create an STO Case from a thread</description>
+    <environments>Default</environments>
     <interviewLabel>Thread - Subflow - Create STO Case {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Thread - Subflow - Create STO Case</label>
     <processMetadataValues>
