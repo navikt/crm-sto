@@ -178,6 +178,13 @@
             </value>
         </filters>
         <filters>
+            <field>CRM_Related_Object_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Case</stringValue>
+            </value>
+        </filters>
+        <filters>
             <field>CRM_Is_Closed__c</field>
             <operator>EqualTo</operator>
             <value>

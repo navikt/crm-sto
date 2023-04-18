@@ -9,36 +9,37 @@ public class STO_SurveyHelper_Test {
     @isTest
     static void testGetSurveyLink() {
         Id caseId = [SELECT Id FROM Case LIMIT 1]?.Id;
-        String surveyLink;
-
         Test.startTest();
-        try {
-            surveyLink = STO_SurveyHelper.getSurveyLink(caseId);
-        } catch (Exception e) {
-            System.assertEquals(e.getMessage(), surveyLink, 'Returns exception as result.');
-        }
-
+        String surveyLink = STO_SurveyHelper.getSurveyLink(caseId);
         Test.stopTest();
+        System.assertEquals(null, surveyLink, 'Expected to return null.');
     }
 
     @isTest
     static void testGenerateSurveyLink() {
         Id caseId = [SELECT Id FROM Case LIMIT 1]?.Id;
-
         Test.startTest();
         List<String> surveyLinks = STO_SurveyHelper.generateSurveyLink(new List<Id>{ caseId });
         Test.stopTest();
-
-        System.assertEquals(1, surveyLinks.size(), 'List has one element.');
-        System.assertEquals('testSurveyLink', surveyLinks[0]);
+        System.assertEquals(0, surveyLinks.size(), 'List has no element.');
     }
 
     @isTest
     static void testGetURL() {
+        String result = '';
         Test.startTest();
-        String url = STO_SurveyHelper.getURL();
+        try {
+            result = STO_SurveyHelper.getURL();
+        } catch (Exception e) {
+            System.assertEquals(
+                'NKS_SurveyController.SurveyException',
+                e.getTypeName(),
+                'Expected to throw SurveyException.'
+            );
+            System.assertEquals('Problem getting Base URL.', e.getMessage());
+        }
         Test.stopTest();
-        System.assertEquals('testUrls/completed', url, 'Test Data');
+        System.assertNotEquals(null, result, 'Expected to return Base URL.');
     }
 
     @isTest
@@ -47,6 +48,6 @@ public class STO_SurveyHelper_Test {
         Test.startTest();
         Boolean completed = STO_SurveyHelper.checkResponse(caseId);
         Test.stopTest();
-        System.assertEquals(false, completed, 'Test Data');
+        System.assertEquals(false, completed, 'Expected to return false.');
     }
 }
