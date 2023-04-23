@@ -19,7 +19,7 @@ export default class StoMessageInboxItem extends LightningElement {
     statuscolor;
     get itemTitle() {
         if (this.objectName === 'samtalereferat') return this.thread.name;
-        if (this.objectName === 'skriv-til-oss') {
+        if (this.objectName === 'skriv-til-oss' || this.objectName === 'beskjed-til-oss') {
             if (this.isOpen) {
                 if (this.isExternal === true) {
                     return this.thread.name + ': Du sendte en melding';
