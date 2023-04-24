@@ -183,6 +183,18 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * Handles terms modal end
      */
 
+    navigateToBTO(thread) {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                name: 'Visning__c'
+            },
+            state: {
+                samtale: thread.Id
+            }
+        });
+    }
+
     /**
      * Creates a Thread record, with an message attached, and then navigates the user to the record page
      * @Author Lars Petter Johnsen
@@ -206,10 +218,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 type: this.caseType
             }).then((thread) => {
                 this.showspinner = false;
-                window.open(
-                    (this.linkUrl = basepath + this.subpath + thread.Id + '/' + encodeURIComponent(thread.Name)),
-                    '_self'
-                );
+                if (this.subpath === '/beskjed-til-oss/') {
+                    this.navigateToBTO(thread);
+                } else {
+                    window.open(
+                        (this.linkUrl = basepath + this.subpath + thread.Id + '/' + encodeURIComponent(thread.Name)),
+                        '_self'
+                    );
+                }
             });
         } else {
             this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
