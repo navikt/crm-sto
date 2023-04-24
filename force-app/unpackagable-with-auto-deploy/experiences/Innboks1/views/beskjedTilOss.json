@@ -52,10 +52,11 @@
                                             "components": [
                                                 {
                                                     "componentAttributes": {
+                                                        "threadTypeToMake": "BTO",
                                                         "title": "Beskjed til oss"
                                                     },
                                                     "componentName": "c:stoRegisterThread",
-                                                    "id": "b3ce4a58-5176-4c06-bf3a-8232036178b0",
+                                                    "id": "693ebf2c-c798-4657-8f3d-1f6c7e7c3f6a",
                                                     "renderPriority": "NEUTRAL",
                                                     "renditionMap": {},
                                                     "type": "component"
@@ -126,7 +127,7 @@
             "type": "region"
         }
     ],
-    "themeLayoutType": "Inner",
+    "themeLayoutType": "jPiiZMQiGriX9GfIlxHl4CgQhsYs8r",
     "type": "view",
     "viewType": "custom-beskjed-til-oss"
 }
