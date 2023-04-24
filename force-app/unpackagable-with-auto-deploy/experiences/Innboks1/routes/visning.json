@@ -1,0 +1,10 @@
+{
+  "activeViewId" : "cbfd2df0-f6fd-4c50-a050-99596440c862",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "id" : "771e7beb-0045-4f0b-ab30-8f147c413e08",
+  "label" : "Visning",
+  "routeType" : "custom-visning",
+  "type" : "route",
+  "urlPrefix" : "beskjed-til-oss/visning"
+}
