@@ -32,12 +32,12 @@ const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api title;
+    @api threadTypeToMake;
     showspinner = false;
     selectedTheme;
     acceptedcategories = new Set();
     currentPageReference = null;
     urlStateParameters;
-    caseType;
     subpath;
     acceptedTerms = false;
     label = {
@@ -94,7 +94,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
-            this.caseType = currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? 'BTO' : 'STO';
             this.subpath =
                 currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
@@ -114,7 +113,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    @wire(getOpenThreads, { category: '$selectedTheme' })
+    @wire(getOpenThreads, { category: '$selectedTheme', threadType: '$threadTypeToMake' })
     openThread(wireData) {
         const { error, data } = wireData;
         if (error) {
@@ -199,11 +198,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showspinner = true;
             this.spinnerText = spinnerReasonTextMap['send'];
 
+            // TODO: Insert type of thread to make
+
             createThreadWithCase({
                 theme: this.selectedTheme,
                 msgText: this.message,
-                medskriv: medskriv,
-                type: this.caseType
+                medskriv: medskriv
+                // type: this.caseType
             }).then((thread) => {
                 this.showspinner = false;
                 window.open(
