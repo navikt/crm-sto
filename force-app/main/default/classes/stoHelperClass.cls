@@ -1,6 +1,12 @@
 public with sharing class stoHelperClass {
     private static final LoggerUtility logger = new LoggerUtility('STO');
 
+    private static final Map<String, List<String>> threadTypeMap = new Map<String, List<String>>{
+        'STO' => new List<String>{ 'STO', 'STB' },
+        'BTO' => new List<String>{ 'BTO' },
+        'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
+    };
+
     private static Map<String, Id> commonCodeMap {
         get {
             if (commonCodeMap == null) {
@@ -126,8 +132,19 @@ public with sharing class stoHelperClass {
         return news;
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<stoInboxHelper.thread> getOpenThreads(String category) {
+        return getOpenThreads(category, 'ALL');
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
+        List<String> allowedThreadTypes;
+        if (threadTypeMap.keySet().contains(threadType)) {
+            allowedThreadTypes = threadTypeMap.get(threadType);
+        } else {
+            allowedThreadTypes = threadTypeMap.get('ALL');
+        }
         List<Thread__c> openThreads = [
             SELECT
                 Id,
@@ -148,10 +165,7 @@ public with sharing class stoHelperClass {
                     LIMIT 1
                 )
             FROM Thread__c
-            WHERE
-                CRM_Is_Closed__C = FALSE
-                AND CRM_Thread_Type__c IN ('STO', 'STB', 'BTO')
-                AND STO_Category__c = :category
+            WHERE CRM_Is_Closed__C = FALSE AND CRM_Thread_Type__c IN :allowedThreadTypes AND STO_Category__c = :category
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         if (openThreads.size() > 0) {
