@@ -210,13 +210,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showspinner = true;
             this.spinnerText = spinnerReasonTextMap['send'];
 
-            // TODO: Insert type of thread to make
-
             createThreadWithCase({
                 theme: this.selectedTheme,
                 msgText: this.message,
-                medskriv: medskriv
-                // type: this.caseType
+                medskriv: medskriv,
+                type: this.threadTypeToMake
             }).then((thread) => {
                 this.showspinner = false;
                 if (this.subpath === '/beskjed-til-oss/') {
