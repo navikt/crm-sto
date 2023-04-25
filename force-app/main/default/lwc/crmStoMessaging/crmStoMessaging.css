@@ -6,3 +6,11 @@
     top: 0;
     bottom: 0;
 }
+
+.greenHeader {
+    --overwrite-header-color: #ccf1d6;
+}
+
+.blueHeader {
+    --overwrite-header-color: blue;
+}
