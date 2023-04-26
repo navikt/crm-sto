@@ -284,8 +284,14 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get computeClasses() {
-        console.log('Getting classes and threadType is', this.threadType);
         return this.threadType === 'BTO' ? 'greenHeader' : '';
+    }
+
+    get actualCardTitle() {
+        if (this.objectApiName === 'Case' && ['BTO', 'STO'].includes(this.threadType))
+            return this.threadType === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
+
+        return this.cardTitle;
     }
 
     getAccountApiName() {
