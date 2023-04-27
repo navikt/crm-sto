@@ -101,7 +101,15 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void getSTONewsTest() {
         Test.startTest();
-        List<STO_News__mdt> newsList = stoHelperClass.getCategoryNews('Pensjon');
+        List<STO_News__mdt> newsList = stoHelperClass.getCategoryNews('Pensjon', 'STO');
+        System.assertEquals(newsList.isEmpty(), false);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void getBTONewsTest() {
+        Test.startTest();
+        List<STO_News__mdt> newsList = stoHelperClass.getCategoryNews('Pensjon', 'BTO');
         System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
     }

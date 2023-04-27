@@ -9,7 +9,8 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
-            <property name="title" label="Tittel som skal vises på toppen" type="String" default="Skriv til oss" />
+            <property name="title" label="Tittel som skal vises på toppen" type="String"
+                default="Skriv til oss" />
             <property
                 name="threadTypeToMake"
                 type="String"

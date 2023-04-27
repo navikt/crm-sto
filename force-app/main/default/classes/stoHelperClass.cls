@@ -123,12 +123,21 @@ public with sharing class stoHelperClass {
      */
 
     @AuraEnabled(cacheable=true)
-    public static List<STO_News__mdt> getCategoryNews(String category) {
-        List<STO_News__mdt> news = [
-            SELECT STO_Body__c, STO_Header__c
-            FROM STO_News__mdt
-            WHERE STO_Category__c = :category
-        ];
+    public static List<SObject> getCategoryNews(String category, String threadType) {
+        List<SObject> news;
+        if (threadType == 'BTO') {
+            news = (List<SObject>) [
+                SELECT BTO_Body__c, BTO_Header__c
+                FROM BTO_News__mdt
+                WHERE BTO_Category__c = :category
+            ];
+        } else {
+            news = (List<SObject>) [
+                SELECT STO_Body__c, STO_Header__c
+                FROM STO_News__mdt
+                WHERE STO_Category__c = :category
+            ];
+        }
         return news;
     }
 

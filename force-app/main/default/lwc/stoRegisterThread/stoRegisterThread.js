@@ -104,8 +104,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * Finds if there are any news based on the selected theme.
      *  @author Lars Petter Johnsen
      */
-    @wire(getNews, { category: '$selectedTheme' })
-    wirenes(result) {
+    @wire(getNews, { category: '$selectedTheme', threadType: '$threadTypeToMake' })
+    wirenews(result) {
         if (result.error) {
             console.log(result.error);
         } else if (result.data) {
