@@ -25,10 +25,10 @@
                     <div class="inputarea">
                         <template if:false={showspinner}>
                             <div class="navds-accordion leftAlign">
-                                <template for:each={newslist} for:item="news">
+                                <template for:each={newsListToShow} for:item="news">
                                     <c-community-expandable-panel
-                                        header={news.STO_Header__c}
-                                        body={news.STO_Body__c}
+                                        header={news.header}
+                                        body={news.body}
                                         key={news.id}
                                     ></c-community-expandable-panel>
                                 </template>
