@@ -2,11 +2,11 @@ public with sharing class BTO_AssignBatch implements Database.Batchable<sObject>
     private static final Map<String, Id> skillMap {
         get {
             List<Skill> skillsToAllocate = [SELECT Id, DeveloperName FROM Skill WHERE DeveloperName IN ('STO', 'BTO')];
-            Map<String, Id> tempMap = new Map<String, Id>();
+            Map<String, Id> retMap = new Map<String, Id>();
             for (Skill skiller : skillsToAllocate) {
-                tempMap.put(skiller.DeveloperName, skiller.Id);
+                retMap.put(skiller.DeveloperName, skiller.Id);
             }
-            return tempMap;
+            return retMap;
         }
     }
 
