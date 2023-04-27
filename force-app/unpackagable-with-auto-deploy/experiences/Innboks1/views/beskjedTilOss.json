@@ -11,13 +11,21 @@
                     "componentAttributes": {
                         "backgroundImageConfig": "",
                         "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"e33baca5-c424-40aa-978a-8a720d3efb5e\",\"columns\":[{\"UUID\":\"f8781d4e-9365-4bc5-92cb-8185cd5f2aae\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+                        "sectionConfig": "{\"UUID\":\"17689449-d563-4cd8-88b7-ff9e785749ea\",\"columns\":[{\"UUID\":\"706e2d62-e8f2-4cb4-96ea-3686f6584d7f\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
                     },
                     "componentName": "community_layout:section",
-                    "id": "e33baca5-c424-40aa-978a-8a720d3efb5e",
+                    "id": "17689449-d563-4cd8-88b7-ff9e785749ea",
                     "regions": [
                         {
                             "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "4b8c466f-2222-400c-a6c7-ed3e87f74c45",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
                                 {
                                     "componentAttributes": {
                                         "firstLevel": "Privatperson",
@@ -29,69 +37,72 @@
                                         "thirdLevelLink": "https://innboks.nav.no"
                                     },
                                     "componentName": "c:communityBreadCrumb",
-                                    "id": "dc04d17e-49a4-412c-953a-6b31a7f4208a",
+                                    "id": "5396fa31-bee5-42fb-8fcf-d908b369a238",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "706e2d62-e8f2-4cb4-96ea-3686f6584d7f",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "sectionConfig": "{\"UUID\":\"e4586d99-ecbc-45cf-94de-0290c8513959\",\"columns\":[{\"UUID\":\"1897c88a-adf9-4d84-8b8b-da04befee942\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"876225d1-1cb3-426e-b18d-93f65c204b07\",\"columnName\":\"Column 2\",\"columnKey\":\"2853b\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"ddc2ab0e-b70f-424a-9ced-f9358fc8eb61\",\"columnName\":\"Column 3\",\"columnKey\":\"923c7\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "e4586d99-ecbc-45cf-94de-0290c8513959",
+                    "regions": [
+                        {
+                            "id": "1897c88a-adf9-4d84-8b8b-da04befee942",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "d7c80ca7-1e8a-440b-aef8-36caa2b0a6f0",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
                                 },
                                 {
                                     "componentAttributes": {
-                                        "sectionConfig": "{\"UUID\":\"a7be8060-0b08-4747-b4ee-81b9fb82f86c\",\"columns\":[{\"UUID\":\"caccacb9-e146-4a06-a6ff-1e9115ebfd24\",\"columnName\":\"Column 1\",\"columnKey\":\"col2\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"8b1245c2-b74d-4fb3-aa10-74fccbb0ccd8\",\"columnName\":\"Column 2\",\"columnKey\":\"236a7\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"9986b87e-2ee5-408c-9312-317db1ae05a6\",\"columnName\":\"Column 3\",\"columnKey\":\"14c38\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
+                                        "threadTypeToMake": "BTO",
+                                        "title": "Beskjed til oss"
                                     },
-                                    "componentName": "dxp_layout:columns",
-                                    "id": "a7be8060-0b08-4747-b4ee-81b9fb82f86c",
-                                    "regions": [
-                                        {
-                                            "id": "caccacb9-e146-4a06-a6ff-1e9115ebfd24",
-                                            "regionLabel": "Column 1",
-                                            "regionName": "col2",
-                                            "renditionMap": {},
-                                            "type": "region"
-                                        },
-                                        {
-                                            "components": [
-                                                {
-                                                    "componentAttributes": {
-                                                        "threadTypeToMake": "BTO",
-                                                        "title": "Beskjed til oss"
-                                                    },
-                                                    "componentName": "c:stoRegisterThread",
-                                                    "id": "693ebf2c-c798-4657-8f3d-1f6c7e7c3f6a",
-                                                    "renderPriority": "NEUTRAL",
-                                                    "renditionMap": {},
-                                                    "type": "component"
-                                                }
-                                            ],
-                                            "id": "8b1245c2-b74d-4fb3-aa10-74fccbb0ccd8",
-                                            "regionLabel": "Column 2",
-                                            "regionName": "236a7",
-                                            "renditionMap": {},
-                                            "type": "region"
-                                        },
-                                        {
-                                            "id": "9986b87e-2ee5-408c-9312-317db1ae05a6",
-                                            "regionLabel": "Column 3",
-                                            "regionName": "14c38",
-                                            "renditionMap": {},
-                                            "type": "region"
-                                        }
-                                    ],
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
-                                    "componentAttributes": {},
-                                    "componentName": "c:decoratorFooter",
-                                    "id": "b3d897db-c80b-435d-9dba-70f99188267e",
+                                    "componentName": "c:stoRegisterThread",
+                                    "id": "455b66a1-1197-452a-8335-6885e8f51fb7",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
                                 }
                             ],
-                            "id": "f8781d4e-9365-4bc5-92cb-8185cd5f2aae",
-                            "regionLabel": "Column 1",
-                            "regionName": "col1",
+                            "id": "876225d1-1cb3-426e-b18d-93f65c204b07",
+                            "regionLabel": "Column 2",
+                            "regionName": "2853b",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "id": "ddc2ab0e-b70f-424a-9ced-f9358fc8eb61",
+                            "regionLabel": "Column 3",
+                            "regionName": "923c7",
                             "renditionMap": {},
                             "type": "region"
                         }
