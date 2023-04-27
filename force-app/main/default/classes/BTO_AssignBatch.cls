@@ -12,7 +12,7 @@ public with sharing class BTO_AssignBatch implements Database.Batchable<sObject>
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
         return Database.getQueryLocator(
-            'Select Id from ServiceResource where Id in (Select ServiceResourceId from ServiceResourceSkill where Skill.DeveloperName in (\'Arbeid\', \'Familie\', \'Helse\', \'Hjelpemidler\', \'Internasjonal\', \'Pensjon\', \'Pleiepenger\', \'Ufoeretrygd\') and (EffectiveEndDate > Today or EffectiveEndDate = null) and EffectiveStartDate <= Today)'
+            'Select Id from ServiceResource where Id in (Select ServiceResourceId from ServiceResourceSkill where Skill.DeveloperName in (\'Arbeid\', \'Familie\', \'Helse\', \'Hjelpemidler\', \'Internasjonal\', \'Pensjon\', \'Pleiepenger\', \'Ufoeretrygd\') and (EffectiveEndDate > Today or EffectiveEndDate = null) and EffectiveStartDate <= Today) and RelatedRecord.IsActive = true and RelatedRecord.Profile.Name LIKE \'NAV Kontaktsenter%\''
         );
     }
 
