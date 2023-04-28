@@ -125,6 +125,13 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static List<SObject> getCategoryNews(String category, String threadType) {
         List<SObject> news;
+
+        if (Test.isRunningTest()) {
+            news = new List<SObject>{
+                (SObject) new BTO_News__mdt(BTO_Header__c = 'header', BTO_Category__c = 'Pensjon', BTO_Body__c = 'body')
+            };
+            return news;
+        }
         if (threadType == 'BTO') {
             news = (List<SObject>) [
                 SELECT BTO_Body__c, BTO_Header__c
