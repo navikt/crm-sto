@@ -20,17 +20,21 @@
                     </c-community-error-summary>
 
                     <div class="descholder slds-var-m-bottom_xx-large">
-                        <p class="navds-body-short navds-body-short--small blokk-xs description">{label.welcomlabel}</p>
+                        <p class="navds-body-short navds-body-short--small blokk-xs description">
+                            {label.welcomelabel}
+                        </p>
                     </div>
                     <div class="inputarea">
                         <template if:false={showspinner}>
                             <div class="navds-accordion leftAlign">
-                                <template for:each={newsListToShow} for:item="news">
-                                    <c-community-expandable-panel
-                                        header={news.header}
-                                        body={news.body}
-                                        key={news.id}
-                                    ></c-community-expandable-panel>
+                                <template for:each={newsList} for:item="news">
+                                    <div key={news.id}>
+                                        <c-community-expandable-panel
+                                            header={news.header}
+                                            body={news.body}
+                                            key={news.id}
+                                        ></c-community-expandable-panel>
+                                    </div>
                                 </template>
                             </div>
                             <template if:true={showOpenThreadWarning}>

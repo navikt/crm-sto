@@ -117,35 +117,48 @@ public with sharing class stoHelperClass {
     }
     /**
      * Method for accessing news regarding a STO Category
-     * Returns a list of STO_News__C
-     * @author Lars Petter Johnsen
-     * @date 19.10.2021
+     * Returns a list of STO_News__C or BTO_News__c
      */
 
     @AuraEnabled(cacheable=true)
-    public static List<SObject> getCategoryNews(String category, String threadType) {
-        List<SObject> news;
+    public static List<News> getCategoryNews(String category, String threadType) {
+        List<News> news = new List<News>();
+        List<BTO_News__mdt> btoNews = new List<BTO_News__mdt>();
+        List<STO_News__mdt> stoNews = new List<STO_News__mdt>();
 
         if (Test.isRunningTest()) {
-            news = new List<SObject>{
-                (SObject) new BTO_News__mdt(BTO_Header__c = 'header', BTO_Category__c = 'Pensjon', BTO_Body__c = 'body')
-            };
+            news.add(new News('header test', 'body test', '123'));
             return news;
         }
         if (threadType == 'BTO') {
-            news = (List<SObject>) [
-                SELECT BTO_Body__c, BTO_Header__c
-                FROM BTO_News__mdt
-                WHERE BTO_Category__c = :category
-            ];
+            btoNews = [SELECT BTO_Body__c, BTO_Header__c FROM BTO_News__mdt WHERE BTO_Category__c = :category];
         } else {
-            news = (List<SObject>) [
-                SELECT STO_Body__c, STO_Header__c
-                FROM STO_News__mdt
-                WHERE STO_Category__c = :category
-            ];
+            stoNews = [SELECT STO_Body__c, STO_Header__c FROM STO_News__mdt WHERE STO_Category__c = :category];
+        }
+
+        if (stoNews.size() > 0) {
+            for (STO_News__mdt rec : stoNews) {
+                news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
+            }
+        }
+        if (btoNews.size() > 0) {
+            for (BTO_News__mdt rec : btoNews) {
+                news.add(new News(rec.BTO_Header__c, rec.BTO_Body__c, rec.Id));
+            }
         }
         return news;
+    }
+
+    public class News {
+        @AuraEnabled
+        public String header,
+            body,
+            id;
+        public News(String header, String body, String id) {
+            this.header = header;
+            this.body = body;
+            this.id = id;
+        }
     }
 
     @AuraEnabled

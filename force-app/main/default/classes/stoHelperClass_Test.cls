@@ -101,7 +101,7 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void getSTONewsTest() {
         Test.startTest();
-        List<SObject> newsList = stoHelperClass.getCategoryNews('Pensjon', 'STO');
+        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'STO');
         System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
     }
@@ -109,7 +109,7 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void getBTONewsTest() {
         Test.startTest();
-        List<SObject> newsList = stoHelperClass.getCategoryNews('Pensjon', 'BTO');
+        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'BTO');
         System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
     }

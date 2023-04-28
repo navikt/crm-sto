@@ -8,7 +8,7 @@ import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
-import welcomlabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
+import welcomelabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
 import headline from '@salesforce/label/c.Skriv_til_oss_headline';
 import accepterrmessage from '@salesforce/label/c.Skriv_til_oss_headline';
 import acceptermtext from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
@@ -41,7 +41,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     subpath;
     acceptedTerms = false;
     label = {
-        welcomlabel,
+        welcomelabel,
         headline,
         accepterrmessage,
         acceptermtext,
@@ -104,27 +104,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * Finds if there are any news based on the selected theme.
      *  @author Lars Petter Johnsen
      */
-    newsListToShow = [];
     @wire(getNews, { category: '$selectedTheme', threadType: '$threadTypeToMake' })
     wirenews(result) {
         if (result.error) {
             console.log(result.error);
         } else if (result.data) {
-            this.newslist = result.data;
-            let newsObject = { body: '', header: '', id: '' };
-            for (const i of this.newslist.keys()) {
-                newsObject = {};
-                for (let k in this.newslist[i]) {
-                    if (k === 'BTO_Body__c' || k === 'STO_Body__c') {
-                        newsObject['body'] = this.newslist[i][k];
-                    } else if (k === 'BTO_Header__c' || k === 'STO_Header__c') {
-                        newsObject['header'] = this.newslist[i][k];
-                    } else {
-                        newsObject[k] = this.newslist[i][k];
-                    }
-                }
-                this.newsListToShow.push(newsObject);
-            }
+            this.newsList = result.data;
         }
     }
 
