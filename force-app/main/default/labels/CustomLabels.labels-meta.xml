@@ -63,10 +63,18 @@
         <protected>false</protected>
         <shortDescription>Skriv til oss terms og use text</shortDescription>
         <value>&lt;div style=&quot;font-family: sans-serif&quot;&gt;
-Denne tjenesten gjelder deg som privatperson. Du kan ikke bruke den på vegne av andre. Vi ber deg derfor bare sende opplysninger som gjelder deg, og opplysninger vi trenger for å behandle saken eller spørsmålet ditt.   &lt;br /&gt;&lt;br /&gt;
-NAV har bare lov til å ta vare på opplysninger som er relevant for deg. Hvis opplysninger gjelder andre og det ikke har betydning i saken din, blir opplysninger slettet.   &lt;br /&gt; &lt;br /&gt;
-Opplysninger du sender om deg selv blir brukt når vi behandler saken din.  &lt;br /&gt; &lt;br /&gt;
-I tillegg til de som hjelper deg i saken din, kan også andre NAV-medarbeidere se opplysninger du skriver hvis de trenger det for å løse sine arbeidsoppgaver. Det kan for eksempel være ved arkivering eller retting av feil i IT-systemene våre.  &lt;br /&gt; &lt;br /&gt;</value>
+            Denne tjenesten gjelder deg som privatperson. Du kan ikke bruke den på vegne av andre.
+            Vi ber deg derfor bare sende opplysninger som gjelder deg, og opplysninger vi trenger
+            for å behandle saken eller spørsmålet ditt. &lt;br /&gt;&lt;br /&gt;
+            NAV har bare lov til å ta vare på opplysninger som er relevant for deg. Hvis
+            opplysninger gjelder andre og det ikke har betydning i saken din, blir opplysninger
+            slettet. &lt;br /&gt; &lt;br /&gt;
+            Opplysninger du sender om deg selv blir brukt når vi behandler saken din. &lt;br /&gt;
+            &lt;br /&gt;
+            I tillegg til de som hjelper deg i saken din, kan også andre NAV-medarbeidere se
+            opplysninger du skriver hvis de trenger det for å løse sine arbeidsoppgaver. Det kan for
+            eksempel være ved arkivering eller retting av feil i IT-systemene våre. &lt;br /&gt;
+            &lt;br /&gt;</value>
     </labels>
     <labels>
         <fullName>STO_Skriv_til_oss_terms_og_use_text_2</fullName>
@@ -74,9 +82,15 @@ I tillegg til de som hjelper deg i saken din, kan også andre NAV-medarbeidere s
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Skriv til oss terms og use text 2</shortDescription>
-        <value>Du kan lese mer &lt;a href=&quot;https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten/personvernerklaering-for-arbeids-og-velferdsetaten&quot;&gt;om hva personopplysninger brukes til i NAV, i vår personvernerklæring&lt;/a&gt;. &lt;br /&gt; &lt;br /&gt;
-Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 33 33&lt;/a&gt; (tastevalg 1) hvis henvendelsen gjelder kommunale tjenester som økonomisk sosialhjelp, bostøtte, midlertidig botilbud, kvalifiseringsprogrammet, eller økonomisk rådgivning.
-&lt;/div&gt;</value>
+        <value>Du kan lese mer &lt;a
+            href=&quot;https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten/personvernerklaering-for-arbeids-og-velferdsetaten&quot;&gt;om
+            hva personopplysninger brukes til i NAV, i vår personvernerklæring&lt;/a&gt;. &lt;br
+            /&gt; &lt;br /&gt;
+            Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 33
+            33&lt;/a&gt; (tastevalg 1) hvis henvendelsen gjelder kommunale tjenester som økonomisk
+            sosialhjelp, bostøtte, midlertidig botilbud, kvalifiseringsprogrammet, eller økonomisk
+            rådgivning.
+            &lt;/div&gt;</value>
     </labels>
     <labels>
         <fullName>STO_Skriv_til_oss_text_field_empty_error</fullName>
@@ -132,7 +146,8 @@ Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Skriv til oss intro text</shortDescription>
-        <value>Send only messages that can be relevant for your case. Remember to include all relevant information. You can write a maximum of 1000 characters.</value>
+        <value>Send only messages that can be relevant for your case. Remember to include all
+            relevant information. You can write a maximum of 1000 characters.</value>
     </labels>
     <labels>
         <fullName>Skriv_til_oss_text_area_description</fullName>
@@ -172,7 +187,9 @@ Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>ConditionLogicHelpText</shortDescription>
-        <value>Use parentheses, AND, OR, and NOT to customize the logic. For example, if you enter “(1 AND 2 AND 3) OR 4”, the flow evaluates whether the first three conditions are true or only the fourth condition is true.</value>
+        <value>Use parentheses, AND, OR, and NOT to customize the logic. For example, if you enter
+            “(1 AND 2 AND 3) OR 4”, the flow evaluates whether the first three conditions are true
+            or only the fourth condition is true.</value>
     </labels>
     <labels>
         <fullName>crm_fbc_Delete</fullName>
@@ -364,7 +381,7 @@ Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>TooManyResultsMessage</shortDescription>
-        <value>Your search found more than 200 results.  Keep typing to make it more specific</value>
+        <value>Your search found more than 200 results. Keep typing to make it more specific</value>
     </labels>
     <labels>
         <fullName>crm_fbc_Type</fullName>
@@ -396,6 +413,7 @@ Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Beskjed til oss intro text</shortDescription>
-        <value>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har mottatt beskjeden din.</value>
+        <value>Here you can send us information relevant to your case. You will receive a
+            confirmation that we have received your message.</value>
     </labels>
 </CustomLabels>
