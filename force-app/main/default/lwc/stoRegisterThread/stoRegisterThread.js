@@ -9,6 +9,7 @@ import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
 import welcomelabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
+import welcomelabelBTO from '@salesforce/label/c.Beskjed_til_oss_intro_text';
 import headline from '@salesforce/label/c.Skriv_til_oss_headline';
 import accepterrmessage from '@salesforce/label/c.Skriv_til_oss_headline';
 import acceptermtext from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
@@ -40,8 +41,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     urlStateParameters;
     subpath;
     acceptedTerms = false;
+    introLabel;
     label = {
         welcomelabel,
+        welcomelabelBTO,
         headline,
         accepterrmessage,
         acceptermtext,
@@ -84,6 +87,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             .catch((error) => {
                 //Failed getting sto categories
             });
+        this.introLabel = this.threadTypeToMake === 'BTO' ? this.label.welcomelabelBTO : this.label.welcomelabel;
     }
 
     /**

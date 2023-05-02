@@ -390,4 +390,12 @@ Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 
         <shortDescription>Users</shortDescription>
         <value>Users</value>
     </labels>
+    <labels>
+        <fullName>Beskjed_til_oss_intro_text</fullName>
+        <categories>Skriv til oss</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss intro text</shortDescription>
+        <value>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har mottatt beskjeden din.</value>
+    </labels>
 </CustomLabels>
