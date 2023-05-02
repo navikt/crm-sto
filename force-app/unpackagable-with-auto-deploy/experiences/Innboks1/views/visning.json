@@ -82,7 +82,10 @@
                                     "type": "component"
                                 },
                                 {
-                                    "componentAttributes": {},
+                                    "componentAttributes": {
+                                        "maxLength": 1000,
+                                        "threadType": "BTO"
+                                    },
                                     "componentName": "c:btoViewThread",
                                     "id": "25cba55a-da34-49b0-a7d6-86d38261d52d",
                                     "renderPriority": "NEUTRAL",

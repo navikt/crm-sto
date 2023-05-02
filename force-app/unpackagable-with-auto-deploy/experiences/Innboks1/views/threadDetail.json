@@ -74,13 +74,12 @@
                                 },
                                 {
                                     "componentAttributes": {
-                                        "alertopen": "",
-                                        "alerttext": "",
                                         "maxLength": 1000,
-                                        "recordId": "{!recordId}"
+                                        "recordId": "{!recordId}",
+                                        "threadType": "STO"
                                     },
-                                    "componentName": "c:crmMessagingCommunityThreadViewer",
-                                    "id": "0bf2b937-1ad9-47fd-a89c-c15c3280c259",
+                                    "componentName": "c:btoViewThread",
+                                    "id": "8a373a40-dd12-4ec3-979d-8e6050a2423a",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
