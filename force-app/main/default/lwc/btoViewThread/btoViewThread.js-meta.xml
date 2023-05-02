@@ -7,4 +7,11 @@
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
     </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="threadType" type="String" label="Type of thread to display" description="A list of the different thread types this component supports, will redirect if threadId doesn't match threadType." datasource="STO, BTO" />
+            <property name="recordId" type="String" label="Record ID" description="Should be set to {!recordId}" />
+            <property name="maxLength" type="Integer" label="Max length" default="0" description="The max length a user is allowed to write. Defaults to 0 (infinite)" />
+        </targetConfig>
+    </targetConfigs>
 </LightningComponentBundle>
