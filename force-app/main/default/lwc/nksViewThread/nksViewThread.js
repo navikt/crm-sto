@@ -10,7 +10,7 @@ const urlMap = {
     BTO: (recordId) => basepath + '/beskjed-til-oss/visning?samtale=' + recordId
 };
 
-export default class BtoViewThread extends LightningElement {
+export default class NksViewThread extends LightningElement {
     @api threadType;
     @api recordId;
     @api maxLength;

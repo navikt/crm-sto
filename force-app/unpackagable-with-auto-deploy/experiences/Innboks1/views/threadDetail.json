@@ -78,7 +78,7 @@
                                         "recordId": "{!recordId}",
                                         "threadType": "STO"
                                     },
-                                    "componentName": "c:btoViewThread",
+                                    "componentName": "c:nksViewThread",
                                     "id": "8a373a40-dd12-4ec3-979d-8e6050a2423a",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
