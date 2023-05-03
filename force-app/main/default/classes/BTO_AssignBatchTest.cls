@@ -39,7 +39,7 @@ public with sharing class BTO_AssignBatchTest {
         List<sObject> testSR = [
             SELECT Id
             FROM ServiceResource
-            WHERE RelatedRecord.lastName = 'testy' AND RelatedRecord.username = 'marihone@testy.com'
+            WHERE RelatedRecord.Profile.Name LIKE 'Standard User'
             LIMIT 1
         ];
         Test.startTest();
