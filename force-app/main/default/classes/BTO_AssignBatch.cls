@@ -1,14 +1,5 @@
 public with sharing class BTO_AssignBatch implements Database.Batchable<sObject> {
-    private static final Map<String, Id> skillMap {
-        get {
-            List<Skill> skillsToAllocate = [SELECT Id, DeveloperName FROM Skill WHERE DeveloperName IN ('STO', 'BTO')];
-            Map<String, Id> retMap = new Map<String, Id>();
-            for (Skill skiller : skillsToAllocate) {
-                retMap.put(skiller.DeveloperName, skiller.Id);
-            }
-            return retMap;
-        }
-    }
+    private static final List<Skill> skillsToAssign = [SELECT Id FROM Skill WHERE DeveloperName IN ('STO', 'BTO')];
     private String profileQuery;
 
     public BTO_AssignBatch() {
@@ -28,12 +19,12 @@ public with sharing class BTO_AssignBatch implements Database.Batchable<sObject>
     public void execute(Database.BatchableContext BC, List<sObject> scope) {
         List<ServiceResourceSkill> newSkillAllocations = new List<ServiceResourceSkill>();
         for (ServiceResource sRes : (List<ServiceResource>) scope) {
-            for (Id mappedSkillId : skillMap.values()) {
+            for (Skill s : skillsToAssign) {
                 newSkillAllocations.add(
                     new ServiceResourceSkill(
                         ServiceResourceId = sRes.Id,
                         SkillLevel = 1,
-                        SkillId = mappedSkillId,
+                        SkillId = s.Id,
                         EffectiveStartDate = Date.today().addDays(-1)
                     )
                 );
