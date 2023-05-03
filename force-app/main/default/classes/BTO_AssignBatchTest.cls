@@ -24,34 +24,41 @@ public with sharing class BTO_AssignBatchTest {
         Test.startTest();
         Database.executeBatch(new BTO_AssignBatch('Standard User'));
         Test.stopTest();
-        List<ServiceResourceSkill> skills = [
+
+        List<ServiceResourceSkill> addedSkills = [
             SELECT Id
             FROM ServiceResourceSkill
             WHERE
                 ServiceResource.RelatedRecord.Profile.Name LIKE 'Standard User'
                 AND Skill.DeveloperName IN ('STO', 'BTO')
         ];
-        System.assertEquals(0, skills.size(), 'A user without any STO skills was assigned new skills.');
+        System.assertEquals(
+            0,
+            addedSkills.size(),
+            'A user without the required skills was wrongly assigned new STO / BTO skills.'
+        );
     }
 
     @IsTest
     static void testBTOAssign() {
-        List<sObject> testSR = [
+        List<ServiceResource> serviceResource = [
             SELECT Id
             FROM ServiceResource
             WHERE RelatedRecord.Profile.Name LIKE 'Standard User'
             LIMIT 1
         ];
+
         Test.startTest();
-        new BTO_AssignBatch('Standard User').execute(null, testSR);
+        new BTO_AssignBatch('Standard User').execute(null, serviceResource); // Skipping batch start method
         Test.stopTest();
-        List<ServiceResourceSkill> skills = [
+
+        List<ServiceResourceSkill> addedSkills = [
             SELECT Id
             FROM ServiceResourceSkill
             WHERE
                 ServiceResource.RelatedRecord.Profile.Name LIKE 'Standard User'
                 AND Skill.DeveloperName IN ('STO', 'BTO')
         ];
-        System.assertEquals(2, skills.size(), 'User was not assigned new STO/BTO skills');
+        System.assertEquals(2, addedSkills.size(), 'User was not assigned new STO/BTO skills');
     }
 }
