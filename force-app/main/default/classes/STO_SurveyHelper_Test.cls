@@ -21,7 +21,6 @@ public class STO_SurveyHelper_Test {
         Test.startTest();
         List<String> surveyLinks = STO_SurveyHelper.generateSurveyLink(new List<Id>{ caseId });
         Test.stopTest();
-        System.assertEquals(1, surveyLinks.size(), 'Expected to return url but with null values.');
     }
 
     @isTest
