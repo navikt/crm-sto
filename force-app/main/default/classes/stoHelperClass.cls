@@ -1,5 +1,6 @@
 public with sharing class stoHelperClass {
     private static final LoggerUtility logger = new LoggerUtility('STO');
+    private static final List<String> allowedThreadTypes = new List<String>{ 'STO', 'BTO' };
 
     private static final Map<String, List<String>> threadTypeMap = new Map<String, List<String>>{
         'STO' => new List<String>{ 'STO', 'STB' },
@@ -60,6 +61,11 @@ public with sharing class stoHelperClass {
         return thread;
     }
 
+    @AuraEnabled
+    public static Thread__c createRequest(String theme, String msgText, Boolean medskriv) {
+        return createThreadWithCase(theme, msgText, medskriv, 'STO');
+    }
+
     private static Thread__c createThread(
         String relatedObjId,
         String theme,
@@ -89,7 +95,7 @@ public with sharing class stoHelperClass {
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
         thread.Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss';
-        thread.CRM_Thread_Type__c = type;
+        thread.CRM_Thread_Type__c = allowedThreadTypes.contains(type) ? type : 'STO';
         thread.STO_Category__c = theme;
         thread.STO_Medskriv__c = medskriv;
         try {
@@ -123,28 +129,27 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static List<News> getCategoryNews(String category, String threadType) {
         List<News> news = new List<News>();
-        List<BTO_News__mdt> btoNews = new List<BTO_News__mdt>();
-        List<STO_News__mdt> stoNews = new List<STO_News__mdt>();
 
-        if (Test.isRunningTest()) {
-            news.add(new News('header test', 'body test', '123'));
-            return news;
-        }
         if (threadType == 'BTO') {
-            btoNews = [SELECT BTO_Body__c, BTO_Header__c FROM BTO_News__mdt WHERE BTO_Category__c = :category];
+            for (BTO_News__mdt rec : [
+                SELECT BTO_Body__c, BTO_Header__c
+                FROM BTO_News__mdt
+                WHERE BTO_Category__c = :category
+            ]) {
+                news.add(new News(rec.BTO_Header__c, rec.BTO_Body__c, rec.Id));
+            }
         } else {
-            stoNews = [SELECT STO_Body__c, STO_Header__c FROM STO_News__mdt WHERE STO_Category__c = :category];
-        }
-
-        if (stoNews.size() > 0) {
-            for (STO_News__mdt rec : stoNews) {
+            for (STO_News__mdt rec : [
+                SELECT STO_Body__c, STO_Header__c
+                FROM STO_News__mdt
+                WHERE STO_Category__c = :category
+            ]) {
                 news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
             }
         }
-        if (btoNews.size() > 0) {
-            for (BTO_News__mdt rec : btoNews) {
-                news.add(new News(rec.BTO_Header__c, rec.BTO_Body__c, rec.Id));
-            }
+
+        if (news.size() == 0 && Test.isRunningTest()) {
+            news.add(new News('header test', 'body test', '123'));
         }
         return news;
     }
