@@ -27,10 +27,7 @@ public with sharing class stoInboxHelper {
             WHERE
                 CRM_Number_of_unread_Messages__c = 0
                 AND CRM_Is_Closed__C = TRUE
-                AND (CRM_Thread_Type__c = 'STO'
-                OR CRM_Thread_Type__c = 'BTO'
-                OR CRM_Thread_Type__c = 'STB'
-                OR CRM_Thread_Type__c = 'CHAT')
+                AND CRM_Thread_Type__c IN ('STO', 'BTO', 'STB', 'CHAT')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -80,10 +77,7 @@ public with sharing class stoInboxHelper {
             WHERE
                 (CRM_Number_of_unread_Messages__c > 0
                 OR CRM_Is_Closed__c = FALSE)
-                AND (CRM_Thread_Type__c = 'STO'
-                OR CRM_Thread_Type__c = 'BTO'
-                OR CRM_Thread_Type__c = 'STB'
-                OR CRM_Thread_Type__c = 'CHAT')
+                AND CRM_Thread_Type__c IN ('STO', 'BTO', 'STB', 'CHAT')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
