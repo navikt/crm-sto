@@ -4,7 +4,6 @@ import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import basepath from '@salesforce/community/basePath';
 
-// Er det bedre å ha dette harkodet her, eller gjøre det til custom metadata? Muligens noe annet?
 const urlMap = {
     STO: (recordId) => basepath + '/skriv-til-oss/' + recordId,
     BTO: (recordId) => basepath + '/beskjed-til-oss/visning?samtale=' + recordId

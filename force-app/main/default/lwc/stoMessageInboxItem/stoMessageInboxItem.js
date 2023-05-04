@@ -60,19 +60,14 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get linkUrl() {
-        let link;
-        if (this.objectName === 'beskjed-til-oss') {
-            link = basepath + '/' + this.objectName + '/' + 'visning?samtale=' + this.thread.recordId;
-        } else {
-            link =
-                basepath +
-                '/' +
-                this.objectName +
-                '/' +
-                this.thread.recordId +
-                '/' +
-                this.thread.recordName.replace(/[ -]+/g, '-');
-        }
-        return link;
+        return this.objectName === 'beskjed-til-oss'
+            ? basepath + '/' + this.objectName + '/' + 'visning?samtale=' + this.thread.recordId
+            : basepath +
+                  '/' +
+                  this.objectName +
+                  '/' +
+                  this.thread.recordId +
+                  '/' +
+                  this.thread.recordName.replace(/[ -]+/g, '-');
     }
 }

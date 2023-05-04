@@ -10,7 +10,3 @@
 .greenHeader {
     --overwrite-header-color: #ccf1d6;
 }
-
-.blueHeader {
-    --overwrite-header-color: blue;
-}

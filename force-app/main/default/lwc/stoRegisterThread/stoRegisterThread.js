@@ -41,7 +41,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     urlStateParameters;
     subpath;
     acceptedTerms = false;
-    introLabel;
     label = {
         welcomelabel,
         welcomelabelBTO,
@@ -87,7 +86,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             .catch((error) => {
                 //Failed getting sto categories
             });
-        this.introLabel = this.threadTypeToMake === 'BTO' ? this.label.welcomelabelBTO : this.label.welcomelabel;
     }
 
     /**
@@ -351,6 +349,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get backdropClass() {
         return this.hideDeleteModal === true ? 'slds-hide' : 'backdrop';
+    }
+
+    get introLabel() {
+        return this.threadTypeToMake === 'BTO' ? this.label.welcomelabelBTO : this.label.welcomelabel;
     }
 
     handleCloseThread(e) {
