@@ -82,9 +82,13 @@
                                     "type": "component"
                                 },
                                 {
-                                    "componentAttributes": {},
-                                    "componentName": "c:btoViewThread",
-                                    "id": "25cba55a-da34-49b0-a7d6-86d38261d52d",
+                                    "componentAttributes": {
+                                        "maxLength": 1000,
+                                        "recordId": "{!recordId}",
+                                        "threadType": "BTO"
+                                    },
+                                    "componentName": "c:nksViewThread",
+                                    "id": "ba74ed40-b3ee-4ee6-9493-6ddf3b1b6813",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
