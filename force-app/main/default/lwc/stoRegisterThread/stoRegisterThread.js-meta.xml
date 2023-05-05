@@ -7,4 +7,16 @@
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
     </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title" label="Tittel som skal vises på toppen" type="String"
+                default="Skriv til oss" />
+            <property
+                name="threadTypeToMake"
+                type="String"
+                label="Hvilken thread type som skal lages"
+                datasource="STO, BTO"
+            />
+        </targetConfig>
+    </targetConfigs>
 </LightningComponentBundle>
