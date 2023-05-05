@@ -332,7 +332,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get openThreadLink() {
-        return basepath + this.subpath + this.openThreadList[0].recordId;
+        return this.threadTypeToMake === 'BTO'
+            ? basepath + this.subpath + 'visning?samtale=' + this.openThreadList[0].recordId
+            : basepath + this.subpath + this.openThreadList[0].recordId;
     }
 
     get alertType() {

@@ -91,12 +91,18 @@
     background-color: transparent;
 }
 
+.vilkar-link:hover {
+    text-decoration: none;
+}
+
 .vilkar-link:active {
-    background-color: var(--navds-link-color-background-active);
+    background-color: var(--ac-link-active-bg, var(--a-border-focus));
+    box-shadow: 0 0 0 2px var(--ac-link-active-border, var(--a-border-focus));
 }
 
 .vilkar-link:focus {
-    background-color: var(--navds-link-color-background-focus);
+    background-color: var(--ac-link-active-bg, var(--a-border-focus));
+    box-shadow: 0 0 0 2px var(--ac-link-active-border, var(--a-border-focus));
 }
 
 .override {
