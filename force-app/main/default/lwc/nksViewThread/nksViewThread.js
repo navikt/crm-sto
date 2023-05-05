@@ -6,7 +6,13 @@ import basepath from '@salesforce/community/basePath';
 
 const urlMap = {
     STO: (recordId) => basepath + '/skriv-til-oss/' + recordId,
+    STB: (recordId) => basepath + '/skriv-til-oss/' + recordId,
     BTO: (recordId) => basepath + '/beskjed-til-oss/visning?samtale=' + recordId
+};
+
+const allowedThreadTypes = {
+    STO: ['STO', 'STB'],
+    BTO: ['BTO']
 };
 
 export default class NksViewThread extends LightningElement {
@@ -28,7 +34,7 @@ export default class NksViewThread extends LightningElement {
             console.log('Error:', error);
         } else if (data) {
             const actualThreadType = getFieldValue(data, THREAD_TYPE);
-            if (this.threadType !== actualThreadType) this.redirect(actualThreadType);
+            if (!allowedThreadTypes[this.threadType].contains(actualThreadType)) this.redirect(actualThreadType);
         }
     }
 
