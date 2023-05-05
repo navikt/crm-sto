@@ -59,7 +59,7 @@
                     "componentAttributes": {
                         "backgroundImageConfig": "",
                         "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"6ccb0739-492e-4225-8388-7c15ecd872e6\",\"columns\":[{\"UUID\":\"b12d6286-f0d4-4b34-a634-04fb7c64ac9e\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"2bac5174-1f8b-476f-8601-9277e07b39f9\",\"columnName\":\"Column 2\",\"columnKey\":\"3b702\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"6908a16a-bc04-4f79-bfa4-5fdb8812fc9c\",\"columnName\":\"Column 3\",\"columnKey\":\"7b367\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}"
+                        "sectionConfig": "{\"UUID\":\"6ccb0739-492e-4225-8388-7c15ecd872e6\",\"columns\":[{\"UUID\":\"b12d6286-f0d4-4b34-a634-04fb7c64ac9e\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"2bac5174-1f8b-476f-8601-9277e07b39f9\",\"columnName\":\"Column 2\",\"columnKey\":\"3b702\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"6908a16a-bc04-4f79-bfa4-5fdb8812fc9c\",\"columnName\":\"Column 3\",\"columnKey\":\"7b367\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
                     },
                     "componentName": "community_layout:section",
                     "id": "6ccb0739-492e-4225-8388-7c15ecd872e6",
@@ -82,11 +82,8 @@
                                     "type": "component"
                                 },
                                 {
-                                    "componentAttributes": {
-                                        "maxLength": 1000,
-                                        "threadType": "BTO"
-                                    },
-                                    "componentName": "c:nksViewThread",
+                                    "componentAttributes": {},
+                                    "componentName": "c:btoViewThread",
                                     "id": "25cba55a-da34-49b0-a7d6-86d38261d52d",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
