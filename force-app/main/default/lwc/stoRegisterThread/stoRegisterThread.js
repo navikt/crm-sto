@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { NavigationMixin } from 'lightning/navigation';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
@@ -31,6 +31,8 @@ import basepath from '@salesforce/community/basePath';
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
+    @api title;
+    @api threadTypeToMake;
     showspinner = false;
     selectedTheme;
     acceptedcategories = new Set();
