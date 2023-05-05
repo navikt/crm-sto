@@ -76,7 +76,7 @@
                                 {
                                     "componentAttributes": {
                                         "maxLength": 1000,
-                                        "recordId": "{recordId}",
+                                        "recordId": "{!recordId}",
                                         "threadType": "STO"
                                     },
                                     "componentName": "c:nksViewThread",
