@@ -6,6 +6,7 @@ import THREAD_RELATED_OBJECT_FIELD from '@salesforce/schema/Thread__c.CRM_Relate
 import getSurvey from '@salesforce/apex/STO_SurveyHelper.getSurveyLink';
 import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
+import LoggerUtility from 'c/loggerUtility';
 
 export default class StoInboxInformation extends LightningElement {
     type;
@@ -27,7 +28,13 @@ export default class StoInboxInformation extends LightningElement {
             this.closed = getFieldValue(data, THREAD_IS_CLOSED_FIELD);
             this.caseId = getFieldValue(data, THREAD_RELATED_OBJECT_FIELD);
         } else if (error) {
-            console.log('Problem getting Thread record: ' + JSON.stringify(error, null, 2));
+            LoggerUtility.logError(
+                'NKS',
+                'STO',
+                error,
+                'An error has occurred while trying to fetch Thread.',
+                this.recordId
+            );
         }
     }
 
@@ -36,7 +43,13 @@ export default class StoInboxInformation extends LightningElement {
         if (data && this.caseId) {
             this.surveyLink = data;
         } else if (error) {
-            console.log('Problem fetching SurveyInvitationLink in inbox: ' + JSON.stringify(error, null, 2));
+            LoggerUtility.logError(
+                'NKS',
+                'STO',
+                error,
+                'An error has occurred while trying to fetch SurveyLink.',
+                this.recordId
+            );
         }
     }
 
@@ -60,9 +73,9 @@ export default class StoInboxInformation extends LightningElement {
             })
             .finally(() => {
                 if (this.completed) {
-                    window.location.href = this.url;
+                    window.open(this.url);
                 } else {
-                    window.location.href = this.surveyLink;
+                    window.open(this.surveyLink);
                 }
             });
     }

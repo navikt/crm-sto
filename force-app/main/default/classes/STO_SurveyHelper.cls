@@ -21,9 +21,10 @@ public without sharing class STO_SurveyHelper {
 
         try {
             Id surveyId = [SELECT Id, DeveloperName FROM Survey WHERE DeveloperName = 'nks_service_survey' LIMIT 1]?.Id;
-            String surveyLink = NKS_SurveyController.createSurveyInvitation(surveyId, caseIds[0]);
-
-            surveyLinks.add(surveyLink);
+            for (Integer i = 0; i < caseIds.size(); i++) {
+                String surveyLink = NKS_SurveyController.createSurveyInvitation(surveyId, caseIds[i]);
+                surveyLinks.add(surveyLink);
+            }
         } catch (Exception e) {
             System.debug('Problem creating SurveyInvitationLink: ' + e.getMessage());
         }
