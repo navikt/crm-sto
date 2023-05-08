@@ -12,9 +12,15 @@
         </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
-            <name>caseIds</name>
+            <name>caseId</name>
             <value>
                 <elementReference>Get_Case.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>surveyDeveloperName</name>
+            <value>
+                <stringValue>nks_service_survey</stringValue>
             </value>
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -139,6 +145,7 @@
         <connector>
             <targetReference>Get_Person</targetReference>
         </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>and</filterLogic>
         <filters>
             <field>CRM_Thread_Type__c</field>

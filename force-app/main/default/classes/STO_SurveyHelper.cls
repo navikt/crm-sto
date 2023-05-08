@@ -10,19 +10,26 @@ public without sharing class STO_SurveyHelper {
     }
 
     /**
-     * @description Function to create survey link
+     * @description Function to create SurveyInvitation
      * Calls function from Survey-repo
-     * @param List<Id> caseId
+     * @param SurveyInvocableParameters parameters
+     * @return String SurveyInvitationLink
+     */
+    public static String createSurveyInvitation(SurveyInvocableParameters parameters) {
+        return NKS_SurveyController.createSurveyInvitation(parameters.surveyDeveloperName, parameters.caseId);
+    }
+
+    /**
+     * @description Function to create survey link
+     * @param List<SurveyInvocableParameters> parametersList
      * @return List<String> survey link
      */
     @invocableMethod(label='Generate SurveyInvitationLink')
-    public static List<String> generateSurveyLink(List<Id> caseIds) {
+    public static List<String> generateSurveyLink(List<SurveyInvocableParameters> parametersList) {
         List<String> surveyLinks = new List<String>();
-
         try {
-            Id surveyId = [SELECT Id, DeveloperName FROM Survey WHERE DeveloperName = 'nks_service_survey' LIMIT 1]?.Id;
-            for (Integer i = 0; i < caseIds.size(); i++) {
-                String surveyLink = NKS_SurveyController.createSurveyInvitation(surveyId, caseIds[i]);
+            for (Integer i = 0; i < parametersList.size(); i++) {
+                String surveyLink = createSurveyInvitation(parametersList[i]);
                 surveyLinks.add(surveyLink);
             }
         } catch (Exception e) {
@@ -50,5 +57,16 @@ public without sharing class STO_SurveyHelper {
     @AuraEnabled(cacheable=true)
     public static Boolean checkResponse(Id caseId) {
         return NKS_SurveyController.checkSurveyResponse(caseId);
+    }
+
+    /**
+     * @description Class to define invocable variables
+     */
+    public class SurveyInvocableParameters {
+        @InvocableVariable(required=true)
+        public Id caseId;
+
+        @InvocableVariable(required=true)
+        public String surveyDeveloperName;
     }
 }
