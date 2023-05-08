@@ -19,14 +19,6 @@
                         {
                             "components": [
                                 {
-                                    "componentAttributes": {},
-                                    "componentName": "c:mainContent",
-                                    "id": "d37697d8-8894-40bd-a3b8-3d3d58db4ab6",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
                                     "componentAttributes": {
                                         "firstLevel": "Privatperson",
                                         "firstLevelLink": "https://nav.no",
