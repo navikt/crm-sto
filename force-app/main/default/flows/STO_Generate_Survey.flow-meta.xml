@@ -122,7 +122,7 @@
         <inputAssignments>
             <field>NKS_Survey_Theme__c</field>
             <value>
-                <elementReference>$Record.CRM_Theme_Group_Name__c</elementReference>
+                <elementReference>Get_Case.STO_Category__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
