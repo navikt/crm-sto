@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Pleiepenger</label>
+    <protected>false</protected>
+    <values>
+        <field>STO_Body__c</field>
+        <value xsi:type="xsd:string">&lt;ul&gt;
+&lt;li&gt;Du må oppgi endringer i arbeidstid i antall timer per uke.&lt;/li&gt;
+&lt;li&gt;Arbeidstakere som vil melde om ferie og/eller endring i arbeidstid kan bruke endringsmelding. &lt;a href=&quot;https://www.nav.no/familie/sykdom-i-familien/soknad/endringsmelding-pleiepenger&quot;&gt;Se hvordan du melder om endring i arbeidstid.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</value>
+    </values>
+    <values>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Pleiepenger</value>
+    </values>
+    <values>
+        <field>STO_Header__c</field>
+        <value xsi:type="xsd:string">Skal du melde om endringer i en periode du har søkt om, eller mottar pleiepenger?</value>
+    </values>
+</CustomMetadata>

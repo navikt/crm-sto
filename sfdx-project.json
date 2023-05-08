@@ -4,12 +4,12 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.82.0.NEXT",
+            "versionNumber": "1.91.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.183.0.LATEST"
+                    "versionNumber": "0.189.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
@@ -21,7 +21,7 @@
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.18.0.LATEST"
+                    "versionNumber": "0.21.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -49,7 +49,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.79.0.LATEST"
+                    "versionNumber": "0.86.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
@@ -64,7 +64,20 @@
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "54.0",
+    "sourceApiVersion": "57.0",
+    "replacements": [
+        {
+            "glob": "force-app/unpackagable-with-auto-deploy/experiences/Innboks1/themes/buildYourOwnLWR.json",
+            "stringToReplace": "\"Dev\"",
+            "replaceWithEnv": "HEADER_ENV_REPLACER",
+            "replaceWhenEnv": [
+                {
+                    "env": "DEPLOY_DESTINATION",
+                    "value": "PROD"
+                }
+            ]
+        }
+    ],
     "packageAliases": {
         "crm-henvendelse": "0Ho2o000000fxXfCAI",
         "crm-henvendelse-base": "0Ho7U000000000kSAA",

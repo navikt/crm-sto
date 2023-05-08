@@ -1,6 +1,7 @@
 {
     "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
     "componentName": "community_layout:sldsFlexibleLayout",
+    "dataProviders": [],
     "id": "11edc224-4b95-4520-893e-c094bf4c5b18",
     "label": "Skriv til oss",
     "regions": [
@@ -17,6 +18,14 @@
                     "regions": [
                         {
                             "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "0e130fe5-4725-442d-ac55-df3af4dffa03",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
                                 {
                                     "componentAttributes": {
                                         "firstLevel": "Privatperson",
@@ -64,6 +73,14 @@
                         },
                         {
                             "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "040ac751-32c7-432d-8d59-7b606616130a",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
                                 {
                                     "componentAttributes": {},
                                     "componentName": "c:stoRegisterThread",

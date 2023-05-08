@@ -12,7 +12,7 @@
     "views": [
         {
             "componentAttributes": {},
-            "componentName": "community_byo:scopedHeaderAndFooter",
+            "componentName": "community_layout:simpleThemeLayout",
             "id": "f886bca1-a0fa-40d7-b09b-c53d108b59c1",
             "label": "Scoped Header and Footer",
             "regions": [
@@ -31,10 +31,11 @@
                                     "components": [
                                         {
                                             "componentAttributes": {
-                                                "navareapicklist": "Privatperson"
+                                                "context": "Privatperson",
+                                                "env": "Dev"
                                             },
-                                            "componentName": "c:globalCommunityHeader",
-                                            "id": "a015c8a1-2919-49fe-9f27-629adc8e66f3",
+                                            "componentName": "c:decoratorHeader",
+                                            "id": "b27b80d2-6208-4f06-a922-6039be6c96ba",
                                             "renditionMap": {},
                                             "type": "component"
                                         }
@@ -69,11 +70,9 @@
                                 {
                                     "components": [
                                         {
-                                            "componentAttributes": {
-                                                "navareapicklist": "Privatperson"
-                                            },
-                                            "componentName": "c:globalCommunityFooter",
-                                            "id": "96d046ac-30e1-445c-aa93-9e68b244c43a",
+                                            "componentAttributes": {},
+                                            "componentName": "c:decoratorFooter",
+                                            "id": "7ccb4264-3940-4ffd-a647-6decfc558b42",
                                             "renditionMap": {},
                                             "type": "component"
                                         }
@@ -92,6 +91,11 @@
                     ],
                     "id": "1da3bf6e-0eef-4de3-af4e-ae5d599d3670",
                     "regionName": "footer",
+                    "type": "region"
+                },
+                {
+                    "id": "79a2d8f1-1dae-41ac-b0d8-78bfa5790ca3",
+                    "regionName": "default",
                     "type": "region"
                 }
             ],

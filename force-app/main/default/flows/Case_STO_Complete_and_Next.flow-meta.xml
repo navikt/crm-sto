@@ -767,6 +767,7 @@
                 <isRequired>false</isRequired>
             </fields>
             <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
                 <conditionLogic>or</conditionLogic>
                 <conditions>
@@ -812,6 +813,12 @@
                         <name>theme</name>
                         <value>
                             <elementReference>Get_Case_Thread.CRM_Theme__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>variant</name>
+                        <value>
+                            <stringValue>HIDE_THEME_GROUP</stringValue>
                         </value>
                     </inputParameters>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -873,6 +880,7 @@
                 <isRequired>false</isRequired>
             </fields>
             <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
