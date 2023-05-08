@@ -3,12 +3,12 @@
     <actionCalls>
         <name>Generate_Survey_Invitation_Link</name>
         <label>Generate Survey Invitation Link</label>
-        <locationX>374</locationX>
+        <locationX>308</locationX>
         <locationY>695</locationY>
         <actionName>STO_SurveyHelper</actionName>
         <actionType>apex</actionType>
         <connector>
-            <targetReference>Check_NAV_Ident</targetReference>
+            <targetReference>Update_Survey_Invitation</targetReference>
         </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
@@ -42,35 +42,6 @@
             <label>Is Reserved</label>
         </rules>
     </decisions>
-    <decisions>
-        <name>Check_NAV_Ident</name>
-        <label>Check NAV Ident</label>
-        <locationX>374</locationX>
-        <locationY>815</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Has_NAV_Ident</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>$User.CRM_NAV_Ident__c</leftValueReference>
-                <operator>NotEqualTo</operator>
-                <rightValue>
-                    <stringValue></stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$User.CRM_NAV_Ident__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Update_SurveyInvitation</targetReference>
-            </connector>
-            <label>Has NAV Ident</label>
-        </rules>
-    </decisions>
     <environments>Default</environments>
     <interviewLabel>STO - Generate Survey {!$Flow.CurrentDateTime}</interviewLabel>
     <label>STO - Generate Survey</label>
@@ -96,7 +67,7 @@
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>374</locationX>
+        <locationX>308</locationX>
         <locationY>575</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -136,10 +107,10 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
-        <name>Update_SurveyInvitation</name>
-        <label>Update SurveyInvitation</label>
-        <locationX>242</locationX>
-        <locationY>935</locationY>
+        <name>Update_Survey_Invitation</name>
+        <label>Update Survey Invitation</label>
+        <locationX>308</locationX>
+        <locationY>815</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Name</field>
@@ -151,13 +122,13 @@
         <inputAssignments>
             <field>NKS_Survey_Theme__c</field>
             <value>
-                <elementReference>$Record.CRM_Theme_Name__c</elementReference>
+                <elementReference>$Record.CRM_Theme_Group_Name__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>NKS_Survey_Unit__c</field>
             <value>
-                <elementReference>$User.Department</elementReference>
+                <elementReference>Get_Case.Owner:User.Department</elementReference>
             </value>
         </inputAssignments>
         <object>SurveyInvitation</object>
@@ -168,7 +139,6 @@
         <connector>
             <targetReference>Get_Person</targetReference>
         </connector>
-        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>and</filterLogic>
         <filters>
             <field>CRM_Thread_Type__c</field>
