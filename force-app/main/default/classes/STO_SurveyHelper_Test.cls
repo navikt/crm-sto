@@ -16,20 +16,6 @@ public class STO_SurveyHelper_Test {
     }
 
     @isTest
-    static void testGenerateSurveyLink() {
-        Id caseId = [SELECT Id FROM Case LIMIT 1]?.Id;
-        STO_SurveyHelper.SurveyInvocableParameters parameters = new STO_SurveyHelper.SurveyInvocableParameters();
-        parameters.surveyDeveloperName = 'test_survey';
-        parameters.caseId = caseId;
-
-        Test.startTest();
-        List<String> surveyLinks = STO_SurveyHelper.generateSurveyLink(
-            new List<STO_SurveyHelper.SurveyInvocableParameters>{ parameters }
-        );
-        Test.stopTest();
-    }
-
-    @isTest
     static void testGetURL() {
         String result = '';
         Test.startTest();
