@@ -5,7 +5,9 @@ public class STO_ThreadJournalBatcher_Test {
         Common_Code__c comCode = (Common_Code__c) STO_TestDataFactory.createRecord(
             new Common_Code__c(Name = 'Dagpenger', CRM_Code__c = 'DAG', CRM_Code_Set__c = 'Tema')
         );
-        Thread__c thread = (Thread__c) STO_TestDataFactory.createRecord(new Thread__c(CRM_isActive__c = false));
+        Thread__c thread = (Thread__c) STO_TestDataFactory.createRecord(
+            new Thread__c(CRM_isActive__c = false, CRM_Thread_Type__c = 'STO')
+        );
         STO_TestDataFactory.createRecord(
             new Message__c(CRM_Message_Text__c = 'TEST MESSAGE', CRM_Thread__c = thread.Id)
         );
