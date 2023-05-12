@@ -34,7 +34,7 @@ export default class NksViewThread extends LightningElement {
             console.log('Error:', error);
         } else if (data) {
             const actualThreadType = getFieldValue(data, THREAD_TYPE);
-            if (!allowedThreadTypes[this.threadType].contains(actualThreadType)) this.redirect(actualThreadType);
+            if (!allowedThreadTypes[this.threadType].includes(actualThreadType)) this.redirect(actualThreadType);
         }
     }
 
