@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Ufør2</label>
+    <protected>false</protected>
+    <values>
+        <field>STO_Body__c</field>
+        <value xsi:type="xsd:string">Fra 1. mai øker grunnbeløpet. Da vil også din uføretrygd øke. 
+
+Første utbetaling med nytt beløp vil skje i juni, og vil også inneholde etterbetaling for mai. 
+
+ 
+
+Vi kan dessverre ikke se hva du vil få utbetalt etter endringen. Dette vil først være synlig på nav.no ca. en uke før utbetalingsdato. Logg inn på &lt;a href=&quot;https://www.nav.no/dineutbetalinger&quot;&gt;www.nav.no/dineutbetalinger&lt;/a&gt; for å se kommende utbetalinger. </value>
+    </values>
+    <values>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Ufør</value>
+    </values>
+    <values>
+        <field>STO_Header__c</field>
+        <value xsi:type="xsd:string">Økt uføretrygd</value>
+    </values>
+</CustomMetadata>
