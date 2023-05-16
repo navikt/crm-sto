@@ -456,7 +456,7 @@
             <targetReference>Get_Case_Record</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>Prior_Incompetent_Values</name>
         <dataType>String</dataType>
