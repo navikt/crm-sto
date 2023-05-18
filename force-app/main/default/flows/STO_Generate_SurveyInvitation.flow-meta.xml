@@ -8,7 +8,7 @@
         <actionName>NKS_SurveyController</actionName>
         <actionType>apex</actionType>
         <connector>
-            <targetReference>Update_Survey_Invitation</targetReference>
+            <targetReference>Get_Thread</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Log_Error</targetReference>
@@ -111,6 +111,43 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
+        <name>Get_Message</name>
+        <label>Get Message</label>
+        <locationX>308</locationX>
+        <locationY>815</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Update_Survey_Invitation</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Thread__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Thread.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Message</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_From_User__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Message__c</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>Get_Person</name>
         <label>Get Person</label>
         <locationX>176</locationX>
@@ -131,11 +168,32 @@
         <object>Person__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Thread</name>
+        <label>Get Thread</label>
+        <locationX>308</locationX>
+        <locationY>695</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Message</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Related_Object__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Thread__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>Update_Survey_Invitation</name>
         <label>Update Survey Invitation</label>
         <locationX>308</locationX>
-        <locationY>695</locationY>
+        <locationY>935</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Name</field>
@@ -153,7 +211,7 @@
         <inputAssignments>
             <field>NKS_Survey_Unit__c</field>
             <value>
-                <elementReference>$Record.Owner:User.Department</elementReference>
+                <elementReference>Get_Message.CRM_From_User__r.Department</elementReference>
             </value>
         </inputAssignments>
         <object>SurveyInvitation</object>
