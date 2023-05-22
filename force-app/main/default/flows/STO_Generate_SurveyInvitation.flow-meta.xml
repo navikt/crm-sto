@@ -70,7 +70,7 @@
         <name>Check_Assignee_For_Thread</name>
         <label>Check Assignee For Thread</label>
         <locationX>374</locationX>
-        <locationY>935</locationY>
+        <locationY>815</locationY>
         <defaultConnector>
             <targetReference>Update_SurveyInvitation</targetReference>
         </defaultConnector>
@@ -157,34 +157,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_SurveyInvitation</name>
-        <label>Get SurveyInvitation</label>
-        <locationX>374</locationX>
-        <locationY>815</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Check_Assignee_For_Thread</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Name</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>SurveyInvitation</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
         <locationX>374</locationX>
         <locationY>695</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_SurveyInvitation</targetReference>
+            <targetReference>Check_Assignee_For_Thread</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -202,7 +181,7 @@
         <name>Update_SurveyInvitation</name>
         <label>Update SurveyInvitation</label>
         <locationX>506</locationX>
-        <locationY>1055</locationY>
+        <locationY>935</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Name</field>
@@ -229,7 +208,7 @@
         <name>Update_SurveyInvitation_2</name>
         <label>Update SurveyInvitation</label>
         <locationX>242</locationX>
-        <locationY>1055</locationY>
+        <locationY>935</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Name</field>
