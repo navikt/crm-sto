@@ -3,7 +3,7 @@
     <actionCalls>
         <name>Generate_Survey_Invitation_Link</name>
         <label>Generate Survey Invitation Link</label>
-        <locationX>308</locationX>
+        <locationX>374</locationX>
         <locationY>575</locationY>
         <actionName>NKS_SurveyController</actionName>
         <actionType>apex</actionType>
@@ -31,7 +31,7 @@
     <actionCalls>
         <name>Log_Error</name>
         <label>Log Error</label>
-        <locationX>572</locationX>
+        <locationX>770</locationX>
         <locationY>695</locationY>
         <actionName>LoggerUtility</actionName>
         <actionType>apex</actionType>
@@ -66,6 +66,84 @@
         </inputParameters>
     </actionCalls>
     <apiVersion>57.0</apiVersion>
+    <assignments>
+        <name>Assign_Values</name>
+        <label>Assign Values</label>
+        <locationX>242</locationX>
+        <locationY>1055</locationY>
+        <assignmentItems>
+            <assignToReference>Get_SurveyInvitation.NKS_Survey_Unit__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Owner:User.Department</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_SurveyInvitation.NKS_Survey_Theme__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.STO_Category__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Survey_Invitation</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Values_2</name>
+        <label>Assign Values</label>
+        <locationX>506</locationX>
+        <locationY>1055</locationY>
+        <assignmentItems>
+            <assignToReference>Get_SurveyInvitation.NKS_Survey_Unit__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_SurveyInvitation.NKS_Survey_Theme__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.STO_Category__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Survey_Invitation</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Check_Assignee_For_Thread</name>
+        <label>Check Assignee For Thread</label>
+        <locationX>374</locationX>
+        <locationY>935</locationY>
+        <defaultConnector>
+            <targetReference>Assign_Values_2</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>isNKS</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Assignee_NAV_Unit__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue></stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Assignee_NAV_Unit__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Values</targetReference>
+            </connector>
+            <label>isNKS</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>Check_If_Person_Is_Reserved_In_KRR</name>
         <label>Check If Person Is Reserved In KRR</label>
@@ -111,43 +189,6 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>Get_Message</name>
-        <label>Get Message</label>
-        <locationX>308</locationX>
-        <locationY>815</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Update_Survey_Invitation</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Thread__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Thread.Id</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Type__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Message</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_From_User__c</field>
-            <operator>NotEqualTo</operator>
-            <value>
-                <stringValue></stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Message__c</object>
-        <sortField>CreatedDate</sortField>
-        <sortOrder>Desc</sortOrder>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Person</name>
         <label>Get Person</label>
         <locationX>176</locationX>
@@ -169,13 +210,34 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <name>Get_SurveyInvitation</name>
+        <label>Get SurveyInvitation</label>
+        <locationX>374</locationX>
+        <locationY>815</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Assignee_For_Thread</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>SurveyInvitation</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>308</locationX>
+        <locationX>374</locationX>
         <locationY>695</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Message</targetReference>
+            <targetReference>Get_SurveyInvitation</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -192,29 +254,9 @@
     <recordUpdates>
         <name>Update_Survey_Invitation</name>
         <label>Update Survey Invitation</label>
-        <locationX>308</locationX>
-        <locationY>935</locationY>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Name</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Id</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>NKS_Survey_Theme__c</field>
-            <value>
-                <elementReference>$Record.STO_Category__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>NKS_Survey_Unit__c</field>
-            <value>
-                <elementReference>Get_Message.CRM_From_User__r.Department</elementReference>
-            </value>
-        </inputAssignments>
-        <object>SurveyInvitation</object>
+        <locationX>374</locationX>
+        <locationY>1271</locationY>
+        <inputReference>Get_SurveyInvitation</inputReference>
     </recordUpdates>
     <start>
         <locationX>50</locationX>
