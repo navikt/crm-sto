@@ -3,12 +3,12 @@
     <actionCalls>
         <name>Generate_Survey_Invitation_Link</name>
         <label>Generate Survey Invitation Link</label>
-        <locationX>308</locationX>
+        <locationX>374</locationX>
         <locationY>575</locationY>
         <actionName>NKS_SurveyController</actionName>
         <actionType>apex</actionType>
         <connector>
-            <targetReference>Update_Survey_Invitation</targetReference>
+            <targetReference>Get_Thread</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Log_Error</targetReference>
@@ -31,7 +31,7 @@
     <actionCalls>
         <name>Log_Error</name>
         <label>Log Error</label>
-        <locationX>572</locationX>
+        <locationX>770</locationX>
         <locationY>695</locationY>
         <actionName>LoggerUtility</actionName>
         <actionType>apex</actionType>
@@ -66,6 +66,31 @@
         </inputParameters>
     </actionCalls>
     <apiVersion>57.0</apiVersion>
+    <decisions>
+        <name>Check_Assignee_For_Thread</name>
+        <label>Check Assignee For Thread</label>
+        <locationX>374</locationX>
+        <locationY>815</locationY>
+        <defaultConnector>
+            <targetReference>Update_SurveyInvitation</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>isNKS</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Assignee_NAV_Unit__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_SurveyInvitation_2</targetReference>
+            </connector>
+            <label>isNKS</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>Check_If_Person_Is_Reserved_In_KRR</name>
         <label>Check If Person Is Reserved In KRR</label>
@@ -124,18 +149,66 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>$Record.Account.CRM_Person__r.Id</elementReference>
+                <elementReference>$Record.Account.CRM_Person__c</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Person__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordUpdates>
-        <name>Update_Survey_Invitation</name>
-        <label>Update Survey Invitation</label>
-        <locationX>308</locationX>
+    <recordLookups>
+        <name>Get_Thread</name>
+        <label>Get Thread</label>
+        <locationX>374</locationX>
         <locationY>695</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Assignee_For_Thread</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Related_Object__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Thread__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_SurveyInvitation</name>
+        <label>Update SurveyInvitation</label>
+        <locationX>506</locationX>
+        <locationY>935</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>NKS_Survey_Theme__c</field>
+            <value>
+                <elementReference>$Record.STO_Category__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>NKS_Survey_Unit__c</field>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
+            </value>
+        </inputAssignments>
+        <object>SurveyInvitation</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_SurveyInvitation_2</name>
+        <label>Update SurveyInvitation</label>
+        <locationX>242</locationX>
+        <locationY>935</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Name</field>
