@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.91.0.NEXT",
+            "versionNumber": "1.94.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
@@ -58,6 +58,10 @@
                 {
                     "package": "crm-nks-chat",
                     "versionNumber": "0.10.0.LATEST"
+                },
+                {
+                    "package": "crm-nks-survey",
+                    "versionNumber": "0.5.0.LATEST"
                 }
             ]
         }
@@ -92,6 +96,7 @@
         "crm-shared-flowComponents": "0Ho2o000000fxYJCAY",
         "crm-nks-chat": "0Ho7U000000000GSAQ",
         "crm-nks-base-components": "0Ho7U000000000LSAQ",
-        "crm-sto": "0Ho2o000000fxXpCAI"
+        "crm-sto": "0Ho2o000000fxXpCAI",
+        "crm-nks-survey": "0Ho7U0000000014SAA"
     }
 }
