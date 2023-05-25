@@ -95,12 +95,8 @@
     text-decoration: none;
 }
 
-.vilkar-link:active {
-    background-color: var(--ac-link-active-bg, var(--a-border-focus));
-    box-shadow: 0 0 0 2px var(--ac-link-active-border, var(--a-border-focus));
-}
-
-.vilkar-link:focus {
+.vilkar-link:active,
+:focus {
     background-color: var(--ac-link-active-bg, var(--a-border-focus));
     box-shadow: 0 0 0 2px var(--ac-link-active-border, var(--a-border-focus));
 }
