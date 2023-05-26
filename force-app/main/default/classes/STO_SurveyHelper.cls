@@ -6,7 +6,8 @@ public without sharing class STO_SurveyHelper {
      */
     @AuraEnabled(cacheable=true)
     public static String getSurveyLink(Id caseId) {
-        return [SELECT InvitationLink FROM SurveyInvitation WHERE Case__c = :caseId LIMIT 1]?.InvitationLink;
+        return [SELECT InvitationLink FROM SurveyInvitation WHERE Case__c = :caseId OR Name = :caseId LIMIT 1]
+        ?.InvitationLink;
     }
 
     /**
