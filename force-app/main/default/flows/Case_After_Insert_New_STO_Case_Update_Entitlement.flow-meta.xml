@@ -2,7 +2,8 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>53.0</apiVersion>
     <decisions>
-        <description>Verify if the account already has an entitlement record created, if not this needs to be created first</description>
+        <description>Verify if the account already has an entitlement record created, if not this
+            needs to be created first</description>
         <name>Check_Account_Entitlement</name>
         <label>Check Account Entitlement</label>
         <locationX>352</locationX>
@@ -28,6 +29,13 @@
         </rules>
     </decisions>
     <description>Handles setting the correct entitlement ID for the created STO case</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>entitlementBasedOnCaseOrigin</name>
+        <dataType>String</dataType>
+        <expression>IF({!$Record.NKS_Case_Origin__c} = &apos;STO&apos;, &apos;STO Entitlement&apos;,
+            &apos;BTO Entitlement&apos;)</expression>
+    </formulas>
     <interviewLabel>Case - After Insert - New STO Case Update Entitlement {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case - After Insert - New STO Case Update Entitlement</label>
     <processMetadataValues>
@@ -76,7 +84,7 @@
         <inputAssignments>
             <field>Name</field>
             <value>
-                <stringValue>STO Entitlement</stringValue>
+                <elementReference>entitlementBasedOnCaseOrigin</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -302,12 +310,19 @@
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
-        <filterLogic>and</filterLogic>
+        <filterLogic>or</filterLogic>
         <filters>
             <field>Origin</field>
             <operator>EqualTo</operator>
             <value>
                 <stringValue>STO</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Origin</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>BTO</stringValue>
             </value>
         </filters>
         <object>Case</object>
