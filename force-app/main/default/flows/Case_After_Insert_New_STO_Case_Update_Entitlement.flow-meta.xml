@@ -13,7 +13,7 @@
         </defaultConnector>
         <defaultConnectorLabel>No Entitlement</defaultConnectorLabel>
         <rules>
-            <name>Has_STO_Entitlement</name>
+            <name>Has_STO_or_BTO_Entitlement</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>ACCOUNT_ENTITLEMENT_ID</leftValueReference>
@@ -25,7 +25,7 @@
             <connector>
                 <targetReference>Update_Case_Entitlement_ID</targetReference>
             </connector>
-            <label>Has STO Entitlement</label>
+            <label>Has STO or BTO Entitlement</label>
         </rules>
     </decisions>
     <description>Handles setting the correct entitlement ID for the created STO case</description>
