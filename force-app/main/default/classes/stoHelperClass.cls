@@ -127,6 +127,11 @@ public with sharing class stoHelperClass {
      */
 
     @AuraEnabled(cacheable=true)
+    public static List<News> getCategoryNews(String category) {
+        return getCategoryNews(category, 'STO');
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<News> getCategoryNews(String category, String threadType) {
         List<News> news = new List<News>();
 
