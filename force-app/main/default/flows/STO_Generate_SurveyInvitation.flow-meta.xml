@@ -64,50 +64,7 @@
         <inputParameters>
             <name>logMessage</name>
             <value>
-                <stringValue>An error has occurred on generating SurveyInvitation</stringValue>
-            </value>
-        </inputParameters>
-    </actionCalls>
-    <actionCalls>
-        <name>Log_Error_2</name>
-        <label>Log Error</label>
-        <locationX>1001</locationX>
-        <locationY>935</locationY>
-        <actionName>LoggerUtility</actionName>
-        <actionType>apex</actionType>
-        <dataTypeMappings>
-            <typeName>T__refRecord</typeName>
-            <typeValue>SurveyInvitation</typeValue>
-        </dataTypeMappings>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>category</name>
-            <value>
-                <stringValue>NKs</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>domain</name>
-            <value>
-                <stringValue>STO</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>logLevel</name>
-            <value>
-                <stringValue>ERROR</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>logMessage</name>
-            <value>
-                <stringValue>An error has occurred on getting SurveyInvitation</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>refRecord</name>
-            <value>
-                <elementReference>Get_SurveyInvitation</elementReference>
+                <stringValue>An error has occurred on generating/updating SurveyInvitation</stringValue>
             </value>
         </inputParameters>
     </actionCalls>
@@ -279,9 +236,6 @@
         <connector>
             <targetReference>Get_Thread</targetReference>
         </connector>
-        <faultConnector>
-            <targetReference>Log_Error_2</targetReference>
-        </faultConnector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -320,6 +274,10 @@
         <label>Update SurveyInvitation</label>
         <locationX>605</locationX>
         <locationY>1391</locationY>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Log_Error</targetReference>
+        </faultConnector>
         <inputReference>Get_SurveyInvitation</inputReference>
     </recordUpdates>
     <start>
