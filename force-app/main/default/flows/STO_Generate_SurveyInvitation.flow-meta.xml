@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Generate_Survey_Invitation_Link</name>
-        <label>Generate Survey Invitation Link</label>
+        <name>Generate_Survey_Invitation</name>
+        <label>Generate Survey Invitation</label>
         <locationX>407</locationX>
         <locationY>575</locationY>
         <actionName>NKS_SurveyController</actionName>
@@ -146,7 +146,7 @@
         <locationX>176</locationX>
         <locationY>455</locationY>
         <defaultConnector>
-            <targetReference>Generate_Survey_Invitation_Link</targetReference>
+            <targetReference>Generate_Survey_Invitation</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -314,7 +314,7 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <value>
-            <elementReference>Generate_Survey_Invitation_Link</elementReference>
+            <elementReference>Generate_Survey_Invitation</elementReference>
         </value>
     </variables>
 </Flow>
