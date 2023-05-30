@@ -184,7 +184,7 @@
         <locationY>935</locationY>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Name</field>
+            <field>Case__c</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>$Record.Id</elementReference>
@@ -211,7 +211,7 @@
         <locationY>935</locationY>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Name</field>
+            <field>Case__c</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>$Record.Id</elementReference>
