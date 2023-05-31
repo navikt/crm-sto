@@ -24,8 +24,9 @@
             <label>Close Thread</label>
         </rules>
     </decisions>
-    <interviewLabel>Schedule Thread Close {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Schedule Thread Close</label>
+    <environments>Default</environments>
+    <interviewLabel>STO Schedule Thread Close {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>STO Schedule Thread Close</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -101,7 +102,7 @@
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
-        <filterLogic>1 AND (2 OR 3) AND 4 AND 5</filterLogic>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>CRM_External_Message__c</field>
             <operator>EqualTo</operator>
@@ -114,13 +115,6 @@
             <operator>EqualTo</operator>
             <value>
                 <stringValue>STO</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Thread_Type__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>STB</stringValue>
             </value>
         </filters>
         <filters>

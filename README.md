@@ -53,6 +53,7 @@ sfdx sfpowerkit:package:dependencies:install -u scratch_org -r -a -w 60 -k ${key
 sfdx force:source:push
 sfdx force:org:open
 ```
+
 # Henvendelser
 
 Enten:
@@ -68,7 +69,7 @@ To set up the "innboks" experience you need to go through a couple of easy steps
 
 1. Kjør scratchSetup filen med kommandone `npm run scratchSetup`
 1. Aktiver community
-    1. Gå til Setup -> All Sites -> Workspaces -> Administation
+    1. Gå til Setup -> All Sites -> Workspaces -> Administration
     1. I settings så trykk Activate
     1. I members legg til Permissionsettet Skriv til Oss - Experience Cloud Access
     1. Gå tilbake til All Sites og åpne builderen

@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">Vi oppfordrer deg til å beregne pensjonen din i vår &lt;a href=&quot;https://www.nav.no/no/ditt-nav/flere-tjenester/din-pensjon&quot;&gt;pensjonskalkulator i Din pensjon&lt;/a&gt;. Hvis du ikke får beregnet pensjon i kalkulatoren, for eksempel fordi du allerede har en pensjonsutbetaling fra oss, må du ringe oss på telefon 55 55 33 34 for at vi skal kunne gi deg en beregning.</value>
+        <value xsi:type="xsd:string">Alle pensjoner reguleres fra 1. mai. Da vil også din pensjon øke. Første utbetaling med nytt beløp vil skje i juni, og vil også inneholde etterbetaling for mai. Vi har ikke informasjon per i dag om hva du vil få utbetalt etter endringen. Du kan se nytt beløp på &lt;a href=&quot;https://www.nav.no/utbetalinger&quot;&gt;nav.no/utbetaling&lt;/a&gt; ca. en uke før utbetalingsdato.</value>
     </values>
     <values>
         <field>STO_Category__c</field>
@@ -12,6 +12,6 @@
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Ønsker du beregning av pensjonen din?</value>
+        <value xsi:type="xsd:string">Ny regulering i pensjon fra 1. mai</value>
     </values>
 </CustomMetadata>

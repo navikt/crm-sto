@@ -51,7 +51,7 @@
 :host {
     --sds-c-textarea-sizing-min-height: 150px;
 }
-.decorator-wrapper {
+.nav-wrapper {
     margin-bottom: 4em;
 }
 
@@ -91,12 +91,14 @@
     background-color: transparent;
 }
 
-.vilkar-link:active {
-    background-color: var(--navds-link-color-background-active);
+.vilkar-link:hover {
+    text-decoration: none;
 }
 
-.vilkar-link:focus {
-    background-color: var(--navds-link-color-background-focus);
+.vilkar-link:active,
+:focus {
+    background-color: var(--ac-link-active-bg, var(--a-border-focus));
+    box-shadow: 0 0 0 2px var(--ac-link-active-border, var(--a-border-focus));
 }
 
 .override {
@@ -122,7 +124,7 @@
     gap: 16px;
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 576px) {
     .textLeftAlign-mobile {
         text-align: left;
     }

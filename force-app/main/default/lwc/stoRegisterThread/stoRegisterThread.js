@@ -1,8 +1,6 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { NavigationMixin } from 'lightning/navigation';
-import dekoratoren from '@salesforce/resourceUrl/dekoratoren';
-import { loadStyle } from 'lightning/platformResourceLoader';
 import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
@@ -33,6 +31,8 @@ import basepath from '@salesforce/community/basePath';
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
+    @api title;
+    @api threadTypeToMake;
     showspinner = false;
     selectedTheme;
     acceptedcategories = new Set();
@@ -130,12 +130,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     renderedCallback() {
-        loadStyle(this, dekoratoren);
         if (this.showspinner) {
             let spinner = this.template.querySelector('.spinner');
             spinner.focus();
         }
-        console.log(this.validparameter);
     }
     /**
      *  Handle Terms Modal Start
@@ -303,13 +301,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.openThreadList.length +
             ' åpne samtaler om ' +
             this.selectedTheme.toLowerCase() +
-            '. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor lukke noen av de du allerede har. Du kan også fortsette allerede åpne samtaler ved å klikke på de.'
+            '. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har. Du kan også fortsette allerede åpne samtaler ved å klikke på de.'
         );
     }
 
     get openThreadLink() {
-        console.log('this.openThreadList');
-        console.log(this.openThreadList);
         return basepath + '/skriv-til-oss/' + this.openThreadList[0].recordId;
     }
 
@@ -318,7 +314,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get showTextArea() {
-        console.log(this.openThreadList);
         return (
             this.openThreadList === null ||
             this.openThreadList === undefined ||

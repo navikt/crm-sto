@@ -65,10 +65,18 @@
                         {
                             "components": [
                                 {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "dca9ac6f-823e-4d10-954a-5b46f26ba13b",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
                                     "componentAttributes": {
                                         "alertopen": "",
                                         "alerttext": "",
-                                        "maxLength": 0,
+                                        "maxLength": 1000,
                                         "recordId": "{!recordId}"
                                     },
                                     "componentName": "c:crmMessagingCommunityThreadViewer",
