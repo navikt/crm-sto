@@ -1,6 +1,7 @@
 {
     "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
     "componentName": "community_layout:sldsFlexibleLayout",
+    "dataProviders": [],
     "id": "c09ad2fa-23f9-4070-a717-5e725a559153",
     "label": "Thread Detail",
     "regions": [
@@ -74,13 +75,12 @@
                                 },
                                 {
                                     "componentAttributes": {
-                                        "alertopen": "",
-                                        "alerttext": "",
                                         "maxLength": 1000,
-                                        "recordId": "{!recordId}"
+                                        "recordId": "{!recordId}",
+                                        "threadType": "STO"
                                     },
-                                    "componentName": "c:crmMessagingCommunityThreadViewer",
-                                    "id": "0bf2b937-1ad9-47fd-a89c-c15c3280c259",
+                                    "componentName": "c:nksViewThread",
+                                    "id": "1ac33024-3e0f-48e7-b5e3-bbed0ac26013",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"

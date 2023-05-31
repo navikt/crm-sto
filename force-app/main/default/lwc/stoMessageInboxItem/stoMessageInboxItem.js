@@ -4,7 +4,6 @@ import basepath from '@salesforce/community/basePath';
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
-    linkUrl;
     dialog = navlogos + '/send.svg';
     latestmessage;
     latestText;
@@ -19,7 +18,7 @@ export default class StoMessageInboxItem extends LightningElement {
     statuscolor;
     get itemTitle() {
         if (this.objectName === 'samtalereferat') return this.thread.name;
-        if (this.objectName === 'skriv-til-oss') {
+        if (this.objectName === 'skriv-til-oss' || this.objectName === 'beskjed-til-oss') {
             if (this.isOpen) {
                 if (this.isExternal === true) {
                     return this.thread.name + ': Du sendte en melding';
@@ -40,15 +39,6 @@ export default class StoMessageInboxItem extends LightningElement {
     }
     connectedCallback() {
         this.objectName = this.thread.objectName;
-        this.linkUrl =
-            basepath +
-            '/' +
-            this.objectName +
-            '/' +
-            this.thread.recordId +
-            '/' +
-            this.thread.recordName.replace(/[ -]+/g, '-');
-        this.threadId = this.thread.recordId;
         if (this.thread.status == 'Åpen') {
             this.statuscolor = 'greenfont';
             this.isOpen = true;
@@ -67,5 +57,17 @@ export default class StoMessageInboxItem extends LightningElement {
 
     get showStatus() {
         return this.objectName != 'samtalereferat';
+    }
+
+    get linkUrl() {
+        return this.objectName === 'beskjed-til-oss'
+            ? basepath + '/' + this.objectName + '/' + 'visning?samtale=' + this.thread.recordId
+            : basepath +
+                  '/' +
+                  this.objectName +
+                  '/' +
+                  this.thread.recordId +
+                  '/' +
+                  this.thread.recordName.replace(/[ -]+/g, '-');
     }
 }

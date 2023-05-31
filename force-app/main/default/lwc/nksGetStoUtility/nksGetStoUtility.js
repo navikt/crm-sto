@@ -64,16 +64,15 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                 console.log(error);
                 if (error.body.message === 'hasInProgress') {
                     this.dispatchEvent(
-                        // TODO: make clear error/info messages :)
                         new ShowToastEvent({
-                            title: 'Du har allerede STO under arbeid.',
+                            title: 'Du har allerede melding(er) under arbeid.',
                             variant: 'warning'
                         })
                     );
                 } else if (typeof error.body.message === 'string' && error.body.message.startsWith('Max Attempt')) {
                     this.dispatchEvent(
                         new ShowToastEvent({
-                            title: 'Kunne ikke hente ny STO.',
+                            title: 'Kunne ikke hente ny melding.',
                             message: 'Prøv igjen.',
                             variant: 'warning'
                         })
@@ -81,8 +80,8 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                 } else if (typeof error.body.message === 'string' && error.body.message.startsWith('NotFound')) {
                     this.dispatchEvent(
                         new ShowToastEvent({
-                            title: 'Kunne ikke hente ny STO.',
-                            message: 'Ingen flere STOer på køer du behandler.',
+                            title: 'Kunne ikke hente ny melding.',
+                            message: 'Ingen flere meldinger på køer du behandler.',
                             variant: 'info'
                         })
                     );
@@ -108,7 +107,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
         this.invokeUtilityBarAPI('getAllUtilityInfo').then((allUtilityInfo) => {
             var stoUtility = allUtilityInfo.find((e) => {
                 //Matches the label of the utility component defined in app manager
-                return e.utilityLabel === 'Skriv til oss';
+                return e.utilityLabel === 'Hent ny melding';
             });
             if (stoUtility) {
                 this.utilityId = stoUtility.id;

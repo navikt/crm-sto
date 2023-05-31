@@ -1,0 +1,144 @@
+{
+    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+    "componentName": "community_layout:sldsFlexibleLayout",
+    "dataProviders": [],
+    "id": "20acd9b5-86ea-4220-9084-b71e0f2b6279",
+    "label": "Beskjed til oss",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "sectionConfig": "{\"UUID\":\"17689449-d563-4cd8-88b7-ff9e785749ea\",\"columns\":[{\"UUID\":\"706e2d62-e8f2-4cb4-96ea-3686f6584d7f\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "17689449-d563-4cd8-88b7-ff9e785749ea",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "4b8c466f-2222-400c-a6c7-ed3e87f74c45",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "firstLevel": "Privatperson",
+                                        "firstLevelLink": "https://nav.no",
+                                        "leafnode": "Beskjed til oss",
+                                        "secondLevel": "Min side",
+                                        "secondLevelLink": "https://www.nav.no/minside/",
+                                        "thirdLevel": "Innboks",
+                                        "thirdLevelLink": "https://innboks.nav.no"
+                                    },
+                                    "componentName": "c:communityBreadCrumb",
+                                    "id": "5396fa31-bee5-42fb-8fcf-d908b369a238",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "706e2d62-e8f2-4cb4-96ea-3686f6584d7f",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "sectionConfig": "{\"UUID\":\"e4586d99-ecbc-45cf-94de-0290c8513959\",\"columns\":[{\"UUID\":\"876225d1-1cb3-426e-b18d-93f65c204b07\",\"columnName\":\"Column 1\",\"columnKey\":\"2853b\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"ddc2ab0e-b70f-424a-9ced-f9358fc8eb61\",\"columnName\":\"Column 2\",\"columnKey\":\"923c7\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"f646cc5a-ed93-4a54-9119-c27470ae37ef\",\"columnName\":\"Column 3\",\"columnKey\":\"0d105\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "e4586d99-ecbc-45cf-94de-0290c8513959",
+                    "regions": [
+                        {
+                            "id": "876225d1-1cb3-426e-b18d-93f65c204b07",
+                            "regionLabel": "Column 1",
+                            "regionName": "2853b",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "d7c80ca7-1e8a-440b-aef8-36caa2b0a6f0",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "threadTypeToMake": "BTO",
+                                        "title": "Beskjed til oss"
+                                    },
+                                    "componentName": "c:stoRegisterThread",
+                                    "id": "455b66a1-1197-452a-8335-6885e8f51fb7",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "ddc2ab0e-b70f-424a-9ced-f9358fc8eb61",
+                            "regionLabel": "Column 2",
+                            "regionName": "923c7",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "id": "f646cc5a-ed93-4a54-9119-c27470ae37ef",
+                            "regionLabel": "Column 3",
+                            "regionName": "0d105",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                }
+            ],
+            "id": "39ef2e68-1fd4-4bd9-bbee-8d2c88f79a7a",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "pageTitle": "Beskjed til oss",
+                        "recordId": "{!recordId}"
+                    },
+                    "componentName": "community_builder:seoAssistant",
+                    "id": "0b0c497a-5b52-4b8c-a4df-04cac8e1d88d",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "6b8a329a-31b1-43be-acd3-95607f597789",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-beskjed-til-oss"
+}
