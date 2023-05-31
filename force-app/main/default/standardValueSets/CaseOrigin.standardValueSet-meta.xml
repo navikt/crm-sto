@@ -26,4 +26,9 @@
         <default>false</default>
         <label>STO</label>
     </standardValue>
+    <standardValue>
+        <fullName>BTO</fullName>
+        <default>false</default>
+        <label>BTO</label>
+    </standardValue>
 </StandardValueSet>

@@ -277,6 +277,7 @@
             <label>Thread has Theme</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <interviewLabel>Message - After Insert {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Message - After Insert - External Message and STO/STB True</label>
     <processMetadataValues>
@@ -559,7 +560,7 @@
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
-        <filterLogic>1 AND (2 OR 3)</filterLogic>
+        <filterLogic>1 AND (2 OR 3 OR 4)</filterLogic>
         <filters>
             <field>CRM_External_Message__c</field>
             <operator>EqualTo</operator>
@@ -579,6 +580,13 @@
             <operator>EqualTo</operator>
             <value>
                 <stringValue>STB</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Thread_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>BTO</stringValue>
             </value>
         </filters>
         <object>Message__c</object>

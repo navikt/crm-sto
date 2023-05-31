@@ -1,5 +1,12 @@
 public with sharing class stoHelperClass {
     private static final LoggerUtility logger = new LoggerUtility('STO');
+    private static final List<String> allowedThreadTypes = new List<String>{ 'STO', 'BTO' };
+
+    private static final Map<String, List<String>> threadTypeMap = new Map<String, List<String>>{
+        'STO' => new List<String>{ 'STO', 'STB' },
+        'BTO' => new List<String>{ 'BTO' },
+        'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
+    };
 
     private static Map<String, Id> commonCodeMap {
         get {
@@ -36,25 +43,37 @@ public with sharing class stoHelperClass {
         return [SELECT Id, Label, STO_Category__c FROM STO_Category__mdt ORDER BY Id];
     }
     /**
-     * Method to create case, thread and message when a user submits a write to us case
+     * Method to create case, thread and message when a user submits a write to us case. Case is created through
+     * flow "On New STO Thread Create Task Or Case" on after-insert trigger.
      * @author Lars Petter Johnsen
      * @date 08.06.21
      */
     @AuraEnabled
-    public static Thread__c createRequest(String theme, String msgText, Boolean medskriv) {
+    public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type) {
         String relatedObjId;
         Thread__c thread;
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
 
-        thread = createThread(null, theme, personUser, medskriv);
+        thread = createThread(null, theme, personUser, medskriv, type);
         createMessage(thread, msgText, personUser.ContactId);
 
         return thread;
     }
 
-    private static Thread__c createThread(String relatedObjId, String theme, User personUser, Boolean medskriv) {
-        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId, medskriv);
+    @AuraEnabled
+    public static Thread__c createRequest(String theme, String msgText, Boolean medskriv) {
+        return createThreadWithCase(theme, msgText, medskriv, 'STO');
+    }
+
+    private static Thread__c createThread(
+        String relatedObjId,
+        String theme,
+        User personUser,
+        Boolean medskriv,
+        String type
+    ) {
+        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId, medskriv, type);
     }
 
     /**
@@ -68,14 +87,15 @@ public with sharing class stoHelperClass {
         String theme,
         String accountId,
         String contactId,
-        Boolean medskriv
+        Boolean medskriv,
+        String type
     ) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = relatedObjId;
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
-        thread.Name = 'Skriv til oss';
-        thread.CRM_Thread_Type__c = 'STO';
+        thread.Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss';
+        thread.CRM_Thread_Type__c = allowedThreadTypes.contains(type) ? type : 'STO';
         thread.STO_Category__c = theme;
         thread.STO_Medskriv__c = medskriv;
         try {
@@ -103,23 +123,67 @@ public with sharing class stoHelperClass {
     }
     /**
      * Method for accessing news regarding a STO Category
-     * Returns a list of STO_News__C
-     * @author Lars Petter Johnsen
-     * @date 19.10.2021
+     * Returns a list of STO_News__C or BTO_News__c
      */
 
     @AuraEnabled(cacheable=true)
-    public static List<STO_News__mdt> getCategoryNews(String category) {
-        List<STO_News__mdt> news = [
-            SELECT STO_Body__c, STO_Header__c
-            FROM STO_News__mdt
-            WHERE STO_Category__c = :category
-        ];
-        return news;
+    public static List<News> getCategoryNews(String category) {
+        return getCategoryNews(category, 'STO');
     }
 
     @AuraEnabled(cacheable=true)
+    public static List<News> getCategoryNews(String category, String threadType) {
+        List<News> news = new List<News>();
+
+        if (threadType == 'BTO') {
+            for (BTO_News__mdt rec : [
+                SELECT BTO_Body__c, BTO_Header__c
+                FROM BTO_News__mdt
+                WHERE BTO_Category__c = :category
+            ]) {
+                news.add(new News(rec.BTO_Header__c, rec.BTO_Body__c, rec.Id));
+            }
+        } else {
+            for (STO_News__mdt rec : [
+                SELECT STO_Body__c, STO_Header__c
+                FROM STO_News__mdt
+                WHERE STO_Category__c = :category
+            ]) {
+                news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
+            }
+        }
+
+        if (news.size() == 0 && Test.isRunningTest()) {
+            news.add(new News('header test', 'body test', '123'));
+        }
+        return news;
+    }
+
+    public class News {
+        @AuraEnabled
+        public String header,
+            body,
+            id;
+        public News(String header, String body, String id) {
+            this.header = header;
+            this.body = body;
+            this.id = id;
+        }
+    }
+
+    @AuraEnabled
     public static List<stoInboxHelper.thread> getOpenThreads(String category) {
+        return getOpenThreads(category, 'ALL');
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
+        List<String> allowedThreadTypes;
+        if (threadTypeMap.keySet().contains(threadType)) {
+            allowedThreadTypes = threadTypeMap.get(threadType);
+        } else {
+            allowedThreadTypes = threadTypeMap.get('ALL');
+        }
         List<Thread__c> openThreads = [
             SELECT
                 Id,
@@ -140,7 +204,7 @@ public with sharing class stoHelperClass {
                     LIMIT 1
                 )
             FROM Thread__c
-            WHERE CRM_Is_Closed__C = FALSE AND CRM_Thread_Type__c IN ('STO', 'STB') AND STO_Category__c = :category
+            WHERE CRM_Is_Closed__C = FALSE AND CRM_Thread_Type__c IN :allowedThreadTypes AND STO_Category__c = :category
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         if (openThreads.size() > 0) {

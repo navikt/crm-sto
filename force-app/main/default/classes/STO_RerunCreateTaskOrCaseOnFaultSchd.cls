@@ -18,7 +18,8 @@ public with sharing class STO_RerunCreateTaskOrCaseOnFaultSchd implements Databa
             'CRM_Account__r.CRM_Person__r.INT_IsNavEmployee__c, ' +
             'CRM_Account__r.CRM_Person__r.INT_Confidential__c, ' +
             'CRM_Related_Object__c, ' +
-            'CRM_API_Reference__c ' +
+            'CRM_API_Reference__c, ' +
+            'CRM_Thread_Type__c ' +
             'FROM Thread__c ' +
             'WHERE Id = :threadId';
     }
