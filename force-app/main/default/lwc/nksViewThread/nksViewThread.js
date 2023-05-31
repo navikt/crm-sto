@@ -38,6 +38,7 @@ export default class NksViewThread extends LightningElement {
         }
     }
 
+    // Redirect for static user notifications links
     redirect(actualThreadType) {
         const link = urlMap[actualThreadType](this.recordId);
         window.open(link, '_self');
