@@ -2,10 +2,13 @@
 <QueueRoutingConfig xmlns="http://soap.sforce.com/2006/04/metadata">
     <capacityWeight>10.0</capacityWeight>
     <isAttributeBased>true</isAttributeBased>
-    <label>Fortrolig Addresse</label>
+    <label>STO Fortrolig Addresse</label>
     <routingModel>MOST_AVAILABLE</routingModel>
     <routingPriority>3</routingPriority>
     <skills>
         <skill>Fortrolig_addresse</skill>
+    </skills>
+    <skills>
+        <skill>STO</skill>
     </skills>
 </QueueRoutingConfig>

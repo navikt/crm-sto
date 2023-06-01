@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Translations xmlns="http://soap.sforce.com/2006/04/metadata">
     <customLabels>
+        <label>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har
+            mottatt beskjeden din.</label>
+        <name>Beskjed_til_oss_intro_text</name>
+    </customLabels>
+    <customLabels>
         <label>
             <!-- Journal Case List Col Case Id -->
         </label>

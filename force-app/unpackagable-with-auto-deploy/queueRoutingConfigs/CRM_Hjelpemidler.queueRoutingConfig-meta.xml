@@ -2,10 +2,13 @@
 <QueueRoutingConfig xmlns="http://soap.sforce.com/2006/04/metadata">
     <capacityWeight>10.0</capacityWeight>
     <isAttributeBased>true</isAttributeBased>
-    <label>Hjelpemidler</label>
+    <label>STO Hjelpemidler</label>
     <routingModel>MOST_AVAILABLE</routingModel>
     <routingPriority>5</routingPriority>
     <skills>
         <skill>Hjelpemidler</skill>
+    </skills>
+    <skills>
+        <skill>STO</skill>
     </skills>
 </QueueRoutingConfig>

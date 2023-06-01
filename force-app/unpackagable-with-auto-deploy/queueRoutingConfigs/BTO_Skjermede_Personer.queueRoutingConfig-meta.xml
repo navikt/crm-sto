@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QueueRoutingConfig xmlns="http://soap.sforce.com/2006/04/metadata">
+    <capacityWeight>10.0</capacityWeight>
+    <isAttributeBased>true</isAttributeBased>
+    <label>BTO Skjermede Personer</label>
+    <routingModel>MOST_AVAILABLE</routingModel>
+    <routingPriority>3</routingPriority>
+    <skills>
+        <skill>BTO</skill>
+    </skills>
+    <skills>
+        <skill>Skjermede_personer</skill>
+    </skills>
+</QueueRoutingConfig>
