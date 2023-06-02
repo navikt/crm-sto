@@ -19,9 +19,9 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
      *
      */
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
-        CaseMilestone caseMilestone;
+        CaseMilestone milestoneCase;
         try {
-            caseMilestone = [
+            milestoneCase = [
                 SELECT Id, TargetResponseInMins
                 FROM CaseMilestone
                 WHERE CaseId = :caseId AND MilestoneType.Name = 'Handling Time' AND IsCompleted = FALSE
@@ -32,8 +32,8 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
         }
 
         // Do not recalculate if Casemilestone already exists.
-        if (caseMilestone?.TargetResponseInMins != null) {
-            return caseMilestone.TargetResponseInMins;
+        if (milestoneCase?.TargetResponseInMins != null) {
+            return milestoneCase.TargetResponseInMins;
         }
 
         Datetime nextStartDate = BusinessHours.nextStartDate(

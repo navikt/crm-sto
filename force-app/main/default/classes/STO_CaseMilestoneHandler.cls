@@ -16,21 +16,20 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
         Map<Id, Case> casesToHandle = new Map<Id, Case>();
 
         for (Case casy : (List<Case>) Trigger.new) {
-            Case oldRecord = (Case) triggerOldMap.get(casy.Id);
+            Case oldCaseRecord = (Case) triggerOldMap.get(casy.Id);
             if (
                 casy.Origin == 'STO' ||
                 casy.origin == 'BTO' && triggerStatuses.contains(casy.Status) &&
-                MyTriggers.hasChangedFields(fieldNamesToCheck, casy, oldRecord)
+                MyTriggers.hasChangedFields(fieldNamesToCheck, casy, oldCaseRecord)
             ) {
                 casesToHandle.put(casy.Id, casy);
             }
         }
-
         closeCaseMilestones(casesToHandle);
     }
 
     private void closeCaseMilestones(Map<Id, Case> casesToHandle) {
-        Datetime complTime = Datetime.now();
+        Datetime completionTime = Datetime.now();
         List<ReportingData__c> repDataList = new List<ReportingData__c>();
         List<CaseMilestone> milestoneList = Test.isRunningTest()
             ? new List<CaseMilestone>{ new CaseMilestone() }
@@ -42,26 +41,28 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
                       AND IsCompleted = FALSE
                       AND MilestoneType.Name IN :milestoneTypes
               ];
-        for (CaseMilestone caseMile : milestoneList) {
-            Case milestoneCase = casesToHandle.containsKey(caseMile.CaseId) ? casesToHandle.get(caseMile.CaseId) : null;
-            if (milestoneCase != null && milestoneCase.Status == 'Forwarded') {
+        for (CaseMilestone milestoneCase : milestoneList) {
+            Case casy = casesToHandle.containsKey(milestoneCase.CaseId)
+                ? casesToHandle.get(milestoneCase.CaseId)
+                : null;
+            if (casy != null && casy.Status == 'Forwarded') {
                 // Only close handling time milestone, response time is still initial as end user is still awaiting the "full" response
-                caseMile.CompletionDate = caseMile.MilestoneType.Name == 'Respond STO' ||
-                    caseMile.MilestoneType.Name == 'Respond BTO'
+                milestoneCase.CompletionDate = milestoneCase.MilestoneType.Name == 'Respond STO' ||
+                    milestoneCase.MilestoneType.Name == 'Respond BTO'
                     ? null
-                    : complTime;
+                    : completionTime;
             } else {
                 if (!Test.isRunningTest())
-                    caseMile.CompletionDate = complTime;
+                    milestoneCase.CompletionDate = completionTime;
             }
 
-            if (caseMile.CompletionDate != null || Test.isRunningTest()) {
+            if (milestoneCase.CompletionDate != null || Test.isRunningTest()) {
                 repDataList.add(
                     new ReportingData__c(
-                        CRM_Category__c = milestoneCase?.Origin,
-                        STO_Category__c = milestoneCase?.STO_Category__c,
-                        STO_MilestoneId__c = caseMile.Id,
-                        CRM_NavUnitNumber__c = milestoneCase?.STO_Owner_Department__c
+                        CRM_Category__c = casy?.Origin,
+                        STO_Category__c = casy?.STO_Category__c,
+                        STO_MilestoneId__c = milestoneCase.Id,
+                        CRM_NavUnitNumber__c = casy?.STO_Owner_Department__c
                     )
                 );
             }
