@@ -32,7 +32,6 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
         }
 
         // Do not recalculate if Casemilestone already exists.
-        // Otherwise it will increment the time, because StartDate remains the same and we are calculating minutes from CaseMilestone StartDate.
         if (caseMilestone?.TargetResponseInMins != null) {
             return caseMilestone.TargetResponseInMins;
         }
