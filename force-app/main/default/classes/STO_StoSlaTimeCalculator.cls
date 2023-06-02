@@ -20,6 +20,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
     /**
      * Description: Calculates the time trigger for the Respond STO/BTO Milestone (the amount of time in which the milestone must be completed).
      * TargetResponseInMins field: The time to complete the milestone in minutes.
+     * Runs on Case update/insert when Milestone criteria are met.
      */
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
         CaseMilestone openSlaMilestone;

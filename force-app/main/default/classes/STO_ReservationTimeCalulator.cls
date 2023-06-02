@@ -18,6 +18,7 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
      * Description: Calculates the time trigger for the "Handling Time" Milestone (the amount of time in which the Milestone must be completed).
      * Violation Actions on the Milestone settings will escalate and redistribute the case after 2 days if Milestone IsCompleted = FALSE.
      * TargetResponseInMins field: The time to complete the Milestone in minutes.
+     * Runs on Case update/insert when Milestone criteria are met.
      */
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
         CaseMilestone milestoneCase;
