@@ -15,12 +15,13 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
     }
 
     /**
-     * description: calculating time from CaseMilestone StartDate to Violation
+     * Description: Calculates time from CaseMilestone StartDate until Violation Action triggers for Handling Time Milestone
+     *
      */
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
-        // do not recalculate if casemilestone already exists.
-        // otherwise it will shorten the time, because StartDate remains the same
-        // and we calculating minutes form CaseMilestone StartDate.
+        // Do not recalculate if casemilestone already exists.
+        // Otherwise it will shorten the time, because StartDate remains the same
+        // and we are calculating minutes from CaseMilestone StartDate.
 
         CaseMilestone cm;
         try {
