@@ -15,39 +15,33 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
     }
 
     /**
-     * Description: Calculates time from CaseMilestone StartDate until Violation Action triggers for Handling Time Milestone
+     * Description: Calculates time from CaseMilestone StartDate until Violation Action triggers for "Handling Time" Milestone
      *
      */
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
-        // Do not recalculate if casemilestone already exists.
-        // Otherwise it will shorten the time, because StartDate remains the same
-        // and we are calculating minutes from CaseMilestone StartDate.
-
-        CaseMilestone cm;
+        CaseMilestone caseMilestone;
         try {
-            cm = [
+            caseMilestone = [
                 SELECT Id, TargetResponseInMins
                 FROM CaseMilestone
                 WHERE CaseId = :caseId AND MilestoneType.Name = 'Handling Time' AND IsCompleted = FALSE
                 LIMIT 1
             ];
         } catch (Exception ex) {
-            //No existing milestone
+            // No existing milestone
         }
 
-        if (cm?.TargetResponseInMins != null) {
-            return cm.TargetResponseInMins;
+        // Do not recalculate if Casemilestone already exists.
+        // Otherwise it will increment the time, because StartDate remains the same and we are calculating minutes from CaseMilestone StartDate.
+        if (caseMilestone?.TargetResponseInMins != null) {
+            return caseMilestone.TargetResponseInMins;
         }
 
-        Datetime now = Datetime.now();
-        Datetime nextStartDate;
-        Id bhId = STO_BUSINESS_HOURS_ID;
-
-        nextStartDate = BusinessHours.nextStartDate(
-            bhId,
-            Datetime.newInstance(now.date().addDays(1), Time.newInstance(0, 0, 0, 0))
+        Datetime nextStartDate = BusinessHours.nextStartDate(
+            STO_BUSINESS_HOURS_ID,
+            Datetime.newInstance(Datetime.now().date().addDays(1), Time.newInstance(0, 0, 0, 0))
         );
-        Long diff = BusinessHours.diff(bhId, now, nextStartDate);
+        Long diff = BusinessHours.diff(STO_BUSINESS_HOURS_ID, Datetime.now(), nextStartDate);
         return (diff / 1000 / 60).intValue();
     }
 }
