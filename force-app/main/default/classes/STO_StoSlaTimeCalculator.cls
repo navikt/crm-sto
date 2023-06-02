@@ -17,6 +17,10 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
     private static final String RESPOND_STO_TYPE_NAME = 'Respond STO';
     private static final String RESPOND_BTO_TYPE_NAME = 'Respond BTO';
 
+    /**
+     * Description: Calculates the time trigger for the Respond STO/BTO Milestone (the amount of time in which the milestone must be completed).
+     * TargetResponseInMins field: The time to complete the milestone in minutes.
+     */
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
         CaseMilestone openSlaMilestone;
         Date slaDate;
@@ -31,17 +35,17 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
                     OR MilestoneType.Name = :RESPOND_BTO_TYPE_NAME)
                 LIMIT 1
             ];
-        } catch (Exception ex) {
-            //No currently open SLA milestones in the case
+        } catch (Exception e) {
+            // No existing Milestone
         }
         if (openSlaMilestone != null) {
             return openSlaMilestone.TargetResponseInMins;
-        } else {
-            slaDate = addBusinessDays(System.today(), 2);
-            Datetime endOfSlaDate = Datetime.newInstance(slaDate, Time.newInstance(23, 59, 59, 59));
-            endOfSlaDate.addSeconds(-osloTimezone.getOffset(endOfSlaDate) / 1000);
-            return getMinutesBetween(endOfSlaDate, System.now());
         }
+
+        slaDate = addBusinessDays(System.today(), 2);
+        Datetime endOfSlaDate = Datetime.newInstance(slaDate, Time.newInstance(23, 59, 59, 59));
+        endOfSlaDate.addSeconds(-osloTimezone.getOffset(endOfSlaDate) / 1000);
+        return getMinutesBetween(endOfSlaDate, System.now());
     }
 
     /**

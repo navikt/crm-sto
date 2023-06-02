@@ -15,8 +15,9 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
     }
 
     /**
-     * Description: Calculates time from CaseMilestone StartDate until Violation Action triggers for "Handling Time" Milestone
-     *
+     * Description: Calculates the time trigger for the "Handling Time" Milestone (the amount of time in which the Milestone must be completed).
+     * Violation Actions on the Milestone settings will escalate the case after 2 days if Milestone IsCompleted = FALSE.
+     * TargetResponseInMins field: The time to complete the Milestone in minutes.
      */
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
         CaseMilestone milestoneCase;
@@ -27,15 +28,17 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
                 WHERE CaseId = :caseId AND MilestoneType.Name = 'Handling Time' AND IsCompleted = FALSE
                 LIMIT 1
             ];
-        } catch (Exception ex) {
-            // No existing milestone
+        } catch (Exception e) {
+            // No existing Milestone
         }
 
-        // Do not recalculate if Casemilestone already exists.
+        // Do not recalculate if CaseMilestone already exists.
         if (milestoneCase?.TargetResponseInMins != null) {
             return milestoneCase.TargetResponseInMins;
         }
 
+        // nextStartDate method: Starting from the specified target date, returns the next date when business hours are open.
+        // If the specified target date falls within business hours, this target date is returned.
         Datetime nextStartDate = BusinessHours.nextStartDate(
             STO_BUSINESS_HOURS_ID,
             Datetime.newInstance(Datetime.now().date().addDays(1), Time.newInstance(0, 0, 0, 0))

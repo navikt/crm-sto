@@ -46,7 +46,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
                 ? casesToHandle.get(milestoneCase.CaseId)
                 : null;
             if (casy != null && casy.Status == 'Forwarded') {
-                // Only close handling time milestone, response time is still initial as end user is still awaiting the "full" response
+                // Do not close "Respond STO/BTO" Milestone as Case is not resolved yet when Status = "Forwarded"
                 milestoneCase.CompletionDate = milestoneCase.MilestoneType.Name == 'Respond STO' ||
                     milestoneCase.MilestoneType.Name == 'Respond BTO'
                     ? null
