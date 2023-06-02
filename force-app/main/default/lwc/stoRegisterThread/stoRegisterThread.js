@@ -1,14 +1,15 @@
 import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { NavigationMixin } from 'lightning/navigation';
-import createRecords from '@salesforce/apex/stoHelperClass.createRequest';
+import createThreadWithCase from '@salesforce/apex/stoHelperClass.createThreadWithCase';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 
-import welcomlabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
+import welcomelabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
+import welcomelabelBTO from '@salesforce/label/c.Beskjed_til_oss_intro_text';
 import headline from '@salesforce/label/c.Skriv_til_oss_headline';
 import accepterrmessage from '@salesforce/label/c.Skriv_til_oss_headline';
 import acceptermtext from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
@@ -38,9 +39,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     acceptedcategories = new Set();
     currentPageReference = null;
     urlStateParameters;
+    subpath;
     acceptedTerms = false;
     label = {
-        welcomlabel,
+        welcomelabel,
+        welcomelabelBTO,
         headline,
         accepterrmessage,
         acceptermtext,
@@ -93,6 +96,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
+            this.subpath =
+                currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
         }
@@ -101,16 +106,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * Finds if there are any news based on the selected theme.
      *  @author Lars Petter Johnsen
      */
-    @wire(getNews, { category: '$selectedTheme' })
-    wirenes(result) {
+    @wire(getNews, { category: '$selectedTheme', threadType: '$threadTypeToMake' })
+    wirenews(result) {
         if (result.error) {
             console.log(result.error);
         } else if (result.data) {
-            this.newslist = result.data;
+            this.newsList = result.data;
         }
     }
 
-    @wire(getOpenThreads, { category: '$selectedTheme' })
+    @wire(getOpenThreads, { category: '$selectedTheme', threadType: '$threadTypeToMake' })
     openThread(wireData) {
         const { error, data } = wireData;
         if (error) {
@@ -179,11 +184,23 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * Handles terms modal end
      */
 
+    navigateToBTO(thread) {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                name: 'Visning__c'
+            },
+            state: {
+                samtale: thread.Id
+            }
+        });
+    }
+
     /**
      * Creates a Thread record, with an message attached, and then navigates the user to the record page
      * @Author Lars Petter Johnsen
      */
-    submitrequest() {
+    submitRequest() {
         const medskriv = this.template.querySelector('c-ds-radio')?.getValue();
         if (
             this.acceptedTerms == true &&
@@ -195,12 +212,21 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showspinner = true;
             this.spinnerText = spinnerReasonTextMap['send'];
 
-            createRecords({ theme: this.selectedTheme, msgText: this.message, medskriv: medskriv }).then((thread) => {
+            createThreadWithCase({
+                theme: this.selectedTheme,
+                msgText: this.message,
+                medskriv: medskriv,
+                type: this.threadTypeToMake
+            }).then((thread) => {
                 this.showspinner = false;
-                window.open(
-                    (this.linkUrl = basepath + '/skriv-til-oss/' + thread.Id + '/' + encodeURIComponent(thread.Name)),
-                    '_self'
-                );
+                if (this.subpath === '/beskjed-til-oss/') {
+                    this.navigateToBTO(thread);
+                } else {
+                    window.open(
+                        (this.linkUrl = basepath + this.subpath + thread.Id + '/' + encodeURIComponent(thread.Name)),
+                        '_self'
+                    );
+                }
             });
         } else {
             this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
@@ -306,7 +332,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get openThreadLink() {
-        return basepath + '/skriv-til-oss/' + this.openThreadList[0].recordId;
+        return this.threadTypeToMake === 'BTO'
+            ? basepath + this.subpath + 'visning?samtale=' + this.openThreadList[0].recordId
+            : basepath + this.subpath + this.openThreadList[0].recordId;
     }
 
     get alertType() {
@@ -323,6 +351,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get backdropClass() {
         return this.hideDeleteModal === true ? 'slds-hide' : 'backdrop';
+    }
+
+    get introLabel() {
+        return this.threadTypeToMake === 'BTO' ? this.label.welcomelabelBTO : this.label.welcomelabel;
     }
 
     handleCloseThread(e) {

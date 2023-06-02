@@ -82,9 +82,12 @@
                                     "type": "component"
                                 },
                                 {
-                                    "componentAttributes": {},
+                                    "componentAttributes": {
+                                        "threadTypeToMake": "STO",
+                                        "title": "Skriv til oss"
+                                    },
                                     "componentName": "c:stoRegisterThread",
-                                    "id": "f307ae96-b785-45ce-aeeb-95eab0030eda",
+                                    "id": "f2b3a5de-7509-4807-a3da-a018350955c7",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"

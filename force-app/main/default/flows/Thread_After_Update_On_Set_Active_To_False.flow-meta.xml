@@ -117,6 +117,7 @@
             <label>Has Related Object</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <interviewLabel>Thread - After Update - On Set Active To False {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Thread - After Update - On Set Active To False</label>
     <processMetadataValues>
@@ -196,7 +197,7 @@
             <targetReference>Related_Object_Null_Check</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
-        <filterLogic>and</filterLogic>
+        <filterLogic>1 AND (2 OR 3)</filterLogic>
         <filters>
             <field>CRM_isActive__c</field>
             <operator>EqualTo</operator>
@@ -209,6 +210,13 @@
             <operator>EqualTo</operator>
             <value>
                 <stringValue>STO</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Thread_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>BTO</stringValue>
             </value>
         </filters>
         <object>Thread__c</object>

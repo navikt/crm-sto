@@ -7,6 +7,7 @@ import COMPANY_NAME from '@salesforce/schema/User.CompanyName';
 import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
+import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
 import userId from '@salesforce/user/Id';
 
 export default class CrmStoMessaging extends LightningElement {
@@ -31,6 +32,7 @@ export default class CrmStoMessaging extends LightningElement {
     englishTextTemplate = false;
     acceptedMedskriv = false;
     medskriv = false;
+    threadType;
 
     connectedCallback() {
         this.template.addEventListener('toolbaraction', (event) => {
@@ -281,6 +283,17 @@ export default class CrmStoMessaging extends LightningElement {
         }`;
     }
 
+    get computeClasses() {
+        return this.threadType === 'BTO' ? 'greenHeader' : '';
+    }
+
+    get actualCardTitle() {
+        if (this.objectApiName === 'Case' && ['BTO', 'STO'].includes(this.threadType))
+            return this.threadType === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
+
+        return this.cardTitle;
+    }
+
     getAccountApiName() {
         if (this.objectApiName === 'Case') {
             return 'AccountId';
@@ -395,14 +408,15 @@ export default class CrmStoMessaging extends LightningElement {
         }
     }
 
-    @wire(getRecord, { recordId: '$threadId', fields: [THREAD_MEDSKRIV_REFERENCE] })
+    @wire(getRecord, { recordId: '$threadId', fields: [THREAD_MEDSKRIV_REFERENCE, THREAD_TYPE] })
     wiredThread({ error, data }) {
         if (error) {
             console.log('Medskriv error:');
             console.log(error);
         }
         if (data) {
-            this.medskriv = getFieldValue(data, 'Thread__c.STO_Medskriv__c');
+            this.medskriv = getFieldValue(data, THREAD_MEDSKRIV_REFERENCE);
+            this.threadType = getFieldValue(data, THREAD_TYPE);
         }
     }
 

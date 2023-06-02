@@ -27,9 +27,7 @@ public with sharing class stoInboxHelper {
             WHERE
                 CRM_Number_of_unread_Messages__c = 0
                 AND CRM_Is_Closed__C = TRUE
-                AND (CRM_Thread_Type__c = 'STO'
-                OR CRM_Thread_Type__c = 'STB'
-                OR CRM_Thread_Type__c = 'CHAT')
+                AND CRM_Thread_Type__c IN ('STO', 'BTO', 'STB', 'CHAT')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -79,9 +77,7 @@ public with sharing class stoInboxHelper {
             WHERE
                 (CRM_Number_of_unread_Messages__c > 0
                 OR CRM_Is_Closed__c = FALSE)
-                AND (CRM_Thread_Type__c = 'STO'
-                OR CRM_Thread_Type__c = 'STB'
-                OR CRM_Thread_Type__c = 'CHAT')
+                AND CRM_Thread_Type__c IN ('STO', 'BTO', 'STB', 'CHAT')
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -105,27 +101,29 @@ public with sharing class stoInboxHelper {
         return inboxlist;
     }
 
-    public static thread formatThread(Thread__c t) {
+    public static Thread formatThread(Thread__c t) {
         if (t.Messages__r != null && t.Messages__r.size() > 0) {
-            thread i = new thread();
-            message m = new message();
-            i.name = t.STO_ExternalName__c;
-            i.recordId = t.CRM_Thread_Type__c == 'CHAT' ? t.CRM_Related_Object__c : t.Id;
-            i.lastModifiedDate = t.LastModifiedDate;
-            i.closeDate = t.CRM_Closed_Date__c;
-            i.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
-            i.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
-            i.objectName = t.CRM_Thread_Type__c == 'CHAT' ? 'chat' : 'skriv-til-oss';
-            i.status = (t.CRM_Is_Closed__c) ? 'Avsluttet' : 'Åpen';
-            i.recordName = t.Name;
-            m.recordId = t.Messages__r[0]?.Id;
-            m.messageText = t.Messages__r[0]
+            Thread thread = new Thread();
+            Message message = new Message();
+            thread.name = t.STO_ExternalName__c;
+            thread.recordId = t.CRM_Thread_Type__c == 'CHAT' ? t.CRM_Related_Object__c : t.Id;
+            thread.lastModifiedDate = t.LastModifiedDate;
+            thread.closeDate = t.CRM_Closed_Date__c;
+            thread.numberOfUnreadMessages = t.CRM_Number_of_unread_Messages__c;
+            thread.latestMessageDate = t.CRM_Latest_Message_Datetime__c;
+            thread.objectName = t.CRM_Thread_Type__c == 'CHAT'
+                ? 'chat'
+                : (t.CRM_Thread_Type__c == 'BTO' ? 'beskjed-til-oss' : 'skriv-til-oss');
+            thread.status = (t.CRM_Is_Closed__c) ? 'Avsluttet' : 'Åpen';
+            thread.recordName = t.Name;
+            message.recordId = t.Messages__r[0]?.Id;
+            message.messageText = t.Messages__r[0]
                 ?.CRM_Message_Text__c
                 ?.replaceAll('<[^>]+>', ' ')
                 .replaceAll('(\\r|\\n)+', ' ');
-            m.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
-            i.latestmessage = m;
-            return i;
+            message.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
+            thread.latestmessage = message;
+            return thread;
         }
         return null;
     }
@@ -148,7 +146,7 @@ public with sharing class stoInboxHelper {
         return i;
     }
 
-    public class thread {
+    public class Thread {
         @AuraEnabled
         public Id recordId;
         @AuraEnabled
@@ -171,7 +169,7 @@ public with sharing class stoInboxHelper {
         public String recordName;
     }
 
-    public class message {
+    public class Message {
         @AuraEnabled
         public Id recordId;
         @AuraEnabled

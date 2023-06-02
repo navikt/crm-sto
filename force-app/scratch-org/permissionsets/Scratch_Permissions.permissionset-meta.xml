@@ -14,6 +14,11 @@
         <field>Case.CRM_Person_Is_NAV_Employee__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.NKS_Incompetent_IDs__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Scratch Permissions</label>
     <objectPermissions>

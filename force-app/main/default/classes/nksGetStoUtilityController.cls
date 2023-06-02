@@ -1,3 +1,10 @@
+/**
+ * @description       :
+ * @author            : mamikals
+ * @group             :
+ * @last modified on  : 21-03-2023
+ * @last modified by  : mamikals
+ **/
 public without sharing class nksGetStoUtilityController {
     private final static Integer MAX_ATTEMPTS = 5;
     public class TooManyAttemptsException extends Exception {
@@ -7,10 +14,12 @@ public without sharing class nksGetStoUtilityController {
 
     private static List<Id> skillIdList = new List<Id>();
     private static List<Id> userConfidentialitySkills = new List<Id>();
+    private static List<String> userOriginSkills = new List<String>();
     private static final List<String> confidentialitySkills = new List<String>{
         'Fortrolig_addresse',
         'Skjermede_personer'
     };
+    private static final List<String> originSkills = new List<String>{ 'BTO', 'STO' };
 
     @AuraEnabled
     public static List<Record> getSto() {
@@ -78,10 +87,14 @@ public without sharing class nksGetStoUtilityController {
         try {
             Map<String, Object> flowParams = new Map<String, Object>();
             flowParams.put('CaseId', caseId);
+            if (Test.isRunningTest()) {
+                userOriginSkills.add('STO');
+            }
+            flowParams.put('UserOriginSkills', userOriginSkills);
+
             Flow.Interview.STO_Case_Set_Owner setOwnerFlow = new Flow.Interview.STO_Case_Set_Owner(flowParams);
             setOwnerFlow.start();
             List<Case> relatedCases = (List<Case>) setOwnerFlow.getVariableValue('ReturnVar');
-            System.debug(relatedCases);
             if (relatedCases == null)
                 return relatedCaseIds;
             for (Case c : relatedCases) {
@@ -165,6 +178,8 @@ public without sharing class nksGetStoUtilityController {
             //Separating domain skills and person access skills
             if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
                 userConfidentialitySkills.add(srs.SkillId);
+            } else if (originSkills.contains(srs.Skill.DeveloperName)) {
+                userOriginSkills.add(srs.Skill.DeveloperName);
             } else {
                 skillIdList.add(srs.SkillId);
             }
@@ -201,7 +216,11 @@ public without sharing class nksGetStoUtilityController {
                 AND ID NOT IN (
                     SELECT RelatedRecordId
                     FROM SkillRequirement
-                    WHERE SkillId NOT IN :userConfidentialitySkills AND Skill.DeveloperName IN :confidentialitySkills
+                    WHERE
+                        (SkillId NOT IN :userConfidentialitySkills
+                        AND Skill.DeveloperName IN :confidentialitySkills)
+                        OR (Skill.DeveloperName NOT IN :userOriginSkills
+                        AND Skill.DeveloperName IN :originSkills)
                 )
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
