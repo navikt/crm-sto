@@ -49,10 +49,11 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             if (
                 // Do not close "Respond STO/BTO" Milestone as Case is not resolved yet when Status = "Forwarded"
                 casy != null &&
-                casy.Status == 'Forwarded' &&
-                milestoneCase.MilestoneType.Name == HANDLING_TIME_TYPE_NAME
+                casy.Status == 'Forwarded'
             ) {
-                milestoneCase.CompletionDate = completionTime;
+                milestoneCase.CompletionDate = milestoneCase.MilestoneType.Name == HANDLING_TIME_TYPE_NAME
+                    ? completionTime
+                    : null;
             } else {
                 if (!Test.isRunningTest())
                     milestoneCase.CompletionDate = completionTime;
