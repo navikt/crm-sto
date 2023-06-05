@@ -19,7 +19,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             Case oldCaseRecord = (Case) triggerOldMap.get(casy.Id);
             if (
                 casy.Origin == 'STO' ||
-                casy.origin == 'BTO' && triggerStatuses.contains(casy.Status) &&
+                casy.Origin == 'BTO' && triggerStatuses.contains(casy.Status) &&
                 MyTriggers.hasChangedFields(fieldNamesToCheck, casy, oldCaseRecord)
             ) {
                 casesToHandle.put(casy.Id, casy);
