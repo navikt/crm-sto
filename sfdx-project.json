@@ -9,7 +9,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.189.0.LATEST"
+                    "versionNumber": "0.193.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
@@ -17,7 +17,7 @@
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.94.0.LATEST"
+                    "versionNumber": "0.99.0.LATEST"
                 },
                 {
                     "package": "crm-journal-utilities",
@@ -29,15 +29,19 @@
                 },
                 {
                     "package": "crm-platform-oppgave",
-                    "versionNumber": "0.44.0.LATEST"
+                    "versionNumber": "0.48.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
-                    "versionNumber": "0.106.0.LATEST"
+                    "versionNumber": "0.113.0.LATEST"
                 },
                 {
                     "package": "crm-shared-user-notification",
-                    "versionNumber": "0.21.0.LATEST"
+                    "versionNumber": "0.22.0.LATEST"
+                },
+                {
+                    "package": "crm-community-base",
+                    "versionNumber": "0.86.0.LATEST"
                 },
                 {
                     "package": "crm-henvendelse-base",
@@ -46,10 +50,6 @@
                 {
                     "package": "crm-henvendelse",
                     "versionNumber": "0.99.0.LATEST"
-                },
-                {
-                    "package": "crm-community-base",
-                    "versionNumber": "0.86.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
