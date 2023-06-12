@@ -4,7 +4,7 @@
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
         <locationX>512</locationX>
-        <locationY>1550</locationY>
+        <locationY>1382</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -14,19 +14,12 @@
         <name>Assign_Case_Values</name>
         <label>Assign Case Values</label>
         <locationX>512</locationX>
-        <locationY>1310</locationY>
+        <locationY>1166</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.CRM_Run_Case_Assignment__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>Get_Case_Record.NKS_Incompetent_IDs__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Incompetent_Value_Formula</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -37,7 +30,7 @@
         <name>Set_forwarded_status</name>
         <label>Set forwarded status</label>
         <locationX>842</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Status</assignToReference>
             <operator>Assign</operator>
@@ -53,7 +46,7 @@
         <name>Set_Incompetent_IDs</name>
         <label>Set Incompetent IDs</label>
         <locationX>578</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>Prior_Incompetent_Values</assignToReference>
             <operator>Assign</operator>
@@ -62,15 +55,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Set_forwarded_status</targetReference>
+            <targetReference>Update_case_field</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Set_STO_Category</name>
         <label>Set STO Category</label>
         <locationX>182</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.STO_Category__c</assignToReference>
             <operator>Assign</operator>
@@ -86,7 +78,7 @@
         <name>Set_STO_Origin_and_Status_New</name>
         <label>Set STO Origin and Status New</label>
         <locationX>50</locationX>
-        <locationY>878</locationY>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Origin</assignToReference>
             <operator>Assign</operator>
@@ -103,6 +95,23 @@
         </assignmentItems>
         <connector>
             <targetReference>Update_Thread_Type</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Update_case_field</name>
+        <label>Update case field</label>
+        <locationX>578</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_Record.NKS_Incompetent_IDs__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Prior_Incompetent_Values</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Set_forwarded_status</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -141,7 +150,7 @@
         <name>Check_Case_Status</name>
         <label>Check Case Status</label>
         <locationX>809</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Case_Is_Put_Back_Screen</targetReference>
         </defaultConnector>
@@ -173,7 +182,7 @@
         <name>Check_Put_Back_Decision</name>
         <label>Check Put Back Decision</label>
         <locationX>512</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Set_forwarded_status</targetReference>
         </defaultConnector>
@@ -213,7 +222,7 @@
         <name>IsBTO</name>
         <label>IsBTO?</label>
         <locationX>182</locationX>
-        <locationY>758</locationY>
+        <locationY>674</locationY>
         <defaultConnector>
             <isGoTo>true</isGoTo>
             <targetReference>Set_forwarded_status</targetReference>
@@ -279,7 +288,7 @@
         <name>Get_Case_Record</name>
         <label>Get Case Record</label>
         <locationX>809</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Case_Status</targetReference>
@@ -301,7 +310,7 @@
         <name>Update_Case</name>
         <label>Update Case</label>
         <locationX>512</locationX>
-        <locationY>1430</locationY>
+        <locationY>1274</locationY>
         <connector>
             <targetReference>Close_workspace_tab</targetReference>
         </connector>
@@ -311,7 +320,7 @@
         <name>Update_Thread_Type</name>
         <label>Update Thread Type</label>
         <locationX>50</locationX>
-        <locationY>998</locationY>
+        <locationY>890</locationY>
         <connector>
             <targetReference>Assign_Case_Values</targetReference>
         </connector>
@@ -336,7 +345,7 @@
         <name>Case_Is_Put_Back_Screen</name>
         <label>Case Is Put Back Screen</label>
         <locationX>1106</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -353,7 +362,7 @@
         <name>Put_Back_Screen</name>
         <label>Put Back Screen</label>
         <locationX>512</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
