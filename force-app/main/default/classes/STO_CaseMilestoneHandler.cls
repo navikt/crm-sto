@@ -2,10 +2,12 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
     private static final String RESPOND_STO_TYPE_NAME = 'Respond STO';
     private static final String RESPOND_BTO_TYPE_NAME = 'Respond BTO';
     private static final String HANDLING_TIME_TYPE_NAME = 'Handling Time';
+    private static final String HANDLING_TIME_BTO_TYPE_NAME = 'Handling Time BTO';
     private static final Set<String> milestoneTypes = new Set<String>{
         RESPOND_STO_TYPE_NAME,
         RESPOND_BTO_TYPE_NAME,
-        HANDLING_TIME_TYPE_NAME
+        HANDLING_TIME_TYPE_NAME,
+        HANDLING_TIME_BTO_TYPE_NAME
     };
     private static final Set<String> triggerStatuses = new Set<String>{ 'On Hold', 'Forwarded', 'Closed' };
     private static LoggerUtility logger = new LoggerUtility('STO/BTO Milestones');
@@ -18,8 +20,9 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
         for (Case casy : (List<Case>) Trigger.new) {
             Case oldCaseRecord = (Case) triggerOldMap.get(casy.Id);
             if (
-                casy.Origin == 'STO' ||
-                casy.Origin == 'BTO' && triggerStatuses.contains(casy.Status) &&
+                (casy.Origin == 'STO' ||
+                casy.Origin == 'BTO') &&
+                triggerStatuses.contains(casy.Status) &&
                 MyTriggers.hasChangedFields(fieldNamesToCheck, casy, oldCaseRecord)
             ) {
                 casesToHandle.put(casy.Id, casy);
