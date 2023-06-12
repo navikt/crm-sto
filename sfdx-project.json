@@ -45,7 +45,7 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.91.0.LATEST"
+                    "versionNumber": "0.99.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
@@ -53,7 +53,7 @@
                 },
                 {
                     "package": "crm-nks-base-components",
-                    "versionNumber": "0.20.0.LATEST"
+                    "versionNumber": "0.31.0.LATEST"
                 },
                 {
                     "package": "crm-nks-chat",
