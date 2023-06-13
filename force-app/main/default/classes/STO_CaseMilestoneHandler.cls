@@ -9,13 +9,14 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
         HANDLING_TIME_TYPE_NAME,
         HANDLING_TIME_BTO_TYPE_NAME
     };
-    private static final Set<String> triggerStatuses = new Set<String>{ 'On Hold', 'Forwarded', 'Closed' };
+    private static final Set<String> responTypes = new Set<String>{ RESPOND_STO_TYPE_NAME, RESPOND_BTO_TYPE_NAME };
+    private static final Set<String> triggerStatuses = new Set<String>{ 'On Hold', 'Forwarded', 'Closed', 'New' };
     private static LoggerUtility logger = new LoggerUtility('STO/BTO Milestones');
     private static final CRM_ApplicationDomain.Domain domain = CRM_ApplicationDomain.Domain.NKS;
 
     global override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
-        List<String> fieldNamesToCheck = new List<String>{ 'Status' };
-        Map<Id, Case> casesToHandle = new Map<Id, Case>();
+        List<String> fieldNamesToCheck = new List<String>{ 'Status', 'Origin' };
+        Map<Id, CaseWrapper> casesToHandle = new Map<Id, CaseWrapper>();
 
         for (Case casy : (List<Case>) Trigger.new) {
             Case oldCaseRecord = (Case) triggerOldMap.get(casy.Id);
@@ -25,13 +26,19 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
                 triggerStatuses.contains(casy.Status) &&
                 MyTriggers.hasChangedFields(fieldNamesToCheck, casy, oldCaseRecord)
             ) {
-                casesToHandle.put(casy.Id, casy);
+                casesToHandle.put(
+                    casy.Id,
+                    new CaseWrapper(
+                        casy,
+                        MyTriggers.hasChangedFields(new List<String>{ 'origin' }, casy, oldCaseRecord)
+                    )
+                );
             }
         }
         closeCaseMilestones(casesToHandle);
     }
 
-    private void closeCaseMilestones(Map<Id, Case> casesToHandle) {
+    private void closeCaseMilestones(Map<Id, CaseWrapper> casesToHandle) {
         Datetime completionTime = Datetime.now();
         List<ReportingData__c> repDataList = new List<ReportingData__c>();
         List<CaseMilestone> milestoneList = Test.isRunningTest()
@@ -45,21 +52,22 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
                       AND MilestoneType.Name IN :milestoneTypes
               ];
         for (CaseMilestone milestoneCase : milestoneList) {
-            Case casy = casesToHandle.containsKey(milestoneCase.CaseId)
+            CaseWrapper wrapper = casesToHandle.containsKey(milestoneCase.CaseId)
                 ? casesToHandle.get(milestoneCase.CaseId)
                 : null;
+            Case casy = wrapper?.relatedCase;
 
+            // Close all milestones except Respond STO/BTO cases that were forwarded but remained on the same origin
             if (
-                // Do not close "Respond STO/BTO" Milestone as Case is not resolved yet when Status = "Forwarded"
-                casy != null &&
-                casy.Status == 'Forwarded'
+                (responTypes.contains(milestoneCase.MilestoneType.Name) &&
+                wrapper.relatedCase.status == 'Forwarded' &&
+                !wrapper.hasChangedOrigin) ||
+                Test.isRunningTest() ||
+                (wrapper.relatedCase.status == 'New' && !wrapper.hasChangedOrigin)
             ) {
-                milestoneCase.CompletionDate = milestoneCase.MilestoneType.Name == HANDLING_TIME_TYPE_NAME
-                    ? completionTime
-                    : null;
+                milestoneCase.CompletionDate = null;
             } else {
-                if (!Test.isRunningTest())
-                    milestoneCase.CompletionDate = completionTime;
+                milestoneCase.CompletionDate = completionTime;
             }
 
             if (milestoneCase.CompletionDate != null || Test.isRunningTest()) {
@@ -88,6 +96,16 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             logger.critical(JSON.serializePretty(repDataList), null, domain);
         } finally {
             logger.publish();
+        }
+    }
+
+    public class CaseWrapper {
+        public Case relatedCase;
+        public Boolean hasChangedOrigin;
+
+        public CaseWrapper(Case relatedCase, Boolean hasChangedOrigin) {
+            this.relatedCase = relatedCase;
+            this.hasChangedOrigin = hasChangedOrigin;
         }
     }
 }
