@@ -56,14 +56,16 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
                 ? casesToHandle.get(milestoneCase.CaseId)
                 : null;
             Case casy = wrapper?.relatedCase;
+            Boolean hasChangedOrigin = wrapper?.hasChangedOrigin;
 
             // Close all milestones except Respond STO/BTO cases that were forwarded but remained on the same origin
             if (
+                casy != null && hasChangedOrigin != null &&
                 (responseTypes.contains(milestoneCase.MilestoneType.Name) &&
-                wrapper.relatedCase.Status == 'Forwarded' &&
-                !wrapper.hasChangedOrigin) ||
+                casy.Status == 'Forwarded' &&
+                !hasChangedOrigin) ||
                 Test.isRunningTest() ||
-                (wrapper.relatedCase.Status == 'New' && !wrapper.hasChangedOrigin)
+                (casy.Status == 'New' && !hasChangedOrigin)
             ) {
                 milestoneCase.CompletionDate = null;
             } else {
