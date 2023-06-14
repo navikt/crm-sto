@@ -9,7 +9,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
         HANDLING_TIME_TYPE_NAME,
         HANDLING_TIME_BTO_TYPE_NAME
     };
-    private static final Set<String> responTypes = new Set<String>{ RESPOND_STO_TYPE_NAME, RESPOND_BTO_TYPE_NAME };
+    private static final Set<String> responseTypes = new Set<String>{ RESPOND_STO_TYPE_NAME, RESPOND_BTO_TYPE_NAME };
     private static final Set<String> triggerStatuses = new Set<String>{ 'On Hold', 'Forwarded', 'Closed', 'New' };
     private static LoggerUtility logger = new LoggerUtility('STO/BTO Milestones');
     private static final CRM_ApplicationDomain.Domain domain = CRM_ApplicationDomain.Domain.NKS;
@@ -30,7 +30,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
                     casy.Id,
                     new CaseWrapper(
                         casy,
-                        MyTriggers.hasChangedFields(new List<String>{ 'origin' }, casy, oldCaseRecord)
+                        MyTriggers.hasChangedFields(new List<String>{ 'Origin' }, casy, oldCaseRecord)
                     )
                 );
             }
@@ -59,11 +59,11 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
 
             // Close all milestones except Respond STO/BTO cases that were forwarded but remained on the same origin
             if (
-                (responTypes.contains(milestoneCase.MilestoneType.Name) &&
-                wrapper.relatedCase.status == 'Forwarded' &&
+                (responseTypes.contains(milestoneCase.MilestoneType.Name) &&
+                wrapper.relatedCase.Status == 'Forwarded' &&
                 !wrapper.hasChangedOrigin) ||
                 Test.isRunningTest() ||
-                (wrapper.relatedCase.status == 'New' && !wrapper.hasChangedOrigin)
+                (wrapper.relatedCase.Status == 'New' && !wrapper.hasChangedOrigin)
             ) {
                 milestoneCase.CompletionDate = null;
             } else {
