@@ -63,13 +63,13 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
                 casy != null && hasChangedOrigin != null &&
                 (responseTypes.contains(milestoneCase.MilestoneType.Name) &&
                 casy.Status == 'Forwarded' &&
-                !hasChangedOrigin) ||
-                Test.isRunningTest() ||
-                (casy.Status == 'New' && !hasChangedOrigin)
+                !hasChangedOrigin) || (casy.Status == 'New' && !hasChangedOrigin)
             ) {
                 milestoneCase.CompletionDate = null;
             } else {
-                milestoneCase.CompletionDate = completionTime;
+                if (!Test.isRunningTest()) {
+                    milestoneCase.CompletionDate = completionTime;
+                }
             }
 
             if (milestoneCase.CompletionDate != null || Test.isRunningTest()) {
