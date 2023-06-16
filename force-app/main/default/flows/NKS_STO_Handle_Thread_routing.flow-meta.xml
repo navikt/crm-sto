@@ -9,6 +9,9 @@
         <assignmentItems>
             <assignToReference>Get_Thread.CRM_Related_Object__c</assignToReference>
             <operator>Assign</operator>
+            <value>
+                <elementReference>Send_NAV_Task.NAV_Task.Id</elementReference>
+            </value>
         </assignmentItems>
         <connector>
             <targetReference>Update_thread</targetReference>
