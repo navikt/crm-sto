@@ -8,7 +8,7 @@
         <locationX>374</locationX>
         <locationY>384</locationY>
         <defaultConnector>
-            <targetReference>Get_Thread</targetReference>
+            <targetReference>Handle_thread_routing</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not First Message</defaultConnectorLabel>
         <rules>
@@ -71,27 +71,6 @@
         <sortOrder>Asc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordLookups>
-        <name>Get_Thread</name>
-        <label>Get Thread</label>
-        <locationX>506</locationX>
-        <locationY>492</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Handle_thread_routing</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.CRM_Thread__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Thread__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
@@ -139,12 +118,12 @@
         <name>Handle_thread_routing</name>
         <label>Handle thread routing</label>
         <locationX>506</locationX>
-        <locationY>600</locationY>
+        <locationY>492</locationY>
         <flowName>NKS_STO_Handle_Thread_routing</flowName>
         <inputAssignments>
-            <name>thread</name>
+            <name>threadId</name>
             <value>
-                <elementReference>Get_Thread</elementReference>
+                <elementReference>$Record.CRM_Thread__c</elementReference>
             </value>
         </inputAssignments>
     </subflows>

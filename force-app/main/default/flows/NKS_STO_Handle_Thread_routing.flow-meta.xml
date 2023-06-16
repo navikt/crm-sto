@@ -5,13 +5,10 @@
         <name>Assign_new_Related_Object</name>
         <label>Assign new Related Object</label>
         <locationX>974</locationX>
-        <locationY>1382</locationY>
+        <locationY>1490</locationY>
         <assignmentItems>
-            <assignToReference>thread.CRM_Related_Object__c</assignToReference>
+            <assignToReference>Get_Thread.CRM_Related_Object__c</assignToReference>
             <operator>Assign</operator>
-            <value>
-                <elementReference>Send_NAV_Task.NAV_Task.Id</elementReference>
-            </value>
         </assignmentItems>
         <connector>
             <targetReference>Update_thread</targetReference>
@@ -21,12 +18,12 @@
         <name>Inherit_Thread_Theme</name>
         <label>Inherit Thread Theme</label>
         <locationX>842</locationX>
-        <locationY>866</locationY>
+        <locationY>974</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>thread.CRM_Theme__c</elementReference>
+                <elementReference>Get_Thread.CRM_Theme__c</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -37,7 +34,7 @@
         <name>Set_case_status_to_in_progress</name>
         <label>Set case status to in progress</label>
         <locationX>314</locationX>
-        <locationY>458</locationY>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>relatedCase.CRM_Run_Case_Assignment__c</assignToReference>
             <operator>Assign</operator>
@@ -60,7 +57,7 @@
         <name>Set_KNA_Theme</name>
         <label>Set KNA Theme</label>
         <locationX>1106</locationX>
-        <locationY>974</locationY>
+        <locationY>1082</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -76,7 +73,7 @@
         <name>Set_New_Task_Fields</name>
         <label>Set New Task Fields</label>
         <locationX>974</locationX>
-        <locationY>1166</locationY>
+        <locationY>1274</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Status__c</assignToReference>
             <operator>Assign</operator>
@@ -88,7 +85,7 @@
             <assignToReference>Related_NAV_Task.NKS_Theme_Group__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>thread.CRM_Theme_Group__c</elementReference>
+                <elementReference>Get_Thread.CRM_Theme_Group__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -109,14 +106,14 @@
             <assignToReference>Related_NAV_Task.NKS_Henvendelse_BehandlingsId__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>thread.CRM_API_Reference__c</elementReference>
+                <elementReference>Get_Thread.CRM_API_Reference__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.CRM_Account__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>thread.CRM_Account__c</elementReference>
+                <elementReference>Get_Thread.CRM_Account__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -141,7 +138,7 @@
             <assignToReference>Related_NAV_Task.NKS_Assignee__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>thread.CRM_Assignee__c</elementReference>
+                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -156,7 +153,7 @@
         <name>Check_Case_Owner</name>
         <label>Check Case Owner</label>
         <locationX>50</locationX>
-        <locationY>350</locationY>
+        <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Set_case_status_to_in_progress</targetReference>
         </defaultConnector>
@@ -190,7 +187,7 @@
         <name>Check_NAV_Task</name>
         <label>Check NAV Task</label>
         <locationX>974</locationX>
-        <locationY>350</locationY>
+        <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Get_STB_NAV_Unit</targetReference>
         </defaultConnector>
@@ -223,7 +220,7 @@
         <name>Check_Routing</name>
         <label>Check Routing</label>
         <locationX>512</locationX>
-        <locationY>134</locationY>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Get_Related_NAV_Task</targetReference>
         </defaultConnector>
@@ -232,7 +229,7 @@
             <name>Is_NKS_routing</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>thread.CRM_Assignee_NAV_Unit__c</leftValueReference>
+                <leftValueReference>Get_Thread.CRM_Assignee_NAV_Unit__c</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -249,7 +246,7 @@
         <name>Check_Thread_Theme</name>
         <label>Check Thread Theme</label>
         <locationX>974</locationX>
-        <locationY>758</locationY>
+        <locationY>866</locationY>
         <defaultConnector>
             <targetReference>Get_Kontakt_NAV_Theme</targetReference>
         </defaultConnector>
@@ -258,7 +255,7 @@
             <name>Thread_has_Theme</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>thread.CRM_Theme__c</leftValueReference>
+                <leftValueReference>Get_Thread.CRM_Theme__c</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -296,7 +293,7 @@
         <name>Create_Application_Log</name>
         <label>Create Application Log</label>
         <locationX>578</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <inputAssignments>
             <field>Application_Domain__c</field>
             <value>
@@ -340,7 +337,7 @@
         <name>Get_case</name>
         <label>Get case</label>
         <locationX>50</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Case_Owner</targetReference>
@@ -350,7 +347,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>thread.CRM_Related_Object__c</elementReference>
+                <elementReference>Get_Thread.CRM_Related_Object__c</elementReference>
             </value>
         </filters>
         <object>Case</object>
@@ -363,7 +360,7 @@
         <name>Get_Kontakt_NAV_Theme</name>
         <label>Get Kontakt NAV Theme</label>
         <locationX>1106</locationX>
-        <locationY>866</locationY>
+        <locationY>974</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_KNA_Theme</targetReference>
@@ -393,7 +390,7 @@
         <name>Get_Related_NAV_Task</name>
         <label>Get Related NAV Task</label>
         <locationX>974</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_NAV_Task</targetReference>
@@ -403,7 +400,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>thread.CRM_Related_Object__c</elementReference>
+                <elementReference>Get_Thread.CRM_Related_Object__c</elementReference>
             </value>
         </filters>
         <object>NavTask__c</object>
@@ -425,7 +422,7 @@
         <name>Get_STB_NAV_Unit</name>
         <label>Get STB NAV Unit</label>
         <locationX>974</locationX>
-        <locationY>542</locationY>
+        <locationY>650</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Vurder_Svar_Task_Type</targetReference>
@@ -435,7 +432,7 @@
             <field>INT_UnitNumber__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>thread.CRM_Assignee_NAV_Unit__c</elementReference>
+                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -444,10 +441,31 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <name>Get_Thread</name>
+        <label>Get Thread</label>
+        <locationX>512</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Routing</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>threadId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Thread__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>Get_Vurder_Svar_Task_Type</name>
         <label>Get Vurder Svar Task Type</label>
         <locationX>974</locationX>
-        <locationY>650</locationY>
+        <locationY>758</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Thread_Theme</targetReference>
@@ -476,7 +494,7 @@
         <name>Update_Related_Case</name>
         <label>Update Related Case</label>
         <locationX>314</locationX>
-        <locationY>566</locationY>
+        <locationY>674</locationY>
         <faultConnector>
             <targetReference>Create_Application_Log</targetReference>
         </faultConnector>
@@ -487,14 +505,14 @@
         <name>Update_thread</name>
         <label>Update thread</label>
         <locationX>974</locationX>
-        <locationY>1490</locationY>
-        <inputReference>thread</inputReference>
+        <locationY>1598</locationY>
+        <inputReference>Get_Thread</inputReference>
     </recordUpdates>
     <start>
         <locationX>386</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Check_Routing</targetReference>
+            <targetReference>Get_Thread</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -502,7 +520,7 @@
         <name>Send_NAV_Task</name>
         <label>Send NAV Task</label>
         <locationX>974</locationX>
-        <locationY>1274</locationY>
+        <locationY>1382</locationY>
         <connector>
             <targetReference>Assign_new_Related_Object</targetReference>
         </connector>
@@ -510,7 +528,7 @@
         <inputAssignments>
             <name>Created_By_Unit_Number</name>
             <value>
-                <elementReference>thread.CRM_Assignee_NAV_Unit__c</elementReference>
+                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -538,12 +556,11 @@
         <objectType>Case</objectType>
     </variables>
     <variables>
-        <description>The thread to perform the routing on</description>
-        <name>thread</name>
-        <dataType>SObject</dataType>
+        <description>The ID of the thread to route</description>
+        <name>threadId</name>
+        <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-        <objectType>Thread__c</objectType>
     </variables>
 </Flow>
