@@ -106,7 +106,7 @@
             <assignToReference>Get_Case_Record.NKS_Incompetent_IDs__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Prior_Incompetent_Values</elementReference>
+                <elementReference>Incompetent_Value_Formula</elementReference>
             </value>
         </assignmentItems>
         <connector>
