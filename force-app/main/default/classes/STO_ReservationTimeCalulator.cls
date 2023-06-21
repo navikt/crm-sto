@@ -15,38 +15,36 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
     }
 
     /**
-     * description: calculating time from CaseMilestone StartDate to Violation
+     * Description: Calculates the time trigger for the "Handling Time" Milestone (the amount of time in which the Milestone must be completed).
+     * Violation Actions on the Milestone settings will escalate and redistribute the case after 2 days if Milestone IsCompleted = FALSE.
+     * TargetResponseInMins field: The time to complete the Milestone in minutes.
+     * Runs on Case update/insert when Milestone criteria are met.
      */
     global Integer calculateMilestoneTriggerTime(String caseId, String milestoneTypeId) {
-        // do not recalculate if casemilestone already exists.
-        // otherwise it will shorten the time, because StartDate remains the same
-        // and we calculating minutes form CaseMilestone StartDate.
-
-        CaseMilestone cm;
+        CaseMilestone milestoneCase;
         try {
-            cm = [
+            milestoneCase = [
                 SELECT Id, TargetResponseInMins
                 FROM CaseMilestone
                 WHERE CaseId = :caseId AND MilestoneType.Name = 'Handling Time' AND IsCompleted = FALSE
                 LIMIT 1
             ];
-        } catch (Exception ex) {
-            //No existing milestone
+        } catch (Exception e) {
+            // No existing Milestone
         }
 
-        if (cm?.TargetResponseInMins != null) {
-            return cm.TargetResponseInMins;
+        // Do not recalculate if CaseMilestone already exists.
+        if (milestoneCase?.TargetResponseInMins != null) {
+            return milestoneCase.TargetResponseInMins;
         }
 
-        Datetime now = Datetime.now();
-        Datetime nextStartDate;
-        Id bhId = STO_BUSINESS_HOURS_ID;
-
-        nextStartDate = BusinessHours.nextStartDate(
-            bhId,
-            Datetime.newInstance(now.date().addDays(1), Time.newInstance(0, 0, 0, 0))
+        // nextStartDate method: Starting from the specified target date, returns the next date when business hours are open.
+        // If the specified target date falls within business hours, this target date is returned.
+        Datetime nextStartDate = BusinessHours.nextStartDate(
+            STO_BUSINESS_HOURS_ID,
+            Datetime.newInstance(Datetime.now().date().addDays(1), Time.newInstance(0, 0, 0, 0))
         );
-        Long diff = BusinessHours.diff(bhId, now, nextStartDate);
+        Long diff = BusinessHours.diff(STO_BUSINESS_HOURS_ID, Datetime.now(), nextStartDate);
         return (diff / 1000 / 60).intValue();
     }
 }

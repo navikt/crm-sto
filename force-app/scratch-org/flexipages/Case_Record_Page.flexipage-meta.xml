@@ -179,6 +179,20 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>checkMedskriv</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showClose</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentName>crmStoMessagingContainer</componentName>
+                <identifier>c_crmStoMessagingContainer</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
                     <name>tabs</name>
                     <value>sidebartabs</value>
                 </componentInstanceProperties>
