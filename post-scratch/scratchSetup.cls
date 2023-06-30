@@ -1,8 +1,26 @@
 //Add default admin user to the chat queue and grant chat access and adds default role for community user creation
-User usr = [SELECT Id FROM User WHERE Name = 'User User'];
+User usr = [SELECT Id, Name FROM User WHERE Name = 'User User'];
 usr.UserRoleId = [SELECT Id FROM UserRole WHERE Name = 'NKS' LIMIT 1]?.Id;
 usr.CRM_NAV_Ident__c = 'Z999999'; //Setting default nav ident for the scratch user
 update usr;
+
+// Creates an Active ServiceResource for the user and assigns all skills.
+ServiceResource sr = New ServiceResource();
+sr.RelatedRecordId=usr.Id;
+sr.IsActive=true;
+sr.ResourceType='A';
+sr.Name = usr.Name;
+Insert sr;
+
+List<ServiceResourceSkill> srsList = new List<ServiceResourceSkill>();
+for(Skill skil : [Select Id from Skill]) {
+    ServiceResourceSkill srs = new ServiceResourceSkill();
+    srs.EffectiveStartDate = Date.today().addDays(-1);
+    srs.ServiceResourceId = sr.Id;
+    srs.SkillId = skil.Id;
+    srsList.add(srs);
+}
+insert srsList;
 
 //Create community user
 Account personAccount = [SELECT FirstName, LastName, PersonContactId FROM Account WHERE INT_PersonIdent__c = '12345678901'];
