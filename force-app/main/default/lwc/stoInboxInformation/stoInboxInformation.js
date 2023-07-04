@@ -93,7 +93,10 @@ export default class StoInboxInformation extends LightningElement {
             retText =
                 'Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
         }
-
         return retText;
+    }
+
+    get showSurveyButton() {
+        return this.isClosedSTO && this.surveyLink !== null && this.surveyLink !== undefined;
     }
 }
