@@ -10,14 +10,18 @@
     </template>
     <template if:true={isClosedSTO}>
         <div class="slds-var-p-horizontal_medium slds-var-p-bottom_xx-large cssPadding">
-            <h2 class="navds-heading navds-heading--medium navds-typo--spacing">Fikk du svar på det du lurte på?</h2>
+            <h2 class="navds-heading navds-heading--medium navds-typo--spacing">
+                Vi ønsker å lære av din opplevelse. Har du tid til å svare på 2 spørsmål?
+            </h2>
             <c-ds-button
                 variant="primary"
                 size="medium"
                 onclick={navigateToSurvey}
-                text="Gi tilbakemelding"
+                text="Klikk her for å svare"
             ></c-ds-button>
-            <p class="navds-body-short navds-body-short--medium slds-var-p-top_medium">Tilbakemeldingen er anonym.</p>
+            <span class="navds-body-short navds-body-short--medium slds-var-p-top_medium slds-var-p-left_small"
+                >Tilbakemeldingen er anonym.</span
+            >
         </div>
     </template>
 </template>
