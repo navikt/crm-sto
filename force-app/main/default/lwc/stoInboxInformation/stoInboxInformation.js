@@ -28,13 +28,7 @@ export default class StoInboxInformation extends LightningElement {
             this.closed = getFieldValue(data, THREAD_IS_CLOSED_FIELD);
             this.caseId = getFieldValue(data, THREAD_RELATED_OBJECT_FIELD);
         } else if (error) {
-            LoggerUtility.logError(
-                'NKS',
-                'STO',
-                error,
-                'An error has occurred while trying to fetch Thread.',
-                this.recordId
-            );
+            console.log('Problem getting thread: ' + error);
         }
     }
 
@@ -43,13 +37,7 @@ export default class StoInboxInformation extends LightningElement {
         if (data && this.caseId) {
             this.surveyLink = data;
         } else if (error) {
-            LoggerUtility.logError(
-                'NKS',
-                'STO',
-                error,
-                'An error has occurred while trying to fetch SurveyLink.',
-                this.recordId
-            );
+            console.log('Problem getting surveyLink: ' + error);
         }
     }
 
