@@ -28,13 +28,7 @@ export default class StoInboxInformation extends LightningElement {
             this.closed = getFieldValue(data, THREAD_IS_CLOSED_FIELD);
             this.caseId = getFieldValue(data, THREAD_RELATED_OBJECT_FIELD);
         } else if (error) {
-            LoggerUtility.logError(
-                'NKS',
-                'STO',
-                error,
-                'An error has occurred while trying to fetch Thread.',
-                this.recordId
-            );
+            console.log('Problem getting thread: ' + error);
         }
     }
 
@@ -43,13 +37,7 @@ export default class StoInboxInformation extends LightningElement {
         if (data && this.caseId) {
             this.surveyLink = data;
         } else if (error) {
-            LoggerUtility.logError(
-                'NKS',
-                'STO',
-                error,
-                'An error has occurred while trying to fetch SurveyLink.',
-                this.recordId
-            );
+            console.log('Problem getting surveyLink: ' + error);
         }
     }
 
@@ -80,20 +68,20 @@ export default class StoInboxInformation extends LightningElement {
             });
     }
 
-    get isClosedSTO() {
-        return this.type === 'STO' && this.closed;
+    get isClosedSTOorBTO() {
+        return (this.type === 'STO' || this.type === 'BTO') && this.closed;
     }
 
     get infoText() {
-        let retText = '';
         if (this.closed) {
-            retText =
-                'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.';
-        } else {
-            retText =
-                'Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
+            return this.type === 'BTO'
+                ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/send-beskjed">sende en ny melding</a>, kan du gjøre det her.'
+                : 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.';
         }
+        return 'Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
+    }
 
-        return retText;
+    get showSurveyButton() {
+        return this.type === 'STO' && this.closed && this.surveyLink !== null && this.surveyLink !== undefined;
     }
 }
