@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Pensjon3</label>
+    <protected>false</protected>
+    <values>
+        <field>BTO_Body__c</field>
+        <value xsi:type="xsd:string">&lt;a href=&quot;https://www.nav.no/person/personopplysninger/nb/#utbetaling&quot;&gt;Her kan du enkelt endre kontonummeret ditt&lt;/a&gt;. Utbetalinger som NAV gjør på vegne av blant annet Statens Pensjonskasse, blir utbetalt til det kontonummeret som du har registrert hos NAV. Du kan bare ha ett kontonummer registrert hos NAV.</value>
+    </values>
+    <values>
+        <field>BTO_Category__c</field>
+        <value xsi:type="xsd:string">Pensjon</value>
+    </values>
+    <values>
+        <field>BTO_Header__c</field>
+        <value xsi:type="xsd:string">Endre kontonummer?</value>
+    </values>
+</CustomMetadata>

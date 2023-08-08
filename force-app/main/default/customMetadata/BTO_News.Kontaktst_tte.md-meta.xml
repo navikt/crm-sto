@@ -3,7 +3,7 @@
     <label>Kontaktstøtte</label>
     <protected>false</protected>
     <values>
-        <field>STO_Body__c</field>
+        <field>BTO_Body__c</field>
         <value xsi:type="xsd:string">Vi trenger følgende informasjon fra deg:
 &lt;ul&gt;
 &lt;li&gt;Fødselsdatoen til barnet.&lt;/li&gt;
@@ -13,11 +13,11 @@
 &lt;/ul&gt;</value>
     </values>
     <values>
-        <field>STO_Category__c</field>
+        <field>BTO_Category__c</field>
         <value xsi:type="xsd:string">Familie</value>
     </values>
     <values>
-        <field>STO_Header__c</field>
+        <field>BTO_Header__c</field>
         <value xsi:type="xsd:string">Kontantstøtte: Skal du sende melding om barnehageplass?</value>
     </values>
 </CustomMetadata>
