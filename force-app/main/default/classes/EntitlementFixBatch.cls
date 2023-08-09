@@ -20,6 +20,6 @@ public with sharing class EntitlementFixBatch implements Database.Batchable<SObj
     }
 
     public void finish(Database.BatchableContext BC) {
-        System.scheduleBatch(new EntitlementFixBatch(), 'Fix broken STO entitlements', 5);
+        System.scheduleBatch(new EntitlementFixBatch(), 'Fix broken STO entitlements', 3600);
     }
 }
