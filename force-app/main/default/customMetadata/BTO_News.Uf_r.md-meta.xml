@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Ufør</label>
+    <protected>false</protected>
+    <values>
+        <field>BTO_Body__c</field>
+        <value xsi:type="xsd:string">Har du opptjent feriepenger før du fikk innvilget uføretrygd? Da kan det hende at du går over din inntektsgrense. 
+
+Du kan sende oss dokumentasjon på utbetaling av feriepenger. Da vil vi vurdere om dette er inntekt som ikke vil føre til reduksjon i din utbetaling. Dokumentasjon kan du sende inn på &lt;a href=&quot;https://www.nav.no/soknader/nb/person/helse/uforetrygd/NAV%2012-06.05/ettersendelse&quot;&gt;Søknad om uføretrygd - Velg ettersendelse - www.nav.no&lt;/a&gt;</value>
+    </values>
+    <values>
+        <field>BTO_Category__c</field>
+        <value xsi:type="xsd:string">Ufør</value>
+    </values>
+    <values>
+        <field>BTO_Header__c</field>
+        <value xsi:type="xsd:string">Opptjent feriepenger før du fikk innvilget uføretrygd? </value>
+    </values>
+</CustomMetadata>
