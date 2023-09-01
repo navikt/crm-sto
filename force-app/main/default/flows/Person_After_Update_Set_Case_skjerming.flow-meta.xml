@@ -28,7 +28,7 @@
         <label>Update Case Fields</label>
         <locationX>176</locationX>
         <locationY>323</locationY>
-        <filterLogic>1 AND (2 OR 3)</filterLogic>
+        <filterLogic>1 AND (2 OR 3) AND 4 AND 5</filterLogic>
         <filters>
             <field>AccountId</field>
             <operator>EqualTo</operator>
@@ -48,6 +48,20 @@
             <operator>EqualTo</operator>
             <value>
                 <stringValue>BTO</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Closed</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_In_Queue__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
             </value>
         </filters>
         <inputAssignments>
