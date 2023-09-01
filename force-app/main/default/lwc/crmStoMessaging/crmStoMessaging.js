@@ -278,7 +278,7 @@ export default class CrmStoMessaging extends LightningElement {
             regards = 'Kind regards';
         }
 
-        return `${salutation}\n\n\n${regards}\n${this.supervisorName}\n${
+        return `${salutation}\n\n\n\n${regards}\n${this.supervisorName}\n${
             this.englishTextTemplate === true ? this.englishCompanyName : this.norwegianCompanyName
         }`;
     }
