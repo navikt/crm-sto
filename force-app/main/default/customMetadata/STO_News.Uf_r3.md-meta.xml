@@ -6,11 +6,12 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">Husk å sende nødvendig dokumentasjon til NAV, som oppgitt i
+        <value xsi:type="xsd:string">
+            Husk å sende nødvendig dokumentasjon til NAV, som oppgitt i
             brevet fra oss. Har du fått feriepenger, eller annen lønn etter at du startet uttak av
             AFP, må din arbeidsgiver bekrefte at utbetalingen gjelder opptjening før du startet
-            uttak av AFP. Se mer informasjon i brevet du har fått, og på
-            nav.no/afp-offentlig#etteroppgjor</value>
+            uttak av AFP. Se mer informasjon i brevet du har fått, og på &lt;a
+            href=&quot;https://www.nav.no/afp-offentlig#etteroppgjor&quot;&gt;nav.no/afp-offentlig#etteroppgjør&lt;/a&gt;</value>
     </values>
     <values>
         <field>STO_Category__c</field>
