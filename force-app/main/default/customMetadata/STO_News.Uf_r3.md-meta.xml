@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <label>Ufør3</label>
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">Husk å sende nødvendig dokumentasjon til NAV, som oppgitt i brevet fra oss. Har du fått feriepenger, eller annen lønn etter at du startet uttak av AFP, må din arbeidsgiver bekrefte at utbetalingen gjelder opptjening før du startet uttak av AFP. Se mer informasjon i brevet du har fått, og på nav.no/afp-offentlig#etteroppgjør</value>
+        <value xsi:type="xsd:string">Husk å sende nødvendig dokumentasjon til NAV, som oppgitt i
+            brevet fra oss. Har du fått feriepenger, eller annen lønn etter at du startet uttak av
+            AFP, må din arbeidsgiver bekrefte at utbetalingen gjelder opptjening før du startet
+            uttak av AFP. Se mer informasjon i brevet du har fått, og på
+            nav.no/afp-offentlig#etteroppgjor</value>
     </values>
     <values>
         <field>STO_Category__c</field>
