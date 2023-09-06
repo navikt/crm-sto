@@ -2,8 +2,8 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>58.0</apiVersion>
     <environments>Default</environments>
-    <interviewLabel>Person - After Update - Set Case skjerming {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Person - After Update - Set Case skjerming</label>
+    <interviewLabel>STO Person - After Update - Set Case skjerming {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>STO Person - After Update - Set Case skjerming</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
