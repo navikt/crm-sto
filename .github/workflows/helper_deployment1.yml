@@ -36,4 +36,5 @@ jobs:
       packageId: ${{ inputs.packageId }}
       org: ${{ inputs.org }}
       unpackagable: ./force-app/unpackagable-with-auto-deploy
+      SFDX_ENV: HEADER_ENV_REPLACER='"Dev"' DEPLOY_DESTINATION=DEV
     secrets: inherit
