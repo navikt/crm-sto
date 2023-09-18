@@ -26,6 +26,6 @@ public with sharing class EntitlementFixBatch implements Database.Batchable<SObj
             WHERE Name IN ('BTO Entitlement', 'STO Entitlement') AND SlaProcessId = NULL
         ];
         if (ents.size() > 0)
-            System.scheduleBatch(new EntitlementFixBatch(), 'Fix broken STO entitlements', 3600);
+            System.scheduleBatch(new EntitlementFixBatch(), 'Fix broken STO entitlements', 1440);
     }
 }
