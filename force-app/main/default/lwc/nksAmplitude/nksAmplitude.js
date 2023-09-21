@@ -7,12 +7,13 @@ export default class NksAmplitude extends LightningElement {
 
     connectedCallback() {
         loadScript(this, Amplitude + '/Amplitude.js').then(() => {
-            window.amplitude.init('API-KEY', '', {
-                apiEndpoint: 'amplitude.nav.no/collect-auto',
+            window.amplitude.init('0daf26baf4c01a4d9eda01d53669d001', '', {
+                apiEndpoint: 'amplitude.nav.no/collect',
+                serverZone: 'EU',
                 saveEvents: false,
                 includeUtm: true,
-                includeReferrer: true,
-                platform: window.location.toString()
+                batchEvents: false,
+                includeReferrer: true
             });
         });
     }
