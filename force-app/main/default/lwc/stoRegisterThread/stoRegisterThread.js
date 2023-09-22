@@ -64,7 +64,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     ];
     logopath = navlogos + '/email.svg';
     deletepath = navlogos + '/delete.svg';
-    newslist;
+    newsList;
     errorList = { title: '', errors: [] };
     message;
     modalOpen = false;
