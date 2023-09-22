@@ -10,4 +10,8 @@ jobs:
   create-package:
     name: Run Package Creation
     uses: navikt/crm-workflows-base/.github/workflows/packageCreate.yml@master
+    with:
+      SFDX_ENV: HEADER_ENV_REPLACER='"Dev"' DEPLOY_DESTINATION=DEV
+    permissions:
+      contents: write
     secrets: inherit

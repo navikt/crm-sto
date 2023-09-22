@@ -4,12 +4,12 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.108.0.NEXT",
+            "versionNumber": "1.110.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.193.0.LATEST"
+                    "versionNumber": "0.196.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
@@ -49,7 +49,7 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.99.0.LATEST"
+                    "versionNumber": "0.102.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
