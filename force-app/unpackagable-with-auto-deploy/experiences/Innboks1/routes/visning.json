@@ -6,5 +6,6 @@
   "label" : "Visning",
   "routeType" : "custom-visning",
   "type" : "route",
-  "urlPrefix" : "beskjed-til-oss/visning"
+  "urlPrefix" : "beskjed-til-oss/visning",
+  "devName":"btoVisnins__c"
 }

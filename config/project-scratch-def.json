@@ -1,7 +1,7 @@
 {
     "orgName": "CRM-STO",
     "edition": "Enterprise",
-    "release": "Current",
+    "release": "preview",
     "adminEmail": "fakeemail@nav.no.scratchorg",
     "features": [
         "Sites",

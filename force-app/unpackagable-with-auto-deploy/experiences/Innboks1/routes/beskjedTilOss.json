@@ -6,5 +6,6 @@
     "label": "Beskjed til oss",
     "routeType": "custom-beskjed-til-oss",
     "type": "route",
-    "urlPrefix": "beskjed-til-oss"
+    "urlPrefix": "beskjed-til-oss",
+    "devName":"bto__c"
 }

@@ -6,5 +6,6 @@
     "label": "Chat Transcript Detail",
     "routeType": "detail-570",
     "type": "route",
-    "urlPrefix": "chat"
+    "urlPrefix": "chat",
+    "devName":"chatDetail__c"
 }

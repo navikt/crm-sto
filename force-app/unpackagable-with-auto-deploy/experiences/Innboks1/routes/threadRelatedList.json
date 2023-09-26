@@ -7,5 +7,6 @@
     "objectApiName": "Thread__c",
     "routeType": "relatedlist-a1j",
     "type": "route",
-    "urlPrefix": "skriv-til-oss"
+    "urlPrefix": "skriv-til-oss",
+    "devName":"skrivTilOssRelatedList__c"
 }

@@ -6,5 +6,6 @@
   "label" : "Error",
   "routeType" : "error",
   "type" : "route",
-  "urlPrefix" : "error"
+  "urlPrefix" : "error",
+  "devName":"Error"
 }

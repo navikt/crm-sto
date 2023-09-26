@@ -6,5 +6,6 @@
     "label": "Chat Transcript List",
     "routeType": "list-570",
     "type": "route",
-    "urlPrefix": "chat"
+    "urlPrefix": "chat",
+    "devName":"chatList__c"
 }

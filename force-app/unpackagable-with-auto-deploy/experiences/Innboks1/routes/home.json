@@ -6,5 +6,6 @@
   "label" : "Home",
   "routeType" : "home",
   "type" : "route",
-  "urlPrefix" : ""
+  "urlPrefix" : "",
+  "devName":"Home"
 }

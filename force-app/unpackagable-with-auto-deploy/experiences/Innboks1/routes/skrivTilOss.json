@@ -6,5 +6,6 @@
   "label" : "Skriv til oss",
   "routeType" : "custom-skriv-til-oss",
   "type" : "route",
-  "urlPrefix" : "skriv-til-oss"
+  "urlPrefix" : "skriv-til-oss",
+  "devName":"skrivTilOss__c"
 }

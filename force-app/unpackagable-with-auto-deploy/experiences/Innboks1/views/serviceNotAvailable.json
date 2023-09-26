@@ -46,7 +46,7 @@
             "type": "region"
         }
     ],
-    "themeLayoutType": "ServiceNotAvailable",
+    "themeLayoutType": "Inner",
     "type": "view",
     "viewType": "service-not-available"
 }

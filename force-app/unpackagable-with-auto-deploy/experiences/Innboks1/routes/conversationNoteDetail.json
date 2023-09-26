@@ -7,5 +7,6 @@
     "objectApiName": "Conversation_Note__c",
     "routeType": "detail-a1a",
     "type": "route",
-    "urlPrefix": "samtalereferat"
+    "urlPrefix": "samtalereferat",
+    "devName":"ConversationNoteDetail__c"
 }

@@ -68,7 +68,7 @@
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "57.0",
+    "sourceApiVersion": "59.0",
     "replacements": [
         {
             "glob": "force-app/unpackagable-with-auto-deploy/experiences/Innboks1/themes/buildYourOwnLWR.json",
