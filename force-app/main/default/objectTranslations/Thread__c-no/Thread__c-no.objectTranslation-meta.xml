@@ -7,11 +7,6 @@
     </quickActions>
     <quickActions>
         <aspect>Master</aspect>
-        <label>Sett til sladding</label>
-        <name>NKS_Set_to_Redaction</name>
-    </quickActions>
-    <quickActions>
-        <aspect>Master</aspect>
         <label>Overfør</label>
         <name>STO_Transfer_Case</name>
     </quickActions>
