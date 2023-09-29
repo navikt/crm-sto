@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>54.0</apiVersion>
     <assignments>
         <name>Set_Thread_Sensitive_Info</name>
         <label>Set Thread Sensitive Info</label>
         <locationX>446</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>Get_Thread.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -17,18 +17,42 @@
             <assignToReference>Get_Thread.Cause__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Thread_Cause</elementReference>
+                <elementReference>Cause</elementReference>
             </value>
         </assignmentItems>
         <connector>
             <targetReference>Update_thread</targetReference>
         </connector>
     </assignments>
+    <choices>
+        <name>Ikke_statlig_dialog</name>
+        <choiceText>Ikke statlig dialog</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Ikke statlig dialog</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Sendt_feil_bruker</name>
+        <choiceText>Sendt feil bruker</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Sendt feil bruker</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Sensitive_personopplysninger</name>
+        <choiceText>Sensitive personopplysninger</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Sensitive personopplysninger</stringValue>
+        </value>
+    </choices>
     <decisions>
         <name>Check_If_STO_Case_Is_Updated</name>
         <label>Check If STO-Case Is Updated</label>
         <locationX>446</locationX>
-        <locationY>878</locationY>
+        <locationY>782</locationY>
         <defaultConnector>
             <targetReference>Error_Toast</targetReference>
         </defaultConnector>
@@ -47,7 +71,7 @@
                 <leftValueReference>Get_Thread.Cause__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>Thread_Cause</elementReference>
+                    <elementReference>Cause</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -60,7 +84,7 @@
         <name>Check_If_Thread_Is_Set_To_Redaction</name>
         <label>Check If Thread Is Set To Redaction</label>
         <locationX>248</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <defaultConnector>
             <targetReference>Case_STO_Sladd</targetReference>
         </defaultConnector>
@@ -81,14 +105,7 @@
             <label>IsRedacted</label>
         </rules>
     </decisions>
-    <dynamicChoiceSets>
-        <name>Thread_Cause</name>
-        <dataType>Picklist</dataType>
-        <displayField xsi:nil="true"/>
-        <object xsi:nil="true"/>
-        <picklistField>Cause__c</picklistField>
-        <picklistObject>Thread__c</picklistObject>
-    </dynamicChoiceSets>
+    <environments>Default</environments>
     <interviewLabel>Case STO Sladd {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Sladd</label>
     <processMetadataValues>
@@ -114,7 +131,7 @@
         <name>Get_Case</name>
         <label>Get Case</label>
         <locationX>248</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -135,7 +152,7 @@
         <name>Get_Thread</name>
         <label>Get Thread</label>
         <locationX>248</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_If_Thread_Is_Set_To_Redaction</targetReference>
@@ -156,7 +173,7 @@
         <name>Update_thread</name>
         <label>Update thread</label>
         <locationX>446</locationX>
-        <locationY>758</locationY>
+        <locationY>674</locationY>
         <connector>
             <targetReference>Check_If_STO_Case_Is_Updated</targetReference>
         </connector>
@@ -167,7 +184,7 @@
         <name>Case_STO_Sladd</name>
         <label>Case STO Sladd</label>
         <locationX>446</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -176,8 +193,11 @@
         </connector>
         <fields>
             <name>Cause</name>
-            <choiceReferences>Thread_Cause</choiceReferences>
+            <choiceReferences>Ikke_statlig_dialog</choiceReferences>
+            <choiceReferences>Sendt_feil_bruker</choiceReferences>
+            <choiceReferences>Sensitive_personopplysninger</choiceReferences>
             <dataType>String</dataType>
+            <defaultSelectedChoiceReference>Sendt_feil_bruker</defaultSelectedChoiceReference>
             <fieldText>Årsak</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
@@ -190,7 +210,7 @@
         <name>Error_Toast</name>
         <label>Error Toast</label>
         <locationX>578</locationX>
-        <locationY>998</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -239,7 +259,7 @@
         <name>Message_Screen</name>
         <label>Message Screen</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -256,7 +276,7 @@
         <name>Success_Toast</name>
         <label>Success Toast</label>
         <locationX>314</locationX>
-        <locationY>998</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
