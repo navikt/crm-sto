@@ -68,7 +68,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     errorList = { title: '', errors: [] };
     message;
     modalOpen = false;
-    maxLength = 1000;
+    maxLength = 2000;
     openThreadList;
 
     @wire(MessageContext)
