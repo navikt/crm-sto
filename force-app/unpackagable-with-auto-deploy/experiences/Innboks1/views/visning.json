@@ -83,7 +83,7 @@
                                 },
                                 {
                                     "componentAttributes": {
-                                        "maxLength": 1000,
+                                        "maxLength": 2000,
                                         "recordId": "{!recordId}",
                                         "threadType": "BTO"
                                     },

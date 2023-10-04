@@ -147,7 +147,7 @@
         <protected>false</protected>
         <shortDescription>Skriv til oss intro text</shortDescription>
         <value>Send only messages that can be relevant for your case. Remember to include all
-            relevant information. You can write a maximum of 1000 characters.</value>
+            relevant information. You can write a maximum of 2000 characters.</value>
     </labels>
     <labels>
         <fullName>Skriv_til_oss_text_area_description</fullName>
