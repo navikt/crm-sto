@@ -20,67 +20,30 @@ export function handleClick() {
     });
 }
 
-export function handleClickableElements(department) {
+export function handleClickableElements(appName, recordId, department) {
     window.onclick = (event) => {
+        console.log('tagname: ', JSON.stringify(event.target.tagName));
+
         let clickable =
             event.target.tagName === 'BUTTON' ||
+            event.target.tagName === 'INPUT' ||
+            event.target.tagName === 'SPAN' ||
+            event.target.tagName === 'FLOWRUNTIME-FLOW' ||
+            event.target.tagName === 'FLOWRUNTIME-NAVIGATION-BAR' ||
             event.target.tagName === 'A' ||
             event.target.onclick != null ||
             window.getComputedStyle(event.target).cursor == 'pointer';
+        console.log('clickable: ', clickable);
+        if (clickable) {
+            console.log('innertext: ', event.target.innerText);
+        }
 
-        event.target && clickable && event.target.innerText
+        event.target && clickable
             ? logAmplitudeEvent('Test Event', {
-                  type: `Click ${event.target.innerText} tab`,
+                  appName: appName,
+                  type: `Clicked element: ${event.target.tagName} ------> Element's text: ${event.target.innerText}`,
                   department: department
               })
-            : /*
-            console.log(
-                  JSON.stringify({
-                      element: event.target,
-                      tagName: event.target.tagName,
-                      text: event.target.textContent.trim().replace(/\s{2,}/g, ' ')
-                      innerHTML: event.target.innerHTML,
-                      innerText: event.target.innerText
-                  })
-              )*/
-              console.log('no target');
+            : console.log('no target');
     };
-}
-
-// does not work for SF ):
-export function getAllClickableElementsOnAPage() {
-    window.scrollTo(0, 0);
-    var bodyRect = document.body.getBoundingClientRect();
-
-    var items = Array.prototype.slice
-        .call(document.querySelectorAll('*'))
-        .map(function (element) {
-            var rect = element.getBoundingClientRect();
-            return {
-                element: element,
-                include:
-                    element.tagName === 'BUTTON' ||
-                    element.tagName === 'A' ||
-                    element.onclick != null ||
-                    window.getComputedStyle(element).cursor == 'pointer',
-                rect: {
-                    left: Math.max(rect.left - bodyRect.x, 0),
-                    top: Math.max(rect.top - bodyRect.y, 0),
-                    right: Math.min(rect.right - bodyRect.x, document.body.clientWidth),
-                    bottom: Math.min(rect.bottom - bodyRect.y, document.body.clientHeight)
-                },
-                text: element.textContent.trim().replace(/\s{2,}/g, ' '),
-                innerText: element.innerHTML
-            };
-        })
-        .filter(
-            (item) => item.include && (item.rect.right - item.rect.left) * (item.rect.bottom - item.rect.top) >= 20
-        );
-
-    // Only keep inner clickable items
-    items = items.filter((x) => !items.some((y) => x.element.contains(y.element) && x !== y));
-    console.log('items:\n');
-    items.forEach((item) => {
-        console.log(item.innerText, '\n');
-    });
 }

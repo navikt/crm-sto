@@ -1,11 +1,10 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement } from 'lwc';
 import { loadScript } from 'lightning/platformResourceLoader';
 import Amplitude from '@salesforce/resourceUrl/Amplitude';
 import { handleClickableElements } from 'c/nksAmplitudeUtils';
-import getUserDepartment from '@salesforce/apex/NKS_AmplitudeHelper.getUserDepartment';
+import getProperties from '@salesforce/apex/NKS_AmplitudeHelper.getProperties';
 export default class NksAmplitude extends LightningElement {
     static renderMode = 'light';
-    @track department;
 
     connectedCallback() {
         loadScript(this, Amplitude + '/Amplitude.js').then(() => {
@@ -19,9 +18,8 @@ export default class NksAmplitude extends LightningElement {
             });
         });
 
-        getUserDepartment().then((result) => {
-            this.department = result;
-            handleClickableElements(this.department);
+        getProperties().then((result) => {
+            handleClickableElements(result.appName, result.department);
         });
     }
 }
