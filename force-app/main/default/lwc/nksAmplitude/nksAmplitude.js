@@ -2,7 +2,7 @@ import { LightningElement } from 'lwc';
 import { loadScript } from 'lightning/platformResourceLoader';
 import Amplitude from '@salesforce/resourceUrl/Amplitude';
 import { handleClickableElements } from 'c/nksAmplitudeUtils';
-import getProperties from '@salesforce/apex/NKS_AmplitudeHelper.getProperties';
+import getUserDepartment from '@salesforce/apex/NKS_AmplitudeHelper.getUserDepartment';
 export default class NksAmplitude extends LightningElement {
     static renderMode = 'light';
 
@@ -18,8 +18,8 @@ export default class NksAmplitude extends LightningElement {
             });
         });
 
-        getProperties().then((result) => {
-            handleClickableElements(result.appName, result.department);
+        getUserDepartment().then((result) => {
+            handleClickableElements(result);
         });
     }
 }
