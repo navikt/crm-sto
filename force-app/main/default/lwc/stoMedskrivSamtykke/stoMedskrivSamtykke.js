@@ -10,9 +10,8 @@ const titlesConst = {
 };
 
 const textConst = {
-    false:
-        'For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt. Du kan når som helst trekke tilbake godkjenningen.',
-    true: 'Vi vil ikke bruke samtalen din til å lære opp veildere i NAV.'
+    false: 'For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt. Du kan når som helst trekke tilbake godkjenningen.',
+    true: 'Vi vil ikke bruke samtalen din til å lære opp veiledere i NAV.'
 };
 
 export default class StoMedskrivSamtykke extends LightningElement {
