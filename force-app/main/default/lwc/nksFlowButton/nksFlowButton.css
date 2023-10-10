@@ -20,3 +20,19 @@
     --slds-c-button-brand-color-border-hover: #005b82;
     --slds-c-button-brand-color-border-active: #005b82;
 }
+
+/* styling hooks is for overview */
+.helpText {
+    position: absolute;
+    /*
+    --slds-c-tooltip-color-background: 20, #032d60;
+    --slds-c-tooltip-text-color: 100, white;
+    --slds-c-tooltip-font-size: 0.75rem;
+      --slds-c-tooltip-sizing-max-width: 20rem;
+    --slds-c-popover-position-zindex: 6000;
+     */
+}
+
+.button:hover + .slds-popover.slds-popover_tooltip.slds-hide {
+    display: block !important;
+}

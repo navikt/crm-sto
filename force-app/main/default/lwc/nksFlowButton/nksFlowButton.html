@@ -6,7 +6,17 @@
         onclick={toggleFlow}
         disabled={isDisabled}
         aria-expanded={ariaExpanded}
+        icon-name={iconName}
     ></lightning-button>
+    <template if:true={helpText}>
+        <div
+            class="slds-popover slds-popover_tooltip slds-nubbin_top-right slds-hide helpText"
+            role="tooltip"
+            id="help"
+        >
+            <div class="slds-popover__body">{helpText}</div>
+        </div>
+    </template>
     <template if:true={showFlow}>
         <div class="slds-var-m-top_xx-small" tabindex="0">
             <lightning-card>

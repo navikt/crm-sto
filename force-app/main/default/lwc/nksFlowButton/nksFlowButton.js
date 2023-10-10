@@ -6,6 +6,7 @@ export default class NksFlowButton extends LightningElement {
     @api buttonColor;
     @api inputVariables;
     @api isDisabled = false;
+    @api helpText;
 
     showFlow = false;
 
@@ -25,6 +26,9 @@ export default class NksFlowButton extends LightningElement {
             default:
                 return 'button';
         }
+    }
+    get iconName() {
+        return this.helpText ? 'utility:info' : '';
     }
 
     toggleFlow() {
