@@ -1,5 +1,5 @@
 import { LightningElement, api } from 'lwc';
-
+import { trackAmplitudeEvent } from 'c/amplitude';
 export default class NksFlowButton extends LightningElement {
     @api flowName;
     @api buttonLabel;
@@ -28,6 +28,7 @@ export default class NksFlowButton extends LightningElement {
     }
 
     toggleFlow() {
+        trackAmplitudeEvent('STO' + this.buttonLabel + 'pressed');
         this.showFlow = !this.showFlow;
     }
 

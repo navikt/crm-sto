@@ -4,6 +4,7 @@ import getSto from '@salesforce/apex/nksGetStoUtilityController.getSto';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import hasStoBeta from '@salesforce/customPermission/STO_Beta';
+import { trackAmplitudeEvent } from 'c/amplitude';
 
 export default class NksGetStoUtility extends NavigationMixin(LightningElement) {
     listCount = 5;
@@ -18,6 +19,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     betaPermission = hasStoBeta;
 
     connectedCallback() {
+        trackAmplitudeEvent('STO Utility connectedCallback');
         this.getUtilityId();
         // Navigate to list
         this[NavigationMixin.GenerateUrl]({
@@ -50,7 +52,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     getNewSTOHandler() {
-        console.log('click');
+        trackAmplitudeEvent('STO Utility getNewSTOHandler');
         this.showSpinner = true;
         getSto()
             .then((records) => {
@@ -147,6 +149,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     navigateToList() {
+        trackAmplitudeEvent('STO Utility navigateToList');
         this[NavigationMixin.Navigate]({
             type: 'standard__objectPage',
             attributes: {
@@ -171,6 +174,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     refreshComponent() {
+        trackAmplitudeEvent('STO Utility refreshComponent');
         this.showSpinner = true;
         return this.loadList();
     }
