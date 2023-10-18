@@ -4,7 +4,14 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">Alle pensjoner reguleres fra 1. mai. Da vil også din pensjon øke. Første utbetaling med nytt beløp vil skje i juni, og vil også inneholde etterbetaling for mai. Vi har ikke informasjon per i dag om hva du vil få utbetalt etter endringen. Du kan se nytt beløp på &lt;a href=&quot;https://www.nav.no/utbetalinger&quot;&gt;nav.no/utbetaling&lt;/a&gt; ca. en uke før utbetalingsdato.</value>
+        <value xsi:type="xsd:string">&lt;ul&gt;
+    &lt;li&gt;
+    Pensjonskalkulatoren under &lt;a href=&quot;https://www.nav.no/pensjon&quot; target=&quot;_blank&quot;&gt;Din pensjon&lt;/a&gt; på nav.no hjelper deg med å finne ut av hva du kan forvente i pensjon fra folketrygden og fra private pensjonsordninger. 
+    &lt;/li&gt;    
+    &lt;li&gt;
+        Har du offentlig tjenestepensjon, kan det være lurt å undersøke med din pensjonsordning om hva du kan få i tillegg til pensjon fra folketrygden. 
+    &lt;/li&gt;    
+    &lt;/ul&gt;</value>
     </values>
     <values>
         <field>STO_Category__c</field>
@@ -12,6 +19,6 @@
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Ny regulering i pensjon fra 1. mai</value>
+        <value xsi:type="xsd:string">Lurer du på hva du vil få i fremtidig pensjon?</value>
     </values>
 </CustomMetadata>
