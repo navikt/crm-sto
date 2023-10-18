@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Familie3</label>
+    <protected>false</protected>
+    <values>
+        <field>STO_Body__c</field>
+        <value xsi:type="xsd:string">&lt;ul&gt;
+    &lt;li&gt;
+    Du kan følge saken din på &lt;a href=&quot;https://foreldrepenger.nav.no/&quot; target=&quot;_blank&quot;&gt;https://foreldrepenger.nav.no/&lt;/a&gt; 
+    &lt;/li&gt;    
+    &lt;li&gt;
+    Husk at saksbehandlingstid regnes fra når vi har mottatt all dokumentasjon. Dette gjelder også inntektsmelding fra arbeidsgiver hvis du er arbeidstaker.
+    &lt;/li&gt;    
+    &lt;li&gt;
+    Se &lt;a href=&quot;https://www.nav.no/saksbehandlingstider#foreldrepenger&quot; target=&quot;_blank&quot;&gt;saksbehandlingstider på foreldrepenger&lt;/a&gt;.
+    &lt;/li&gt;    
+    &lt;/ul&gt;</value>
+    </values>
+    <values>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Familie</value>
+    </values>
+    <values>
+        <field>STO_Header__c</field>
+        <value xsi:type="xsd:string">Har du søkt om foreldrepenger og venter på svar?</value>
+    </values>
+</CustomMetadata>
