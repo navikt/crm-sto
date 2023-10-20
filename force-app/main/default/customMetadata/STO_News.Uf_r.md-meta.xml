@@ -4,9 +4,15 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">Har du opptjent feriepenger før du fikk innvilget uføretrygd? Da kan det hende at du går over din inntektsgrense. 
-
-Du kan sende oss dokumentasjon på utbetaling av feriepenger. Da vil vi vurdere om dette er inntekt som ikke vil føre til reduksjon i din utbetaling. Dokumentasjon kan du sende inn på &lt;a href=&quot;https://www.nav.no/soknader/nb/person/helse/uforetrygd/NAV%2012-06.05/ettersendelse&quot;&gt;Søknad om uføretrygd - Velg ettersendelse - www.nav.no&lt;/a&gt;</value>
+        <value xsi:type="xsd:string">Har du mottatt brev om etteroppgjør i din uføretrygd for 2022?
+Hvis du hadde inntekt i 2022 som skal holdes utenfor oppgjøret, kan du sende oss dokumentasjon, slik at vi kan gjøre en ny vurdering. 
+Eksempel på inntekt som kan holdes utenfor, er feriepenger fra avsluttet arbeidsforhold eller fra et erstatningsoppgjør.
+&lt;ul&gt;&lt;li&gt;
+    &lt;a href=&quot;https://www.nav.no/start/ettersend-soknad-uforetrygd&quot;&gt;Ettersend dokumentasjon&lt;/a&gt;.
+&lt;/li&gt;
+&lt;/ul&gt;
+        
+Du finner mer informasjon på &lt;a href=&quot;https://www.nav.no/uforetrygd#etteroppgjor&quot;&gt;sidene om uføretrygd og etteroppgjør på nav.no&lt;/a&gt;.</value>
     </values>
     <values>
         <field>STO_Category__c</field>
@@ -14,6 +20,6 @@ Du kan sende oss dokumentasjon på utbetaling av feriepenger. Da vil vi vurdere 
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Opptjent feriepenger før du fikk innvilget uføretrygd? </value>
+        <value xsi:type="xsd:string">Etteroppgjør for uføretrygd</value>
     </values>
 </CustomMetadata>
