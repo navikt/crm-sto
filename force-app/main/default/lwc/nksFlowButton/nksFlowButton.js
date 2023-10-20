@@ -28,7 +28,7 @@ export default class NksFlowButton extends LightningElement {
     }
 
     toggleFlow() {
-        trackAmplitudeEvent('STO' + this.buttonLabel + 'pressed');
+        trackAmplitudeEvent('STO Event', { type: 'STO' + this.buttonLabel + 'pressed' });
         this.showFlow = !this.showFlow;
     }
 

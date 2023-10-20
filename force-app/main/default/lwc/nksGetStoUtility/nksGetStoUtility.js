@@ -19,7 +19,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     betaPermission = hasStoBeta;
 
     connectedCallback() {
-        trackAmplitudeEvent('STO Utility connectedCallback');
+        trackAmplitudeEvent('STO Event', { type: 'STO Utility opened' });
         this.getUtilityId();
         // Navigate to list
         this[NavigationMixin.GenerateUrl]({
@@ -52,7 +52,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     getNewSTOHandler() {
-        trackAmplitudeEvent('STO Utility getNewSTOHandler');
+        trackAmplitudeEvent('STO Event', { type: 'getNewSTOHandler' });
         this.showSpinner = true;
         getSto()
             .then((records) => {
@@ -149,7 +149,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     navigateToList() {
-        trackAmplitudeEvent('STO Utility navigateToList');
+        trackAmplitudeEvent('STO Event', { type: 'navigateToList' });
         this[NavigationMixin.Navigate]({
             type: 'standard__objectPage',
             attributes: {
@@ -174,7 +174,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     refreshComponent() {
-        trackAmplitudeEvent('STO Utility refreshComponent');
+        trackAmplitudeEvent('STO Event', { type: 'refreshComponent' });
         this.showSpinner = true;
         return this.loadList();
     }

@@ -35,7 +35,7 @@ export default class NksGetStoUtilityListEntry extends NavigationMixin(Lightning
     }
 
     navigateToPage(event) {
-        trackAmplitudeEvent('navigateToPage STO');
+        trackAmplitudeEvent('STO Event', { type: 'navigateToPage from utility' });
         event.preventDefault();
         event.stopPropagation();
         this[NavigationMixin.Navigate]({
