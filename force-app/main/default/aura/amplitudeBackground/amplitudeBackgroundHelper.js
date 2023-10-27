@@ -83,17 +83,15 @@
         const objectToLog =
             message.getParam('options') === undefined ? {} : { recordId: '', options: message.getParam('options') }; // Null coalescing operator not supported...
         console.log('currentRecordId: ', currentRecordId);
-        if (currentRecordId !== undefined) {
-            objectToLog.recordId = helper.anonymizeRecordId(component, currentRecordId);
-        }
+        objectToLog.recordId = helper.anonymizeRecordId(component, currentRecordId);
         console.log('eventType: ', eventType);
         console.log('objectToLog: ', JSON.stringify(objectToLog));
         component.find('amplitude').trackAmplitudeEvent(eventType, objectToLog);
     },
 
     anonymizeRecordId: function (component, recordId) {
-        if (recordId === undefined) {
-            return null;
+        if (recordId === undefined || recordId === null) {
+            return '';
         }
         const recordIdMap = component.get('v.recordIdMap'); // Accessing the map from the component attribute
         if (recordIdMap.get(recordId) === undefined) {
