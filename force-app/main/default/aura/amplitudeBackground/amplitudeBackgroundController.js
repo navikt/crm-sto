@@ -1,10 +1,10 @@
 ({
-    doInit: function (component, event, helper) {
+    doInit: function (component) {
         component.set('v.recordIdMap', new Map()); // Setting recordId anonymization map as a component attribute
-        var action = component.get("c.getAmplitudeKey");
+        var action = component.get('c.getAmplitudeKey');
         action.setCallback(this, function (response) {
             var state = response.getState();
-            if (state === "SUCCESS") {
+            if (state === 'SUCCESS') {
                 window.amplitude.init(response.getReturnValue(), '', {
                     apiEndpoint: 'amplitude.nav.no/collect',
                     serverZone: 'EU',
@@ -13,16 +13,19 @@
                     batchEvents: false,
                     includeReferrer: true,
                     defaultTracking: {
-                        pageViews: false,
-                    },
+                        pageViews: false
+                    }
                 });
             }
         });
         $A.enqueueAction(action);
     },
 
-    onTabFocused: function(component, event, helper) {
-        console.log('onTabFocused controller');
+    onTabFocused: function (component, event, helper) {
         helper.handleTabFocused(component, event, helper);
+    },
+
+    logMessage: function (component, message, helper) {
+        helper.logMessage(component, message, helper);
     }
-})
+});

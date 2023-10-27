@@ -9,5 +9,6 @@
 
     <lightning:workspaceAPI aura:id="workspace" />
     <aura:handler event="lightning:tabFocused" action="{! c.onTabFocused }" />
+
     <lightning:messageChannel type="amplitude__c" onMessage="{!c.logMessage}" scope="APPLICATION" />
 </aura:component>
