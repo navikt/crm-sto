@@ -4,6 +4,7 @@
         if (focusedTabId == null) {
             return;
         }
+        let recordId;
         let outputLog;
         let workspaceAPI = component.find('workspace');
         workspaceAPI
@@ -18,8 +19,8 @@
                         // Record view
                         outputLog = {
                             isSubtab: response.isSubtab,
-                            type: 'Record page',
-                            recordId: response.recordId,
+                            tabType: 'Record Page',
+                            recordId: (recordId = response.recordId),
                             objectApiName: response.pageReference.attributes.objectApiName
                         };
                         break;
@@ -28,7 +29,7 @@
                         // List View / Create new record -  har attributes.actionName: 'List', Create har actionName 'new'
                         outputLog = {
                             isSubtab: response.isSubtab,
-                            type:
+                            tabType:
                                 response.pageReference.attributes.actionName === 'new'
                                     ? 'Create New Record'
                                     : 'List View',
@@ -46,8 +47,8 @@
                         // A page that displays the content mapped to a custom tab. Visualforce tabs, web tabs, Lightning Pages, and Lightning Component tabs are supported.
                         outputLog = {
                             isSubtab: response.isSubtab,
-                            type: 'Lightning Tab',
-                            recordId: response.pageReference.state.ws.split('/')[4],
+                            tabType: 'Lightning Tab',
+                            recordId: (recordId = response.pageReference.state.ws.split('/')[4]),
                             apiName: response.pageReference.attributes.apiName
                         };
                         break;
@@ -56,7 +57,7 @@
                         // Global search result
                         outputLog = {
                             isSubtab: response.isSubtab,
-                            type: 'Global Search',
+                            tabType: 'Global Search',
                             searchTerm: response.pageReference.attributes.attributes.term,
                             appName: response.pageReference.attributes.attributes.context.debugInfo.appName,
                             scope: response.pageReference.attributes.attributes.scopeMap.label
@@ -66,11 +67,12 @@
                     default:
                         outputLog = {
                             isSubtab: response.isSubtab,
-                            type: 'Unknown Type ' + response.pageReference.type,
-                            recordId: response.recordId,
+                            tabType: 'Unknown Type ' + response.pageReference.type,
+                            recordId: (recordId = response.recordId),
                             objectApiName: response.pageReference.attributes
                         };
                 }
+                component.set('v.recordId', recordId); // Set current recordId in case it is not sent in logMessage to have fallback
                 outputLog.recordId = helper.anonymizeRecordId(component, outputLog.recordId);
                 console.log('outputLog: ', JSON.stringify(outputLog));
                 component.find('amplitude').trackAmplitudeEvent('Tab focused', outputLog);
@@ -78,19 +80,24 @@
     },
 
     logMessage: function (component, message, helper) {
-        const eventType = message.getParam('type');
+        const eventType = message.getParam('eventType');
         const currentRecordId = message.getParam('recordId');
         const objectToLog =
-            message.getParam('options') === undefined ? {} : { recordId: '', options: message.getParam('options') }; // Null coalescing operator not supported...
+            message.getParam('properties') === undefined
+                ? {}
+                : { recordId: '', properties: message.getParam('properties') }; // Null coalescing operator not supported...
         console.log('currentRecordId: ', currentRecordId);
-        objectToLog.recordId = helper.anonymizeRecordId(component, currentRecordId);
+        objectToLog.recordId = helper.anonymizeRecordId(
+            component,
+            currentRecordId === null || currentRecordId === undefined ? component.get('v.recordId') : currentRecordId
+        );
         console.log('eventType: ', eventType);
         console.log('objectToLog: ', JSON.stringify(objectToLog));
         component.find('amplitude').trackAmplitudeEvent(eventType, objectToLog);
     },
 
     anonymizeRecordId: function (component, recordId) {
-        if (recordId === undefined || recordId === null) {
+        if (recordId === undefined || recordId === null || recordId === '') {
             return '';
         }
         const recordIdMap = component.get('v.recordIdMap'); // Accessing the map from the component attribute
