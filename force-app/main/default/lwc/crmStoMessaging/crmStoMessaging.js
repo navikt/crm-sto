@@ -434,6 +434,7 @@ export default class CrmStoMessaging extends LightningElement {
         this.acceptedMedskriv = true;
         const child = this.template.querySelector('c-crm-messaging-message-component');
         child.checkSlotChange('messages');
+        child.focus();
     }
 
     get showMedskrivBlocker() {
