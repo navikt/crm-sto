@@ -42,6 +42,7 @@
                         //  Related list
                         outputLog = { isSubtab: response.isSubtab, type: 'Related List' };
                         outputLog = Object.assign(outputLog, response.pageReference.attributes); // Spread operator is not supported so Object.assign does the job.
+                        recordId = outputLog.recordId; // Set recordId var for logMessage defaulting
                         break;
 
                     case 'standard__navItemPage':
