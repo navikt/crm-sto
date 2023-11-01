@@ -1,10 +1,11 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
 import getList from '@salesforce/apex/nksGetStoUtilityController.getList';
 import getSto from '@salesforce/apex/nksGetStoUtilityController.getSto';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import hasStoBeta from '@salesforce/customPermission/STO_Beta';
-import { trackAmplitudeEvent } from 'c/amplitude';
+import { MessageContext, publish } from 'lightning/messageService';
+import AMPLITUDE_CHANNEL from '@salesforce/messageChannel/amplitude__c';
 
 export default class NksGetStoUtility extends NavigationMixin(LightningElement) {
     listCount = 5;
@@ -18,8 +19,15 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
 
     betaPermission = hasStoBeta;
 
+    @wire(MessageContext)
+    messageContext;
+
     connectedCallback() {
-        trackAmplitudeEvent('STO Event', { type: 'STO Utility opened' });
+        let message = {
+            eventType: 'STO',
+            properties: { type: 'STO Utility opened' }
+        };
+        publish(this.messageContext, AMPLITUDE_CHANNEL, message);
         this.getUtilityId();
         // Navigate to list
         this[NavigationMixin.GenerateUrl]({
@@ -52,7 +60,11 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     getNewSTOHandler() {
-        trackAmplitudeEvent('STO Event', { type: 'getNewSTOHandler' });
+        let message = {
+            eventType: 'STO',
+            properties: { type: 'getNewSTOHandler' }
+        };
+        publish(this.messageContext, AMPLITUDE_CHANNEL, message);
         this.showSpinner = true;
         getSto()
             .then((records) => {
@@ -149,7 +161,11 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     navigateToList() {
-        trackAmplitudeEvent('STO Event', { type: 'navigateToList' });
+        let message = {
+            eventType: 'STO',
+            properties: { type: 'navigateToList' }
+        };
+        publish(this.messageContext, AMPLITUDE_CHANNEL, message);
         this[NavigationMixin.Navigate]({
             type: 'standard__objectPage',
             attributes: {
@@ -174,7 +190,11 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     refreshComponent() {
-        trackAmplitudeEvent('STO Event', { type: 'refreshComponent' });
+        let message = {
+            eventType: 'STO',
+            properties: { type: 'refreshComponent' }
+        };
+        publish(this.messageContext, AMPLITUDE_CHANNEL, message);
         this.showSpinner = true;
         return this.loadList();
     }
