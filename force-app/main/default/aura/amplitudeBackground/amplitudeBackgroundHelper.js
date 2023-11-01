@@ -6,6 +6,7 @@
         }
         let recordId;
         let outputLog;
+        component.set('v.recordId', null); // Reset
         let workspaceAPI = component.find('workspace');
         workspaceAPI
             .getTabInfo({
