@@ -1,7 +1,6 @@
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import { MessageContext, publish } from 'lightning/messageService';
-import AMPLITUDE_CHANNEL from '@salesforce/messageChannel/amplitude__c';
+import { publishToAmplitude } from 'c/amplitude';
 
 export default class NksGetStoUtilityListEntry extends NavigationMixin(LightningElement) {
     @api record;
@@ -9,9 +8,6 @@ export default class NksGetStoUtilityListEntry extends NavigationMixin(Lightning
     @api lastIndex;
 
     recordUrl;
-
-    @wire(MessageContext)
-    messageContext;
 
     connectedCallback() {
         this[NavigationMixin.GenerateUrl]({
@@ -40,11 +36,7 @@ export default class NksGetStoUtilityListEntry extends NavigationMixin(Lightning
     }
 
     navigateToPage(event) {
-        let message = {
-            eventType: 'STO',
-            properties: { type: 'navigateToPage from utility' }
-        };
-        publish(this.messageContext, AMPLITUDE_CHANNEL, message);
+        publishToAmplitude('STO', { type: 'navigateToPage from utility' });
         event.preventDefault();
         event.stopPropagation();
         this[NavigationMixin.Navigate]({

@@ -1,6 +1,5 @@
-import { LightningElement, api, wire } from 'lwc';
-import { MessageContext, publish } from 'lightning/messageService';
-import AMPLITUDE_CHANNEL from '@salesforce/messageChannel/amplitude__c';
+import { LightningElement, api } from 'lwc';
+import { publishToAmplitude } from 'c/amplitude';
 
 export default class NksFlowButton extends LightningElement {
     @api flowName;
@@ -10,9 +9,6 @@ export default class NksFlowButton extends LightningElement {
     @api isDisabled = false;
 
     showFlow = false;
-
-    @wire(MessageContext)
-    messageContext;
 
     get ariaExpanded() {
         return this.showFlow.toString();
@@ -33,11 +29,7 @@ export default class NksFlowButton extends LightningElement {
     }
 
     toggleFlow() {
-        let message = {
-            eventType: 'STO',
-            properties: { type: 'STO' + this.buttonLabel + 'pressed' }
-        };
-        publish(this.messageContext, AMPLITUDE_CHANNEL, message);
+        publishToAmplitude('STO', { type: 'STO' + this.buttonLabel + 'pressed' });
         this.showFlow = !this.showFlow;
     }
 
