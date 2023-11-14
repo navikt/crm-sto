@@ -29,7 +29,7 @@ export default class NksFlowButton extends LightningElement {
     }
 
     toggleFlow() {
-        publishToAmplitude('STO', { type: 'STO' + this.buttonLabel + 'pressed' });
+        publishToAmplitude('STO', { type: this.buttonLabel + ' pressed' });
         this.showFlow = !this.showFlow;
     }
 
