@@ -102,7 +102,6 @@
             recordIdMap.set(recordId, crypto.randomUUID());
             component.set('v.recordIdMap', recordIdMap);
         }
-        console.log('recordIdMap: ', recordIdMap);
         return recordIdMap.get(recordId);
     },
 
@@ -136,7 +135,7 @@
                         }
                     });
                 } catch (err) {
-                    console.log('Error happened when loading Amplitude: ', JSON.stringify(err));
+                    console.error('Error happened when loading Amplitude: ', JSON.stringify(err));
                 }
             }
         });
