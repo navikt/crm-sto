@@ -210,7 +210,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             medskriv != null
         ) {
             this.showspinner = true;
-            this.spinnerText = spinnerReasonTextMap['send'];
+            this.spinnerText = spinnerReasonTextMap.send;
 
             createThreadWithCase({
                 theme: this.selectedTheme,
@@ -264,7 +264,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     closeSelectedThread(selectedThreadId) {
         this.showspinner = true;
-        this.spinnerText = spinnerReasonTextMap['close'];
+        this.spinnerText = spinnerReasonTextMap.close;
         closeThread({ id: selectedThreadId })
             .then(() => {
                 refreshApex(this._wireThreadData)

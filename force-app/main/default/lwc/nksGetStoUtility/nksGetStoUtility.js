@@ -214,9 +214,9 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                     callback: (err, response) => {
                         if (err) {
                             return reject(err);
-                        } else {
+                        } 
                             return resolve(response);
-                        }
+                        
                     }
                 }
             });

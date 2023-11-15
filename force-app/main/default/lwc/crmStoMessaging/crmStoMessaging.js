@@ -95,7 +95,7 @@ export default class CrmStoMessaging extends LightningElement {
                 !this.companyName.toLowerCase().toLowerCase().includes('styringsenhet')
             ) {
                 return 'NAV Kontaktsenter';
-            } else {
+            } 
                 const startWords = ['DIR', 'HJELPEMIDDEL', 'NAV', 'SEKSJON', 'YTELSE'];
                 const words = [
                     'Analyse',
@@ -134,10 +134,10 @@ export default class CrmStoMessaging extends LightningElement {
                     }
                     // console.log(listString.join(' '));
                     return listString.join(' ');
-                } else {
+                } 
                     return this.companyName;
-                }
-            }
+                
+            
         } catch (error) {
             console.log('Problem getting Norwegian company name: ' + error);
             return '';
@@ -252,11 +252,11 @@ export default class CrmStoMessaging extends LightningElement {
                         if (unitsWithPrepositions.includes(this.norwegianCompanyName)) {
                             ecn = this.norwegianCompanyName.replace(/\b(?:og|i)\b/gi, (matched) => mapObj[matched]);
                             return ecn;
-                        } else {
+                        } 
                             hasEnglishTranslation = false;
                             console.log('There is no translation for this CompanyName.');
                             return this.norwegianCompanyName;
-                        }
+                        
                     }
                     if (hasEnglishTranslation) {
                         ecn = ecn.replace(/\b(?:og|i)\b/gi, (matched) => mapObj[matched]);
@@ -299,9 +299,9 @@ export default class CrmStoMessaging extends LightningElement {
             return 'AccountId';
         } else if (this.objectApiName === 'Thread__c') {
             return 'CRM_Account__c';
-        } else {
+        } 
             console.log('Something is wrong with Account API name');
-        }
+        
     }
 
     getAccountId() {

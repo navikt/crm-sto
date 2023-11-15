@@ -22,18 +22,18 @@ export default class StoMessageInboxItem extends LightningElement {
             if (this.isOpen) {
                 if (this.isExternal === true) {
                     return this.thread.name + ': Du sendte en melding';
-                } else {
+                } 
                     return this.thread.name + ': NAV sendte en melding';
-                }
+                
             }
             return this.thread.name;
         }
         if (this.objectName === 'chat') {
             if (this.isExternal === true) {
                 return this.thread.name + ': Du sendte en melding';
-            } else {
+            } 
                 return this.thread.name + ': NAV sendte en melding';
-            }
+            
         }
         return this.thread.name;
     }
