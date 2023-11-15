@@ -1,5 +1,6 @@
 <aura:component implements="flexipage:availableForAllPageTypes" controller="AmplitudeHelper">
     <ltng:require scripts="{!$Resource.Amplitude + '/Amplitude.js'}" afterScriptsLoaded="{!c.reloadAmplitude}" />
+    <c:loggerUtility aura:id="loggerUtility"></c:loggerUtility>
     <c:nksGetStoUtility aura:id="stoUtility"></c:nksGetStoUtility>
     <c:amplitude aura:id="amplitude" />
 

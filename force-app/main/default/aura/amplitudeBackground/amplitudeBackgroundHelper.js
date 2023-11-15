@@ -110,8 +110,19 @@
         var action = component.get('c.getAmplitudeKey');
         action.setCallback(this, function (response) {
             var state = response.getState();
+            if (state === 'ERROR') {
+                component
+                    .find('loggerUtility')
+                    .logError(
+                        'NKS',
+                        'Amplitude',
+                        response.getError(),
+                        'Kunne ikke laste Amplitude',
+                        component.get('v.recordId')
+                    );
+            }
             if (state === 'SUCCESS') {
-                console.log('Attempting to load Amplitude...');
+                console.log('Loading Amplitude...');
                 try {
                     window.amplitude.init(response.getReturnValue(), '', {
                         apiEndpoint: 'amplitude.nav.no/collect',
