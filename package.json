@@ -2,6 +2,7 @@
     "private": true,
     "scripts": {
         "lint": "eslint **/lwc/** **/aura/**",
+        "lint:fix": "eslint --fix **/lwc/** **/aura/**",
         "lint:lwc": "eslint **/lwc/**",
         "lint:aura": "eslint **/aura/**",
         "test": "npm run lint && npm run test:unit",
