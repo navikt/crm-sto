@@ -19,8 +19,8 @@
         "prepare": "husky install"
     },
     "engines": {
-        "node": ">= 10.13.0",
-        "npm": ">= 6.5.0"
+        "node": ">= 16.0.0",
+        "npm": ">= 8.4.0"
     },
     "devDependencies": {
         "@babel/core": "^7.21.4",
