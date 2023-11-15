@@ -9,7 +9,7 @@ Account personAccount = [SELECT FirstName, LastName, PersonContactId FROM Accoun
 
 //Create user
 Profile portalProfile = [SELECT Id FROM Profile WHERE Name='Scratch Community Profile' Limit 1];
-String userName  = personAccount.FirstName + '.' +personAccount.LastName + '@' + URL.getSalesforceBaseUrl().getHost();
+String userName  = personAccount.FirstName + '.' +personAccount.LastName + '@' + URL.getOrgDomainUrl().getHost();
 User user1 = new User(
     UserName = userName,
     FirstName = personAccount.FirstName,
