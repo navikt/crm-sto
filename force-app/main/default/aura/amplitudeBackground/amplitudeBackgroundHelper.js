@@ -132,6 +132,10 @@
                         includeReferrer: true,
                         defaultTracking: {
                             pageViews: false
+                        },
+                        trackingOptions: {
+                            city: false,
+                            ip_address: false
                         }
                     });
                 } catch (err) {
