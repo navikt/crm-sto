@@ -4,15 +4,24 @@
     <protected>false</protected>
     <values>
         <field>STO_Body__c</field>
-        <value xsi:type="xsd:string">Har du mottatt brev om etteroppgjør i din uføretrygd for 2022?
-Hvis du hadde inntekt i 2022 som skal holdes utenfor oppgjøret, kan du sende oss dokumentasjon, slik at vi kan gjøre en ny vurdering. 
-Eksempel på inntekt som kan holdes utenfor, er feriepenger fra avsluttet arbeidsforhold eller fra et erstatningsoppgjør.
-&lt;ul&gt;&lt;li&gt;
-    &lt;a href=&quot;https://www.nav.no/start/ettersend-soknad-uforetrygd&quot;&gt;Ettersend dokumentasjon&lt;/a&gt;.
-&lt;/li&gt;
-&lt;/ul&gt;
-        
-Du finner mer informasjon på &lt;a href=&quot;https://www.nav.no/uforetrygd#etteroppgjor&quot;&gt;sidene om uføretrygd og etteroppgjør på nav.no&lt;/a&gt;.</value>
+        <value xsi:type="xsd:string">&lt;p&gt;
+  Har du mottatt faktura fra innkrevingssentralen for bidrag og
+  tilbakebetalingssaker for etteroppgjøret for 2022?
+&lt;/p&gt;
+&lt;br&gt;
+&lt;p&gt;
+    Du finner informasjon om dine alternativer for tilbakebetaling i fakturaen du
+    har mottatt og i etteroppgjørsbrevet. Informasjon om det ligger også
+    tilgjengelig på
+    &lt;a href=&quot;https://www.nav.no/uforetrygd#etteroppgjor&quot;
+    &gt;sidene om uføretrygd og etteroppgjør på nav.no&lt;/a
+    &gt;.
+&lt;/p&gt;
+&lt;br&gt;
+&lt;p&gt;
+  Hvis forfallet på fakturaen er etter 12. desember og du bare har betalt deler
+  av fakturaen, vil vi ikke starte avregningstrekk i uføretrygden før i januar.
+&lt;/p&gt;</value>
     </values>
     <values>
         <field>STO_Category__c</field>
@@ -20,6 +29,6 @@ Du finner mer informasjon på &lt;a href=&quot;https://www.nav.no/uforetrygd#ett
     </values>
     <values>
         <field>STO_Header__c</field>
-        <value xsi:type="xsd:string">Etteroppgjør for uføretrygd</value>
+        <value xsi:type="xsd:string">Faktura fra innkrevingssentralen for bidrag og tilbakebetalingssaker</value>
     </values>
 </CustomMetadata>
