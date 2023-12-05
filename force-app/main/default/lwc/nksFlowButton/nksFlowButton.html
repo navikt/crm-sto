@@ -8,6 +8,12 @@
         aria-expanded={ariaExpanded}
     ></lightning-button>
     <template if:true={showFlow}>
+        <div if:true={isRedactionButton} class="slds-var-m-top_xx-small slds-var-m-bottom_small">
+            <c-nks-help-text
+                label="info om sladding"
+                help-text="<p>Sett henvendelsen til sladding dersom du mener den inneholder sensitiv informasjon. Les mer om sladding <a href='https://navdialog.lightning.force.com/lightning/r/Knowledge__kav/ka07U000000oUqJQAU/view' target='_blank'>her</a></p>"
+            ></c-nks-help-text>
+        </div>
         <div class="slds-var-m-top_xx-small" tabindex="0">
             <lightning-card>
                 <lightning-flow

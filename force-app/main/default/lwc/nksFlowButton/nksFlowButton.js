@@ -28,6 +28,10 @@ export default class NksFlowButton extends LightningElement {
         }
     }
 
+    get isRedactionButton() {
+        return this.buttonLabel === 'Sladd';
+    }
+
     toggleFlow() {
         publishToAmplitude('STO', { type: this.buttonLabel + ' pressed' });
         this.showFlow = !this.showFlow;
