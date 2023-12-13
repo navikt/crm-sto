@@ -23,7 +23,6 @@ public without sharing class nksGetStoUtilityController {
 
     @AuraEnabled
     public static List<Record> getSto() {
-        System.debug('Cronks');
         List<Record> records = new List<Record>();
         if (hasInProgress())
             throw new AuraHandledException('hasInProgress');
@@ -49,7 +48,6 @@ public without sharing class nksGetStoUtilityController {
 
     @AuraEnabled
     public static List<Record> getStoWithSkill(Id skillId) {
-        System.debug('Stonks');
         filteredSkillId = skillId;
         return getSto();
     }
