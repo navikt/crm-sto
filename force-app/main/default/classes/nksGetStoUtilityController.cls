@@ -2,7 +2,7 @@
  * @description       :
  * @author            : mamikals
  * @group             :
- * @last modified on  : 21-03-2023
+ * @last modified on  : 13-12-2023
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
@@ -12,17 +12,18 @@ public without sharing class nksGetStoUtilityController {
     public class NoCasesFoundException extends Exception {
     }
 
-    private static List<Id> skillIdList = new List<Id>();
-    private static List<Id> userConfidentialitySkills = new List<Id>();
-    private static List<String> userOriginSkills = new List<String>();
     private static final List<String> confidentialitySkills = new List<String>{
         'Fortrolig_addresse',
         'Skjermede_personer'
     };
     private static final List<String> originSkills = new List<String>{ 'BTO', 'STO' };
+    private static Id filteredSkillId;
+
+    private static GroupedSkills allUserSkills = new GroupedSkills();
 
     @AuraEnabled
     public static List<Record> getSto() {
+        System.debug('Cronks');
         List<Record> records = new List<Record>();
         if (hasInProgress())
             throw new AuraHandledException('hasInProgress');
@@ -47,11 +48,18 @@ public without sharing class nksGetStoUtilityController {
     }
 
     @AuraEnabled
+    public static List<Record> getStoWithSkill(Id skillId) {
+        System.debug('Stonks');
+        filteredSkillId = skillId;
+        return getSto();
+    }
+
+    @AuraEnabled
     public static Id getNewSTO() {
         try {
             Integer attempt = 0;
             Id userId = UserInfo.getUserId();
-            getServiceResourceSkillIds(userId);
+            allUserSkills = getServiceResourceSkillIds();
 
             do {
                 Id nextCaseId = getNextSTOCase();
@@ -88,9 +96,9 @@ public without sharing class nksGetStoUtilityController {
             Map<String, Object> flowParams = new Map<String, Object>();
             flowParams.put('CaseId', caseId);
             if (Test.isRunningTest()) {
-                userOriginSkills.add('STO');
+                allUserSkills.userOriginSkillIds.add('STO');
             }
-            flowParams.put('UserOriginSkills', userOriginSkills);
+            flowParams.put('UserOriginSkills', allUserSkills.userOriginSkillIds);
 
             Flow.Interview.STO_Case_Set_Owner setOwnerFlow = new Flow.Interview.STO_Case_Set_Owner(flowParams);
             setOwnerFlow.start();
@@ -163,8 +171,16 @@ public without sharing class nksGetStoUtilityController {
         return records;
     }
 
-    @TestVisible
-    private static void getServiceResourceSkillIds(Id userId) {
+    @AuraEnabled(cacheable=true)
+    public static GroupedSkills getServiceResourceSkillIds() {
+        Id userId = UserInfo.getUserId();
+        GroupedSkills retSkills = new GroupedSkills();
+        List<ServiceResourceSkill> retSkillList = new List<ServiceResourceSkill>();
+        List<Id> retSkillIdList = new List<Id>();
+        List<ServiceResourceSkill> retUserConfidentialitySkills = new List<ServiceResourceSkill>();
+        List<Id> retUserConfidentialitySkillIds = new List<Id>();
+        List<ServiceResourceSkill> retUserOriginSkills = new List<ServiceResourceSkill>();
+        List<String> retUserOriginSkillids = new List<String>();
         for (ServiceResourceSkill srs : [
             SELECT SkillId, Skill.DeveloperName
             FROM ServiceResourceSkill
@@ -177,14 +193,30 @@ public without sharing class nksGetStoUtilityController {
         ]) {
             //Separating domain skills and person access skills
             if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
-                userConfidentialitySkills.add(srs.SkillId);
+                retUserConfidentialitySkills.add(srs);
+                retUserConfidentialitySkillIds.add(srs.SkillId);
             } else if (originSkills.contains(srs.Skill.DeveloperName)) {
-                userOriginSkills.add(srs.Skill.DeveloperName);
+                retUserOriginSkills.add(srs);
+                retUserOriginSkillIds.add(srs.Skill.DeveloperName);
             } else {
-                skillIdList.add(srs.SkillId);
+                if (filteredSkillId == null || filteredSkillId == srs.SkillId) {
+                    retSkillList.add(srs);
+                    retSkillIdList.add(srs.SkillId);
+                }
             }
         }
+        retskills.skillList = retSkillList;
+        retskills.skillIdList = retSkillIdList;
+        retskills.userConfidentialitySkills = retUserConfidentialitySkills;
+        retskills.userConfidentialitySkillIds = retUserConfidentialitySkillIds;
+        retskills.userOriginSkills = retUserOriginSkills;
+        retskills.userOriginSkillIds = retUserOriginSkillIds;
+        return retSkills;
     }
+
+    private static List<Id> skillIdList = new List<Id>();
+    private static List<Id> userConfidentialitySkills = new List<Id>();
+    private static List<String> userOriginSkills = new List<String>();
 
     private static Id getNextSTOCase() {
         try {
@@ -212,14 +244,14 @@ public without sharing class nksGetStoUtilityController {
             SELECT Id, WorkItemId
             FROM PendingServiceRouting
             WHERE
-                Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :skillIdList)
+                Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :allUserSkills.skillIdList)
                 AND ID NOT IN (
                     SELECT RelatedRecordId
                     FROM SkillRequirement
                     WHERE
-                        (SkillId NOT IN :userConfidentialitySkills
+                        (SkillId NOT IN :allUserSkills.userConfidentialitySkillIds
                         AND Skill.DeveloperName IN :confidentialitySkills)
-                        OR (Skill.DeveloperName NOT IN :userOriginSkills
+                        OR (Skill.DeveloperName NOT IN :allUserSkills.userOriginSkillIds
                         AND Skill.DeveloperName IN :originSkills)
                 )
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
@@ -229,5 +261,17 @@ public without sharing class nksGetStoUtilityController {
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
             LIMIT 1
         ];
+    }
+
+    public class GroupedSkills {
+        @AuraEnabled
+        public List<ServiceResourceSkill> skillList;
+        public List<Id> skillIdList;
+        @AuraEnabled
+        public List<ServiceResourceSkill> userConfidentialitySkills;
+        public List<Id> userConfidentialitySkillIds;
+        @AuraEnabled
+        public List<ServiceResourceSkill> userOriginSkills;
+        public List<String> userOriginSkillIds;
     }
 }

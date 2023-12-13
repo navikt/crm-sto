@@ -1,6 +1,8 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
 import getList from '@salesforce/apex/nksGetStoUtilityController.getList';
 import getSto from '@salesforce/apex/nksGetStoUtilityController.getSto';
+import getStoWithSkill from '@salesforce/apex/nksGetStoUtilityController.getStoWithSkill';
+import getServiceResourceSkillIds from '@salesforce/apex/nksGetStoUtilityController.getServiceResourceSkillIds';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import hasStoBeta from '@salesforce/customPermission/STO_Beta';
@@ -17,6 +19,37 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     utilityId;
 
     betaPermission = hasStoBeta;
+
+    skillList;
+    value = 'All';
+
+    get options() {
+        const defaultLabel = [{ label: 'Alle skills', value: 'All' }];
+        if (this.skillList != null) {
+            const nicer = defaultLabel.concat(
+                this.skillList.map((skill) => {
+                    return { label: skill.Skill.DeveloperName, value: skill.SkillId };
+                })
+            );
+            return nicer;
+        }
+        return defaultLabel;
+    }
+
+    handleChange(event) {
+        this.value = event.detail.value;
+    }
+
+    @wire(getServiceResourceSkillIds)
+    nice({ data, error }) {
+        if (data) {
+            this.skillList = data.skillList;
+        }
+        if (error) {
+            console.log('Could not get SRS');
+            console.log(error);
+        }
+    }
 
     connectedCallback() {
         publishToAmplitude('STO', { type: 'STO Utility opened' });
@@ -54,7 +87,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     getNewSTOHandler() {
         publishToAmplitude('STO', { type: 'getNewSTOHandler' });
         this.showSpinner = true;
-        getSto()
+        (this.value === 'All' ? getSto() : getStoWithSkill({ skillId: this.value }))
             .then((records) => {
                 console.log(records);
                 records.forEach((record) => {
@@ -63,6 +96,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                 this.minimizeSTOUtility();
             }, this)
             .catch((error) => {
+                console.log('Fucky');
                 console.log(error);
                 if (error.body.message === 'hasInProgress') {
                     this.dispatchEvent(
