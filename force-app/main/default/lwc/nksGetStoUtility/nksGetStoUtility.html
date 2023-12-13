@@ -1,13 +1,15 @@
 <template>
     <div>
-        <lightning-select
-            name="tickets"
-            label="Hvilken kø vil du plukke fra?"
-            value={value}
-            options={options}
-            onchange={handleChange}
-            required
-        ></lightning-select>
+        <div class="slds-m-horizontal_medium">
+            <lightning-select
+                name="tickets"
+                label="Hvilken kø vil du plukke fra?"
+                value={value}
+                options={options}
+                onchange={handleChange}
+                required
+            ></lightning-select>
+        </div>
         <lightning-layout class="slds-grid_align-center">
             <lightning-layout-item class="slds-var-p-vertical_medium">
                 <lightning-button
