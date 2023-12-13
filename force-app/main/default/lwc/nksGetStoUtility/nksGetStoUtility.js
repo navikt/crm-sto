@@ -24,7 +24,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     value = 'All';
 
     get options() {
-        const defaultLabel = [{ label: 'Alle skills', value: 'All' }];
+        const defaultLabel = [{ label: 'Alle køene', value: 'All' }];
         if (this.skillList != null) {
             const nicer = defaultLabel.concat(
                 this.skillList.map((skill) => {
