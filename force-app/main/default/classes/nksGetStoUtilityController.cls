@@ -173,12 +173,7 @@ public without sharing class nksGetStoUtilityController {
     public static GroupedSkills getServiceResourceSkillIds() {
         Id userId = UserInfo.getUserId();
         GroupedSkills retSkills = new GroupedSkills();
-        List<ServiceResourceSkill> retSkillList = new List<ServiceResourceSkill>();
-        List<Id> retSkillIdList = new List<Id>();
-        List<ServiceResourceSkill> retUserConfidentialitySkills = new List<ServiceResourceSkill>();
-        List<Id> retUserConfidentialitySkillIds = new List<Id>();
-        List<ServiceResourceSkill> retUserOriginSkills = new List<ServiceResourceSkill>();
-        List<String> retUserOriginSkillids = new List<String>();
+
         for (ServiceResourceSkill srs : [
             SELECT SkillId, Skill.DeveloperName
             FROM ServiceResourceSkill
@@ -191,24 +186,18 @@ public without sharing class nksGetStoUtilityController {
         ]) {
             //Separating domain skills and person access skills
             if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
-                retUserConfidentialitySkills.add(srs);
-                retUserConfidentialitySkillIds.add(srs.SkillId);
+                retSkills.userConfidentialitySkills.add(srs);
+                retSkills.userConfidentialitySkillIds.add(srs.SkillId);
             } else if (originSkills.contains(srs.Skill.DeveloperName)) {
-                retUserOriginSkills.add(srs);
-                retUserOriginSkillIds.add(srs.Skill.DeveloperName);
+                retSkills.userOriginSkills.add(srs);
+                retSkills.userOriginSkillIds.add(srs.Skill.DeveloperName);
             } else {
                 if (filteredSkillId == null || filteredSkillId == srs.SkillId) {
-                    retSkillList.add(srs);
-                    retSkillIdList.add(srs.SkillId);
+                    retSkills.skillList.add(srs);
+                    retSkills.skillIdList.add(srs.SkillId);
                 }
             }
         }
-        retskills.skillList = retSkillList;
-        retskills.skillIdList = retSkillIdList;
-        retskills.userConfidentialitySkills = retUserConfidentialitySkills;
-        retskills.userConfidentialitySkillIds = retUserConfidentialitySkillIds;
-        retskills.userOriginSkills = retUserOriginSkills;
-        retskills.userOriginSkillIds = retUserOriginSkillIds;
         return retSkills;
     }
 
@@ -271,5 +260,14 @@ public without sharing class nksGetStoUtilityController {
         @AuraEnabled
         public List<ServiceResourceSkill> userOriginSkills;
         public List<String> userOriginSkillIds;
+
+        public GroupedSkills() {
+            skillList = new List<ServiceResourceSkill>();
+            skillIdList = new List<Id>();
+            userConfidentialitySkills = new List<ServiceResourceSkill>();
+            userConfidentialitySkillIds = new List<Id>();
+            userOriginSkills = new List<ServiceResourceSkill>();
+            userOriginSkillIds = new List<String>();
+        }
     }
 }
