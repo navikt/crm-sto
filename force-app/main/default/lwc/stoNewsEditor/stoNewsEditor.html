@@ -1,0 +1,49 @@
+<template>
+    <lightning-layout horizontal-align="center" pull-to-boundary="small" vertical-align="start">
+        <lightning-layout-item size="6">
+            <lightning-card variant="Narrow" title="Hello" icon-name="standard:account">
+                <template if:true={loopNews} for:each={loopNews} for:item="news">
+                    <div key={news.category}>
+                        <p>I am the {news.category}</p>
+                        <ul if:true={news.news}>
+                            <template for:each={news.news} for:item="newsItem">
+                                <div key={newsItem.Id}>
+                                    <li>{newsItem.STO_Header__c}</li>
+                                    <lightning-button
+                                        variant="base"
+                                        data-id={newsItem.Id}
+                                        label="Button Label"
+                                        onclick={handleClick}
+                                    ></lightning-button>
+                                </div>
+                            </template>
+                        </ul>
+                    </div>
+                    <!-- <li key={news.Id}>{con.STO_Category__c}</li> -->
+                </template>
+            </lightning-card>
+        </lightning-layout-item>
+        <lightning-layout-item size="6">
+            <lightning-card variant="Narrow" title="Hello" icon-name="standard:account">
+                Here I display:
+                <div lwc:if={selectedNews}>
+                    <lightning-input
+                        data-id="title"
+                        type="text"
+                        label="Tittel:"
+                        value={selectedNews.STO_Header__c}
+                    ></lightning-input>
+                    <lightning-input-rich-text
+                        data-id="body"
+                        value={selectedNews.STO_Body__c}
+                    ></lightning-input-rich-text>
+                    <lightning-button
+                        variant="base"
+                        label="Lagre endringer"
+                        onclick={saveSelectedThing}
+                    ></lightning-button>
+                </div>
+            </lightning-card>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
