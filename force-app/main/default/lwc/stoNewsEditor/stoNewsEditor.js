@@ -27,7 +27,11 @@ export default class StoNewsEditor extends LightningElement {
     }
 
     handleClick(event) {
-        console.log('Blonk');
+        if (this.selectedNews) {
+            const abber = this.template.querySelector("[data-target-id='" + this.selectedNews.Id + "']");
+            abber.classList.remove('highlight');
+        }
+
         const id = event.target.dataset.id;
         let match;
         for (const news of Object.values(this.allNews)) {
@@ -40,16 +44,15 @@ export default class StoNewsEditor extends LightningElement {
             if (match) break;
         }
         this.selectedNews = match;
+
+        const abba = this.template.querySelector("[data-target-id='" + id + "']");
+        abba.classList.add('highlight');
     }
 
     saveSelectedThing() {
         console.log('Me is you');
         const content = this.template.querySelector("[data-id='body']")?.value;
         const title = this.template.querySelector("[data-id='title']")?.value;
-        // console.log(content);
-        // console.log(title);
-        // console.log(this.selectedNews.STO_Category__c);
-        // console.log(this.selectedNews.DeveloperName);
         updateNews({
             content: content,
             title: title,
@@ -62,5 +65,12 @@ export default class StoNewsEditor extends LightningElement {
             .catch(() => {
                 console.log('Not nicty');
             });
+    }
+
+    resetChanges() {
+        const content = this.template.querySelector("[data-id='body']");
+        const title = this.template.querySelector("[data-id='title']");
+        content.value = this.selectedNews.STO_Body__c;
+        title.value = this.selectedNews.STO_Header__c;
     }
 }
