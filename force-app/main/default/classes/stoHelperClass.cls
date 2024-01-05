@@ -136,10 +136,10 @@ public with sharing class stoHelperClass {
         List<News> news = new List<News>();
 
         if (threadType == 'BTO') {
-            for (BTO_News__mdt rec : [
+            for (STO_News__mdt rec : [
                 SELECT STO_Body__c, STO_Header__c
                 FROM STO_News__mdt
-                WHERE STO_Category__c = :category AND Enabled_BTO__c = true
+                WHERE STO_Category__c = :category AND Enabled_BTO__c = TRUE
             ]) {
                 news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
             }
@@ -147,7 +147,7 @@ public with sharing class stoHelperClass {
             for (STO_News__mdt rec : [
                 SELECT STO_Body__c, STO_Header__c
                 FROM STO_News__mdt
-                WHERE STO_Category__c = :category AND Enabled_STO__c = true
+                WHERE STO_Category__c = :category AND Enabled_STO__c = TRUE
             ]) {
                 news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
             }
