@@ -1,5 +1,12 @@
 <template>
     <lightning-card variant="Narrow" title="Hello" icon-name="standard:account">
+        <lightning-button
+            variant="border-filled"
+            title="refresh"
+            onclick={refreshNews}
+            icon-name="utility:refresh"
+            slot="actions"
+        ></lightning-button>
         <lightning-layout>
             <lightning-layout-item size="6" class="slds-border_right">
                 <template if:true={loopNews} for:each={loopNews} for:item="news">
@@ -44,6 +51,20 @@
                         data-id="body"
                         value={selectedNews.STO_Body__c}
                     ></lightning-input-rich-text>
+                    <lightning-input
+                        type="checkbox"
+                        label="Vises på STO"
+                        name="enabledSTO"
+                        data-id="enabledSTO"
+                        checked={selectedNews.Enabled_STO__c}
+                    ></lightning-input>
+                    <lightning-input
+                        type="checkbox"
+                        label="Vises på BTO"
+                        name="enabledBTO"
+                        data-id="enabledBTO"
+                        checked={selectedNews.Enabled_BTO__c}
+                    ></lightning-input>
                     <lightning-layout horizontal-align="end" style="gap: 10px">
                         <lightning-layout-item>
                             <lightning-button

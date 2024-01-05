@@ -137,17 +137,17 @@ public with sharing class stoHelperClass {
 
         if (threadType == 'BTO') {
             for (BTO_News__mdt rec : [
-                SELECT BTO_Body__c, BTO_Header__c
-                FROM BTO_News__mdt
-                WHERE BTO_Category__c = :category
+                SELECT STO_Body__c, STO_Header__c
+                FROM STO_News__mdt
+                WHERE STO_Category__c = :category AND Enabled_BTO__c = true
             ]) {
-                news.add(new News(rec.BTO_Header__c, rec.BTO_Body__c, rec.Id));
+                news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
             }
         } else {
             for (STO_News__mdt rec : [
                 SELECT STO_Body__c, STO_Header__c
                 FROM STO_News__mdt
-                WHERE STO_Category__c = :category
+                WHERE STO_Category__c = :category AND Enabled_STO__c = true
             ]) {
                 news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
             }

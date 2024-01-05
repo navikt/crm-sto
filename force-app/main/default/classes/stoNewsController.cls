@@ -7,7 +7,7 @@ public with sharing class stoNewsController implements Metadata.DeployCallback {
                 FROM STO_Category__mdt
             ];
             List<STO_News__mdt> stoNews = [
-                SELECT Id, STO_Body__c, STO_Category__c, STO_Header__c, Developername
+                SELECT Id, STO_Body__c, STO_Category__c, STO_Header__c, Developername, Enabled_STO__c, Enabled_BTO__c
                 FROM STO_News__mdt
             ];
             Map<String, List<STO_News__mdt>> retList = new Map<String, List<STO_News__mdt>>();
@@ -25,7 +25,14 @@ public with sharing class stoNewsController implements Metadata.DeployCallback {
     }
 
     @AuraEnabled
-    public static void updateNews(String content, String title, String category, String developerName) {
+    public static void updateNews(
+        String content,
+        String title,
+        String category,
+        String developerName,
+        Boolean enabledSTO,
+        Boolean enabledBTO
+    ) {
         try {
             Metadata.CustomMetadata customMetadata = new Metadata.CustomMetadata();
             customMetadata.fullName = 'STO_news.' + developerName; //custom metadata name
@@ -43,6 +50,14 @@ public with sharing class stoNewsController implements Metadata.DeployCallback {
             customField3.field = 'STO_Category__c'; //the custom field API Name that you're wanting to insert/update a value of
             customField3.value = category;
             customMetadata.values.add(customField3);
+            Metadata.CustomMetadataValue customField4 = new Metadata.CustomMetadataValue(); //the values you're changing/updating
+            customField4.field = 'Enabled_STO__c'; //the custom field API Name that you're wanting to insert/update a value of
+            customField4.value = enabledSTO;
+            customMetadata.values.add(customField4);
+            Metadata.CustomMetadataValue customField5 = new Metadata.CustomMetadataValue(); //the values you're changing/updating
+            customField5.field = 'Enabled_BTO__c'; //the custom field API Name that you're wanting to insert/update a value of
+            customField5.value = enabledBTO;
+            customMetadata.values.add(customField5);
             Metadata.DeployContainer mdContainer = new Metadata.DeployContainer();
             // STO_News__mdt a = new STO_News__mdt(id=newsId, STO_Body__c = content, STO_Header__c = title, STO_Category__c = category)
             mdContainer.addMetadata(customMetadata);
