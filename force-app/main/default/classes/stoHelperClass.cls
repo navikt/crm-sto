@@ -134,23 +134,13 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static List<News> getCategoryNews(String category, String threadType) {
         List<News> news = new List<News>();
-
-        if (threadType == 'BTO') {
-            for (STO_News__mdt rec : [
-                SELECT STO_Body__c, STO_Header__c
-                FROM STO_News__mdt
-                WHERE STO_Category__c = :category AND Enabled_BTO__c = TRUE
-            ]) {
-                news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
-            }
-        } else {
-            for (STO_News__mdt rec : [
-                SELECT STO_Body__c, STO_Header__c
-                FROM STO_News__mdt
-                WHERE STO_Category__c = :category AND Enabled_STO__c = TRUE
-            ]) {
-                news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
-            }
+        
+        for (FAQ__c rec : [
+            SELECT Id, CRM_Content__c, CRM_Title__c
+            FROM FAQ__c
+            WHERE STO_Category__c = :category AND CRM_Shown__c INCLUDES (:threadType)
+        ]) {
+            news.add(new News(rec.CRM_Title__c, rec.CRM_Content__c, rec.Id));
         }
 
         if (news.size() == 0 && Test.isRunningTest()) {
