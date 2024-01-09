@@ -2,7 +2,7 @@
  * @description       :
  * @author            : mamikals
  * @group             :
- * @last modified on  : 13-12-2023
+ * @last modified on  : 08-01-2024
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
@@ -200,10 +200,6 @@ public without sharing class nksGetStoUtilityController {
         }
         return retSkills;
     }
-
-    private static List<Id> skillIdList = new List<Id>();
-    private static List<Id> userConfidentialitySkills = new List<Id>();
-    private static List<String> userOriginSkills = new List<String>();
 
     private static Id getNextSTOCase() {
         try {

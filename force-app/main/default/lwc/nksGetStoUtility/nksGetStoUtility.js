@@ -24,14 +24,13 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     value = 'All';
 
     get options() {
-        const defaultLabel = [{ label: 'Alle køene', value: 'All' }];
+        const defaultLabel = [{ label: 'Alle tjenester jeg behandler', value: 'All' }];
         if (this.skillList != null) {
-            const nicer = defaultLabel.concat(
+            return defaultLabel.concat(
                 this.skillList.map((skill) => {
                     return { label: skill.Skill.DeveloperName, value: skill.SkillId };
                 })
             );
-            return nicer;
         }
         return defaultLabel;
     }
@@ -41,7 +40,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     @wire(getServiceResourceSkillIds)
-    nice({ data, error }) {
+    getSRSIds({ data, error }) {
         if (data) {
             this.skillList = data.skillList;
         }
@@ -96,7 +95,6 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                 this.minimizeSTOUtility();
             }, this)
             .catch((error) => {
-                console.log('Fucky');
                 console.log(error);
                 if (error.body.message === 'hasInProgress') {
                     this.dispatchEvent(
