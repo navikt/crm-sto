@@ -22,6 +22,12 @@ public without sharing class nksGetStoUtilityController {
     private static GroupedSkills allUserSkills = new GroupedSkills();
 
     @AuraEnabled
+    public static List<Record> getStoWithSkill(Id skillId) {
+        filteredSkillId = skillId;
+        return getSto();
+    }
+
+    @AuraEnabled
     public static List<Record> getSto() {
         List<Record> records = new List<Record>();
         if (hasInProgress())
@@ -44,12 +50,6 @@ public without sharing class nksGetStoUtilityController {
             records.add(relatedStoRecord);
         }
         return records;
-    }
-
-    @AuraEnabled
-    public static List<Record> getStoWithSkill(Id skillId) {
-        filteredSkillId = skillId;
-        return getSto();
     }
 
     @AuraEnabled
