@@ -20,15 +20,16 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
 
     betaPermission = hasStoBeta;
 
-    skillList;
+    skillMap;
     value = 'All';
 
     get options() {
         const defaultLabel = [{ label: 'Alle tjenester jeg behandler', value: 'All' }];
-        if (this.skillList != null) {
+        if (this.skillMap != null) {
+            console.log(this.skillMap);
             return defaultLabel.concat(
-                this.skillList.map((skill) => {
-                    return { label: skill.Skill.DeveloperName, value: skill.SkillId };
+                Object.keys(this.skillMap).map((id) => {
+                    return { label: this.skillMap[id], value: id };
                 })
             );
         }
@@ -42,7 +43,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     @wire(getServiceResourceSkillIds)
     getSRSIds({ data, error }) {
         if (data) {
-            this.skillList = data.skillList;
+            this.skillMap = data.skillMap;
         }
         if (error) {
             console.log('Could not get SRS');

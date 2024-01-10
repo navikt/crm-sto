@@ -2,7 +2,7 @@
  * @description       :
  * @author            : mamikals
  * @group             :
- * @last modified on  : 08-01-2024
+ * @last modified on  : 10-01-2024
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
@@ -94,9 +94,9 @@ public without sharing class nksGetStoUtilityController {
             Map<String, Object> flowParams = new Map<String, Object>();
             flowParams.put('CaseId', caseId);
             if (Test.isRunningTest()) {
-                allUserSkills.userOriginSkillIds.add('STO');
+                allUserSkills.userOriginMap.put('123', 'STO');
             }
-            flowParams.put('UserOriginSkills', allUserSkills.userOriginSkillIds);
+            flowParams.put('UserOriginSkills', allUserSkills.userOriginMap.values());
 
             Flow.Interview.STO_Case_Set_Owner setOwnerFlow = new Flow.Interview.STO_Case_Set_Owner(flowParams);
             setOwnerFlow.start();
@@ -186,15 +186,12 @@ public without sharing class nksGetStoUtilityController {
         ]) {
             //Separating domain skills and person access skills
             if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
-                retSkills.userConfidentialitySkills.add(srs);
-                retSkills.userConfidentialitySkillIds.add(srs.SkillId);
+                retSkills.userConfidentialMap.put(srs.SkillId, srs.Skill.DeveloperName);
             } else if (originSkills.contains(srs.Skill.DeveloperName)) {
-                retSkills.userOriginSkills.add(srs);
-                retSkills.userOriginSkillIds.add(srs.Skill.DeveloperName);
+                retSkills.userOriginMap.put(srs.SkillId, srs.Skill.DeveloperName);
             } else {
                 if (filteredSkillId == null || filteredSkillId == srs.SkillId) {
-                    retSkills.skillList.add(srs);
-                    retSkills.skillIdList.add(srs.SkillId);
+                    retSkills.skillMap.put(srs.SkillId, srs.Skill.DeveloperName);
                 }
             }
         }
@@ -222,19 +219,18 @@ public without sharing class nksGetStoUtilityController {
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
         String userId = '%' + UserInfo.getUserID() + '%';
-
         return [
             SELECT Id, WorkItemId
             FROM PendingServiceRouting
             WHERE
-                Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :allUserSkills.skillIdList)
+                Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :allUserSkills.skillMap.keySet())
                 AND ID NOT IN (
                     SELECT RelatedRecordId
                     FROM SkillRequirement
                     WHERE
-                        (SkillId NOT IN :allUserSkills.userConfidentialitySkillIds
+                        (SkillId NOT IN :allUserSkills.userConfidentialMap.values()
                         AND Skill.DeveloperName IN :confidentialitySkills)
-                        OR (Skill.DeveloperName NOT IN :allUserSkills.userOriginSkillIds
+                        OR (Skill.DeveloperName NOT IN :allUserSkills.userOriginMap.values()
                         AND Skill.DeveloperName IN :originSkills)
                 )
                 AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
@@ -248,22 +244,10 @@ public without sharing class nksGetStoUtilityController {
 
     public class GroupedSkills {
         @AuraEnabled
-        public List<ServiceResourceSkill> skillList;
-        public List<Id> skillIdList;
+        public Map<Id, String> skillMap = new Map<Id, String>();
         @AuraEnabled
-        public List<ServiceResourceSkill> userConfidentialitySkills;
-        public List<Id> userConfidentialitySkillIds;
+        public Map<Id, String> userConfidentialMap = new Map<Id, String>();
         @AuraEnabled
-        public List<ServiceResourceSkill> userOriginSkills;
-        public List<String> userOriginSkillIds;
-
-        public GroupedSkills() {
-            skillList = new List<ServiceResourceSkill>();
-            skillIdList = new List<Id>();
-            userConfidentialitySkills = new List<ServiceResourceSkill>();
-            userConfidentialitySkillIds = new List<Id>();
-            userOriginSkills = new List<ServiceResourceSkill>();
-            userOriginSkillIds = new List<String>();
-        }
+        public Map<Id, String> userOriginMap = new Map<Id, String>();
     }
 }
