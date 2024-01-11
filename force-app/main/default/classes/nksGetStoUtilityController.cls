@@ -2,7 +2,7 @@
  * @description       :
  * @author            : mamikals
  * @group             :
- * @last modified on  : 10-01-2024
+ * @last modified on  : 11-01-2024
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
@@ -94,7 +94,7 @@ public without sharing class nksGetStoUtilityController {
             Map<String, Object> flowParams = new Map<String, Object>();
             flowParams.put('CaseId', caseId);
             if (Test.isRunningTest()) {
-                allUserSkills.userOriginMap.put('123', 'STO');
+                allUserSkills.userOriginMap.put('001xa000003DIlo', 'STO');
             }
             flowParams.put('UserOriginSkills', allUserSkills.userOriginMap.values());
 
