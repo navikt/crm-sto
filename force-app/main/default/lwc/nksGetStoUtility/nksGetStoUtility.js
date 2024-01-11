@@ -116,7 +116,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                     this.dispatchEvent(
                         new ShowToastEvent({
                             title: 'Kunne ikke hente ny melding.',
-                            message: 'Ingen flere meldinger på køer du behandler.',
+                            message: 'Ingen flere meldinger på tjenester du behandler.',
                             variant: 'info'
                         })
                     );
