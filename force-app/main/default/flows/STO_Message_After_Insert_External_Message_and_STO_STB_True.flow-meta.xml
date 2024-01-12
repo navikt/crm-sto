@@ -4,8 +4,8 @@
     <assignments>
         <name>Inherit_Thread_Theme</name>
         <label>Inherit Thread Theme</label>
-        <locationX>1380</locationX>
-        <locationY>1464</locationY>
+        <locationX>1826</locationX>
+        <locationY>1332</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -19,9 +19,9 @@
     </assignments>
     <assignments>
         <name>Set_case_status_to_new</name>
-        <label>Set case status to in progress</label>
-        <locationX>852</locationX>
-        <locationY>1008</locationY>
+        <label>Set case status to new and run case assignment</label>
+        <locationX>1298</locationX>
+        <locationY>1032</locationY>
         <assignmentItems>
             <assignToReference>RelatedCase.CRM_Run_Case_Assignment__c</assignToReference>
             <operator>Assign</operator>
@@ -43,8 +43,8 @@
     <assignments>
         <name>Set_KNA_Theme</name>
         <label>Set KNA Theme</label>
-        <locationX>1644</locationX>
-        <locationY>1584</locationY>
+        <locationX>2090</locationX>
+        <locationY>1440</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -59,8 +59,8 @@
     <assignments>
         <name>Set_New_Task_Fields</name>
         <label>Set New Task Fields</label>
-        <locationX>1512</locationX>
-        <locationY>1800</locationY>
+        <locationX>1958</locationX>
+        <locationY>1632</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Status__c</assignToReference>
             <operator>Assign</operator>
@@ -139,8 +139,8 @@
     <decisions>
         <name>Check_Case_Owner</name>
         <label>Check Case Owner</label>
-        <locationX>588</locationX>
-        <locationY>888</locationY>
+        <locationX>1034</locationX>
+        <locationY>924</locationY>
         <defaultConnector>
             <targetReference>Set_case_status_to_new</targetReference>
         </defaultConnector>
@@ -174,8 +174,8 @@
         <description>If this if the first message in the thread, then the case or nav task routing is handled in the thread flow</description>
         <name>Check_if_first_message</name>
         <label>Check if first message</label>
-        <locationX>555</locationX>
-        <locationY>408</locationY>
+        <locationX>638</locationX>
+        <locationY>384</locationY>
         <defaultConnector>
             <targetReference>Get_Thread</targetReference>
         </defaultConnector>
@@ -196,8 +196,8 @@
     <decisions>
         <name>Check_NAV_Task</name>
         <label>Check NAV Task</label>
-        <locationX>1512</locationX>
-        <locationY>888</locationY>
+        <locationX>1958</locationX>
+        <locationY>816</locationY>
         <defaultConnector>
             <targetReference>Get_STB_NAV_Unit</targetReference>
         </defaultConnector>
@@ -229,8 +229,8 @@
         <description>If the Assignee NAV Unit is not set. The thread is to be handled by NKS and should always have a related case</description>
         <name>Check_Routing</name>
         <label>Check Routing</label>
-        <locationX>1050</locationX>
-        <locationY>648</locationY>
+        <locationX>1298</locationX>
+        <locationY>600</locationY>
         <defaultConnector>
             <targetReference>Get_Related_NAV_Task</targetReference>
         </defaultConnector>
@@ -255,8 +255,8 @@
         <description>Verify if the thread theme has been set and the task should inherit this category</description>
         <name>Check_Thread_Theme</name>
         <label>Check Thread Theme</label>
-        <locationX>1512</locationX>
-        <locationY>1344</locationY>
+        <locationX>1958</locationX>
+        <locationY>1224</locationY>
         <defaultConnector>
             <targetReference>Get_Kontakt_NAV_Theme</targetReference>
         </defaultConnector>
@@ -275,6 +275,67 @@
                 <targetReference>Inherit_Thread_Theme</targetReference>
             </connector>
             <label>Thread has Theme</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_Case_Null</name>
+        <label>Is Case Null?</label>
+        <locationX>638</locationX>
+        <locationY>816</locationY>
+        <defaultConnector>
+            <targetReference>Check_Case_Owner</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Case Not Null</defaultConnectorLabel>
+        <rules>
+            <name>Case_Is_Null</name>
+            <conditionLogic>1 AND (2 OR 3)</conditionLogic>
+            <conditions>
+                <leftValueReference>RelatedCase.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Thread_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>STO</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Thread_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>BTO</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Application_Log_Case_Null</targetReference>
+            </connector>
+            <label>Case Null And STO/BTO</label>
+        </rules>
+        <rules>
+            <name>Case_Null_And_STB</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>RelatedCase.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Thread_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>STB</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Application_Log3</targetReference>
+            </connector>
+            <label>Case Null And STB</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -302,7 +363,7 @@
     <recordCreates>
         <name>Create_Application_Log</name>
         <label>Create Application Log</label>
-        <locationX>1116</locationX>
+        <locationX>1562</locationX>
         <locationY>1248</locationY>
         <inputAssignments>
             <field>Application_Domain__c</field>
@@ -343,14 +404,99 @@
         <object>Application_Log__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
+    <recordCreates>
+        <name>Create_Application_Log3</name>
+        <label>Create Application Log</label>
+        <locationX>506</locationX>
+        <locationY>924</locationY>
+        <inputAssignments>
+            <field>Application_Domain__c</field>
+            <value>
+                <stringValue>NKS</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Category__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Level__c</field>
+            <value>
+                <stringValue>Critical</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Message__c</field>
+            <value>
+                <stringValue>Assigne null on STB</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_ID__c</field>
+            <value>
+                <elementReference>Get_Thread.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Source_Class__c</field>
+            <value>
+                <stringValue>Message - After Insert - External Message and STO/STB True</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Application_Log__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Application_Log_Case_Null</name>
+        <label>Create Application Log</label>
+        <locationX>242</locationX>
+        <locationY>924</locationY>
+        <inputAssignments>
+            <field>Application_Domain__c</field>
+            <value>
+                <stringValue>NKS</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Category__c</field>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Level__c</field>
+            <value>
+                <stringValue>Critical</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Log_Message__c</field>
+            <value>
+                <stringValue>Case is null on STO/BTO - Check if case assignment has been run</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referrence_ID__c</field>
+            <value>
+                <elementReference>Get_Thread.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Source_Class__c</field>
+            <value>
+                <stringValue>Message - After Insert - External Message and STO/STB True</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Application_Log__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <recordLookups>
         <name>Get_case</name>
         <label>Get case</label>
-        <locationX>588</locationX>
-        <locationY>768</locationY>
-        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <locationX>638</locationX>
+        <locationY>708</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_Case_Owner</targetReference>
+            <targetReference>Is_Case_Null</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -370,8 +516,8 @@
         <description>Run a query to get the first message in the thread</description>
         <name>Get_First_Message</name>
         <label>Get First Message</label>
-        <locationX>555</locationX>
-        <locationY>288</locationY>
+        <locationX>638</locationX>
+        <locationY>276</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_if_first_message</targetReference>
@@ -394,8 +540,8 @@
     <recordLookups>
         <name>Get_Kontakt_NAV_Theme</name>
         <label>Get Kontakt NAV Theme</label>
-        <locationX>1644</locationX>
-        <locationY>1464</locationY>
+        <locationX>2090</locationX>
+        <locationY>1332</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_KNA_Theme</targetReference>
@@ -424,8 +570,8 @@
         <description>Check if the thread is related to a NAV task as process object</description>
         <name>Get_Related_NAV_Task</name>
         <label>Get Related NAV Task</label>
-        <locationX>1512</locationX>
-        <locationY>768</locationY>
+        <locationX>1958</locationX>
+        <locationY>708</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_NAV_Task</targetReference>
@@ -456,8 +602,8 @@
         <description>Get the reference to the NAV unit who initiated the dialogue</description>
         <name>Get_STB_NAV_Unit</name>
         <label>Get STB NAV Unit</label>
-        <locationX>1512</locationX>
-        <locationY>1104</locationY>
+        <locationX>1958</locationX>
+        <locationY>1008</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Vurder_Svar_Task_Type</targetReference>
@@ -478,8 +624,8 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>1050</locationX>
-        <locationY>528</locationY>
+        <locationX>1298</locationX>
+        <locationY>492</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Routing</targetReference>
@@ -499,8 +645,8 @@
     <recordLookups>
         <name>Get_Vurder_Svar_Task_Type</name>
         <label>Get Vurder Svar Task Type</label>
-        <locationX>1512</locationX>
-        <locationY>1224</locationY>
+        <locationX>1958</locationX>
+        <locationY>1116</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Thread_Theme</targetReference>
@@ -528,8 +674,8 @@
     <recordUpdates>
         <name>Update_Related_Case</name>
         <label>Update Related Case</label>
-        <locationX>852</locationX>
-        <locationY>1128</locationY>
+        <locationX>1298</locationX>
+        <locationY>1140</locationY>
         <faultConnector>
             <targetReference>Create_Application_Log</targetReference>
         </faultConnector>
@@ -539,8 +685,8 @@
         <description>Updated the related object when the new nav task is generated</description>
         <name>Update_Thread_Reference_On_No_Task</name>
         <label>Update Thread Reference</label>
-        <locationX>1512</locationX>
-        <locationY>2040</locationY>
+        <locationX>1958</locationX>
+        <locationY>1848</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -603,8 +749,8 @@
     <subflows>
         <name>Send_NAV_Task_On_No_Task</name>
         <label>Send NAV Task</label>
-        <locationX>1512</locationX>
-        <locationY>1920</locationY>
+        <locationX>1958</locationX>
+        <locationY>1740</locationY>
         <connector>
             <targetReference>Update_Thread_Reference_On_No_Task</targetReference>
         </connector>
