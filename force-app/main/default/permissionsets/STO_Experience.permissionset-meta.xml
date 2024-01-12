@@ -17,15 +17,15 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>STO_SurveyHelper</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>UN_DoneProducerLegacy</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>UN_InnboksProducerLegacy</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>STO_SurveyHelper</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -130,6 +130,21 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>FAQ__c.CRM_Content__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__c.CRM_Shown__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__c.STO_Category__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Message__c.CRM_External_Message__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -209,11 +224,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Thread__c.STO_Medskriv__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>Thread__c.CRM_Number_of_External_Messages__c</field>
         <readable>true</readable>
@@ -253,6 +263,11 @@
         <field>Thread__c.STO_ExternalName__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.STO_Medskriv__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Skriv til Oss - Experience Cloud Access</label>
     <objectPermissions>
@@ -271,6 +286,15 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>Conversation_Note__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>FAQ__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <objectPermissions>

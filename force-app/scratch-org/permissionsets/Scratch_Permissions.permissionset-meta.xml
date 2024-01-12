@@ -63,7 +63,7 @@
         <visible>true</visible>
     </recordTypeVisibilities>
     <tabSettings>
-        <tab>STO_Information</tab>
+        <tab>FAQ__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>
