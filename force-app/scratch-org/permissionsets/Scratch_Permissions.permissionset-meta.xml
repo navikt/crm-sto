@@ -4,10 +4,6 @@
         <application>STO</application>
         <visible>true</visible>
     </applicationVisibilities>
-    <classAccesses>
-        <apexClass>stoNewsController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
     <fieldPermissions>
         <editable>true</editable>
         <field>Case.CRM_Person_Confidentiality__c</field>
