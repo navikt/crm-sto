@@ -134,11 +134,11 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static List<News> getCategoryNews(String category, String threadType) {
         List<News> news = new List<News>();
-        
-        for (FAQ__c rec : [
+
+        for (CRM_FAQ__c rec : [
             SELECT Id, CRM_Content__c, CRM_Title__c
-            FROM FAQ__c
-            WHERE STO_Category__c = :category AND CRM_Shown__c INCLUDES (:threadType)
+            FROM CRM_FAQ__c
+            WHERE CRM_Category__c = :category AND CRM_Shown__c INCLUDES (:threadType)
         ]) {
             news.add(new News(rec.CRM_Title__c, rec.CRM_Content__c, rec.Id));
         }

@@ -23,7 +23,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>STO_Category__c</field>
+                <field>CRM_Category__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
