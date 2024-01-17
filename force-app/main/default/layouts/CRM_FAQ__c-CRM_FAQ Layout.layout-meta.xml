@@ -15,6 +15,10 @@
                 <behavior>Edit</behavior>
                 <field>CRM_Content__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>CRM_Ordering__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
