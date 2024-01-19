@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Pensjon5</label>
+    <protected>false</protected>
+    <values>
+        <field>STO_Body__c</field>
+        <value xsi:type="xsd:string">&lt;ul&gt;   
+&lt;li&gt;
+Husk at du har fått nytt skattekort for i år, &lt;i&gt;og at beløpet du får utbetalt derfor kan være annerledes enn det du fikk i fjor.&lt;/i&gt;
+Sjekk skattekortet ditt og ta kontakt med Skatteetaten hvis du har spørsmål om skatten &lt;i&gt;eller ønsker å endre skattetrekket.&lt;/i&gt;
+ Du kan sjekke brutto- og nettobeløp på oversikt over utbetalinger på min side her på &lt;a href=&quot;https://nav.no&quot;&gt;nav.no&lt;/a&gt;.
+&lt;/li&gt;    
+&lt;/ul&gt;</value>
+    </values>
+    <values>
+        <field>STO_Category__c</field>
+        <value xsi:type="xsd:string">Pensjon</value>
+    </values>
+    <values>
+        <field>STO_Header__c</field>
+        <value xsi:type="xsd:string">Endring i skattekortet?</value>
+    </values>
+</CustomMetadata>
