@@ -12,6 +12,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>CRM_FAQ__c.CRM_Ordering__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>CRM_FAQ__c.CRM_Shown__c</field>
         <readable>true</readable>
     </fieldPermissions>

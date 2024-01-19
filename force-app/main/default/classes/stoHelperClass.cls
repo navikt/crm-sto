@@ -139,7 +139,7 @@ public with sharing class stoHelperClass {
             SELECT Id, CRM_Content__c, CRM_Title__c
             FROM CRM_FAQ__c
             WHERE CRM_Category__c = :category AND CRM_Shown__c INCLUDES (:threadType)
-            ORDER BY CRM_Ordering__c DESC
+            ORDER BY CRM_Ordering__c ASC
         ]) {
             news.add(new News(rec.CRM_Title__c, rec.CRM_Content__c, rec.Id));
         }
