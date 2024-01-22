@@ -2,7 +2,7 @@
  * @description       :
  * @author            : mamikals
  * @group             :
- * @last modified on  : 11-01-2024
+ * @last modified on  : 22-01-2024
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
@@ -228,7 +228,7 @@ public without sharing class nksGetStoUtilityController {
                     SELECT RelatedRecordId
                     FROM SkillRequirement
                     WHERE
-                        (SkillId NOT IN :allUserSkills.userConfidentialMap.values()
+                        (Skill.DeveloperName NOT IN :allUserSkills.userConfidentialMap.values()
                         AND Skill.DeveloperName IN :confidentialitySkills)
                         OR (Skill.DeveloperName NOT IN :allUserSkills.userOriginMap.values()
                         AND Skill.DeveloperName IN :originSkills)
