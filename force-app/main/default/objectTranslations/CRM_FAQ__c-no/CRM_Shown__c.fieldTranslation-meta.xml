@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Vises på</label>
+    <name>CRM_Shown__c</name>
+    <picklistValues>
+        <masterLabel>BTO</masterLabel>
+        <translation></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>STO</masterLabel>
+        <translation></translation>
+    </picklistValues>
+</CustomFieldTranslation>
