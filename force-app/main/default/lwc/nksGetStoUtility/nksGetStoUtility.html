@@ -1,5 +1,15 @@
 <template>
     <div>
+        <div class="slds-m-horizontal_medium">
+            <lightning-select
+                name="queues"
+                label="Hvilken tjeneste vil du besvare?"
+                value={value}
+                options={options}
+                onchange={handleChange}
+                required
+            ></lightning-select>
+        </div>
         <lightning-layout class="slds-grid_align-center">
             <lightning-layout-item class="slds-var-p-vertical_medium">
                 <lightning-button

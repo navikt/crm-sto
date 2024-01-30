@@ -135,22 +135,13 @@ public with sharing class stoHelperClass {
     public static List<News> getCategoryNews(String category, String threadType) {
         List<News> news = new List<News>();
 
-        if (threadType == 'BTO') {
-            for (BTO_News__mdt rec : [
-                SELECT BTO_Body__c, BTO_Header__c
-                FROM BTO_News__mdt
-                WHERE BTO_Category__c = :category
-            ]) {
-                news.add(new News(rec.BTO_Header__c, rec.BTO_Body__c, rec.Id));
-            }
-        } else {
-            for (STO_News__mdt rec : [
-                SELECT STO_Body__c, STO_Header__c
-                FROM STO_News__mdt
-                WHERE STO_Category__c = :category
-            ]) {
-                news.add(new News(rec.STO_Header__c, rec.STO_Body__c, rec.Id));
-            }
+        for (CRM_FAQ__c rec : [
+            SELECT Id, CRM_Content__c, CRM_Title__c
+            FROM CRM_FAQ__c
+            WHERE CRM_Category__c = :category AND CRM_Shown__c INCLUDES (:threadType)
+            ORDER BY CRM_Ordering__c ASC
+        ]) {
+            news.add(new News(rec.CRM_Title__c, rec.CRM_Content__c, rec.Id));
         }
 
         if (news.size() == 0 && Test.isRunningTest()) {

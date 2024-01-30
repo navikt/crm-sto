@@ -1,5 +1,7 @@
 import { LightningElement, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import { publishToAmplitude } from 'c/amplitude';
+
 export default class NksGetStoUtilityListEntry extends NavigationMixin(LightningElement) {
     @api record;
     @api index;
@@ -34,6 +36,7 @@ export default class NksGetStoUtilityListEntry extends NavigationMixin(Lightning
     }
 
     navigateToPage(event) {
+        publishToAmplitude('STO', { type: 'navigateToPage from utility' });
         event.preventDefault();
         event.stopPropagation();
         this[NavigationMixin.Navigate]({

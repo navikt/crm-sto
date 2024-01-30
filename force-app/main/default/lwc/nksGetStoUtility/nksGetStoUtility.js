@@ -1,9 +1,12 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
 import getList from '@salesforce/apex/nksGetStoUtilityController.getList';
 import getSto from '@salesforce/apex/nksGetStoUtilityController.getSto';
+import getStoWithSkill from '@salesforce/apex/nksGetStoUtilityController.getStoWithSkill';
+import getServiceResourceSkillIds from '@salesforce/apex/nksGetStoUtilityController.getServiceResourceSkillIds';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import hasStoBeta from '@salesforce/customPermission/STO_Beta';
+import { publishToAmplitude } from 'c/amplitude';
 
 export default class NksGetStoUtility extends NavigationMixin(LightningElement) {
     listCount = 5;
@@ -17,7 +20,39 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
 
     betaPermission = hasStoBeta;
 
+    skillMap;
+    value = 'All';
+
+    get options() {
+        const defaultLabel = [{ label: 'Alle tjenester jeg behandler', value: 'All' }];
+        if (this.skillMap != null) {
+            console.log(this.skillMap);
+            return defaultLabel.concat(
+                Object.keys(this.skillMap).map((id) => {
+                    return { label: this.skillMap[id], value: id };
+                })
+            );
+        }
+        return defaultLabel;
+    }
+
+    handleChange(event) {
+        this.value = event.detail.value;
+    }
+
+    @wire(getServiceResourceSkillIds)
+    getSRSIds({ data, error }) {
+        if (data) {
+            this.skillMap = data.skillMap;
+        }
+        if (error) {
+            console.log('Could not get SRS');
+            console.log(error);
+        }
+    }
+
     connectedCallback() {
+        publishToAmplitude('STO', { type: 'STO Utility opened' });
         this.getUtilityId();
         // Navigate to list
         this[NavigationMixin.GenerateUrl]({
@@ -50,9 +85,9 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     getNewSTOHandler() {
-        console.log('click');
+        publishToAmplitude('STO', { type: 'getNewSTOHandler' });
         this.showSpinner = true;
-        getSto()
+        (this.value === 'All' ? getSto() : getStoWithSkill({ skillId: this.value }))
             .then((records) => {
                 console.log(records);
                 records.forEach((record) => {
@@ -81,7 +116,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                     this.dispatchEvent(
                         new ShowToastEvent({
                             title: 'Kunne ikke hente ny melding.',
-                            message: 'Ingen flere meldinger på køer du behandler.',
+                            message: 'Ingen flere meldinger på tjenester du behandler.',
                             variant: 'info'
                         })
                     );
@@ -147,6 +182,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     navigateToList() {
+        publishToAmplitude('STO', { type: 'navigateToList' });
         this[NavigationMixin.Navigate]({
             type: 'standard__objectPage',
             attributes: {
@@ -171,6 +207,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     refreshComponent() {
+        publishToAmplitude('STO', { type: 'refreshComponent' });
         this.showSpinner = true;
         return this.loadList();
     }
