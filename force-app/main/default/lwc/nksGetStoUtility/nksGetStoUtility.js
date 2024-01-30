@@ -71,7 +71,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
 
     registerClickHandler() {
         let _this = this;
-        const eventHandler = (event) => {
+        const eventHandler = () => {
             _this.loadList();
         };
         this.invokeUtilityBarAPI('onUtilityClick', { utilityId: this.utilityId, eventHandler: eventHandler });
@@ -251,9 +251,8 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
                     callback: (err, response) => {
                         if (err) {
                             return reject(err);
-                        } 
-                            return resolve(response);
-                        
+                        }
+                        return resolve(response);
                     }
                 }
             });

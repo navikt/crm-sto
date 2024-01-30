@@ -29,9 +29,11 @@ export default class CommunityExpandablePanel extends LightningElement {
                 expand.style.height = 'auto';
                 let boundingRect = expand.getBoundingClientRect();
                 expand.style.height = '0px';
+                // eslint-disable-next-line @lwc/lwc/no-async-operation
                 window.requestAnimationFrame(function () {
                     expand.style.height = boundingRect.height + 'px';
                 });
+                // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
                 setTimeout(() => {
                     if (this.showpanel) {
                         expand.style.height = 'auto';
@@ -40,9 +42,11 @@ export default class CommunityExpandablePanel extends LightningElement {
             } else {
                 let boundingRect = expand.getBoundingClientRect();
                 expand.style.height = boundingRect.height + 'px';
+                // eslint-disable-next-line @lwc/lwc/no-async-operation
                 window.requestAnimationFrame(function () {
                     expand.style.height = '0px';
                 });
+                // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
                 setTimeout(() => {
                     wrapper.display = 'none';
                 }, 250);

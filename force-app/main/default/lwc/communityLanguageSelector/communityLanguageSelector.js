@@ -16,7 +16,7 @@ export default class CommunityLanguageSelector extends LightningElement {
     ];
 
     handlePicklist(event) {
-        if (event.detail != 'PLACEHOLDER') {
+        if (event.detail !== 'PLACEHOLDER') {
             setLanguage({ language: event.detail }).then((result) => {
                 console.log(result);
                 window.location.reload();

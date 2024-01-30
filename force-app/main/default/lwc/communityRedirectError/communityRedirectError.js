@@ -17,6 +17,7 @@ export default class CommunityRedirectError extends NavigationMixin(LightningEle
                 }
             } // Replaces the current page in your browser history with the URL
         ).then((generatedUrl) => {
+            // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
             window.open(generatedUrl, '_self');
         });
     }

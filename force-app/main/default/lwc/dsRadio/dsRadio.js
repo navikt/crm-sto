@@ -24,11 +24,11 @@ export default class DsRadio extends LightningElement {
         test?.focus();
     }
 
-    checkForError(e) {
+    checkForError() {
         this.updateErrorText();
     }
 
-    handleChange(e) {
+    handleChange() {
         const dataId = this.getSelectedButton().getAttribute('data-id');
         this._options.forEach((option) => (option.checked = option.id === dataId));
         this.updateErrorText();

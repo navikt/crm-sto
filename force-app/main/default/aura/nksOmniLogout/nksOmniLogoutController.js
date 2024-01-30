@@ -1,5 +1,5 @@
 ({
-    invoke: function (component, event, helper) {
+    invoke: function (component) {
         var omniAPI = component.find('omniToolkit');
         omniAPI
             .logout()

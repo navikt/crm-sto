@@ -6,7 +6,6 @@ import THREAD_RELATED_OBJECT_FIELD from '@salesforce/schema/Thread__c.CRM_Relate
 import getSurvey from '@salesforce/apex/STO_SurveyHelper.getSurveyLink';
 import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
-import LoggerUtility from 'c/loggerUtility';
 
 export default class StoInboxInformation extends LightningElement {
     type;
@@ -61,8 +60,10 @@ export default class StoInboxInformation extends LightningElement {
             })
             .finally(() => {
                 if (this.completed) {
+                    // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
                     window.open(this.url);
                 } else {
+                    // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
                     window.open(this.surveyLink);
                 }
             });

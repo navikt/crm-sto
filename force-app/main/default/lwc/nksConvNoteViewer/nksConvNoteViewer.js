@@ -11,7 +11,7 @@ export default class NksConvNoteViewer extends LightningElement {
     wireNotes(result) {
         if (result.error) {
             this.error = true;
-            console.log('Error: ' + JSON.stringify(error, null, 2));
+            console.log('Error: ' + JSON.stringify(this.error, null, 2));
         } else if (result.data) {
             this.conversationNote = result.data[0];
         }
@@ -33,6 +33,6 @@ export default class NksConvNoteViewer extends LightningElement {
     resolve(path, obj) {
         return path.split('.').reduce(function (prev, curr) {
             return prev ? prev[curr] : null;
-        }, obj || self);
+        }, obj);
     }
 }

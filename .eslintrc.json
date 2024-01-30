@@ -23,7 +23,8 @@
         }
     },
     "rules": {
-        "no-console": "off"
+        "no-console": "off",
+        "@salesforce/lightning/prefer-i18n-service": "off"
     },
     "plugins": ["@lwc/eslint-plugin-lwc", "@salesforce/eslint-plugin-aura"],
     // Based on this discussion https://github.com/forcedotcom/eslint-plugin-aura/issues/8 which resulted in this file
