@@ -19,16 +19,19 @@ export default class NksViewThread extends LightningElement {
     @api threadType;
     @api recordId;
     @api maxLength;
+    _recordId;
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference && currentPageReference?.state?.samtale != null) {
-            this.recordId = currentPageReference.state.samtale;
+            this._recordId = currentPageReference.state.samtale;
+        } else {
+            this._recordId = this.recordId;
         }
     }
 
     getField;
-    @wire(getRecord, { recordId: '$recordId', fields: [THREAD_TYPE] })
+    @wire(getRecord, { recordId: '$_recordId', fields: [THREAD_TYPE] })
     wiredThread({ error, data }) {
         if (error) {
             console.log('Error:', error);
@@ -40,7 +43,8 @@ export default class NksViewThread extends LightningElement {
 
     // Redirect for static user notifications links
     redirect(actualThreadType) {
-        const link = urlMap[actualThreadType](this.recordId);
+        const link = urlMap[actualThreadType](this._recordId);
+        // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
         window.open(link, '_self');
     }
 }

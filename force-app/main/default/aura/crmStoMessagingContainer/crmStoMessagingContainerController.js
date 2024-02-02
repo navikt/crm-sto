@@ -1,9 +1,9 @@
 ({
-    closeModal: function (component, event, helper) {
+    closeModal: function (component) {
         component.set('v.showPanel', false);
     },
 
-    handleToolbarAction: function (component, event, helper) {
+    handleToolbarAction: function (component, event) {
         const flowName = event.getParam('flowName');
         const flowInputs = event.getParam('flowInputs');
         component.set('v.showPanel', true);
@@ -19,7 +19,7 @@
         }
     },
 
-    handleModalKey: function (component, event, helper) {
+    handleModalKey: function (component, event) {
         if (event.keyCode === 27 || event.code === 'Escape') {
             var action = component.get('c.closeModal');
             $A.enqueueAction(action);

@@ -83,7 +83,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 });
                 this.acceptedcategories = categoryList;
             })
-            .catch((error) => {
+            .catch(() => {
                 //Failed getting sto categories
             });
     }
@@ -203,14 +203,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     submitRequest() {
         const medskriv = this.template.querySelector('c-ds-radio')?.getValue();
         if (
-            this.acceptedTerms == true &&
+            this.acceptedTerms === true &&
             this.message &&
             this.message.length != null &&
             this.message.length <= this.maxLength &&
             medskriv != null
         ) {
             this.showspinner = true;
-            this.spinnerText = spinnerReasonTextMap['send'];
+            this.spinnerText = spinnerReasonTextMap.send;
 
             createThreadWithCase({
                 theme: this.selectedTheme,
@@ -222,6 +222,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 if (this.subpath === '/beskjed-til-oss/') {
                     this.navigateToBTO(thread);
                 } else {
+                    // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
                     window.open(
                         (this.linkUrl = basepath + this.subpath + thread.Id + '/' + encodeURIComponent(thread.Name)),
                         '_self'
@@ -264,7 +265,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     closeSelectedThread(selectedThreadId) {
         this.showspinner = true;
-        this.spinnerText = spinnerReasonTextMap['close'];
+        this.spinnerText = spinnerReasonTextMap.close;
         closeThread({ id: selectedThreadId })
             .then(() => {
                 refreshApex(this._wireThreadData)
