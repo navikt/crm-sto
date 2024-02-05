@@ -1,0 +1,54 @@
+body {
+    --scale: 1.25;
+
+    --lwc-fontSizeTextXxSmall: calc(0.625rem * var(--scale));
+    --lwc-fontSizeHeadingXLarge: calc(1.75rem * var(--scale));
+    --lwc-fontSizeTextXLarge: calc(1.25rem * var(--scale));
+    --lwc-formLabelFontSize: calc(0.75rem * var(--scale));
+    --lwc-fontSizeHeadingXSmall: calc(0.75rem * var(--scale));
+    --lwc-fontSizeTextSmall: calc(0.8125rem * var(--scale));
+    --lwc-fontSizeHeadingXxSmall: calc(0.625rem * var(--scale));
+    --lwc-fontSizeHeadingLarge: calc(1.5rem * var(--scale));
+    --lwc-colorPickerInputCustomHexFontSize: calc(0.75rem * var(--scale));
+    --lwc-inputStaticFontSize: calc(0.875rem * var(--scale));
+    --lwc-welcomeMatFontSizeInfoTitle: calc(2.625rem * var(--scale));
+    --lwc-fontSizeXLarge: calc(1.25rem * var(--scale));
+    --lwc-varFontSize8: calc(1.5rem * var(--scale));
+    --lwc-varFontSize7: calc(1.25rem * var(--scale));
+    --lwc-varFontSize9: calc(1.75rem * var(--scale));
+    --lwc-varFontSize2: calc(0.75rem * var(--scale));
+    --lwc-varFontSize1: calc(0.625rem * var(--scale));
+    --lwc-varFontSize4: calc(0.875rem * var(--scale));
+    --lwc-varFontSize3: calc(0.8125rem * var(--scale));
+    --lwc-varFontSize6: calc(1.125rem * var(--scale));
+    --lwc-varFontSize5: calc(1rem * var(--scale));
+    --lwc-varFontSize10: calc(2rem * var(--scale));
+    --lwc-varFontSize11: calc(2.625rem * var(--scale));
+    --lwc-fontSizeMedium: calc(0.8125rem * var(--scale));
+    --lwc-fontSizeMediumA: calc(0.875rem * var(--scale));
+    --lwc-fontSizeTextMedium: calc(1rem * var(--scale));
+    --lwc-fontSizeLarge: calc(1rem * var(--scale));
+    --lwc-fontSizeXSmall: calc(0.625rem * var(--scale));
+    --lwc-fontSizeHeadingSmall: calc(0.875rem * var(--scale));
+    --lwc-fontSize10: calc(2rem * var(--scale));
+    --lwc-fontSize11: calc(2.625rem * var(--scale));
+    --lwc-fontSize9: calc(1.75rem * var(--scale));
+    --lwc-fontSize8: calc(1.5rem * var(--scale));
+    --lwc-fontSize1: calc(0.625rem * var(--scale));
+    --lwc-pageHeaderTitleFontSize: calc(1.125rem * var(--scale));
+    --lwc-fontSize3: calc(0.8125rem * var(--scale));
+    --lwc-fontSize2: calc(0.75rem * var(--scale));
+    --lwc-fontSize5: calc(1rem * var(--scale));
+    --lwc-fontSize4: calc(0.875rem * var(--scale));
+    --lwc-fontSize7: calc(1.25rem * var(--scale));
+    --lwc-fontSize6: calc(1.125rem * var(--scale));
+    --lwc-fontSizeHeadingMedium: calc(1.125rem * var(--scale));
+    --lwc-fontSizeTextXSmall: calc(0.75rem * var(--scale));
+    --lwc-fontSizeXxLarge: calc(1.75rem * var(--scale));
+    --lwc-fontSizeTextLarge: calc(1.125rem * var(--scale));
+    --lwc-fontSizeXLargeA: calc(1.57rem * var(--scale));
+    --lwc-fontSizeSmall: calc(0.75rem * var(--scale));
+
+
+
+}
