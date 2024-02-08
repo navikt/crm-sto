@@ -1,5 +1,5 @@
 body {
-    --scale: 1.25;
+    --scale: 1.10;
 
     --lwc-fontSizeTextXxSmall: calc(0.625rem * var(--scale));
     --lwc-fontSizeHeadingXLarge: calc(1.75rem * var(--scale));
