@@ -1,100 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>54.0</apiVersion>
+    <apiVersion>60.0</apiVersion>
     <assignments>
-        <name>Assign_Reserved_Status</name>
-        <label>Assign Reserved Status</label>
-        <locationX>578</locationX>
-        <locationY>674</locationY>
+        <name>Assignment_1</name>
+        <label>Assignment 1</label>
+        <locationX>314</locationX>
+        <locationY>566</locationY>
         <assignmentItems>
-            <assignToReference>Get_Case.Status</assignToReference>
+            <assignToReference>Get_Related_Case.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>Reserved</stringValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Update_Case</targetReference>
+            <targetReference>Update_status</targetReference>
         </connector>
     </assignments>
     <decisions>
-        <name>Case_or_Thread</name>
-        <label>Case or Thread</label>
-        <locationX>578</locationX>
-        <locationY>350</locationY>
-        <defaultConnector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Case_Not_In_Progress</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Thread_ID_Assigner</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>recordId</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Get_Thread.Id</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Thread_subflow</targetReference>
-            </connector>
-            <label>Thread Id Assigner</label>
-        </rules>
-        <rules>
-            <name>Case_ID_Assigner</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>recordId</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Get_Case.Id</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Is_Reserved</targetReference>
-            </connector>
-            <label>Case Id Assigner</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Is_in_progress</name>
-        <label>Is in progress</label>
-        <locationX>710</locationX>
-        <locationY>566</locationY>
-        <defaultConnector>
-            <targetReference>Case_Not_In_Progress</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Yes</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>In progress</stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>Get_Case.IsClosed</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_Reserved_Status</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Is_Reserved</name>
-        <label>Is Reserved</label>
-        <locationX>512</locationX>
-        <locationY>458</locationY>
+        <name>Check_Status</name>
+        <label>Check Status</label>
+        <locationX>248</locationX>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Is_in_progress</targetReference>
         </defaultConnector>
@@ -103,22 +30,53 @@
             <name>Reserved</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
+                <leftValueReference>Get_Thread.CRM_Case__r.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Reserved</stringValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Case_Reserved_Screen</targetReference>
+                <targetReference>Case_Reservved_Screen</targetReference>
             </connector>
-            <label>Reserved</label>
+            <label>Already Reserved</label>
         </rules>
     </decisions>
-    <description>Flow to automatically set status Reserved.</description>
+    <decisions>
+        <name>Is_in_progress</name>
+        <label>Is in progress</label>
+        <locationX>446</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>Case_not_in_progress</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Case__r.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>In progress</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Case__r.IsClosed</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Related_Case</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
-    <interviewLabel>Case - Set Reserved {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Case - Set Reserved</label>
+    <interviewLabel>STO Case Set Reserved subflow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>STO Case Set Reserved subflow</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -139,20 +97,20 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
-        <name>Get_Case</name>
-        <label>Get Case</label>
-        <locationX>578</locationX>
-        <locationY>134</locationY>
+        <name>Get_Related_Case</name>
+        <label>Get Related Case</label>
+        <locationX>314</locationX>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_Thread</targetReference>
+            <targetReference>Assignment_1</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>Get_Thread.CRM_Case__r.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -162,18 +120,18 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>578</locationX>
-        <locationY>242</locationY>
+        <locationX>248</locationX>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Case_or_Thread</targetReference>
+            <targetReference>Check_Status</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>receivedResourceId</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -181,55 +139,52 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
-        <name>Update_Case</name>
-        <label>Update Case</label>
-        <locationX>578</locationX>
-        <locationY>782</locationY>
-        <connector>
-            <targetReference>Finish_Screen_0</targetReference>
-        </connector>
-        <inputReference>Get_Case</inputReference>
-    </recordUpdates>
-    <runInMode>SystemModeWithSharing</runInMode>
-    <screens>
-        <name>Case_Not_In_Progress</name>
-        <label>Case Not In Progress</label>
-        <locationX>842</locationX>
+        <name>Update_status</name>
+        <label>Update status</label>
+        <locationX>314</locationX>
         <locationY>674</locationY>
-        <allowBack>false</allowBack>
+        <connector>
+            <targetReference>Finish_screen_0</targetReference>
+        </connector>
+        <inputReference>Get_Related_Case</inputReference>
+    </recordUpdates>
+    <screens>
+        <name>Case_not_in_progress</name>
+        <label>Case not in progress</label>
+        <locationX>578</locationX>
+        <locationY>458</locationY>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
+        <allowPause>true</allowPause>
         <fields>
             <name>Close_Case_Screen</name>
             <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er enten lukket eller ikke under arbeid.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Case_Reserved_Screen</name>
-        <label>Case Reserved Screen</label>
-        <locationX>314</locationX>
-        <locationY>566</locationY>
-        <allowBack>false</allowBack>
+        <name>Case_Reservved_Screen</name>
+        <label>Case Reservved Screen</label>
+        <locationX>50</locationX>
+        <locationY>350</locationY>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
+        <allowPause>true</allowPause>
         <fields>
-            <name>Case_Reserved</name>
+            <name>DisplayText</name>
             <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px; background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede reservert til deg.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Finish_Screen_0</name>
-        <label>Finish Screen</label>
-        <locationX>578</locationX>
-        <locationY>890</locationY>
+        <name>Finish_screen_0</name>
+        <label>Finish screen</label>
+        <locationX>314</locationX>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -275,31 +230,19 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>452</locationX>
+        <locationX>122</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Case</targetReference>
+            <targetReference>Get_Thread</targetReference>
         </connector>
     </start>
     <status>Active</status>
-    <subflows>
-        <name>Thread_subflow</name>
-        <label>Thread subflow</label>
-        <locationX>50</locationX>
-        <locationY>458</locationY>
-        <flowName>Case_Set_reserved_subflow</flowName>
-        <inputAssignments>
-            <name>receivedResourceId</name>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </inputAssignments>
-    </subflows>
     <variables>
-        <name>recordId</name>
+        <description>This is the received Id from parentflow &apos;Case - Set reserved&apos;</description>
+        <name>receivedResourceId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
-        <isOutput>true</isOutput>
+        <isOutput>false</isOutput>
     </variables>
 </Flow>
