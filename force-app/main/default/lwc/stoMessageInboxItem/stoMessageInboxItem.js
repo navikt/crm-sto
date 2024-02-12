@@ -1,4 +1,4 @@
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 import basepath from '@salesforce/community/basePath';
 
@@ -22,29 +22,27 @@ export default class StoMessageInboxItem extends LightningElement {
             if (this.isOpen) {
                 if (this.isExternal === true) {
                     return this.thread.name + ': Du sendte en melding';
-                } else {
-                    return this.thread.name + ': NAV sendte en melding';
                 }
+                return this.thread.name + ': NAV sendte en melding';
             }
             return this.thread.name;
         }
         if (this.objectName === 'chat') {
             if (this.isExternal === true) {
                 return this.thread.name + ': Du sendte en melding';
-            } else {
-                return this.thread.name + ': NAV sendte en melding';
             }
+            return this.thread.name + ': NAV sendte en melding';
         }
         return this.thread.name;
     }
     connectedCallback() {
         this.objectName = this.thread.objectName;
-        if (this.thread.status == 'Åpen') {
+        if (this.thread.status === 'Åpen') {
             this.statuscolor = 'greenfont';
             this.isOpen = true;
         }
-        if (this.objectName == 'samtalereferat') this.dialog = navlogos + '/FileContent.svg';
-        if (this.objectName == 'chat') this.dialog = navlogos + '/dialog.svg';
+        if (this.objectName === 'samtalereferat') this.dialog = navlogos + '/FileContent.svg';
+        if (this.objectName === 'chat') this.dialog = navlogos + '/dialog.svg';
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
             this.unreadmessage = 'ulest';
@@ -56,12 +54,12 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get showStatus() {
-        return this.objectName != 'samtalereferat';
+        return this.objectName !== 'samtalereferat';
     }
 
     get linkUrl() {
         return this.objectName === 'beskjed-til-oss'
-            ? basepath + '/' + this.objectName + '/' + 'visning?samtale=' + this.thread.recordId
+            ? basepath + '/' + this.objectName + '/visning?samtale=' + this.thread.recordId
             : basepath +
                   '/' +
                   this.objectName +

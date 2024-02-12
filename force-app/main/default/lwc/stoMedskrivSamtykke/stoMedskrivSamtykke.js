@@ -18,12 +18,13 @@ export default class StoMedskrivSamtykke extends LightningElement {
     @api recordId;
     buttonPushed = false;
 
-    revokeMedskriv(e) {
+    revokeMedskriv() {
         const fields = {};
         fields[ID_FIELD.fieldApiName] = this.recordId;
         fields[MEDSKRIV_FIELD.fieldApiName] = false;
 
         const recordInput = { fields };
+        // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
         setTimeout(() => (this.buttonPushed = true), 100);
 
         updateRecord(recordInput).catch((error) => {

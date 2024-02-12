@@ -2,7 +2,7 @@
  * @description       :
  * @author            : mamikals
  * @group             :
- * @last modified on  : 11-01-2024
+ * @last modified on  : 26-01-2024
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
@@ -17,6 +17,22 @@ public without sharing class nksGetStoUtilityController {
         'Skjermede_personer'
     };
     private static final List<String> originSkills = new List<String>{ 'BTO', 'STO' };
+    
+    // Since Omni channel skills are org based, we want to only include skills that are used in STO
+    public static final List<String> allRelevantSkills {
+        get {
+            Schema.DescribeFieldResult fieldResult = Case.STO_Category__c.getDescribe();
+            List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+            List<String> retList = new List<String>();
+            for (Schema.PicklistEntry pl : ple) {
+                retList.add(pl.getLabel());
+            }
+            retList.addAll(confidentialitySkills);
+            retList.addAll((originSkills));
+            return retList;
+        }
+    }
+
     private static Id filteredSkillId;
 
     private static GroupedSkills allUserSkills = new GroupedSkills();
@@ -179,6 +195,7 @@ public without sharing class nksGetStoUtilityController {
             FROM ServiceResourceSkill
             WHERE
                 ServiceResource.RelatedRecordId = :userId
+                AND Skill.DeveloperName IN :allRelevantSkills
                 AND EffectiveStartDate <= TODAY
                 AND (EffectiveEndDate >= TODAY
                 OR EffectiveEndDate = NULL)
@@ -228,7 +245,7 @@ public without sharing class nksGetStoUtilityController {
                     SELECT RelatedRecordId
                     FROM SkillRequirement
                     WHERE
-                        (SkillId NOT IN :allUserSkills.userConfidentialMap.values()
+                        (Skill.DeveloperName NOT IN :allUserSkills.userConfidentialMap.values()
                         AND Skill.DeveloperName IN :confidentialitySkills)
                         OR (Skill.DeveloperName NOT IN :allUserSkills.userOriginMap.values()
                         AND Skill.DeveloperName IN :originSkills)

@@ -10,6 +10,26 @@ import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
 import userId from '@salesforce/user/Id';
 
+const englishCompanyTranslations = {
+    'DIR Ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
+    'NAV Arbeid og ytelser styringsenhet': 'NAV Work and Benefits Management Unit',
+    'NAV Familie- og pensjonsytelser': 'NAV Family Benefits and Pensions Management Unit',
+    'NAV Kontroll Øst': 'NAV Control Eastern Norway',
+    'NAV Kontroll Vest': 'NAV Control Western Norway',
+    'NAV Kontroll Nord': 'NAV Control Northern Norway',
+    'NAV Kontroll Styringsenhet': 'NAV Control Management Unit',
+    'NAV Medlemskap og avgift': 'NAV Social insurance and Contributions',
+    'NAV Oppfølging utland': 'Norwegian Labour and rehabilitation unit',
+    'NAV Registerforvaltning': 'NAV Registry Management',
+    'NAV Styringsenhet Kontaktsenter': 'NAV Call and Service Centre Management Unit',
+    'Seksjon fag- og ytelsesutvikling': 'Pensions and benefits - Legislation and development',
+    'Seksjon informasjonsforvaltning': 'Information Management',
+    'Seksjon juridisk': 'Legal affairs',
+    'Seksjon kompetanseutvikling': 'Professional Development',
+    'Seksjon styring': 'Governance',
+    Ytelseslinjen: 'NAV Benefits Administration'
+};
+
 export default class CrmStoMessaging extends LightningElement {
     @api recordId;
     @api objectApiName;
@@ -95,49 +115,43 @@ export default class CrmStoMessaging extends LightningElement {
                 !this.companyName.toLowerCase().toLowerCase().includes('styringsenhet')
             ) {
                 return 'NAV Kontaktsenter';
-            } else {
-                const startWords = ['DIR', 'HJELPEMIDDEL', 'NAV', 'SEKSJON', 'YTELSE'];
-                const words = [
-                    'Analyse',
-                    'Avgift',
-                    'Helse',
-                    'Pensjonsytelser',
-                    'Styringsavdelingen',
-                    'Styringsenhet',
-                    'Tjenesteavdelingen',
-                    'Ytelser',
-                    'Ytelsesutvikling'
-                ];
-                // Check for related units
-                if (startWords.some((str) => this.companyName.startsWith(str))) {
-                    let listString = this.companyName.toLowerCase().split(' ');
-                    for (var i = 0; i < listString.length; i++) {
-                        if (listString[i].length > 1) {
-                            listString[i] =
-                                listString[i].charAt(0).toUpperCase() + listString[i].slice(1).toLowerCase();
-                            if (listString[i].toUpperCase() === 'NAV' || listString[i].toUpperCase() === 'DIR') {
-                                listString[i] = listString[i].toUpperCase();
-                            } else if (
-                                (i > 0 && listString[i - 1].toUpperCase() === 'SEKSJON') ||
-                                listString[i].toUpperCase() === 'OG' ||
-                                (((i > 0 && listString[i - 1].toUpperCase() === 'OG') ||
-                                    (i > 1 && listString[i - 2].toUpperCase() === 'OG')) &&
-                                    words.includes(listString[i]))
-                            ) {
-                                listString[i] = listString[i].toLowerCase();
-                            } else if (listString[i].includes('-') || listString[i].includes('/')) {
-                                listString[i] = listString[i].replaceAll(/[\-\/][a-z]/g, (match) =>
-                                    match.toUpperCase()
-                                );
-                            }
+            }
+            const startWords = ['DIR', 'HJELPEMIDDEL', 'NAV', 'SEKSJON', 'YTELSE'];
+            const words = [
+                'Analyse',
+                'Avgift',
+                'Helse',
+                'Pensjonsytelser',
+                'Styringsavdelingen',
+                'Styringsenhet',
+                'Tjenesteavdelingen',
+                'Ytelser',
+                'Ytelsesutvikling'
+            ];
+            // Check for related units
+            if (startWords.some((str) => this.companyName.startsWith(str))) {
+                let listString = this.companyName.toLowerCase().split(' ');
+                for (let i = 0; i < listString.length; i++) {
+                    if (listString[i].length > 1) {
+                        listString[i] = listString[i].charAt(0).toUpperCase() + listString[i].slice(1).toLowerCase();
+                        if (listString[i].toUpperCase() === 'NAV' || listString[i].toUpperCase() === 'DIR') {
+                            listString[i] = listString[i].toUpperCase();
+                        } else if (
+                            (i > 0 && listString[i - 1].toUpperCase() === 'SEKSJON') ||
+                            listString[i].toUpperCase() === 'OG' ||
+                            (((i > 0 && listString[i - 1].toUpperCase() === 'OG') ||
+                                (i > 1 && listString[i - 2].toUpperCase() === 'OG')) &&
+                                words.includes(listString[i]))
+                        ) {
+                            listString[i] = listString[i].toLowerCase();
+                        } else if (listString[i].includes('-') || listString[i].includes('/')) {
+                            listString[i] = listString[i].replaceAll(/[-/][a-z]/g, (match) => match.toUpperCase());
                         }
                     }
-                    // console.log(listString.join(' '));
-                    return listString.join(' ');
-                } else {
-                    return this.companyName;
                 }
+                return listString.join(' ');
             }
+            return this.companyName;
         } catch (error) {
             console.log('Problem getting Norwegian company name: ' + error);
             return '';
@@ -147,122 +161,63 @@ export default class CrmStoMessaging extends LightningElement {
     getEnglishCompanyName() {
         try {
             // English translation for management units
-            switch (this.norwegianCompanyName) {
-                case 'DIR Ytelsesavdelingen':
-                    return 'Benefits department, Directorate of Labour and Welfare';
-
-                case 'NAV Arbeid og ytelser styringsenhet':
-                    return 'NAV Work and Benefits Management Unit';
-
-                case 'NAV Familie- og pensjonsytelser':
-                    return 'NAV Family Benefits and Pensions Management Unit';
-
-                case 'NAV Kontroll Øst':
-                    return 'NAV Control Eastern Norway';
-
-                case 'NAV Kontroll Vest':
-                    return 'NAV Control Western Norway';
-
-                case 'NAV Kontroll Nord':
-                    return 'NAV Control Northern Norway';
-
-                case 'NAV Kontroll Styringsenhet':
-                    return 'NAV Control Management Unit';
-
-                case 'NAV Medlemskap og avgift':
-                    return 'NAV Social insurance and Contributions';
-
-                case 'NAV Oppfølging utland':
-                    return 'Norwegian Labour and rehabilitation unit';
-
-                case 'NAV Registerforvaltning':
-                    return 'NAV Registry Management';
-
-                case 'NAV Styringsenhet Kontaktsenter':
-                    return 'NAV Call and Service Centre Management Unit';
-
-                case 'Seksjon fag- og ytelsesutvikling':
-                    return 'Pensions and benefits - Legislation and development';
-
-                case 'Seksjon informasjonsforvaltning':
-                    return 'Information Management';
-
-                case 'Seksjon juridisk':
-                    return 'Legal affairs';
-
-                case 'Seksjon kompetanseutvikling':
-                    return 'Professional Development';
-
-                case 'Seksjon styring':
-                    return 'Governance';
-
-                case 'Ytelseslinjen':
-                    return 'NAV Benefits Administration';
-
-                // English translation for related units
-                default:
-                    let ecn = '';
-                    let hasEnglishTranslation = true;
-                    const mapObj = {
-                        og: 'and',
-                        i: 'in'
-                    };
-                    const unitsWithPrepositions = [
-                        'NAV Eiganes og Tasta',
-                        'NAV Evje og Hornnes',
-                        'NAV Herøy og Vanylven',
-                        'NAV Hillevåg og Hinna',
-                        'NAV Hundvåg og Storhaug',
-                        'NAV Møre og Romsdal',
-                        'NAV Nes i Akershus',
-                        'NAV Oppdal og Rennebu',
-                        'NAV Rennesøy og Finnøy',
-                        'NAV Røros, Os og Holtålen',
-                        'NAV Troms og Finnmark',
-                        'NAV Vestfold og Telemark',
-                        'NAV Våler i Hedmark'
-                        //'NAV Øst i Agder'
-                    ];
-
-                    if (this.norwegianCompanyName.includes('Arbeid og ytelser')) {
-                        ecn = this.norwegianCompanyName.replace('Arbeid og ytelser', 'Work and Benefits');
-                    } else if (this.norwegianCompanyName.includes('Familie- og pensjonsytelser')) {
-                        ecn = this.norwegianCompanyName.replace(
-                            'Familie- og pensjonsytelser',
-                            'Family Benefits and Pensions'
-                        );
-                    } else if (this.norwegianCompanyName.includes('Hjelpemiddelsentral')) {
-                        ecn = this.norwegianCompanyName.replace(
-                            'Hjelpemiddelsentral',
-                            'Department of assistive technology'
-                        );
-                    } else if (this.norwegianCompanyName.includes('Klageinstans')) {
-                        ecn = this.norwegianCompanyName.replace('Klageinstans', 'Appeals');
-                    } else if (this.norwegianCompanyName.includes('Kontaktsenter')) {
-                        ecn = this.norwegianCompanyName.replace('Kontaktsenter', 'Call and Service Center');
-                    } else if (this.norwegianCompanyName.includes('Kontroll Analyse')) {
-                        ecn = this.norwegianCompanyName.replace('Kontroll Analyse', 'Control Analysis');
-                    } else if (this.norwegianCompanyName.includes('Kontroll')) {
-                        ecn = this.norwegianCompanyName.replace('Kontroll', 'Control');
-                    } else if (this.norwegianCompanyName.includes('Tiltak')) {
-                        ecn = this.norwegianCompanyName.replace('Tiltak', 'Department for employment measures');
-                    } else if (this.norwegianCompanyName.includes('Ytelseslinjen')) {
-                        ecn = this.norwegianCompanyName.replace('Ytelseslinjen', 'Benefits Administration');
-                    } else {
-                        if (unitsWithPrepositions.includes(this.norwegianCompanyName)) {
-                            ecn = this.norwegianCompanyName.replace(/\b(?:og|i)\b/gi, (matched) => mapObj[matched]);
-                            return ecn;
-                        } else {
-                            hasEnglishTranslation = false;
-                            console.log('There is no translation for this CompanyName.');
-                            return this.norwegianCompanyName;
-                        }
-                    }
-                    if (hasEnglishTranslation) {
-                        ecn = ecn.replace(/\b(?:og|i)\b/gi, (matched) => mapObj[matched]);
-                    }
-                    return ecn;
+            if (this.norwegianCompanyName in englishCompanyTranslations) {
+                return englishCompanyTranslations[this.norwegianCompanyName];
             }
+            let ecn = '';
+            let hasEnglishTranslation = true;
+            const mapObj = {
+                og: 'and',
+                i: 'in'
+            };
+            const unitsWithPrepositions = [
+                'NAV Eiganes og Tasta',
+                'NAV Evje og Hornnes',
+                'NAV Herøy og Vanylven',
+                'NAV Hillevåg og Hinna',
+                'NAV Hundvåg og Storhaug',
+                'NAV Møre og Romsdal',
+                'NAV Nes i Akershus',
+                'NAV Oppdal og Rennebu',
+                'NAV Rennesøy og Finnøy',
+                'NAV Røros, Os og Holtålen',
+                'NAV Troms og Finnmark',
+                'NAV Vestfold og Telemark',
+                'NAV Våler i Hedmark'
+                //'NAV Øst i Agder'
+            ];
+
+            if (this.norwegianCompanyName.includes('Arbeid og ytelser')) {
+                ecn = this.norwegianCompanyName.replace('Arbeid og ytelser', 'Work and Benefits');
+            } else if (this.norwegianCompanyName.includes('Familie- og pensjonsytelser')) {
+                ecn = this.norwegianCompanyName.replace('Familie- og pensjonsytelser', 'Family Benefits and Pensions');
+            } else if (this.norwegianCompanyName.includes('Hjelpemiddelsentral')) {
+                ecn = this.norwegianCompanyName.replace('Hjelpemiddelsentral', 'Department of assistive technology');
+            } else if (this.norwegianCompanyName.includes('Klageinstans')) {
+                ecn = this.norwegianCompanyName.replace('Klageinstans', 'Appeals');
+            } else if (this.norwegianCompanyName.includes('Kontaktsenter')) {
+                ecn = this.norwegianCompanyName.replace('Kontaktsenter', 'Call and Service Center');
+            } else if (this.norwegianCompanyName.includes('Kontroll Analyse')) {
+                ecn = this.norwegianCompanyName.replace('Kontroll Analyse', 'Control Analysis');
+            } else if (this.norwegianCompanyName.includes('Kontroll')) {
+                ecn = this.norwegianCompanyName.replace('Kontroll', 'Control');
+            } else if (this.norwegianCompanyName.includes('Tiltak')) {
+                ecn = this.norwegianCompanyName.replace('Tiltak', 'Department for employment measures');
+            } else if (this.norwegianCompanyName.includes('Ytelseslinjen')) {
+                ecn = this.norwegianCompanyName.replace('Ytelseslinjen', 'Benefits Administration');
+            } else {
+                if (unitsWithPrepositions.includes(this.norwegianCompanyName)) {
+                    ecn = this.norwegianCompanyName.replace(/\b(?:og|i)\b/gi, (matched) => mapObj[matched]);
+                    return ecn;
+                }
+                hasEnglishTranslation = false;
+                console.log('There is no translation for this CompanyName.');
+                return this.norwegianCompanyName;
+            }
+            if (hasEnglishTranslation) {
+                ecn = ecn.replace(/\b(?:og|i)\b/gi, (matched) => mapObj[matched]);
+            }
+            return ecn;
         } catch (error) {
             console.log('Problem getting English company name: ' + error);
             return '';
@@ -299,9 +254,9 @@ export default class CrmStoMessaging extends LightningElement {
             return 'AccountId';
         } else if (this.objectApiName === 'Thread__c') {
             return 'CRM_Account__c';
-        } else {
-            console.log('Something is wrong with Account API name');
         }
+        console.log('Something is wrong with Account API name');
+        return null;
     }
 
     getAccountId() {
@@ -355,7 +310,7 @@ export default class CrmStoMessaging extends LightningElement {
             .then((threadId) => {
                 this.threadId = threadId;
             })
-            .catch((error) => {
+            .catch(() => {
                 //Failure yields rollback to using record id as reference
             });
     }
@@ -402,8 +357,8 @@ export default class CrmStoMessaging extends LightningElement {
             try {
                 this.norwegianCompanyName = this.getNorwegianCompanyName();
                 this.englishCompanyName = this.getEnglishCompanyName();
-            } catch (error) {
-                console.log(error);
+            } catch (error2) {
+                console.log(error2);
             }
         }
     }
@@ -423,7 +378,7 @@ export default class CrmStoMessaging extends LightningElement {
     resolve(path, obj) {
         return path.split('.').reduce(function (prev, curr) {
             return prev ? prev[curr] : null;
-        }, obj || self);
+        }, obj);
     }
 
     handleEnglishEventTwo(event) {

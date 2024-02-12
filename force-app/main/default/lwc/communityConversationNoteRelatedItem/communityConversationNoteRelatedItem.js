@@ -30,9 +30,9 @@ export default class CommunityConversationNoteRelatedItem extends NavigationMixi
             return (
                 ' fra ' + new Intl.DateTimeFormat('no-no', { dateStyle: 'long', timeStyle: 'short' }).format(fullDate)
             );
-        } else {
+        } 
             return '';
-        }
+        
     }
 
     get label() {
