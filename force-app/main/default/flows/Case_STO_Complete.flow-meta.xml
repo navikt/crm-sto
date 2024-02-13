@@ -331,7 +331,7 @@
         <label>Thread Id</label>
         <locationX>50</locationX>
         <locationY>566</locationY>
-        <flowName>Thread_STO_Complete_Subflow</flowName>
+        <flowName>Case_STO_Complete_subflow</flowName>
         <inputAssignments>
             <name>threadId</name>
             <value>
