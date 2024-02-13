@@ -287,7 +287,7 @@
         <label>Thread subflow</label>
         <locationX>50</locationX>
         <locationY>458</locationY>
-        <flowName>Case_Set_reserved_subflow</flowName>
+        <flowName>STO_Case_Set_Reserved_subflow</flowName>
         <inputAssignments>
             <name>receivedResourceId</name>
             <value>
