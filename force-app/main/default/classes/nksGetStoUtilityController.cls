@@ -2,7 +2,7 @@
  * @description       :
  * @author            : mamikals
  * @group             :
- * @last modified on  : 12-02-2024
+ * @last modified on  : 13-02-2024
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
@@ -197,7 +197,7 @@ public without sharing class nksGetStoUtilityController {
         GroupedSkills retSkills = new GroupedSkills();
 
         for (ServiceResourceSkill srs : [
-            SELECT SkillId, Skill.DeveloperName
+            SELECT SkillId,  Skill.DeveloperName, Skill.MasterLabel
             FROM ServiceResourceSkill
             WHERE
                 ServiceResource.RelatedRecordId = :userId
@@ -214,7 +214,7 @@ public without sharing class nksGetStoUtilityController {
                 retSkills.userOriginMap.put(srs.SkillId, srs.Skill.DeveloperName);
             } else {
                 if (filteredSkillId == null || filteredSkillId == srs.SkillId) {
-                    retSkills.skillMap.put(srs.SkillId, srs.Skill.DeveloperName);
+                    retSkills.skillMap.put(srs.SkillId, srs.Skill.MasterLabel);
                 }
             }
         }
