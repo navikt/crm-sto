@@ -2,7 +2,7 @@
  * @description       :
  * @author            : mamikals
  * @group             :
- * @last modified on  : 26-01-2024
+ * @last modified on  : 12-02-2024
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
@@ -17,7 +17,9 @@ public without sharing class nksGetStoUtilityController {
         'Skjermede_personer'
     };
     private static final List<String> originSkills = new List<String>{ 'BTO', 'STO' };
-    
+
+    private static final Map<String, String> stoThemeRenames = new Map<String, String>{ 'Ufør' => 'Ufoeretrygd' };
+
     // Since Omni channel skills are org based, we want to only include skills that are used in STO
     public static final List<String> allRelevantSkills {
         get {
@@ -25,7 +27,11 @@ public without sharing class nksGetStoUtilityController {
             List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
             List<String> retList = new List<String>();
             for (Schema.PicklistEntry pl : ple) {
-                retList.add(pl.getLabel());
+                if (stoThemeRenames.containsKey(pl.getLabel())) {
+                    retList.add(stoThemeRenames.get(pl.getLabel()));
+                } else {
+                    retList.add(pl.getLabel());
+                }
             }
             retList.addAll(confidentialitySkills);
             retList.addAll((originSkills));
