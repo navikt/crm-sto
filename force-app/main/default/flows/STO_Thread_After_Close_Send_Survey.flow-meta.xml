@@ -1,6 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
+    <assignments>
+        <name>Assign_Close_Event_Fields</name>
+        <label>Assign Close Event Fields</label>
+        <locationX>182</locationX>
+        <locationY>323</locationY>
+        <assignmentItems>
+            <assignToReference>CloseEventMessage.CRM_Event_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>END_OF_CHAT</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CloseEventMessage.CRM_From_Contact__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$User.ContactId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CloseEventMessage.CRM_From_User__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CloseEventMessage.CRM_Message_Text__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Thread_Close_Event_Message</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CloseEventMessage.CRM_Thread__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CloseEventMessage.CRM_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Event</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_if_STB</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assignment_2</name>
+        <label>Assignment 2</label>
+        <locationX>50</locationX>
+        <locationY>539</locationY>
+        <assignmentItems>
+            <assignToReference>CloseEventMessage.CRM_From_Ident__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.CRM_Last_Edited_By__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_Thread_Close_Event</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Check_if_STB</name>
+        <label>Check if STB</label>
+        <locationX>182</locationX>
+        <locationY>431</locationY>
+        <defaultConnector>
+            <targetReference>Create_Thread_Close_Event</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_STB</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.CRM_Thread_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>STB</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assignment_2</targetReference>
+            </connector>
+            <label>Is STB</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <formulas>
         <description>Calculated thread close message.</description>
@@ -32,55 +124,18 @@
     <recordCreates>
         <name>Create_Thread_Close_Event</name>
         <label>Create Thread Close Event</label>
-        <locationX>176</locationX>
-        <locationY>335</locationY>
-        <inputAssignments>
-            <field>CRM_Event_Type__c</field>
-            <value>
-                <stringValue>END_OF_CHAT</stringValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CRM_From_Contact__c</field>
-            <value>
-                <elementReference>$User.ContactId</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CRM_From_User__c</field>
-            <value>
-                <elementReference>$User.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CRM_Message_Text__c</field>
-            <value>
-                <elementReference>Thread_Close_Event_Message</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CRM_Thread__c</field>
-            <value>
-                <elementReference>$Record.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CRM_Type__c</field>
-            <value>
-                <stringValue>Event</stringValue>
-            </value>
-        </inputAssignments>
-        <object>Message__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <locationX>182</locationX>
+        <locationY>731</locationY>
+        <inputReference>CloseEventMessage</inputReference>
     </recordCreates>
     <start>
-        <locationX>50</locationX>
+        <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Create_Thread_Close_Event</targetReference>
+            <targetReference>Assign_Close_Event_Fields</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
-        <filterLogic>1 AND (2 OR 3)</filterLogic>
+        <filterLogic>1 AND (2 OR 3 OR 4)</filterLogic>
         <filters>
             <field>CRM_isActive__c</field>
             <operator>EqualTo</operator>
@@ -102,9 +157,24 @@
                 <stringValue>BTO</stringValue>
             </value>
         </filters>
+        <filters>
+            <field>CRM_Thread_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>STB</stringValue>
+            </value>
+        </filters>
         <object>Thread__c</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
+    <variables>
+        <name>CloseEventMessage</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Message__c</objectType>
+    </variables>
 </Flow>
