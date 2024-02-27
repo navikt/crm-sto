@@ -5,12 +5,12 @@
         <name>Assign_Thread_Values_to_Case</name>
         <label>Assign Thread Values to Case</label>
         <locationX>176</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <assignmentItems>
             <assignToReference>Case.Subject</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Thread.Name</elementReference>
+                <elementReference>Thread.STO_ExternalName__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -100,7 +100,7 @@
         <name>Create_Application_Log</name>
         <label>Create Application Log</label>
         <locationX>440</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <inputAssignments>
             <field>Application_Domain__c</field>
             <value>
@@ -150,7 +150,7 @@
         <name>Create_Case</name>
         <label>Create Case</label>
         <locationX>176</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <faultConnector>
             <targetReference>Create_Application_Log</targetReference>
         </faultConnector>
@@ -160,7 +160,7 @@
         <name>STO_Case_Record_Type</name>
         <label>STO Case Record Type</label>
         <locationX>176</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Assign_Thread_Values_to_Case</targetReference>
