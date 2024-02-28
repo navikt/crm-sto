@@ -345,7 +345,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <allowPause>false</allowPause>
         <fields>
             <name>Case_Already_Reserved</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px; background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede reservert til deg.&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255); font-size: 14px;&quot;&gt;Henvendelsen er allerede reservert.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
