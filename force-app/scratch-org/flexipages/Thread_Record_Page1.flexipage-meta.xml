@@ -20,7 +20,7 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
-                            <value>Thread__c.Reserve</value>
+                            <value>Thread__c.STO_Reserve</value>
                             <visibilityRule>
                                 <criteria>
                                     <leftValue>{!$Permission.CustomPermission.STO_Beta}</leftValue>
@@ -30,7 +30,7 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
-                            <value>Thread__c.Complete</value>
+                            <value>Thread__c.STO_Complete</value>
                             <visibilityRule>
                                 <criteria>
                                     <leftValue>{!$Permission.CustomPermission.STO_Beta}</leftValue>
