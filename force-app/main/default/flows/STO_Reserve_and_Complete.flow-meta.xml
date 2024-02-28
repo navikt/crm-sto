@@ -5,25 +5,25 @@
         <name>Assign_On_Hold_status</name>
         <label>Assign On Hold status</label>
         <locationX>314</locationX>
-        <locationY>974</locationY>
+        <locationY>866</locationY>
         <assignmentItems>
-            <assignToReference>Get_Case.Status</assignToReference>
+            <assignToReference>caseToUpdate.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>On Hold</stringValue>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Update_Case_On_Hold</targetReference>
+            <targetReference>Update_Case</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Set_Reserved_Status</name>
         <label>Set Reserved Status</label>
-        <locationX>1106</locationX>
+        <locationX>842</locationX>
         <locationY>974</locationY>
         <assignmentItems>
-            <assignToReference>Get_Case.Status</assignToReference>
+            <assignToReference>caseToUpdate.Status</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>Reserved</stringValue>
@@ -36,31 +36,24 @@
     <decisions>
         <name>Already_Complete</name>
         <label>Already Complete?</label>
-        <locationX>248</locationX>
+        <locationX>182</locationX>
         <locationY>758</locationY>
         <defaultConnector>
-            <targetReference>Check_if_Case_is_In_Progress_or_Reserved</targetReference>
+            <targetReference>Assign_On_Hold_status</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Already_Completed</name>
             <conditionLogic>or</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
+                <leftValueReference>caseToUpdate.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>On Hold</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Forwarded</stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
+                <leftValueReference>caseToUpdate.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Closed</stringValue>
@@ -75,7 +68,7 @@
     <decisions>
         <name>Already_Reserved</name>
         <label>Already Reserved?</label>
-        <locationX>1040</locationX>
+        <locationX>776</locationX>
         <locationY>758</locationY>
         <defaultConnector>
             <targetReference>Is_it_In_Progress</targetReference>
@@ -85,7 +78,7 @@
             <name>Reserved</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
+                <leftValueReference>caseToUpdate.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Reserved</stringValue>
@@ -98,41 +91,9 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Check_if_Case_is_In_Progress_or_Reserved</name>
-        <label>Check if Case is In Progress or Reserved</label>
-        <locationX>446</locationX>
-        <locationY>866</locationY>
-        <defaultConnector>
-            <targetReference>No_Condition_Screen</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Yes1</name>
-            <conditionLogic>or</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>In progress</stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Reserved</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_On_Hold_status</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Is_it_In_Progress</name>
         <label>Is it In Progress?</label>
-        <locationX>1238</locationX>
+        <locationX>974</locationX>
         <locationY>866</locationY>
         <defaultConnector>
             <targetReference>Case_Not_In_Progress</targetReference>
@@ -142,14 +103,14 @@
             <name>Yes</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Case.Status</leftValueReference>
+                <leftValueReference>caseToUpdate.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>In progress</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Get_Case.IsClosed</leftValueReference>
+                <leftValueReference>caseToUpdate.IsClosed</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -166,7 +127,7 @@
 Thread__C is a custom object, and Id prefix will be different in each scratch org.</description>
         <name>Received_Thread_or_Case</name>
         <label>Received Thread or Case?</label>
-        <locationX>941</locationX>
+        <locationX>908</locationX>
         <locationY>134</locationY>
         <defaultConnector>
             <targetReference>Application_Logger</targetReference>
@@ -207,7 +168,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <description>Decides which action was called</description>
         <name>Which_Action</name>
         <label>Which Action</label>
-        <locationX>941</locationX>
+        <locationX>908</locationX>
         <locationY>650</locationY>
         <defaultConnector>
             <isGoTo>true</isGoTo>
@@ -244,6 +205,35 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
             </connector>
             <label>Reserve Path</label>
         </rules>
+        <rules>
+            <name>Thread_Stopper</name>
+            <conditionLogic>(1 OR 2) AND 3</conditionLogic>
+            <conditions>
+                <leftValueReference>caseToUpdate.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>In progress</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>caseToUpdate.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Reserved</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>recordId</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>a1j</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>No_Condition_Screen</targetReference>
+            </connector>
+            <label>Thread Stopper</label>
+        </rules>
     </decisions>
     <description>This will wil either reserve a case to a Saksbehandler or Ferdigstille it, depending on which event that triggered this flow.</description>
     <environments>Default</environments>
@@ -271,7 +261,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>941</locationX>
+        <locationX>908</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -285,18 +275,43 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Case</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <outputReference>caseToUpdate</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Status</queriedFields>
+        <queriedFields>IsClosed</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Case_Thread</name>
+        <label>Get Case Thread</label>
+        <locationX>644</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Which_Action</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Case__c</elementReference>
+            </value>
+        </filters>
+        <object>Case</object>
+        <outputReference>caseToUpdate</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Status</queriedFields>
+        <queriedFields>IsClosed</queriedFields>
     </recordLookups>
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>677</locationX>
+        <locationX>644</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Which_Action</targetReference>
+            <targetReference>Get_Case_Thread</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -313,27 +328,17 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
     <recordUpdates>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>1106</locationX>
-        <locationY>1082</locationY>
+        <locationX>908</locationX>
+        <locationY>1442</locationY>
         <connector>
             <targetReference>Finish_Screen_Case</targetReference>
         </connector>
-        <inputReference>Get_Case</inputReference>
-    </recordUpdates>
-    <recordUpdates>
-        <name>Update_Case_On_Hold</name>
-        <label>Update Case On Hold</label>
-        <locationX>314</locationX>
-        <locationY>1082</locationY>
-        <connector>
-            <targetReference>Close_Screen</targetReference>
-        </connector>
-        <inputReference>Get_Case</inputReference>
+        <inputReference>caseToUpdate</inputReference>
     </recordUpdates>
     <screens>
         <name>Case_Already_Reserved_Screen</name>
         <label>Case Already Reserved Screen</label>
-        <locationX>842</locationX>
+        <locationX>578</locationX>
         <locationY>866</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -367,7 +372,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
     <screens>
         <name>Case_Not_In_Progress</name>
         <label>Case Not In Progress</label>
-        <locationX>1370</locationX>
+        <locationX>1106</locationX>
         <locationY>974</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -382,58 +387,9 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Close_Screen</name>
-        <label>Close Screen</label>
-        <locationX>314</locationX>
-        <locationY>1190</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>Success_toast</name>
-            <extensionName>c:fcFlowCloseWithToast</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>closeModal</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>mode</name>
-                <value>
-                    <stringValue>dismissible</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>message</name>
-                <value>
-                    <stringValue>Henvendelsen ble ferdigstilt.</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>title</name>
-                <value>
-                    <stringValue>Ferdigstilt</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>success</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
         <name>Error_screen</name>
         <label>Error screen</label>
-        <locationX>1205</locationX>
+        <locationX>1172</locationX>
         <locationY>350</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -482,8 +438,8 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
     <screens>
         <name>Finish_Screen_Case</name>
         <label>Finish Screen Case</label>
-        <locationX>1106</locationX>
-        <locationY>1190</locationY>
+        <locationX>908</locationX>
+        <locationY>1550</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -531,8 +487,8 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
     <screens>
         <name>No_Condition_Screen</name>
         <label>No Condition Screen</label>
-        <locationX>578</locationX>
-        <locationY>974</locationY>
+        <locationX>1370</locationX>
+        <locationY>758</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -546,7 +502,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>815</locationX>
+        <locationX>782</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Received_Thread_or_Case</targetReference>
@@ -557,7 +513,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <description>This will be triggered if the received recordId is not a Thread__C or a Case</description>
         <name>Application_Logger</name>
         <label>Application Logger</label>
-        <locationX>1205</locationX>
+        <locationX>1172</locationX>
         <locationY>242</locationY>
         <connector>
             <targetReference>Error_screen</targetReference>
@@ -620,11 +576,13 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         </value>
     </variables>
     <variables>
-        <name>idToUpdate</name>
-        <dataType>String</dataType>
+        <description>This is the case that will be updated after deciding if this flow was triggered from Thread__c or Case</description>
+        <name>caseToUpdate</name>
+        <dataType>SObject</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+        <objectType>Case</objectType>
     </variables>
     <variables>
         <name>recordId</name>
