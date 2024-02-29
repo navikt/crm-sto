@@ -5,7 +5,7 @@
         <name>Assign_On_Hold_status</name>
         <label>Assign On Hold status</label>
         <locationX>578</locationX>
-        <locationY>866</locationY>
+        <locationY>974</locationY>
         <assignmentItems>
             <assignToReference>caseToUpdate.Status</assignToReference>
             <operator>Assign</operator>
@@ -21,7 +21,7 @@
         <name>Set_Reserved_Status</name>
         <label>Set Reserved Status</label>
         <locationX>1106</locationX>
-        <locationY>974</locationY>
+        <locationY>1082</locationY>
         <assignmentItems>
             <assignToReference>caseToUpdate.Status</assignToReference>
             <operator>Assign</operator>
@@ -37,7 +37,7 @@
         <name>Already_Complete</name>
         <label>Already Complete?</label>
         <locationX>446</locationX>
-        <locationY>758</locationY>
+        <locationY>866</locationY>
         <defaultConnector>
             <targetReference>Assign_On_Hold_status</targetReference>
         </defaultConnector>
@@ -69,7 +69,7 @@
         <name>Already_Reserved</name>
         <label>Already Reserved?</label>
         <locationX>1040</locationX>
-        <locationY>758</locationY>
+        <locationY>866</locationY>
         <defaultConnector>
             <targetReference>Is_it_In_Progress</targetReference>
         </defaultConnector>
@@ -91,10 +91,35 @@
         </rules>
     </decisions>
     <decisions>
+        <name>Did_you_find_a_case</name>
+        <label>Did you find a case?</label>
+        <locationX>1370</locationX>
+        <locationY>650</locationY>
+        <defaultConnector>
+            <targetReference>No_Case_Found_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Found_Case</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>caseToUpdate</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Which_Action</targetReference>
+            </connector>
+            <label>Found Case</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Is_it_In_Progress</name>
         <label>Is it In Progress?</label>
         <locationX>1238</locationX>
-        <locationY>866</locationY>
+        <locationY>974</locationY>
         <defaultConnector>
             <targetReference>Case_Not_In_Progress</targetReference>
         </defaultConnector>
@@ -120,7 +145,7 @@
 Thread__C is a custom object, and Id prefix will be different in each scratch org.</description>
         <name>Received_Thread_or_Case</name>
         <label>Received Thread or Case?</label>
-        <locationX>842</locationX>
+        <locationX>1370</locationX>
         <locationY>134</locationY>
         <defaultConnector>
             <targetReference>Application_Logger</targetReference>
@@ -162,11 +187,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <name>Which_Action</name>
         <label>Which Action</label>
         <locationX>842</locationX>
-        <locationY>650</locationY>
-        <defaultConnector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Application_Logger</targetReference>
-        </defaultConnector>
+        <locationY>758</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Thread_Stopper</name>
@@ -254,11 +275,11 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>842</locationX>
+        <locationX>1370</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Which_Action</targetReference>
+            <targetReference>Did_you_find_a_case</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -277,11 +298,11 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
     <recordLookups>
         <name>Get_Case_Thread</name>
         <label>Get Case Thread</label>
-        <locationX>578</locationX>
+        <locationX>1106</locationX>
         <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Which_Action</targetReference>
+            <targetReference>Did_you_find_a_case</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -300,7 +321,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>578</locationX>
+        <locationX>1106</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -322,7 +343,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <name>Update_Case</name>
         <label>Update Case</label>
         <locationX>842</locationX>
-        <locationY>1442</locationY>
+        <locationY>1550</locationY>
         <connector>
             <targetReference>Finish_Screen_Case</targetReference>
         </connector>
@@ -332,7 +353,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <name>Case_Already_Reserved_Screen</name>
         <label>Case Already Reserved Screen</label>
         <locationX>842</locationX>
-        <locationY>866</locationY>
+        <locationY>974</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -349,7 +370,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <name>Case_Completed_Screen</name>
         <label>Case Completed Screen</label>
         <locationX>314</locationX>
-        <locationY>866</locationY>
+        <locationY>974</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -366,7 +387,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <name>Case_Not_In_Progress</name>
         <label>Case Not In Progress</label>
         <locationX>1370</locationX>
-        <locationY>974</locationY>
+        <locationY>1082</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -382,7 +403,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
     <screens>
         <name>Error_screen</name>
         <label>Error screen</label>
-        <locationX>1106</locationX>
+        <locationX>1634</locationX>
         <locationY>350</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -432,7 +453,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <name>Finish_Screen_Case</name>
         <label>Finish Screen Case</label>
         <locationX>842</locationX>
-        <locationY>1550</locationY>
+        <locationY>1658</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -478,10 +499,27 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>No_Case_Found_Screen</name>
+        <label>No Case Found Screen</label>
+        <locationX>1898</locationX>
+        <locationY>758</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>false</allowFinish>
+        <allowPause>false</allowPause>
+        <backButtonLabel>OK</backButtonLabel>
+        <fields>
+            <name>No_Case_Found_Text</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Du har ikke tilgang til saken, og kan ikke ferdigstille eller reservere den.&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>No_Condition_Screen</name>
         <label>No Condition Screen</label>
         <locationX>50</locationX>
-        <locationY>758</locationY>
+        <locationY>866</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -495,7 +533,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>716</locationX>
+        <locationX>1244</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Received_Thread_or_Case</targetReference>
@@ -506,7 +544,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <description>This will be triggered if the received recordId is not a Thread__C or a Case</description>
         <name>Application_Logger</name>
         <label>Application Logger</label>
-        <locationX>1106</locationX>
+        <locationX>1634</locationX>
         <locationY>242</locationY>
         <connector>
             <targetReference>Error_screen</targetReference>
@@ -545,7 +583,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <inputAssignments>
             <name>Log_Message</name>
             <value>
-                <stringValue>Received an unhandled Id-type when attempting to do &quot;{!actionType}&quot;-quickAction.</stringValue>
+                <stringValue>Received an unhandled Id-type when attempting to do &quot;{!actionType}&quot;-quickAction. Case Id was: {!caseToUpdate.Id}</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
