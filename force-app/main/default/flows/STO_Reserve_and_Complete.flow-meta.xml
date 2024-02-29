@@ -103,13 +103,6 @@
             <name>Yes</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>caseToUpdate.Status</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>In progress</stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
                 <leftValueReference>caseToUpdate.IsClosed</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
