@@ -13,6 +13,13 @@
                 <stringValue>On Hold</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>caseToUpdate.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Update_Case</targetReference>
         </connector>
@@ -27,6 +34,13 @@
             <operator>Assign</operator>
             <value>
                 <stringValue>Reserved</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>caseToUpdate.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -294,6 +308,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <queriedFields>Id</queriedFields>
         <queriedFields>Status</queriedFields>
         <queriedFields>IsClosed</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
     </recordLookups>
     <recordLookups>
         <name>Get_Case_Thread</name>
@@ -317,6 +332,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <queriedFields>Id</queriedFields>
         <queriedFields>Status</queriedFields>
         <queriedFields>IsClosed</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
     </recordLookups>
     <recordLookups>
         <name>Get_Thread</name>
