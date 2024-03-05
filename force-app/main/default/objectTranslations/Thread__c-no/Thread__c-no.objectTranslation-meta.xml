@@ -7,6 +7,16 @@
     </quickActions>
     <quickActions>
         <aspect>Master</aspect>
+        <label>Ferdigstill</label>
+        <name>STO_Complete</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Reserver</label>
+        <name>STO_Reserve</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
         <label>Overfør</label>
         <name>STO_Transfer_Case</name>
     </quickActions>
