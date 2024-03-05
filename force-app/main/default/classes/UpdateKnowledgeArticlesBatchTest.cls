@@ -47,7 +47,6 @@ public class UpdateKnowledgeArticlesBatchTest {
             WHERE Id IN :knowledgeArticles
         ];
 
-        System.debug('updatedArticles: ' + updatedArticles);
         System.assertEquals(3, updatedArticles.size(), 'Number of updated articles should match test data');
         for (Knowledge__kav article : updatedArticles) {
             Assert.areNotEqual(null, article.NKS_Category__c, 'NKS_Category__c should not be null');
