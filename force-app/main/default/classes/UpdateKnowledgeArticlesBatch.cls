@@ -62,8 +62,8 @@ public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject>
             }
         } catch (Exception e) {
             logger.error(
-                'articlesToUpdate: ' +
-                    articlesToUpdate +
+                'scope: ' +
+                    scope +
                     'One or more Knowledge article records failed to update. Error message: ' +
                     e.getMessage() +
                     '. Stacktrace string: ' +
