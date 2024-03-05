@@ -5,6 +5,8 @@ public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject>
     public UpdateKnowledgeArticlesBatch(String inputQuery) {
         this.inputQuery = inputQuery;
     }
+    public UpdateKnowledgeArticlesBatch() {
+    }
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
         // Get new Knowledge__DataCategorySelection records created the last 24 hours
