@@ -20,11 +20,15 @@ public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject>
 
     public void execute(Database.BatchableContext BC, List<Knowledge__DataCategorySelection> scope) {
         try {
+            List<Id> knowledgeArticleIds = new List<Id>();
+            for (Knowledge__DataCategorySelection dataCategorySelection : scope) {
+                knowledgeArticleIds.add(dataCategorySelection.ParentId);
+            }
             // Get existing NKS_Category__c for each Article
             List<Knowledge__kav> articlesWithDataCategorySelections = [
                 SELECT Id, NKS_Category__c
                 FROM Knowledge__kav
-                WHERE Id IN (SELECT ParentId FROM Knowledge__DataCategorySelection WHERE Id IN :scope)
+                WHERE Id IN :knowledgeArticleIds
             ];
 
             // Map to hold existing NKS_Category__c values for each article
