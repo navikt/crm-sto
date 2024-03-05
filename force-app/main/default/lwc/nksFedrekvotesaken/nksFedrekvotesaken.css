@@ -12,6 +12,14 @@
     text-align: start;
 }
 
+.addMargin {
+    margin-left: 20px;
+}
+
+.removeMargin {
+    margin-left: -15px;
+}
+
 .descholder {
     margin-top: 1em;
 }

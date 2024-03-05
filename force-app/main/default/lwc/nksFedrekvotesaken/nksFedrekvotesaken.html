@@ -13,7 +13,6 @@
                 class="text-center"
                 style="background-color: #fff; display: block; padding: 1rem 1rem 1rem 1rem; border-radius: 4px"
             >
-                <img aria-hidden="true" src={logopath} class="logo" />
                 <h2 class="navds-labels blokk-s" style="color: #0067c5">Fedrekvotesaken</h2>
 
                 <div class="descholder slds-var-m-bottom_xx-large">
@@ -29,42 +28,12 @@
                     </p>
                 </div>
 
-                <div class="text-start navds-form-field navds-form-field--medium">
-                    <c-ds-text-field type="text" label="Barnets navn"></c-ds-text-field>
-                    <c-ds-date-picker label="Barnets fødselsdato"></c-ds-date-picker>
-                    <br />
-
-                    <c-ds-radio
-                        style="text-align: left"
-                        title="Hadde du permisjon med barnet selv om du ikke fikk foreldrepenger fra NAV?"
-                        onradiochange={gege}
-                        options={leaveOptions}
-                        class="radioFocus"
-                        ><div slot="legend" class="slds-grid">
-                            <p>Hadde du permisjon med barnet selv om du ikke fikk foreldrepenger fra NAV?</p>
-                        </div></c-ds-radio
-                    >
-
-                    <template lwc:if={showYes}>
-                        <c-ds-radio
-                            style="text-align: left"
-                            title="Fikk du dekket lønn fra arbeidsgiver under permisjonen?"
-                            options={yesOptions}
-                            class="radioFocus"
-                            ><div slot="legend" class="slds-grid">
-                                <p>Fikk du dekket lønn fra arbeidsgiver under permisjonen?</p>
-                            </div></c-ds-radio
-                        >
+                <div class="text-start addMargin navds-form-field navds-form-field--medium">
+                    <template for:each={childList} for:item="child">
+                        <c-nks-fedrekvotesaken-child key={child}></c-nks-fedrekvotesaken-child>
                     </template>
-                    <template lwc:elseif={showMby}>
-                        <c-ds-date-picker label="Fra"></c-ds-date-picker>
-                        <c-ds-date-picker label="Til"></c-ds-date-picker>
-                    </template>
-                    <template lwc:elseif={showNo}>
-                        <p>Du blir kontaktet med informasjon om dine rettigheter.</p>
-                    </template>
-
                     <c-ds-button
+                        class="removeMargin"
                         variant="tertiary"
                         size="medium"
                         text="Legg til et barn til"
