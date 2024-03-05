@@ -1,11 +1,18 @@
 public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject> {
     private static Map<String, String> categoryLabelMap = KnowledgeDataCategoryHelper.fetchDataCategoryLabels();
+    private String inputQuery;
+
+    public UpdateKnowledgeArticlesBatch(String inputQuery) {
+        this.inputQuery = inputQuery;
+    }
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
         // Get new Knowledge__DataCategorySelection records created the last 24 hours
         Datetime yesterday = Datetime.now().addDays(-1);
-        String soqlQuery = 'SELECT Id, ParentId, DataCategoryName FROM Knowledge__DataCategorySelection WHERE CreatedDate >= :yesterday AND Parent.IsLatestVersion = TRUE';
-        return Database.getQueryLocator(soqlQuery);
+        String query = String.isNotBlank(inputQuery)
+            ? inputQuery
+            : 'SELECT Id, ParentId, DataCategoryName FROM Knowledge__DataCategorySelection WHERE CreatedDate >= :yesterday AND Parent.IsLatestVersion = TRUE';
+        return Database.getQueryLocator(query);
     }
 
     public void execute(Database.BatchableContext BC, List<Knowledge__DataCategorySelection> scope) {
