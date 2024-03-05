@@ -30,7 +30,7 @@ public class KnowledgeDataCategoryHelper {
         return categoryLabels;
     }
 
-    private static DataCategory[] getAllCategories(List<DataCategory> categories) {
+    private static List<DataCategory> getAllCategories(List<DataCategory> categories) {
         List<DataCategory> allCategories = new List<DataCategory>();
         for (DataCategory category : categories) {
             allCategories.add(category);
