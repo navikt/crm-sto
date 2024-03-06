@@ -62,7 +62,7 @@ public with sharing class NKS_FedrekvotesakenController {
     };
     */
 
-    // TODO: Remember to add permissions for fields to experience site users
+    // TODO: Remember to add permissions for fields to experience site users in perm sets
     @AuraEnabled
     public static void createNavTask(String jsonData) {
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
@@ -70,25 +70,23 @@ public with sharing class NKS_FedrekvotesakenController {
         try {
             NavTask__c task = new NavTask__c();
             task.Name = 'Vurder konsekvens for ytelse';
-            task.CRM_NoPersonInformation__c = true; // TODO: Need this?
+            task.CRM_NoPersonInformation__c = false;
             task.CRM_Account__c = UserInfo.getUserId();
             task.NKS_Theme__c = getTheme();
-            task.NKS_Theme_Group__c = null; // TODO: Need this?
-            task.NKS_Henvendelse_BehandlingsId__c = null; // TODO: Need this?
-            task.NKS_Assignee__c = null; // TODO: Need this?
+            task.NKS_Assignee__c = null; // TODO: Need this? Can be null
             task.NKS_TaskType__c = getType();
-            task.CRM_Subtype__c = null; // TODO: Need this?
             task.CRM_Priority__c = 'LAV';
-            task.NKS_Subtheme__c = getSubThemeGjelder();
+            task.NKS_Subtheme__c = getSubTheme();
+            task.CRM_Subtype__c = getSubType();
             task.CRM_NavUnit__c = getNavUnitId();
             task.NKS_Comments__c = formatComment(fedrekvoteData);
-            task.OwnerId = UserInfo.getUserId(); // TODO: Set owner to user? In that case we need to share the navtasks with the experience site user where accountid matches their id
+            task.OwnerId = UserInfo.getUserId();
 
             insert task;
 
             Map<String, Object> flowInputs = new Map<String, Object>{
                 'NAV_Task' => task,
-                'Created_By_Unit_Number' => '4106' // TODO: What unit number to set? (NAV Kontaktsenter Oslo og Vest-Viken currently)
+                'Created_By_Unit_Number' => '' // TODO: What unit number to set? Can be null.
             };
             Flow.Interview flow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
             flow.start();
@@ -137,11 +135,20 @@ public with sharing class NKS_FedrekvotesakenController {
         return comment;
     }
 
-    // TODO: Share all nav tasks with accountid = UserInfo.getUserId(), otherwise this query will return 0 results always
-    // Max 1 NavTask per user
+    // TODO: Set owner to user? In that case we need to share the navtasks with the experience site user where accountid matches their id
+    // TODO: Share all nav tasks based on User.Account = NavTask__c.CRM_Account__c: Sharing Set NKS_Fedrekvote_Sharing
+    // TODO: If OwnerId is changed when syncing oppgaver, we have to use Apex Sharing. Investigate.
+    // Max create 1 NavTask per user
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
-        List<NavTask__c> existingNavTasks = [SELECT Id FROM NavTask__c WHERE CRM_Account__c = :UserInfo.getUserId()];
+        List<NavTask__c> existingNavTasks = [
+            SELECT Id
+            FROM NavTask__c
+            WHERE
+                CRM_Account__c = :UserInfo.getUserId()
+                AND OwnerId = :UserInfo.getUserId()
+                AND CreatedDate > 2024-03-06T00:00:00Z
+        ];
         return existingNavTasks.size() > 0;
     }
 
@@ -153,8 +160,23 @@ public with sharing class NKS_FedrekvotesakenController {
         return [SELECT Id FROM Common_Code__c WHERE Name = 'Vurder konsekvens for ytelse' LIMIT 1]?.Id;
     }
 
-    private static Id getSubThemeGjelder() {
-        return [SELECT Id FROM Common_Code__c WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Behandlingstema' LIMIT 1]
+    private static Id getSubTheme() {
+        return [
+            SELECT CRM_Subtheme__c
+            FROM Common_Code__c
+            WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Gjelder'
+            LIMIT 1
+        ]
+        ?.Id;
+    }
+
+    private static Id getSubType() {
+        return [
+            SELECT CRM_Subtype__c
+            FROM Common_Code__c
+            WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Gjelder'
+            LIMIT 1
+        ]
         ?.Id;
     }
 
