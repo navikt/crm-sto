@@ -14,7 +14,7 @@ public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject>
         Datetime yesterday = Datetime.now().addDays(-1);
         String query = String.isNotBlank(inputQuery)
             ? inputQuery
-            : 'SELECT ParentId, DataCategoryName FROM Knowledge__DataCategorySelection WHERE CreatedDate >= :yesterday AND Parent.IsLatestVersion = TRUE FOR UPDATE';
+            : 'SELECT ParentId, DataCategoryName FROM Knowledge__DataCategorySelection WHERE CreatedDate >= :yesterday AND Parent.IsLatestVersion = TRUE';
         return Database.getQueryLocator(query);
     }
 
