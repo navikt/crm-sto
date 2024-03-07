@@ -18,10 +18,10 @@ export default class NksFedrekvotesakenChild extends LightningElement {
         this.chosenOption = event.detail;
     }
 
-    get showYes() {
-        return this.chosenOption === 'yes';
+    get showSalary() {
+        return this.chosenOption === 'yes' || this.chosenOption === 'partly';
     }
-    get showMby() {
+    get showDateRange() {
         return this.chosenOption === 'partly';
     }
     get showNo() {
