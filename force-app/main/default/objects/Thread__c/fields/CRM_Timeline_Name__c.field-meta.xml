@@ -14,10 +14,15 @@
 								), 
 						&apos; (Lest&apos;
 					) +&apos;) &apos; + IF(CRM_isActive__c == false, IMAGE(&apos;/resource/caseStatusClosed&apos;, &apos;Lukket&apos;, 22, 53), IF(ISBLANK(CRM_Assignee_NAV_Unit__c), IF(ISBLANK(CRM_Case__c), &apos;&apos;, CRM_Case__r.CRM_Status_Image__c), IMAGE(&apos;/resource/caseStatusinProgress&apos;, &apos;Under Arbeid&apos;, 22, 86))),
-			CASE(CRM_Thread_Type__c,
-								&quot;CHAT&quot;, &apos;Chatsamtale&apos;,
-								&quot;Tråd&quot;)
-		)</formula>
+			CASE(CRM_Thread_Type__c, &quot;CHAT&quot;, 
+								&apos;Chat&apos; + IF( 
+												AND(
+																NOT(ISBLANK(CRM_Theme_Name__c)), 
+																NOT(ISBLANK(CRM_Theme_Group_Name__c)) 
+												), 
+												&apos; - &apos; + CRM_Theme_Group_Name__c + &apos;, &apos; + CRM_Theme_Name__c, 
+												&apos; - &apos; + CRM_Theme_Group_Name__c)
+			, &quot;Tråd&quot;))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Timeline Name</label>
     <required>false</required>

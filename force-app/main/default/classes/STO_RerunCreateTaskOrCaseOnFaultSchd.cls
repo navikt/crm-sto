@@ -12,6 +12,7 @@ public with sharing class STO_RerunCreateTaskOrCaseOnFaultSchd implements Databa
         query =
             'SELECT ' +
             'Id, ' +
+            'STO_ExternalName__c, ' +
             'Name, ' +
             'CRM_Account__c, ' +
             'STO_Category__c, ' +
@@ -60,10 +61,7 @@ public with sharing class STO_RerunCreateTaskOrCaseOnFaultSchd implements Databa
         ];
         if (!jobs.isEmpty()) {
             returnValue.add(
-                'ERROR: job for thread ' +
-                String.valueOf(threads[0]) +
-                'already exist. State: ' +
-                jobs[0].State
+                'ERROR: job for thread ' + String.valueOf(threads[0]) + 'already exist. State: ' + jobs[0].State
             );
             return returnValue;
         }
