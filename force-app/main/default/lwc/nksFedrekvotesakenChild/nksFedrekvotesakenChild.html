@@ -17,7 +17,7 @@
             <c-ds-date-picker label="Fra" class="fromField"></c-ds-date-picker>
             <c-ds-date-picker label="Til" class="toField"></c-ds-date-picker>
         </template>
-        <template lwc:elseif={showSalary}>
+        <template lwc:if={showSalary}>
             <c-ds-radio
                 style="text-align: left"
                 title="Fikk du dekket lønn fra arbeidsgiver under permisjonen?"

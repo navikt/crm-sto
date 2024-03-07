@@ -8,11 +8,11 @@ export default class NksFedrekvotesaken extends LightningElement {
     plusCircle = `${PlusCircle}#PlusCircle`;
     errorList;
 
-    hasNoNavTask = false;
+    hasNavTask = false;
 
     connectedCallback() {
         hasExistingNavTasks().then((res) => {
-            this.hasNoNavTask = res;
+            this.hasNavTask = res;
         });
     }
 
@@ -46,9 +46,9 @@ export default class NksFedrekvotesaken extends LightningElement {
             return;
         }
         let fedrekvoteData = {
-            children: allChildrenValid,
+            children: childValues,
             phone: phoneNumber
         };
-        createNavTask({ jsonData: JSON.stringify(fedrekvoteData) });
+        createNavTask({ jsonData: JSON.stringify(fedrekvoteData) }).catch((e) => console.log(e));
     }
 }
