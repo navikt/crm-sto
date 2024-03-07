@@ -1,25 +1,5 @@
 public with sharing class NKS_FedrekvotesakenController {
-    public class Fedrekvote {
-        public List<Child> children;
-        public String phone;
-    }
-
-    public class Child {
-        public String name;
-        public String birthdate;
-        public Leave leave;
-    }
-
-    public class Leave {
-        public String type;
-        public String salary;
-        public Dates dates;
-    }
-
-    public class Dates {
-        public String fromDate;
-        public String toDate;
-    }
+    private static LoggerUtility logger = new LoggerUtility('Fedrekvotesaken');
     /*
         tasktype: Vurder konsekvens for ytelse
         Tema: Foreldre- og svangerskapspenger
@@ -62,7 +42,6 @@ public with sharing class NKS_FedrekvotesakenController {
     };
     */
 
-    // TODO: Remember to add permissions for fields to experience site users in perm sets
     @AuraEnabled
     public static void createNavTask(String jsonData) {
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
@@ -73,7 +52,6 @@ public with sharing class NKS_FedrekvotesakenController {
             task.CRM_NoPersonInformation__c = false;
             task.CRM_Account__c = UserInfo.getUserId();
             task.NKS_Theme__c = getTheme();
-            task.NKS_Assignee__c = null; // TODO: Need this? Can be null
             task.NKS_TaskType__c = getType();
             task.CRM_Priority__c = 'LAV';
             task.NKS_Subtheme__c = getSubTheme();
@@ -81,18 +59,20 @@ public with sharing class NKS_FedrekvotesakenController {
             task.CRM_NavUnit__c = getNavUnitId();
             task.NKS_Comments__c = formatComment(fedrekvoteData);
             task.OwnerId = UserInfo.getUserId();
-
             insert task;
 
-            Map<String, Object> flowInputs = new Map<String, Object>{
-                'NAV_Task' => task,
-                'Created_By_Unit_Number' => '' // TODO: What unit number to set? Can be null.
-            };
+            // Share the NavTask
+            shareNavTaskWithCreator(task.Id);
+
+            Map<String, Object> flowInputs = new Map<String, Object>{ 'NAV_Task' => task };
             Flow.Interview flow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
             flow.start();
         } catch (Exception e) {
             System.debug('createNavTask error: ' + e.getMessage());
+            logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
+        } finally {
+            logger.publish();
         }
     }
 
@@ -135,19 +115,13 @@ public with sharing class NKS_FedrekvotesakenController {
         return comment;
     }
 
-    // TODO: Set owner to user? In that case we need to share the navtasks with the experience site user where accountid matches their id
-    // TODO: Share all nav tasks based on User.Account = NavTask__c.CRM_Account__c: Sharing Set NKS_Fedrekvote_Sharing
-    // TODO: If OwnerId is changed when syncing oppgaver, we have to use Apex Sharing. Investigate.
-    // Max create 1 NavTask per user
+    // Max create 1 NavTask per user. Filter on createddate as extra security.
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
         List<NavTask__c> existingNavTasks = [
             SELECT Id
             FROM NavTask__c
-            WHERE
-                CRM_Account__c = :UserInfo.getUserId()
-                AND OwnerId = :UserInfo.getUserId()
-                AND CreatedDate > 2024-03-06T00:00:00Z
+            WHERE CRM_Account__c = :UserInfo.getUserId() AND CreatedDate > 2024-03-06T00:00:00Z
         ];
         return existingNavTasks.size() > 0;
     }
@@ -188,6 +162,43 @@ public with sharing class NKS_FedrekvotesakenController {
             LIMIT 1
         ]
         ?.Id;
+    }
+
+    // TODO: Remember to add apex sharing to git
+    // Share the NavTask record with the user who created it
+    public static void shareNavTaskWithCreator(Id navTaskId) {
+        try {
+            NavTask__Share shareRecord = new NavTask__Share();
+            shareRecord.ParentId = navTaskId;
+            shareRecord.UserOrGroupId = UserInfo.getUserId();
+            shareRecord.AccessLevel = 'Read';
+            shareRecord.RowCause = Schema.NavTask__Share.RowCause.Fedrekvotesaken__c;
+            insert shareRecord;
+        } catch (Exception e) {
+            logger.error('Failed to insert Apex Sharing: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
+        }
+    }
+
+    public class Fedrekvote {
+        public List<Child> children;
+        public String phone;
+    }
+
+    public class Child {
+        public String name;
+        public String birthdate;
+        public Leave leave;
+    }
+
+    public class Leave {
+        public String type;
+        public String salary;
+        public Dates dates;
+    }
+
+    public class Dates {
+        public String fromDate;
+        public String toDate;
     }
 
     public class FedrekvoteException extends Exception {
