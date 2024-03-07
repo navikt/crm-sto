@@ -167,7 +167,7 @@ public with sharing class NKS_FedrekvotesakenController {
     }
 
     private static Id getAccountId() {
-        return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].Id;
+        return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].AccountId;
     }
 
     // TODO: Remember to add apex sharing to git
