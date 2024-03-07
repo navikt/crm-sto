@@ -13,7 +13,11 @@
             </div></c-ds-radio
         >
 
-        <template lwc:if={showYes}>
+        <template lwc:if={showDateRange}>
+            <c-ds-date-picker label="Fra" class="fromField"></c-ds-date-picker>
+            <c-ds-date-picker label="Til" class="toField"></c-ds-date-picker>
+        </template>
+        <template lwc:elseif={showSalary}>
             <c-ds-radio
                 style="text-align: left"
                 title="Fikk du dekket lønn fra arbeidsgiver under permisjonen?"
@@ -23,10 +27,6 @@
                     <p>Fikk du dekket lønn fra arbeidsgiver under permisjonen?</p>
                 </div></c-ds-radio
             >
-        </template>
-        <template lwc:elseif={showMby}>
-            <c-ds-date-picker label="Fra" class="fromField"></c-ds-date-picker>
-            <c-ds-date-picker label="Til" class="toField"></c-ds-date-picker>
         </template>
         <template lwc:elseif={showNo}>
             <p>Du blir kontaktet med informasjon om dine rettigheter.</p>
