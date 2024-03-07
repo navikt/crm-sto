@@ -23,3 +23,7 @@
 .descholder {
     margin-top: 1em;
 }
+
+.childWrap > *:not(:last-child) {
+    border-bottom: dashed 1px #000;
+}

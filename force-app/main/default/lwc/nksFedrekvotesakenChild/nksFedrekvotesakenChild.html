@@ -1,35 +1,35 @@
 <template>
-    <c-ds-text-field type="text" label="Barnets navn"></c-ds-text-field>
-    <c-ds-date-picker label="Barnets fødselsdato"></c-ds-date-picker>
-    <br />
-
-    <c-ds-radio
-        style="text-align: left"
-        title="Hadde du permisjon med barnet selv om du ikke fikk foreldrepenger fra NAV?"
-        onradiochange={gege}
-        options={leaveOptions}
-        class="radioFocus"
-        ><div slot="legend" class="slds-grid">
-            <p>Hadde du permisjon med barnet selv om du ikke fikk foreldrepenger fra NAV?</p>
-        </div></c-ds-radio
-    >
-
-    <template lwc:if={showYes}>
+    <div style="display: flex; flex-direction: column; gap: 20px">
+        <c-ds-text-field type="text" label="Barnets navn" style="max-width: 350px" class="nameField"></c-ds-text-field>
+        <c-ds-date-picker label="Barnets fødselsdato" class="birthdayField"></c-ds-date-picker>
         <c-ds-radio
             style="text-align: left"
-            title="Fikk du dekket lønn fra arbeidsgiver under permisjonen?"
-            options={yesOptions}
-            class="radioFocus"
+            title="Hadde du permisjon med barnet selv om du ikke fikk foreldrepenger fra NAV?"
+            onradiochange={radioChange}
+            options={leaveOptions}
+            class="leaveRadio"
             ><div slot="legend" class="slds-grid">
-                <p>Fikk du dekket lønn fra arbeidsgiver under permisjonen?</p>
+                <p>Hadde du permisjon med barnet selv om du ikke fikk foreldrepenger fra NAV?</p>
             </div></c-ds-radio
         >
-    </template>
-    <template lwc:elseif={showMby}>
-        <c-ds-date-picker label="Fra"></c-ds-date-picker>
-        <c-ds-date-picker label="Til"></c-ds-date-picker>
-    </template>
-    <template lwc:elseif={showNo}>
-        <p>Du blir kontaktet med informasjon om dine rettigheter.</p>
-    </template>
+
+        <template lwc:if={showYes}>
+            <c-ds-radio
+                style="text-align: left"
+                title="Fikk du dekket lønn fra arbeidsgiver under permisjonen?"
+                options={yesOptions}
+                class="salaryRadio"
+                ><div slot="legend" class="slds-grid">
+                    <p>Fikk du dekket lønn fra arbeidsgiver under permisjonen?</p>
+                </div></c-ds-radio
+            >
+        </template>
+        <template lwc:elseif={showMby}>
+            <c-ds-date-picker label="Fra" class="fromField"></c-ds-date-picker>
+            <c-ds-date-picker label="Til" class="toField"></c-ds-date-picker>
+        </template>
+        <template lwc:elseif={showNo}>
+            <p>Du blir kontaktet med informasjon om dine rettigheter.</p>
+        </template>
+    </div>
 </template>

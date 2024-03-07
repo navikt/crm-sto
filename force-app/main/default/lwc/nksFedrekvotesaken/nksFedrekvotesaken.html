@@ -17,32 +17,40 @@
 
                 <div class="descholder slds-var-m-bottom_xx-large">
                     <p class="navds-body-short navds-body-short--small blokk-xs description">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus vulputate nisl a consequat
-                        cursus. Aliquam cursus consequat odio, quis tincidunt enim pharetra vitae. In egestas arcu sem,
-                        id rutrum risus accumsan ac. Duis ligula dui, viverra vel elit sodales, posuere porta dui.
-                        Nullam tincidunt in ex vitae placerat. Phasellus sit amet fringilla nisi. Morbi dolor quam,
-                        aliquam quis volutpat et, placerat et nunc. Sed urna justo, tristique molestie mauris sit amet,
-                        elementum porta erat. Nam euismod porttitor nulla, imperdiet hendrerit ligula tincidunt sit
-                        amet. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc tempor mauris et metus
-                        pulvinar, sit amet blandit massa egestas.
+                        Hvis du kan være berørt av fedrekvotesaken, ber vi om at du fyller ut dette skjemaet. Da kan vi
+                        vurdere saken din. Du blir kontaktet hvis vi trenger flere opplysninger fra deg.
                     </p>
                 </div>
 
                 <div class="text-start addMargin navds-form-field navds-form-field--medium">
-                    <template for:each={childList} for:item="child">
-                        <c-nks-fedrekvotesaken-child key={child}></c-nks-fedrekvotesaken-child>
-                    </template>
+                    <div class="childWrap">
+                        <template for:each={childList} for:item="child">
+                            <div key={child}>
+                                <c-nks-fedrekvotesaken-child class="children"></c-nks-fedrekvotesaken-child>
+                            </div>
+                        </template>
+                    </div>
                     <c-ds-button
                         class="removeMargin"
                         variant="tertiary"
                         size="medium"
                         text="Legg til et barn til"
-                        icon="nice"
+                        icon={plusCircle}
                         onbuttonclick={addChild}
                     ></c-ds-button>
 
-                    <c-ds-text-field type="phone" label="Ditt telefonnummer"></c-ds-text-field>
-                    <c-ds-button variant="primary" size="medium" text="Send" onbuttonclick={geirArne}></c-ds-button>
+                    <c-ds-text-field
+                        type="tel"
+                        maxlength="8"
+                        label="Ditt telefonnummer"
+                        style="width: 195.2px; margin-bottom: 1rem; margin-top: 2rem"
+                    ></c-ds-text-field>
+                    <c-ds-button
+                        variant="primary"
+                        size="medium"
+                        text="Send"
+                        onbuttonclick={validateInputs}
+                    ></c-ds-button>
                 </div>
             </div>
         </div>
