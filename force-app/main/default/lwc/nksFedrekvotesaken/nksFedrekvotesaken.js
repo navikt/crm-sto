@@ -1,13 +1,19 @@
 import { LightningElement } from 'lwc';
 import PlusCircle from '@salesforce/resourceUrl/PlusCircle';
 import createNavTask from '@salesforce/apex/NKS_FedrekvotesakenController.createNavTask';
+import hasExistingNavTasks from '@salesforce/apex/NKS_FedrekvotesakenController.hasExistingNavTasks';
 
 export default class NksFedrekvotesaken extends LightningElement {
     childCount = 1;
     plusCircle = `${PlusCircle}#PlusCircle`;
+    errorList;
 
-    geirArne() {
-        console.log('Fimsk');
+    hasNoNavTask = false;
+
+    connectedCallback() {
+        hasExistingNavTasks().then((res) => {
+            this.hasNoNavTask = res;
+        });
     }
 
     addChild() {

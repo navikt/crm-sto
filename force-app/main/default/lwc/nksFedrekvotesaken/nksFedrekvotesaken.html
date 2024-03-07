@@ -15,7 +15,7 @@
             >
                 <h2 class="navds-labels blokk-s" style="color: #0067c5">Fedrekvotesaken</h2>
 
-                <div class="descholder slds-var-m-bottom_xx-large">
+                <div class="descholder slds-var-m-bottom_large">
                     <p class="navds-body-short navds-body-short--small blokk-xs description">
                         Hvis du kan være berørt av fedrekvotesaken, ber vi om at du fyller ut dette skjemaet. Da kan vi
                         vurdere saken din. Du blir kontaktet hvis vi trenger flere opplysninger fra deg.
@@ -25,7 +25,7 @@
                 <div class="text-start addMargin navds-form-field navds-form-field--medium">
                     <div class="childWrap">
                         <template for:each={childList} for:item="child">
-                            <div key={child}>
+                            <div key={child} class="spacing">
                                 <c-nks-fedrekvotesaken-child class="children"></c-nks-fedrekvotesaken-child>
                             </div>
                         </template>
