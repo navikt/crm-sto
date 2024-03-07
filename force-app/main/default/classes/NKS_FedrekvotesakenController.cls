@@ -50,7 +50,7 @@ public with sharing class NKS_FedrekvotesakenController {
             NavTask__c task = new NavTask__c();
             task.Name = 'Vurder konsekvens for ytelse';
             task.CRM_NoPersonInformation__c = false;
-            task.CRM_Account__c = UserInfo.getUserId();
+            task.CRM_Account__c = getAccountId();
             task.NKS_Theme__c = getTheme();
             task.NKS_TaskType__c = getType();
             task.CRM_Priority__c = 'LAV';
@@ -72,6 +72,8 @@ public with sharing class NKS_FedrekvotesakenController {
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
         } finally {
+            //stoHelperClass.createThreadWithCase();
+
             logger.publish();
         }
     }
@@ -162,6 +164,10 @@ public with sharing class NKS_FedrekvotesakenController {
             LIMIT 1
         ]
         ?.Id;
+    }
+
+    private static Id getAccountId() {
+        return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].Id;
     }
 
     // TODO: Remember to add apex sharing to git
