@@ -1,5 +1,6 @@
 import { LightningElement } from 'lwc';
 import PlusCircle from '@salesforce/resourceUrl/PlusCircle';
+import createNavTask from '@salesforce/apex/NKS_FedrekvotesakenController.createNavTask';
 
 export default class NksFedrekvotesaken extends LightningElement {
     childCount = 1;
@@ -42,7 +43,6 @@ export default class NksFedrekvotesaken extends LightningElement {
             children: allChildrenValid,
             phone: phoneNumber
         };
-        console.log('sending data');
-        console.log(fedrekvoteData);
+        createNavTask({ jsonData: JSON.stringify(fedrekvoteData) });
     }
 }
