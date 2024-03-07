@@ -1,4 +1,4 @@
-public with sharing class NKS_FedrekvotesakenController {
+public without sharing class NKS_FedrekvotesakenController {
     private static LoggerUtility logger = new LoggerUtility('Fedrekvotesaken');
     /*
         tasktype: Vurder konsekvens for ytelse
@@ -51,18 +51,13 @@ public with sharing class NKS_FedrekvotesakenController {
             task.Name = 'Vurder konsekvens for ytelse';
             task.CRM_NoPersonInformation__c = false;
             task.CRM_Account__c = getAccountId();
-            task.NKS_Theme__c = getTheme();
+            task.NKS_Theme__c = getThemeAndSubTheme().CRM_Parent_Code__c;
             task.NKS_TaskType__c = getType();
             task.CRM_Priority__c = 'LAV';
-            task.NKS_Subtheme__c = getSubTheme();
-            task.CRM_Subtype__c = getSubType();
+            task.NKS_Subtheme__c = getThemeAndSubTheme().CRM_Subtheme__c;
             task.CRM_NavUnit__c = getNavUnitId();
             task.NKS_Comments__c = formatComment(fedrekvoteData);
             task.OwnerId = UserInfo.getUserId();
-            insert task;
-
-            // Share the NavTask
-            shareNavTaskWithCreator(task.Id);
 
             Map<String, Object> flowInputs = new Map<String, Object>{ 'NAV_Task' => task };
             Flow.Interview flow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
@@ -72,8 +67,6 @@ public with sharing class NKS_FedrekvotesakenController {
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
         } finally {
-            //stoHelperClass.createThreadWithCase();
-
             logger.publish();
         }
     }
@@ -81,9 +74,9 @@ public with sharing class NKS_FedrekvotesakenController {
     public static String formatComment(Fedrekvote fedrekvoteData) {
         String comment = '';
         Map<String, String> englishToNorwegianMap = new Map<String, String>{
-            'Yes' => 'Ja',
-            'No' => 'Nei',
-            'Partly' => 'Delvis'
+            'yes' => 'Ja',
+            'no' => 'Nei',
+            'partly' => 'Delvis'
         };
 
         for (Child child : fedrekvoteData.children) {
@@ -95,7 +88,7 @@ public with sharing class NKS_FedrekvotesakenController {
                 child.birthdate +
                 '\n' +
                 'Bruker hatt permisjon med barnet? - ' +
-                englishToNorwegianMap.get(child.leave.type) +
+                englishToNorwegianMap.get(child.leave.type.toLowerCase()) +
                 '\n';
 
             if (child.leave.type == 'Yes') {
@@ -112,18 +105,20 @@ public with sharing class NKS_FedrekvotesakenController {
             } else {
                 comment += 'Gjennomfør vurdering av brukers situasjon' + '\n';
             }
-            comment += 'Brukers telefonnummer: ' + fedrekvoteData.phone + '\n\n';
+            comment += '\n\n';
         }
+        comment += 'Brukers telefonnummer: ' + fedrekvoteData.phone;
         return comment;
     }
 
     // Max create 1 NavTask per user. Filter on createddate as extra security.
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
+        Id accountId = getAccountId();
         List<NavTask__c> existingNavTasks = [
             SELECT Id
             FROM NavTask__c
-            WHERE CRM_Account__c = :UserInfo.getUserId() AND CreatedDate > 2024-03-06T00:00:00Z
+            WHERE CRM_Account__c = :accountId AND CreatedDate > 2024-03-06T00:00:00Z
         ];
         return existingNavTasks.size() > 0;
     }
@@ -136,43 +131,21 @@ public with sharing class NKS_FedrekvotesakenController {
         return [SELECT Id FROM Common_Code__c WHERE Name = 'Vurder konsekvens for ytelse' LIMIT 1]?.Id;
     }
 
-    private static Id getSubTheme() {
+    private static Common_Code__c getThemeAndSubTheme() {
         return [
-            SELECT CRM_Subtheme__c
+            SELECT CRM_Subtheme__c, CRM_Parent_Code__c
             FROM Common_Code__c
             WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Gjelder'
             LIMIT 1
-        ]
-        ?.Id;
-    }
-
-    private static Id getSubType() {
-        return [
-            SELECT CRM_Subtype__c
-            FROM Common_Code__c
-            WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Gjelder'
-            LIMIT 1
-        ]
-        ?.Id;
-    }
-
-    private static Id getTheme() {
-        return [
-            SELECT Id
-            FROM Common_Code__c
-            WHERE Name = 'Foreldre- og svangerskapspenger' AND CRM_Code_Set__c = 'Tema'
-            LIMIT 1
-        ]
-        ?.Id;
+        ];
     }
 
     private static Id getAccountId() {
         return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].AccountId;
     }
 
-    // TODO: Remember to add apex sharing to git
-    // Share the NavTask record with the user who created it
-    public static void shareNavTaskWithCreator(Id navTaskId) {
+    // Not needed as long as class is without sharing
+    /*public static void shareNavTaskWithCreator(Id navTaskId) {
         try {
             NavTask__Share shareRecord = new NavTask__Share();
             shareRecord.ParentId = navTaskId;
@@ -183,7 +156,7 @@ public with sharing class NKS_FedrekvotesakenController {
         } catch (Exception e) {
             logger.error('Failed to insert Apex Sharing: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
         }
-    }
+    }*/
 
     public class Fedrekvote {
         public List<Child> children;
