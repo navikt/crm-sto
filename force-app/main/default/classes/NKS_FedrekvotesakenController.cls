@@ -43,7 +43,7 @@ public without sharing class NKS_FedrekvotesakenController {
     */
 
     @AuraEnabled
-    public static void createNavTask(String jsonData) {
+    public static Id createNavTask(String jsonData) {
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
         User personUser = getAccountAndContactId();
         Id navUnit = getNavUnitId();
@@ -71,6 +71,7 @@ public without sharing class NKS_FedrekvotesakenController {
             Thread__c thread = createSTBThread(task.Id, personUser, navUnit);
             Message__c message = createMessage(thread);
             logger.publish();
+            return thread.Id;
         }
     }
 
