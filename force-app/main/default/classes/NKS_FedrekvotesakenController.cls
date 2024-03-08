@@ -115,14 +115,11 @@ public without sharing class NKS_FedrekvotesakenController {
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
         Id accountId = getAccountId();
-        System.debug('Accountid: ' + accountId);
+        Id navUnit = getNavUnitId();
         List<NavTask__c> existingNavTasks = [
             SELECT Id
             FROM NavTask__c
-            WHERE
-                CRM_Account__c = :accountId
-                AND CreatedDate > 2024-03-06T00:00:00Z
-                AND CRM_NavUnit__c = :getNavUnitId()
+            WHERE CRM_Account__c = :accountId AND CreatedDate > 2024-03-06T00:00:00Z AND CRM_NavUnit__c = :navUnit
         ];
         return existingNavTasks.size() > 0;
     }
