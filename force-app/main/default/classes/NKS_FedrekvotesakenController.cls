@@ -115,10 +115,11 @@ public without sharing class NKS_FedrekvotesakenController {
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
         Id accountId = getAccountId();
+        Id navUnit = getNavUnitId();
         List<NavTask__c> existingNavTasks = [
             SELECT Id
             FROM NavTask__c
-            WHERE CRM_Account__c = :accountId AND CreatedDate > 2024-03-06T00:00:00Z
+            WHERE CRM_Account__c = :accountId AND CreatedDate > 2024-03-06T00:00:00Z AND CRM_NavUnit__c = :navUnit
         ];
         return existingNavTasks.size() > 0;
     }
@@ -143,20 +144,6 @@ public without sharing class NKS_FedrekvotesakenController {
     private static Id getAccountId() {
         return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].AccountId;
     }
-
-    // Not needed as long as class is without sharing
-    /*public static void shareNavTaskWithCreator(Id navTaskId) {
-        try {
-            NavTask__Share shareRecord = new NavTask__Share();
-            shareRecord.ParentId = navTaskId;
-            shareRecord.UserOrGroupId = UserInfo.getUserId();
-            shareRecord.AccessLevel = 'Read';
-            shareRecord.RowCause = Schema.NavTask__Share.RowCause.Fedrekvotesaken__c;
-            insert shareRecord;
-        } catch (Exception e) {
-            logger.error('Failed to insert Apex Sharing: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
-        }
-    }*/
 
     public class Fedrekvote {
         public List<Child> children;
