@@ -8,15 +8,6 @@
                 class="text-center"
                 style="background-color: #fff; display: block; padding: 1rem 1rem 1rem 1rem; border-radius: 4px"
             >
-                <h2 class="navds-label" style="color: #0067c5">Fedrekvotesaken</h2>
-
-                <div class="descholder slds-var-m-bottom_large">
-                    <p class="navds-body-short navds-body-short--small blokk-xs description">
-                        Hvis du kan være berørt av fedrekvotesaken, ber vi om at du fyller ut dette skjemaet. Da kan vi
-                        vurdere saken din. Du blir kontaktet hvis vi trenger flere opplysninger fra deg.
-                    </p>
-                </div>
-
                 <template lwc:if={loading}>
                     <p>laster</p>
                 </template>
@@ -27,11 +18,27 @@
                         </p>
                     </template>
                     <template lwc:else>
+                        <div class="descholder slds-var-m-bottom_large">
+                            <p class="navds-body-short navds-body-short--small blokk-xs description">
+                                Hvis du kan være berørt av fedrekvotesaken, ber vi om at du fyller ut dette skjemaet. Da
+                                kan vi vurdere saken din. Du blir kontaktet hvis vi trenger flere opplysninger fra deg.
+                            </p>
+                        </div>
                         <div class="text-start addMargin navds-form-field navds-form-field--medium">
+                            <c-community-error-summary
+                                error-list={errorList}
+                                onclickedevent={handleErrorClick}
+                                class="errorSummary"
+                                style="text-align: left"
+                            >
+                            </c-community-error-summary>
                             <div class="childWrap">
                                 <template for:each={childList} for:item="child">
                                     <div key={child} class="spacing">
-                                        <c-nks-fedrekvotesaken-child class="children"></c-nks-fedrekvotesaken-child>
+                                        <c-nks-fedrekvotesaken-child
+                                            data-id={child}
+                                            class="children"
+                                        ></c-nks-fedrekvotesaken-child>
                                     </div>
                                 </template>
                             </div>
@@ -47,6 +54,7 @@
                             <c-ds-text-field
                                 type="tel"
                                 maxlength="8"
+                                class="phoneNumber"
                                 label="Ditt telefonnummer"
                                 style="width: 195.2px; margin-bottom: 1rem; margin-top: 2rem"
                             ></c-ds-text-field>
