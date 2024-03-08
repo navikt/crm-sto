@@ -1,6 +1,12 @@
 <template>
     <div style="display: flex; flex-direction: column; gap: 20px">
-        <c-ds-text-field type="text" label="Barnets navn" style="max-width: 350px" class="nameField"></c-ds-text-field>
+        <c-ds-text-field
+            type="text"
+            label="Barnets navn"
+            style="max-width: 350px"
+            class="nameField"
+            required="true"
+        ></c-ds-text-field>
         <c-ds-date-picker label="Barnets fødselsdato" class="birthdayField"></c-ds-date-picker>
         <c-ds-radio
             style="text-align: left"
@@ -27,9 +33,6 @@
                     <p>Fikk du dekket lønn fra arbeidsgiver under permisjonen?</p>
                 </div></c-ds-radio
             >
-        </template>
-        <template lwc:elseif={showNo}>
-            <p>Du blir kontaktet med informasjon om dine rettigheter.</p>
         </template>
     </div>
 </template>
