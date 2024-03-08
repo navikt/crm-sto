@@ -1,5 +1,14 @@
 import { LightningElement, api } from 'lwc';
 
+const elementMapping = {
+    name: '.nameField',
+    birthday: '.birthdayField',
+    leave: '.leaveRadio',
+    salary: '.salaryRadio',
+    fromDate: '.toField',
+    toDate: '.fromField'
+};
+
 export default class NksFedrekvotesakenChild extends LightningElement {
     leaveOptions = [
         { text: 'Ja', value: 'yes', checked: false },
@@ -18,6 +27,12 @@ export default class NksFedrekvotesakenChild extends LightningElement {
         this.chosenOption = event.detail;
     }
 
+    @api
+    focusElement(element) {
+        const elementClass = elementMapping[element];
+        this.template.querySelector(elementClass)?.focus();
+    }
+
     get showSalary() {
         return this.chosenOption === 'yes' || this.chosenOption === 'partly';
     }
@@ -32,29 +47,29 @@ export default class NksFedrekvotesakenChild extends LightningElement {
     getAndValidateChild() {
         const name = this.template.querySelector('.nameField')?.getValue();
         const birthday = this.template.querySelector('.birthdayField')?.getValue();
-        const radio = this.template.querySelector('.leaveRadio')?.getValue();
+        const leave = this.template.querySelector('.leaveRadio')?.getValue();
         const salary = this.template.querySelector('.salaryRadio')?.getValue();
-        const fromDate = this.template.querySelector('.fromField')?.getValue();
         const toDate = this.template.querySelector('.toField')?.getValue();
-        let validRadio =
-            radio != null &&
-            (radio === 'no' ||
-                (radio === 'yes' && salary != null) ||
-                (radio === 'partly' && fromDate != null && toDate != null));
-        const valid = name != null && birthday != null && validRadio;
+        const fromDate = this.template.querySelector('.fromField')?.getValue();
+        let invalid = [];
+        if (name == null || name === '') invalid.push('name');
+        if (birthday == null) invalid.push('birthday');
+        if (leave == null || leave === '') invalid.push('leave');
+        if ((leave === 'yes' || leave === 'partly') && (salary == null || salary === '')) invalid.push('salary');
+        if (leave === 'partly' && fromDate == null) invalid.push('fromDate');
+        if (leave === 'partly' && toDate == null) invalid.push('toDate');
         let childData = {
             name: name,
-            birthdate: birthday,
+            birthdate: birthday?.toLocaleDateString('no-nb', { day: 'numeric', month: 'long', year: 'numeric' }),
             leave: {
-                type: radio,
+                type: leave,
                 salary: salary,
                 dates: {
-                    fromDate: fromDate,
-                    toDate: toDate
+                    fromDate: fromDate?.toLocaleDateString('no-nb', { day: 'numeric', month: 'long', year: 'numeric' }),
+                    toDate: toDate?.toLocaleDateString('no-nb', { day: 'numeric', month: 'long', year: 'numeric' })
                 }
             }
         };
-        const nic = { valid, data: childData };
-        return nic;
+        return { invalid, data: childData };
     }
 }
