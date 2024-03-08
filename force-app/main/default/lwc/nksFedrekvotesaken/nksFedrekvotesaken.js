@@ -1,5 +1,6 @@
 import { LightningElement } from 'lwc';
 import PlusCircle from '@salesforce/resourceUrl/PlusCircle';
+import LoggerUtility from 'c/loggerUtility';
 import createNavTask from '@salesforce/apex/NKS_FedrekvotesakenController.createNavTask';
 import hasExistingNavTasks from '@salesforce/apex/NKS_FedrekvotesakenController.hasExistingNavTasks';
 
@@ -8,12 +9,17 @@ export default class NksFedrekvotesaken extends LightningElement {
     plusCircle = `${PlusCircle}#PlusCircle`;
     errorList;
 
-    hasNoNavTask = false;
+    loading = true;
+    hasNavTask = false;
 
     connectedCallback() {
-        hasExistingNavTasks().then((res) => {
-            this.hasNoNavTask = res;
-        });
+        hasExistingNavTasks()
+            .then((res) => {
+                this.hasNavTask = res;
+            })
+            .finally(() => {
+                this.loading = false;
+            });
     }
 
     addChild() {
@@ -46,9 +52,21 @@ export default class NksFedrekvotesaken extends LightningElement {
             return;
         }
         let fedrekvoteData = {
-            children: allChildrenValid,
+            children: childValues,
             phone: phoneNumber
         };
-        createNavTask({ jsonData: JSON.stringify(fedrekvoteData) });
+        createNavTask({ jsonData: JSON.stringify(fedrekvoteData) })
+            .then(() => {
+                this.hasNavTask = true;
+            })
+            .catch((e) => {
+                LogerUtility.logError(
+                    'NKS',
+                    'Fedrekvote',
+                    e,
+                    'Failed inserting NAV Task for fedrekvote, user input: ' + JSON.stringify(fedrekvoteData),
+                    null
+                );
+            });
     }
 }

@@ -1,9 +1,4 @@
 <template>
-    <!-- Alt fungerer perfekt egentlig, må teste skjermleser og tilgjengeliggjør value til parent komponenten.
-    Muligens teste error?
-    
-    Fikse aria på textField -->
-
     <div style="margin-bottom: 4rem">
         <div>
             <div class="header">
@@ -13,7 +8,7 @@
                 class="text-center"
                 style="background-color: #fff; display: block; padding: 1rem 1rem 1rem 1rem; border-radius: 4px"
             >
-                <h2 class="navds-labels blokk-s" style="color: #0067c5">Fedrekvotesaken</h2>
+                <h2 class="navds-label" style="color: #0067c5">Fedrekvotesaken</h2>
 
                 <div class="descholder slds-var-m-bottom_large">
                     <p class="navds-body-short navds-body-short--small blokk-xs description">
@@ -22,36 +17,48 @@
                     </p>
                 </div>
 
-                <div class="text-start addMargin navds-form-field navds-form-field--medium">
-                    <div class="childWrap">
-                        <template for:each={childList} for:item="child">
-                            <div key={child} class="spacing">
-                                <c-nks-fedrekvotesaken-child class="children"></c-nks-fedrekvotesaken-child>
+                <template lwc:if={loading}>
+                    <p>laster</p>
+                </template>
+                <template lwc:else>
+                    <template lwc:if={hasNavTask}>
+                        <p style="margin-bottom: 3rem">
+                            Takk for informasjonen. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.
+                        </p>
+                    </template>
+                    <template lwc:else>
+                        <div class="text-start addMargin navds-form-field navds-form-field--medium">
+                            <div class="childWrap">
+                                <template for:each={childList} for:item="child">
+                                    <div key={child} class="spacing">
+                                        <c-nks-fedrekvotesaken-child class="children"></c-nks-fedrekvotesaken-child>
+                                    </div>
+                                </template>
                             </div>
-                        </template>
-                    </div>
-                    <c-ds-button
-                        class="removeMargin"
-                        variant="tertiary"
-                        size="medium"
-                        text="Legg til et barn til"
-                        icon={plusCircle}
-                        onbuttonclick={addChild}
-                    ></c-ds-button>
+                            <c-ds-button
+                                class="removeMargin"
+                                variant="tertiary"
+                                size="medium"
+                                text="Legg til et barn til"
+                                icon={plusCircle}
+                                onbuttonclick={addChild}
+                            ></c-ds-button>
 
-                    <c-ds-text-field
-                        type="tel"
-                        maxlength="8"
-                        label="Ditt telefonnummer"
-                        style="width: 195.2px; margin-bottom: 1rem; margin-top: 2rem"
-                    ></c-ds-text-field>
-                    <c-ds-button
-                        variant="primary"
-                        size="medium"
-                        text="Send"
-                        onbuttonclick={validateInputs}
-                    ></c-ds-button>
-                </div>
+                            <c-ds-text-field
+                                type="tel"
+                                maxlength="8"
+                                label="Ditt telefonnummer"
+                                style="width: 195.2px; margin-bottom: 1rem; margin-top: 2rem"
+                            ></c-ds-text-field>
+                            <c-ds-button
+                                variant="primary"
+                                size="medium"
+                                text="Send"
+                                onbuttonclick={validateInputs}
+                            ></c-ds-button>
+                        </div>
+                    </template>
+                </template>
             </div>
         </div>
     </div>

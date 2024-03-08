@@ -10,8 +10,8 @@ export default class NksFedrekvotesakenChild extends LightningElement {
     chosenOption;
 
     yesOptions = [
-        { text: 'Ja', value: true, checked: false },
-        { text: 'Nei', value: false, checked: false }
+        { text: 'Ja', value: 'yes', checked: false },
+        { text: 'Nei', value: 'no', checked: false }
     ];
 
     radioChange(event) {
