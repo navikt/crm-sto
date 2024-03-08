@@ -45,20 +45,21 @@ public without sharing class NKS_FedrekvotesakenController {
     @AuraEnabled
     public static void createNavTask(String jsonData) {
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
+        User personUser = getAccountAndContactId();
+        Id navUnit = getNavUnitId();
+        NavTask__c task = new NavTask__c();
+        task.Name = 'Vurder konsekvens for ytelse';
+        task.CRM_NoPersonInformation__c = false;
+        task.CRM_Account__c = personUser.AccountId;
+        task.NKS_Theme__c = getThemeAndSubTheme().CRM_Parent_Code__c;
+        task.NKS_TaskType__c = getType();
+        task.CRM_Priority__c = 'LAV';
+        task.NKS_Subtheme__c = getThemeAndSubTheme().CRM_Subtheme__c;
+        task.CRM_NavUnit__c = navUnit;
+        task.NKS_Comments__c = formatComment(fedrekvoteData);
+        task.OwnerId = UserInfo.getUserId();
 
         try {
-            NavTask__c task = new NavTask__c();
-            task.Name = 'Vurder konsekvens for ytelse';
-            task.CRM_NoPersonInformation__c = false;
-            task.CRM_Account__c = getAccountId();
-            task.NKS_Theme__c = getThemeAndSubTheme().CRM_Parent_Code__c;
-            task.NKS_TaskType__c = getType();
-            task.CRM_Priority__c = 'LAV';
-            task.NKS_Subtheme__c = getThemeAndSubTheme().CRM_Subtheme__c;
-            task.CRM_NavUnit__c = getNavUnitId();
-            task.NKS_Comments__c = formatComment(fedrekvoteData);
-            task.OwnerId = UserInfo.getUserId();
-
             Map<String, Object> flowInputs = new Map<String, Object>{ 'NAV_Task' => task };
             Flow.Interview flow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
             flow.start();
@@ -67,6 +68,8 @@ public without sharing class NKS_FedrekvotesakenController {
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
         } finally {
+            Thread__c thread = createSTBThread(task.Id, personUser, navUnit);
+            Message__c message = createMessage(thread);
             logger.publish();
         }
     }
@@ -114,7 +117,7 @@ public without sharing class NKS_FedrekvotesakenController {
     // Max create 1 NavTask per user. Filter on createddate as extra security.
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
-        Id accountId = getAccountId();
+        Id accountId = getAccountAndContactId().AccountId;
         Id navUnit = getNavUnitId();
         List<NavTask__c> existingNavTasks = [
             SELECT Id
@@ -141,8 +144,42 @@ public without sharing class NKS_FedrekvotesakenController {
         ];
     }
 
-    private static Id getAccountId() {
-        return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].AccountId;
+    private static User getAccountAndContactId() {
+        return [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+    }
+
+    private static Thread__c createSTBThread(String relatedObjId, User personUser, Id navUnit) {
+        Thread__c thread = new Thread__c();
+        thread.CRM_Related_Object__c = relatedObjId;
+        thread.CRM_Contact__c = personUser.ContactId; // TODO: Need this?
+        thread.CRM_Account__c = personUser.AccountId;
+        thread.CRM_Created_By_NAV_Unit__c = navUnit;
+        //thread.CRM_Theme_Group__c = ''; // TODO: Need this?
+        //thread.CRM_Theme__c = ''; // TODO: Need this?
+        thread.Name = 'Skriv til bruker';
+        thread.CRM_Thread_Type__c = 'STB';
+        thread.CRM_isActive__c = false;
+        thread.CRM_Closed_Date__c = Datetime.now();
+        try {
+            insert thread;
+        } catch (DmlException e) {
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
+            logger.publish();
+        }
+        return thread;
+    }
+
+    private static void createMessage(Thread__c thread) {
+        Message__c newMessage = new Message__c();
+        newMessage.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.';
+        newMessage.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
+        newMessage.CRM_Thread__c = thread.Id;
+        try {
+            insert newMessage;
+        } catch (DmlException e) {
+            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
+            logger.publish();
+        }
     }
 
     public class Fedrekvote {
