@@ -74,7 +74,7 @@ public without sharing class NKS_FedrekvotesakenController {
             flow.start();
 
             thread = createSTBThread(task.Id, personUser, navUnit.INT_UnitNumber__c, commonCode.CRM_Parent_Code__c);
-            createMessage(thread);
+            createMessages(thread, task.NKS_Comments__c);
         } catch (Exception e) {
             System.debug('createNavTask error: ' + e.getMessage());
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
@@ -189,13 +189,22 @@ public without sharing class NKS_FedrekvotesakenController {
         return thread;
     }
 
-    private static void createMessage(Thread__c thread) {
-        Message__c newMessage = new Message__c();
-        newMessage.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.';
-        newMessage.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
-        newMessage.CRM_Thread__c = thread.Id;
+    private static void createMessages(Thread__c thread, String comments) {
+        List<Message__c> messages = new List<Message__c>();
+        Message__c commentsMsg = new Message__c();
+        commentsMsg.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
+        commentsMsg.CRM_Thread__c = thread.Id;
+        commentsMsg.CRM_Message_Text__c = comments;
+
+        Message__c confirmationMsg = new Message__c();
+        confirmationMsg.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.';
+        confirmationMsg.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
+        confirmationMsg.CRM_Thread__c = thread.Id;
+
+        messages.add(commentsMsg);
+        messages.add(confirmationMsg);
         try {
-            insert newMessage;
+            insert messages;
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
