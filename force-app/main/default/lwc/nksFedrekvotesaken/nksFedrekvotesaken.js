@@ -74,7 +74,7 @@ export default class NksFedrekvotesaken extends LightningElement {
                     null
                 );
             })
-            .finally((this.loading = false));
+            .finally(() => (this.loading = false));
     }
 
     showErrors(childErrors, phoneNumber) {
