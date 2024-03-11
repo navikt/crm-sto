@@ -108,13 +108,13 @@ public without sharing class NKS_FedrekvotesakenController {
             if (child.leave.type == 'Yes') {
                 comment +=
                     'Fikk du dekket lønn av arbeidsgiver under permisjonen? - ' +
-                    englishToNorwegianMap.get(child.leave.salary) +
+                    englishToNorwegianMap.get(child.leave.salary.toLowerCase()) +
                     '\n';
             } else if (child.leave.type == 'Partly') {
                 comment += 'Tidsrom: ' + child.leave.dates.fromDate + ' - ' + child.leave.dates.toDate + '\n';
                 comment +=
                     'Fikk du dekket lønn av arbeidsgiver under permisjonen? - ' +
-                    englishToNorwegianMap.get(child.leave.salary) +
+                    englishToNorwegianMap.get(child.leave.salary.toLowerCase()) +
                     '\n';
             } else {
                 comment += 'Gjennomfør vurdering av brukers situasjon' + '\n';
