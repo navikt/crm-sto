@@ -200,7 +200,6 @@ public without sharing class NKS_FedrekvotesakenController {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
-        return newMessage;
     }
 
     public class Fedrekvote {
