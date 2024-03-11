@@ -9,7 +9,32 @@
                 style="background-color: #fff; display: block; padding: 1rem 1rem 1rem 1rem; border-radius: 4px"
             >
                 <template lwc:if={loading}>
-                    <p>laster</p>
+                    <svg
+                        tabindex="0"
+                        aria-labelledby="loader-navds-id-4"
+                        class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
+                        focusable="false"
+                        viewBox="0 0 50 50"
+                        preserveAspectRatio="xMidYMid"
+                    >
+                        <title id="loader-navds-id-4">Laster</title>
+                        <circle
+                            class="navds-loader__background"
+                            xmlns="http://www.w3.org/2000/svg"
+                            cx="25"
+                            cy="25"
+                            r="20"
+                            fill="none"
+                        ></circle>
+                        <circle
+                            class="navds-loader__foreground"
+                            cx="25"
+                            cy="25"
+                            r="20"
+                            fill="none"
+                            stroke-dasharray="50 155"
+                        ></circle>
+                    </svg>
                 </template>
                 <template lwc:else>
                     <template lwc:if={hasNavTask}>
