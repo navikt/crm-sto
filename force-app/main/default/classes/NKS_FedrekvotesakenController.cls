@@ -46,9 +46,9 @@ public without sharing class NKS_FedrekvotesakenController {
     public static Id createNavTask(String jsonData) {
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
         if (fedrekvoteData == null) {
-            logger.error('Fedrekvotedata from LWC was null: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
+            logger.error('Fedrekvotedata from LWC was null.', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
-            return;
+            return '';
         }
 
         User personUser = getAccountAndContactId();
@@ -190,21 +190,19 @@ public without sharing class NKS_FedrekvotesakenController {
     }
 
     private static void createMessages(Thread__c thread, String comments) {
-        List<Message__c> messages = new List<Message__c>();
-        Message__c commentsMsg = new Message__c();
-        commentsMsg.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
-        commentsMsg.CRM_Thread__c = thread.Id;
-        commentsMsg.CRM_Message_Text__c = comments;
+        Message__c message = new Message__c();
+        message.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg. Du har oppgitt følgende informasjon: ';
+        message.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
+        message.CRM_Thread__c = thread.Id;
 
-        Message__c confirmationMsg = new Message__c();
-        confirmationMsg.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.';
-        confirmationMsg.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
-        confirmationMsg.CRM_Thread__c = thread.Id;
+        String modifiedComments = comments.replace('Bruker hatt', 'Har du hatt')
+            .replace('Brukers', 'Ditt')
+            .remove('Gjennomfør vurdering av brukers situasjon');
 
-        messages.add(commentsMsg);
-        messages.add(confirmationMsg);
+        message.CRM_Message_Text__c += '\n' + modifiedComments;
+
         try {
-            insert messages;
+            insert message;
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
