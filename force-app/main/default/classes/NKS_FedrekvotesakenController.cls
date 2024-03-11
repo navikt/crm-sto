@@ -61,6 +61,7 @@ public without sharing class NKS_FedrekvotesakenController {
         task.NKS_Comments__c = formatComment(fedrekvoteData);
         task.OwnerId = UserInfo.getUserId();
 
+        Thread__c thread = new Thread();
         try {
             Map<String, Object> flowInputs = new Map<String, Object>{ 'NAV_Task' => task };
             Flow.Interview flow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
@@ -70,16 +71,10 @@ public without sharing class NKS_FedrekvotesakenController {
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
         } finally {
-            Thread__c thread = createSTBThread(
-                task.Id,
-                personUser,
-                navUnit.INT_UnitNumber__c,
-                commonCode.CRM_Parent_Code__c
-            );
-            Message__c message = createMessage(thread);
+            thread = createSTBThread(task.Id, personUser, navUnit.INT_UnitNumber__c, commonCode.CRM_Parent_Code__c);
             logger.publish();
-            return thread.Id;
         }
+        return thread.Id;
     }
 
     public static String formatComment(Fedrekvote fedrekvoteData) {
@@ -176,11 +171,14 @@ public without sharing class NKS_FedrekvotesakenController {
         thread.CRM_Thread_Type__c = 'STB';
         thread.CRM_isActive__c = false;
         thread.CRM_Closed_Date__c = Datetime.now();
+
         try {
             insert thread;
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
+        } finally {
+            createMessage(thread);
         }
         return thread;
     }
