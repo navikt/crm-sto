@@ -46,16 +46,18 @@ public without sharing class NKS_FedrekvotesakenController {
     public static Id createNavTask(String jsonData) {
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
         User personUser = getAccountAndContactId();
-        Id navUnit = getNavUnitId();
+        Common_Code__c commonCode = getThemeAndSubTheme();
+        NavUnit__c navUnit = getNavUnit();
+
         NavTask__c task = new NavTask__c();
         task.Name = 'Vurder konsekvens for ytelse';
         task.CRM_NoPersonInformation__c = false;
         task.CRM_Account__c = personUser.AccountId;
-        task.NKS_Theme__c = getThemeAndSubTheme().CRM_Parent_Code__c;
+        task.NKS_Theme__c = commonCode.CRM_Parent_Code__c;
         task.NKS_TaskType__c = getType();
         task.CRM_Priority__c = 'LAV';
-        task.NKS_Subtheme__c = getThemeAndSubTheme().CRM_Subtheme__c;
-        task.CRM_NavUnit__c = navUnit;
+        task.NKS_Subtheme__c = commonCode.CRM_Subtheme__c;
+        task.CRM_NavUnit__c = navUnit?.Id;
         task.NKS_Comments__c = formatComment(fedrekvoteData);
         task.OwnerId = UserInfo.getUserId();
 
@@ -68,7 +70,12 @@ public without sharing class NKS_FedrekvotesakenController {
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
         } finally {
-            Thread__c thread = createSTBThread(task.Id, personUser, navUnit);
+            Thread__c thread = createSTBThread(
+                task.Id,
+                personUser,
+                navUnit.INT_UnitNumber__c,
+                commonCode.CRM_Parent_Code__c
+            );
             Message__c message = createMessage(thread);
             logger.publish();
             return thread.Id;
@@ -119,7 +126,7 @@ public without sharing class NKS_FedrekvotesakenController {
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
         Id accountId = getAccountAndContactId().AccountId;
-        Id navUnit = getNavUnitId();
+        Id navUnit = getNavUnit()?.Id;
         List<NavTask__c> existingNavTasks = [
             SELECT Id
             FROM NavTask__c
@@ -128,8 +135,8 @@ public without sharing class NKS_FedrekvotesakenController {
         return existingNavTasks.size() > 0;
     }
 
-    private static Id getNavUnitId() {
-        return [SELECT Id FROM NavUnit__c WHERE INT_UnitNumber__c = '4863' LIMIT 1]?.Id;
+    private static NavUnit__c getNavUnit() {
+        return [SELECT Id, INT_UnitNumber__c FROM NavUnit__c WHERE INT_UnitNumber__c = '4863' LIMIT 1];
     }
 
     private static Id getType() {
@@ -138,7 +145,7 @@ public without sharing class NKS_FedrekvotesakenController {
 
     private static Common_Code__c getThemeAndSubTheme() {
         return [
-            SELECT CRM_Subtheme__c, CRM_Parent_Code__c
+            SELECT Id, CRM_Subtheme__c, CRM_Parent_Code__c
             FROM Common_Code__c
             WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Gjelder'
             LIMIT 1
@@ -149,14 +156,22 @@ public without sharing class NKS_FedrekvotesakenController {
         return [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
     }
 
-    private static Thread__c createSTBThread(String relatedObjId, User personUser, Id navUnit) {
+    private static Thread__c createSTBThread(String relatedObjId, User personUser, String unitNumber, Id theme) {
+        Id themeGroup = [
+            SELECT Id
+            FROM Common_Code__c
+            WHERE CRM_Code_Set__c = 'Temagrupper' AND CRM_Code__c = 'FMLI'
+            LIMIT 1
+        ]
+        ?.Id;
+
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = relatedObjId;
-        thread.CRM_Contact__c = personUser.ContactId; // TODO: Need this?
+        thread.CRM_Contact__c = personUser.ContactId;
         thread.CRM_Account__c = personUser.AccountId;
-        thread.CRM_Created_By_NAV_Unit__c = navUnit;
-        //thread.CRM_Theme_Group__c = ''; // TODO: Need this?
-        //thread.CRM_Theme__c = ''; // TODO: Need this?
+        thread.CRM_Created_By_NAV_Unit__c = unitNumber;
+        thread.CRM_Theme_Group__c = themeGroup; // Familie
+        thread.CRM_Theme__c = theme; // Foreldre- og svangerskapspenger
         thread.Name = 'Skriv til bruker';
         thread.CRM_Thread_Type__c = 'STB';
         thread.CRM_isActive__c = false;
