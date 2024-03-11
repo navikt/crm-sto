@@ -60,7 +60,7 @@ public without sharing class NKS_FedrekvotesakenController {
         task.CRM_NavUnit__c = navUnit?.Id;
         task.NKS_Comments__c = formatComment(fedrekvoteData);
         task.OwnerId = UserInfo.getUserId();
-
+        Thread__c thread;
         try {
             Map<String, Object> flowInputs = new Map<String, Object>{ 'NAV_Task' => task };
             Flow.Interview flow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
@@ -70,7 +70,7 @@ public without sharing class NKS_FedrekvotesakenController {
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
         } finally {
-            Thread__c thread = createSTBThread(
+            thread = createSTBThread(
                 task.Id,
                 personUser,
                 navUnit.INT_UnitNumber__c,
@@ -78,8 +78,8 @@ public without sharing class NKS_FedrekvotesakenController {
             );
             Message__c message = createMessage(thread);
             logger.publish();
-            return thread.Id;
         }
+        return thread.Id;
     }
 
     public static String formatComment(Fedrekvote fedrekvoteData) {
@@ -185,7 +185,7 @@ public without sharing class NKS_FedrekvotesakenController {
         return thread;
     }
 
-    private static void createMessage(Thread__c thread) {
+    private static Message__c createMessage(Thread__c thread) {
         Message__c newMessage = new Message__c();
         newMessage.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.';
         newMessage.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
@@ -196,6 +196,7 @@ public without sharing class NKS_FedrekvotesakenController {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
+        return newMessage;
     }
 
     public class Fedrekvote {
