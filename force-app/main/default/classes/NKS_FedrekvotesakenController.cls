@@ -45,6 +45,12 @@ public without sharing class NKS_FedrekvotesakenController {
     @AuraEnabled
     public static Id createNavTask(String jsonData) {
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
+        if (fedrekvoteData == null) {
+            logger.error('Fedrekvotedata from LWC was null: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
+            logger.publish();
+            return;
+        }
+
         User personUser = getAccountAndContactId();
         Common_Code__c commonCode = getThemeAndSubTheme();
         NavUnit__c navUnit = getNavUnit();
@@ -52,29 +58,31 @@ public without sharing class NKS_FedrekvotesakenController {
         NavTask__c task = new NavTask__c();
         task.Name = 'Vurder konsekvens for ytelse';
         task.CRM_NoPersonInformation__c = false;
-        task.CRM_Account__c = personUser.AccountId;
-        task.NKS_Theme__c = commonCode.CRM_Parent_Code__c;
+        task.CRM_Account__c = personUser?.AccountId;
+        task.NKS_Theme__c = commonCode?.CRM_Parent_Code__c;
         task.NKS_TaskType__c = getType();
         task.CRM_Priority__c = 'LAV';
-        task.NKS_Subtheme__c = commonCode.CRM_Subtheme__c;
+        task.NKS_Subtheme__c = commonCode?.CRM_Subtheme__c;
         task.CRM_NavUnit__c = navUnit?.Id;
         task.NKS_Comments__c = formatComment(fedrekvoteData);
         task.OwnerId = UserInfo.getUserId();
 
-        Thread__c thread = new Thread();
+        Thread__c thread;
         try {
             Map<String, Object> flowInputs = new Map<String, Object>{ 'NAV_Task' => task };
             Flow.Interview flow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
             flow.start();
+
+            thread = createSTBThread(task.Id, personUser, navUnit.INT_UnitNumber__c, commonCode.CRM_Parent_Code__c);
+            createMessage(thread);
         } catch (Exception e) {
             System.debug('createNavTask error: ' + e.getMessage());
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
         } finally {
-            thread = createSTBThread(task.Id, personUser, navUnit.INT_UnitNumber__c, commonCode.CRM_Parent_Code__c);
             logger.publish();
         }
-        return thread.Id;
+        return thread?.Id;
     }
 
     public static String formatComment(Fedrekvote fedrekvoteData) {
@@ -120,7 +128,7 @@ public without sharing class NKS_FedrekvotesakenController {
     // Max create 1 NavTask per user. Filter on createddate as extra security.
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
-        Id accountId = getAccountAndContactId().AccountId;
+        Id accountId = getAccountAndContactId()?.AccountId;
         Id navUnit = getNavUnit()?.Id;
         List<NavTask__c> existingNavTasks = [
             SELECT Id
@@ -162,8 +170,8 @@ public without sharing class NKS_FedrekvotesakenController {
 
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = relatedObjId;
-        thread.CRM_Contact__c = personUser.ContactId;
-        thread.CRM_Account__c = personUser.AccountId;
+        thread.CRM_Contact__c = personUser?.ContactId;
+        thread.CRM_Account__c = personUser?.AccountId;
         thread.CRM_Created_By_NAV_Unit__c = unitNumber;
         thread.CRM_Theme_Group__c = themeGroup; // Familie
         thread.CRM_Theme__c = theme; // Foreldre- og svangerskapspenger
@@ -177,8 +185,6 @@ public without sharing class NKS_FedrekvotesakenController {
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
-        } finally {
-            createMessage(thread);
         }
         return thread;
     }
@@ -194,6 +200,7 @@ public without sharing class NKS_FedrekvotesakenController {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
+        return newMessage;
     }
 
     public class Fedrekvote {
