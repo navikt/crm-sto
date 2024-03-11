@@ -74,7 +74,7 @@ public without sharing class NKS_FedrekvotesakenController {
             flow.start();
 
             thread = createSTBThread(task.Id, personUser, navUnit.INT_UnitNumber__c, commonCode.CRM_Parent_Code__c);
-            createMessages(thread, task.NKS_Comments__c);
+            createMessage(thread, task.NKS_Comments__c);
         } catch (Exception e) {
             System.debug('createNavTask error: ' + e.getMessage());
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
@@ -119,7 +119,7 @@ public without sharing class NKS_FedrekvotesakenController {
             } else {
                 comment += 'Gjennomfør vurdering av brukers situasjon' + '\n';
             }
-            comment += '\n\n';
+            comment += '\n';
         }
         comment += 'Brukers telefonnummer: ' + fedrekvoteData.phone;
         return comment;
@@ -189,17 +189,25 @@ public without sharing class NKS_FedrekvotesakenController {
         return thread;
     }
 
-    private static void createMessages(Thread__c thread, String comments) {
+    private static void createMessage(Thread__c thread, String comments) {
         Message__c message = new Message__c();
-        message.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg. Du har oppgitt følgende informasjon: ';
+        message.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.';
         message.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
         message.CRM_Thread__c = thread.Id;
 
-        String modifiedComments = comments.replace('Bruker hatt', 'Har du hatt')
-            .replace('Brukers', 'Ditt')
-            .remove('Gjennomfør vurdering av brukers situasjon');
+        String modifiedComments = comments.replace('Bruker hatt', 'Har du hatt').replace('Brukers', 'Ditt');
 
-        message.CRM_Message_Text__c += '\n' + modifiedComments;
+        Integer indexToRemove = comments.indexOf('Gjennomfør vurdering av brukers situasjon');
+        if (indexToRemove != -1) {
+            Integer newlineIndex = comments.indexOf('\n', indexToRemove);
+            if (newlineIndex != -1) {
+                modifiedComments =
+                    modifiedComments.substring(0, indexToRemove) + modifiedComments.substring(newlineIndex + 1);
+            } else {
+                modifiedComments = modifiedComments.remove('Gjennomfør vurdering av brukers situasjon');
+            }
+        }
+        message.CRM_Message_Text__c += '\nDu har oppgitt følgende informasjon: \n\n' + modifiedComments;
 
         try {
             insert message;
