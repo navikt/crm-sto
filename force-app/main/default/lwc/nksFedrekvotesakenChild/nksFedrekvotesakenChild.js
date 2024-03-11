@@ -39,9 +39,6 @@ export default class NksFedrekvotesakenChild extends LightningElement {
     get showDateRange() {
         return this.chosenOption === 'partly';
     }
-    get showNo() {
-        return this.chosenOption === 'no';
-    }
 
     @api
     getAndValidateChild() {

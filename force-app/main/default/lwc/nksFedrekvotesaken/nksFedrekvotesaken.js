@@ -54,7 +54,6 @@ export default class NksFedrekvotesaken extends LightningElement {
 
         if (childErrors.length > 0 || phoneNumber === '' || phoneNumber == null) {
             this.showErrors(childErrors, phoneNumber);
-            console.log('Wtf man');
             return;
         }
         let fedrekvoteData = {
@@ -67,7 +66,6 @@ export default class NksFedrekvotesaken extends LightningElement {
                 this.hasNavTask = true;
             })
             .catch((e) => {
-                console.log('Logging');
                 LoggerUtility.logError(
                     'NKS',
                     'Fedrekvote',
@@ -112,6 +110,6 @@ export default class NksFedrekvotesaken extends LightningElement {
             childElement.focusElement(relatedField);
             return;
         }
-        this.template.querySelector(detailSplit[1])?.focus();
+        this.template.querySelector('.' + detailSplit[1])?.focus();
     }
 }
