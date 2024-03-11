@@ -78,25 +78,26 @@ export default class NksFedrekvotesaken extends LightningElement {
     }
 
     showErrors(childErrors, phoneNumber) {
-        this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
+        const errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
         for (const child of childErrors) {
             const childId = child.child.dataset.id;
             for (const invalid of child.invalid) {
-                this.errorList.errors.push({
-                    Id: this.errorList.length + 1,
+                errorList.errors.push({
+                    Id: errorList.length + 1,
                     EventItem: childId + '.' + invalid,
                     Text: textMapping[invalid]
                 });
             }
         }
         if (phoneNumber === '' || phoneNumber == null) {
-            this.errorList.errors.push({
-                Id: this.errorList.length + 1,
+            errorList.errors.push({
+                Id: errorList.length + 1,
                 EventItem: '.phoneNumber',
                 Text: 'Telefonnummer kan ikke være tom'
             });
         }
-        let errorSummary = this.template.querySelector('.errorSummary');
+        this.errorList = errorList;
+        const errorSummary = this.template.querySelector('.errorSummary');
         errorSummary.focusHeader();
     }
 
