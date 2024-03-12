@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Fedrekvotesaken</fullName>
+        <default>false</default>
+        <label>Fedrekvotesaken</label>
+    </customValue>
+    <description>Source type for Nav Tasks created through Experience Site (innboks)</description>
+    <masterLabel>NavTask Experience Site Source</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>
