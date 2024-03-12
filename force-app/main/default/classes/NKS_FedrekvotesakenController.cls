@@ -66,6 +66,7 @@ public without sharing class NKS_FedrekvotesakenController {
         task.CRM_NavUnit__c = navUnit?.Id;
         task.NKS_Comments__c = formatComment(fedrekvoteData);
         task.OwnerId = UserInfo.getUserId();
+        task.Experience_Site_Source__c = 'Fedrekvotesaken';
 
         Thread__c thread;
         try {
@@ -179,6 +180,7 @@ public without sharing class NKS_FedrekvotesakenController {
         thread.CRM_Thread_Type__c = 'STB';
         thread.CRM_isActive__c = false;
         thread.CRM_Closed_Date__c = Datetime.now();
+        thread.Experience_Site_Source__c = 'Fedrekvotesaken';
 
         try {
             insert thread;
@@ -207,7 +209,7 @@ public without sharing class NKS_FedrekvotesakenController {
                 modifiedComments = modifiedComments.remove('Gjennomfør vurdering av brukers situasjon');
             }
         }
-        message.CRM_Message_Text__c += '\nDu har oppgitt følgende informasjon: \n\n' + modifiedComments;
+        message.CRM_Message_Text__c += '\n\nDu har oppgitt følgende informasjon: \n\n' + modifiedComments;
 
         try {
             insert message;
