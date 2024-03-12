@@ -46,9 +46,9 @@ public without sharing class NKS_FedrekvotesakenController {
     public static Id createNavTask(String jsonData) {
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
         if (fedrekvoteData == null) {
-            logger.error('Fedrekvotedata from LWC was null: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
+            logger.error('Fedrekvotedata from LWC was null.', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
-            return;
+            return '';
         }
 
         User personUser = getAccountAndContactId();
@@ -74,7 +74,7 @@ public without sharing class NKS_FedrekvotesakenController {
             flow.start();
 
             thread = createSTBThread(task.Id, personUser, navUnit.INT_UnitNumber__c, commonCode.CRM_Parent_Code__c);
-            createMessages(thread, task.NKS_Comments__c);
+            createMessage(thread, task.NKS_Comments__c);
         } catch (Exception e) {
             System.debug('createNavTask error: ' + e.getMessage());
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
@@ -119,7 +119,7 @@ public without sharing class NKS_FedrekvotesakenController {
             } else {
                 comment += 'Gjennomfør vurdering av brukers situasjon' + '\n';
             }
-            comment += '\n\n';
+            comment += '\n';
         }
         comment += 'Brukers telefonnummer: ' + fedrekvoteData.phone;
         return comment;
@@ -189,22 +189,28 @@ public without sharing class NKS_FedrekvotesakenController {
         return thread;
     }
 
-    private static void createMessages(Thread__c thread, String comments) {
-        List<Message__c> messages = new List<Message__c>();
-        Message__c commentsMsg = new Message__c();
-        commentsMsg.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
-        commentsMsg.CRM_Thread__c = thread.Id;
-        commentsMsg.CRM_Message_Text__c = comments;
+    private static void createMessage(Thread__c thread, String comments) {
+        Message__c message = new Message__c();
+        message.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.';
+        message.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
+        message.CRM_Thread__c = thread.Id;
 
-        Message__c confirmationMsg = new Message__c();
-        confirmationMsg.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.';
-        confirmationMsg.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
-        confirmationMsg.CRM_Thread__c = thread.Id;
+        String modifiedComments = comments.replace('Bruker hatt', 'Har du hatt').replace('Brukers', 'Ditt');
 
-        messages.add(commentsMsg);
-        messages.add(confirmationMsg);
+        Integer indexToRemove = comments.indexOf('Gjennomfør vurdering av brukers situasjon');
+        if (indexToRemove != -1) {
+            Integer newlineIndex = comments.indexOf('\n', indexToRemove);
+            if (newlineIndex != -1) {
+                modifiedComments =
+                    modifiedComments.substring(0, indexToRemove) + modifiedComments.substring(newlineIndex + 1);
+            } else {
+                modifiedComments = modifiedComments.remove('Gjennomfør vurdering av brukers situasjon');
+            }
+        }
+        message.CRM_Message_Text__c += '\nDu har oppgitt følgende informasjon: \n\n' + modifiedComments;
+
         try {
-            insert messages;
+            insert message;
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
