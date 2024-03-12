@@ -5,7 +5,7 @@
         <default>false</default>
         <label>Fedrekvotesaken</label>
     </customValue>
-    <description>Source type for Nav Tasks created through Experience Site (innboks)</description>
-    <masterLabel>NavTask Experience Site Source</masterLabel>
+    <description>Source type for Nav Tasks and Threads created through Experience Site (innboks) by users.</description>
+    <masterLabel>Experience Site Source</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>
