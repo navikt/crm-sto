@@ -23,6 +23,9 @@ private class NKS_FedrekvotesakenControllerTest {
             CRM_Code__c = 'FORTMab0342'
         );
         insert gjelder;
+
+        NavUnit__c navUnit = new NavUnit__c(INT_UnitNumber__c = '4863', Name = 'test');
+        insert navUnit;
     }
 
     @isTest
