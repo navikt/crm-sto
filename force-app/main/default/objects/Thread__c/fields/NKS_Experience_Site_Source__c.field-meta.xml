@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Experience_Site_Source__c</fullName>
-    <description>The source/type of the Thread created by user from Experience Site (innboks). For example: Fedrekvotesaken.</description>
+    <fullName>NKS_Experience_Site_Source__c</fullName>
+    <description>The source/type of the Thread created by user from Experience Site (innboks). For
+        example: Fedrekvotesaken.</description>
     <externalId>false</externalId>
     <label>Experience Site Source</label>
     <required>false</required>

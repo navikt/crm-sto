@@ -66,7 +66,7 @@ public without sharing class NKS_FedrekvotesakenController {
         task.CRM_NavUnit__c = navUnit?.Id;
         task.NKS_Comments__c = formatComment(fedrekvoteData);
         task.OwnerId = UserInfo.getUserId();
-        task.Experience_Site_Source__c = 'Fedrekvotesaken';
+        task.NKS_Experience_Site_Source__c = 'Fedrekvotesaken';
 
         Thread__c thread;
         try {
@@ -180,7 +180,7 @@ public without sharing class NKS_FedrekvotesakenController {
         thread.CRM_Thread_Type__c = 'STB';
         thread.CRM_isActive__c = false;
         thread.CRM_Closed_Date__c = Datetime.now();
-        thread.Experience_Site_Source__c = 'Fedrekvotesaken';
+        thread.NKS_Experience_Site_Source__c = 'Fedrekvotesaken';
 
         try {
             insert thread;

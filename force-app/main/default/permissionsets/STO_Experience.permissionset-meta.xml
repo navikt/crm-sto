@@ -268,7 +268,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>NavTask__c.Experience_Site_Source__c</field>
+        <field>NavTask__c.NKS_Experience_Site_Source__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -343,7 +343,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Thread__c.Experience_Site_Source__c</field>
+        <field>Thread__c.NKS_Experience_Site_Source__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
