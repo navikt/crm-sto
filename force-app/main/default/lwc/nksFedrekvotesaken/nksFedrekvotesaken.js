@@ -17,6 +17,7 @@ export default class NksFedrekvotesaken extends LightningElement {
     childCount = 1;
     plusCircle = `${PlusCircle}#PlusCircle`;
     errorList;
+    bufferSpinnerFocus = false;
 
     loading = true;
     hasNavTask = false;
@@ -29,6 +30,10 @@ export default class NksFedrekvotesaken extends LightningElement {
             .finally(() => {
                 this.loading = false;
             });
+    }
+
+    renderedCallback() {
+        if (this.bufferSpinnerFocus) this.focusSpinner();
     }
 
     addChild() {
@@ -61,6 +66,7 @@ export default class NksFedrekvotesaken extends LightningElement {
             phone: phoneNumber
         };
         this.loading = true;
+
         createNavTask({ jsonData: JSON.stringify(fedrekvoteData) })
             .then(() => {
                 this.hasNavTask = true;
@@ -75,6 +81,7 @@ export default class NksFedrekvotesaken extends LightningElement {
                 );
             })
             .finally(() => (this.loading = false));
+        this.focusSpinner();
     }
 
     showErrors(childErrors, phoneNumber) {
@@ -112,5 +119,13 @@ export default class NksFedrekvotesaken extends LightningElement {
             return;
         }
         this.template.querySelector('.' + detailSplit[1])?.focus();
+    }
+
+    focusSpinner() {
+        const spinner = this.template.querySelector('.spinner');
+        this.bufferSpinnerFocus = spinner == null;
+        if (!this.bufferSpinnerFocus) {
+            spinner.focus();
+        }
     }
 }

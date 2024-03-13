@@ -3,11 +3,12 @@
         <c-ds-text-field
             type="text"
             label="Barnets navn"
+            maxlength="100"
             style="max-width: 350px"
             class="nameField"
             required="true"
         ></c-ds-text-field>
-        <c-ds-date-picker label="Barnets fødselsdato" class="birthdayField"></c-ds-date-picker>
+        <c-ds-date-picker label="Barnets fødselsdato" required="true" class="birthdayField"></c-ds-date-picker>
         <c-ds-radio
             style="text-align: left"
             title="Hadde du permisjon med barnet selv om du ikke fikk foreldrepenger fra NAV?"
@@ -20,8 +21,8 @@
         >
 
         <template lwc:if={showDateRange}>
-            <c-ds-date-picker label="Fra" class="fromField"></c-ds-date-picker>
-            <c-ds-date-picker label="Til" class="toField"></c-ds-date-picker>
+            <c-ds-date-picker label="Fra" class="fromField" required="true"></c-ds-date-picker>
+            <c-ds-date-picker label="Til" class="toField" required="true"> </c-ds-date-picker>
         </template>
         <template lwc:if={showSalary}>
             <c-ds-radio
