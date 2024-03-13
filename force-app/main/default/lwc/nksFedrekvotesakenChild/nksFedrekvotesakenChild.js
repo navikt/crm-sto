@@ -5,8 +5,8 @@ const elementMapping = {
     birthday: '.birthdayField',
     leave: '.leaveRadio',
     salary: '.salaryRadio',
-    fromDate: '.toField',
-    toDate: '.fromField'
+    fromDate: '.fromField',
+    toDate: '.toField'
 };
 
 export default class NksFedrekvotesakenChild extends LightningElement {
@@ -52,9 +52,9 @@ export default class NksFedrekvotesakenChild extends LightningElement {
         if (name == null || name === '') invalid.push('name');
         if (birthday == null) invalid.push('birthday');
         if (leave == null || leave === '') invalid.push('leave');
-        if ((leave === 'yes' || leave === 'partly') && (salary == null || salary === '')) invalid.push('salary');
         if (leave === 'partly' && fromDate == null) invalid.push('fromDate');
         if (leave === 'partly' && toDate == null) invalid.push('toDate');
+        if ((leave === 'yes' || leave === 'partly') && (salary == null || salary === '')) invalid.push('salary');
         let childData = {
             name: name,
             birthdate: birthday?.toLocaleDateString('no-nb', { day: 'numeric', month: 'long', year: 'numeric' }),
