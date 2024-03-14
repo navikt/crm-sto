@@ -56,7 +56,7 @@ public without sharing class NKS_FedrekvotesakenController {
         NavUnit__c navUnit = getNavUnit();
 
         NavTask__c task = new NavTask__c();
-        task.Name = 'Vurder konsekvens for ytelse';
+        task.Name = 'Vurder henvendelse';
         task.CRM_NoPersonInformation__c = false;
         task.CRM_Account__c = personUser?.AccountId;
         task.NKS_Theme__c = commonCode?.CRM_Parent_Code__c;
@@ -144,7 +144,7 @@ public without sharing class NKS_FedrekvotesakenController {
     }
 
     private static Id getType() {
-        return [SELECT Id FROM Common_Code__c WHERE Name = 'Vurder konsekvens for ytelse' LIMIT 1]?.Id;
+        return [SELECT Id FROM Common_Code__c WHERE Name = 'Vurder henvendelse' LIMIT 1]?.Id;
     }
 
     private static Common_Code__c getThemeAndSubTheme() {
