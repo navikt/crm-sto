@@ -56,7 +56,7 @@ public without sharing class NKS_FedrekvotesakenController {
         NavUnit__c navUnit = getNavUnit();
 
         NavTask__c task = new NavTask__c();
-        task.Name = 'Vurder konsekvens for ytelse';
+        task.Name = 'Vurder henvendelse';
         task.CRM_NoPersonInformation__c = false;
         task.CRM_Account__c = personUser?.AccountId;
         task.NKS_Theme__c = commonCode?.CRM_Parent_Code__c;
@@ -134,7 +134,7 @@ public without sharing class NKS_FedrekvotesakenController {
         List<NavTask__c> existingNavTasks = [
             SELECT Id
             FROM NavTask__c
-            WHERE CRM_Account__c = :accountId AND CreatedDate > 2024-03-06T00:00:00Z AND CRM_NavUnit__c = :navUnit
+            WHERE CRM_Account__c = :accountId AND CreatedDate > 2024-03-15T00:00:00Z AND CRM_NavUnit__c = :navUnit AND NKS_Experience_Site_Source__c = 'Fedrekvotesaken';
         ];
         return existingNavTasks.size() > 0;
     }
@@ -144,7 +144,7 @@ public without sharing class NKS_FedrekvotesakenController {
     }
 
     private static Id getType() {
-        return [SELECT Id FROM Common_Code__c WHERE Name = 'Vurder konsekvens for ytelse' LIMIT 1]?.Id;
+        return [SELECT Id FROM Common_Code__c WHERE Name = 'Vurder henvendelse' LIMIT 1]?.Id;
     }
 
     private static Common_Code__c getThemeAndSubTheme() {
