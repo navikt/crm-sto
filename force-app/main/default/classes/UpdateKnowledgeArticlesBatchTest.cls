@@ -2,9 +2,8 @@
 public class UpdateKnowledgeArticlesBatchTest {
     @isTest
     static void testBatchExecution() {
-        // Not possible to create Data Category Group programmatically? It is required to insert Knowledge__DataCategorySelection.
+        // Not possible to create Data Category Group programmatically. It is required to insert Knowledge__DataCategorySelection. Tests fails on scratch test/validate.
         // Presume DataCategoryGroupName = 'Tema' and DataCategoryName = 'Dagpenger' and 'Sykepenger' exists in org
-        // TODO: Fix test. Seems like it is not possible to add Data Category Groups programmatically, so this fails on scratch test/validate.
         /*List<Knowledge__kav> knowledgeArticles = new List<Knowledge__kav>();
         for (Integer i = 0; i < 3; i++) {
             Knowledge__kav article = new Knowledge__kav(
