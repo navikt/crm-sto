@@ -134,7 +134,7 @@ public without sharing class NKS_FedrekvotesakenController {
         List<NavTask__c> existingNavTasks = [
             SELECT Id
             FROM NavTask__c
-            WHERE CRM_Account__c = :accountId AND CreatedDate > 2024-03-06T00:00:00Z AND CRM_NavUnit__c = :navUnit
+            WHERE CRM_Account__c = :accountId AND CreatedDate > 2024-03-15T00:00:00Z AND CRM_NavUnit__c = :navUnit AND NKS_Experience_Site_Source__c = 'Fedrekvotesaken';
         ];
         return existingNavTasks.size() > 0;
     }
