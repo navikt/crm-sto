@@ -17,11 +17,11 @@
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.99.0.LATEST"
+                    "versionNumber": "0.100.0.LATEST"
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.25.0.LATEST"
+                    "versionNumber": "0.26.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
