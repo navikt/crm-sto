@@ -8,7 +8,7 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
-            <property name="cardTitle" type="String" label="Header title" default=""></property>
+            <property name="cardTitle" type="String" label="Header title" default="Skriv til oss"></property>
             <property name="showClose" type="Boolean" label="Show thread close button"
                 default="false"></property>
             <property name="checkMedskriv" type="Boolean" label="Check for medskriv" default="false"></property>

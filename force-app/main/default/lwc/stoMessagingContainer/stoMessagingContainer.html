@@ -54,15 +54,16 @@
                 </template>
             </lightning-layout-item>
         </lightning-layout>
-        <c-crm-sto-messaging
+        <c-crm-sto-messaging-v-2
             record-id={recordId}
+            case-id={recordId}
             object-api-name={objectApiName}
             single-thread={singleThread}
             card-title={cardTitle}
             show-close={showClose}
             check-medskriv={checkMedskriv}
             onsto_toolbaraction={handleToolbarAction}
-        ></c-crm-sto-messaging>
+        ></c-crm-sto-messaging-v-2>
 
         <template if:true={showPanel}>
             <div onkeyup={handleModalKey}>
@@ -101,6 +102,5 @@
                 <div tabindex="0" class="lastfocusable"></div>
             </div>
         </template>
-        <c-sto-button-container record-id={recordId}></c-sto-button-container>
     </div>
 </template>
