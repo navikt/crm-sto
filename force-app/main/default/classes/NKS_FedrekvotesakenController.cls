@@ -156,7 +156,7 @@ public without sharing class NKS_FedrekvotesakenController {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
         } finally {
             // Set closed/isactive after insert to ensure correct order of operations.
-            // We do not want to close/set to inactive before other functionality has ran.
+            // We do not want to close/set to inactive before other functionality has finished running.
             thread.CRM_isActive__c = false;
             thread.CRM_Closed_Date__c = Datetime.now();
             update thread;
