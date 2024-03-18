@@ -416,4 +416,60 @@
         <value>Here you can send us information relevant to your case. You will receive a
             confirmation that we have received your message.</value>
     </labels>
+    <labels>
+        <fullName>STO_Complete</fullName>
+        <categories>STO, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Complete</shortDescription>
+        <value>Complete</value>
+    </labels>
+    <labels>
+        <fullName>STO_Create_NAV_Task</fullName>
+        <categories>STO, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Create NAV Task</shortDescription>
+        <value>Create NAV Task</value>
+    </labels>
+    <labels>
+        <fullName>STO_End_Dialogue</fullName>
+        <categories>STO, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO End Dialogue</shortDescription>
+        <value>End dialogue</value>
+    </labels>
+    <labels>
+        <fullName>STO_Journal</fullName>
+        <categories>STO, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Journal</shortDescription>
+        <value>Journal</value>
+    </labels>
+    <labels>
+        <fullName>STO_Put_Back</fullName>
+        <categories>STO, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Put Back</shortDescription>
+        <value>Put back</value>
+    </labels>
+    <labels>
+        <fullName>STO_Reserve_For_Me</fullName>
+        <categories>STO, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Reserve For Me</shortDescription>
+        <value>Reserve for me</value>
+    </labels>
+    <labels>
+        <fullName>Set_To_Redaction</fullName>
+        <categories>Redaction, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Set To Redaction</shortDescription>
+        <value>Set to redaction</value>
+    </labels>
 </CustomLabels>

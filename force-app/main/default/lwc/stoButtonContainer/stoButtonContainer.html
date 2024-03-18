@@ -1,0 +1,82 @@
+<template>
+    <lightning-layout multiple-rows="true" size="12">
+        <lightning-layout-item class="slds-size_12-of-12 slds-var-p-top_medium">
+            <lightning-layout style="float: right">
+                <lightning-layout-item class="slds-var-p-right_small">
+                    <lightning-button label={journal} variant="brand-outline" onclick={toggleFlow}></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-var-p-right_small">
+                    <lightning-button
+                        label={createNavTask}
+                        variant="brand-outline"
+                        onclick={toggleFlow}
+                    ></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-var-p-right_small">
+                    <lightning-button label={redact} variant="brand-outline" onclick={toggleFlow}></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item>
+                    <lightning-button label={complete} variant="brand" onclick={toggleFlow}></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-size_12-of-12">
+            <template if:true={showComplete}>
+                <template if:true={showFlow}>
+                    <div class="slds-var-m-top_xx-small">
+                        <lightning-card>
+                            <lightning-flow
+                                flow-api-name="Case_STO_Complete"
+                                flow-input-variables={inputVariables}
+                                onstatuschange={handleStatusChange}
+                            >
+                            </lightning-flow>
+                        </lightning-card>
+                    </div>
+                </template>
+            </template>
+            <template if:true={showRedact}>
+                <template if:true={showFlow}>
+                    <div class="slds-var-m-top_xx-small">
+                        <lightning-card>
+                            <lightning-flow
+                                flow-api-name="Case_STO_Sladd"
+                                flow-input-variables={inputVariables}
+                                onstatuschange={handleStatusChange}
+                            >
+                            </lightning-flow>
+                        </lightning-card>
+                    </div>
+                </template>
+            </template>
+            <template if:true={showCreateNavTask}>
+                <template if:true={showFlow}>
+                    <div class="slds-var-m-top_xx-small">
+                        <lightning-card>
+                            <lightning-flow
+                                flow-api-name="NKS_Case_Send_NAV_Task"
+                                flow-input-variables={inputVariables}
+                                onstatuschange={handleStatusChange}
+                            >
+                            </lightning-flow>
+                        </lightning-card>
+                    </div>
+                </template>
+            </template>
+            <template if:true={showJournal}>
+                <template if:true={showFlow}>
+                    <div class="slds-var-m-top_xx-small">
+                        <lightning-card>
+                            <lightning-flow
+                                flow-api-name="CRM_Case_Journal_STO_Thread"
+                                flow-input-variables={inputVariables}
+                                onstatuschange={handleStatusChange}
+                            >
+                            </lightning-flow>
+                        </lightning-card>
+                    </div>
+                </template>
+            </template>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

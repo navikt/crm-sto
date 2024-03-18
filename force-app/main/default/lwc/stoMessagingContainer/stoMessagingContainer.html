@@ -1,0 +1,106 @@
+<template>
+    <div class="slds-card slds-theme_default slds-var-p-around_medium">
+        <lightning-layout class="slds-var-p-bottom_medium slds-border_bottom border" multiple-rows="true" size="12">
+            <lightning-layout-item class="slds-size_12-of-12">
+                <lightning-layout>
+                    <lightning-layout-item class="slds-size_6-of-12 slds-var-p-right_small">
+                        <lightning-button
+                            class="button"
+                            label={reserve}
+                            variant="brand"
+                            onclick={toggleFlow}
+                        ></lightning-button>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-size_6-of-12">
+                        <lightning-button
+                            class="button"
+                            label={putBack}
+                            variant="brand"
+                            onclick={toggleFlow}
+                        ></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-size_12-of-12">
+                <template if:true={showReserve}>
+                    <template if:true={showFlow}>
+                        <div class="slds-var-m-top_xx-small">
+                            <lightning-card>
+                                <lightning-flow
+                                    flow-api-name="STO_Case_Set_Reserved"
+                                    flow-input-variables={inputVariables}
+                                    onstatuschange={handleStatusChange}
+                                >
+                                </lightning-flow>
+                            </lightning-card>
+                        </div>
+                    </template>
+                </template>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-size_12-of-12">
+                <template if:true={showPutBack}>
+                    <template if:true={showFlow}>
+                        <div class="slds-var-m-top_xx-small">
+                            <lightning-card>
+                                <lightning-flow
+                                    flow-api-name="Case_STO_Put_Back"
+                                    flow-input-variables={inputVariables}
+                                    onstatuschange={handleStatusChange}
+                                >
+                                </lightning-flow>
+                            </lightning-card>
+                        </div>
+                    </template>
+                </template>
+            </lightning-layout-item>
+        </lightning-layout>
+        <c-crm-sto-messaging
+            record-id={recordId}
+            object-api-name={objectApiName}
+            single-thread={singleThread}
+            card-title={cardTitle}
+            show-close={showClose}
+            check-medskriv={checkMedskriv}
+            onsto_toolbaraction={handleToolbarAction}
+        ></c-crm-sto-messaging>
+
+        <template if:true={showPanel}>
+            <div onkeyup={handleModalKey}>
+                <section
+                    role="dialog"
+                    tabindex="-1"
+                    aria-labelledby="modal-heading-01"
+                    aria-modal="true"
+                    aria-describedby="modal-content-id-1"
+                    class={panelClass}
+                >
+                    <div class="slds-modal__container">
+                        <header class="slds-is-relative">
+                            <div tabindex="0" class="firstfocusable" id="firstfocusable"></div>
+                            <button
+                                class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close"
+                                id="focusElement"
+                                onclick={closeModal}
+                            >
+                                <lightning-icon icon-name="utility:close" variant="inverse" size="small">
+                                </lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                        </header>
+                        <div
+                            class="slds-modal__content slds-is-relative slds-var-p-around_medium"
+                            style="border-radius: 0.3em; overflow: visible"
+                            id="modal-content-id-1"
+                        >
+                            <lightning-flow onstatuschange={handleFlowStatusChange}></lightning-flow>
+                        </div>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+                <div tabindex="0" class="lastfocusable"></div>
+            </div>
+        </template>
+        <c-sto-button-container record-id={recordId}></c-sto-button-container>
+    </div>
+</template>
