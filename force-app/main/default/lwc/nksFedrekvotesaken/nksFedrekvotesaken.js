@@ -28,7 +28,7 @@ export default class NksFedrekvotesaken extends LightningElement {
                 this.hasNavTask = res;
             })
             .finally(() => {
-                this.loading = false;
+                this.loading = true;
             });
     }
 
@@ -110,7 +110,6 @@ export default class NksFedrekvotesaken extends LightningElement {
 
     handleErrorClick(e) {
         const detailSplit = e.detail.split('.');
-        console.log(detailSplit);
         if (detailSplit[0] !== '') {
             const relevantChild = detailSplit[0];
             const relatedField = detailSplit[1];

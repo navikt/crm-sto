@@ -1,46 +1,5 @@
 public without sharing class NKS_FedrekvotesakenController {
     private static LoggerUtility logger = new LoggerUtility('Fedrekvotesaken');
-    /*
-        tasktype: Vurder konsekvens for ytelse
-        Tema: Foreldre- og svangerskapspenger
-        Gjelder: Fedrekvote
-        Prioritet: Lav
-        Enhet: 4863 NAV Familie og pensjonsytelser midlertidig enhet
-
-        taskteksten skal vises som følger:
-
-        Barnets navn: Navn Navnesen
-        Fødselsdato: 01-01-2000
-        Bruker hatt permisjon med barnet?
-        Ja - Fikk du dekket lønn av arbeidsgiver under permisjonen? - Ja/Nei
-
-        Delvis - Tidsrom: Fra dato - til dato
-        Fikk du dekket lønn av arbeidsgiver under permisjonen? - Ja/Nei
-
-        Nei - Gjennomfør vurdering av brukers situasjon
-
-        Brukers telefonnummer: XXXXXXXX
-    */
-
-    /*
-    let fedrekvoteData = {
-        children: [
-            {
-                name: 'Johnny Bravo',
-                birthdate: 'fint formatert dato hehe',
-                leave: {
-                    type: 'Yes/Partly/No',
-                    salary: 'Yes/No',
-                    dates: {
-                        fromDate: 'fint formatert dato hehe',
-                        toDate: 'fint formatert dato hehe'
-                    }
-                }
-            },
-        ],
-        phone: '12345678'
-    };
-    */
 
     @AuraEnabled
     public static Id createNavTask(String jsonData) {
@@ -134,7 +93,10 @@ public without sharing class NKS_FedrekvotesakenController {
         List<NavTask__c> existingNavTasks = [
             SELECT Id
             FROM NavTask__c
-            WHERE CRM_Account__c = :accountId AND CreatedDate > 2024-03-15T00:00:00Z AND CRM_NavUnit__c = :navUnit AND NKS_Experience_Site_Source__c = 'Fedrekvotesaken'
+            WHERE
+                CRM_Account__c = :accountId
+                AND CRM_NavUnit__c = :navUnit
+                AND NKS_Experience_Site_Source__c = 'Fedrekvotesaken'
         ];
         return existingNavTasks.size() > 0;
     }
@@ -186,7 +148,6 @@ public without sharing class NKS_FedrekvotesakenController {
             insert thread;
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
-            logger.publish();
         }
         return thread;
     }
@@ -215,7 +176,6 @@ public without sharing class NKS_FedrekvotesakenController {
             insert message;
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
-            logger.publish();
         }
     }
 
