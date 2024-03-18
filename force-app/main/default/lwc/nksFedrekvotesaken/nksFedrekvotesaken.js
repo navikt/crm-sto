@@ -28,7 +28,7 @@ export default class NksFedrekvotesaken extends LightningElement {
                 this.hasNavTask = res;
             })
             .finally(() => {
-                this.loading = true;
+                this.loading = false;
             });
     }
 
