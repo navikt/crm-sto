@@ -33,7 +33,14 @@ public without sharing class NKS_FedrekvotesakenController {
             Flow.Interview flow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
             flow.start();
 
-            thread = createSTBThread(task.Id, personUser, navUnit.INT_UnitNumber__c, commonCode.CRM_Parent_Code__c);
+            NavTask__c outputTask = (NavTask__c) flow.getVariableValue('NAV_Task');
+
+            thread = createSTBThread(
+                outputTask.Id,
+                personUser,
+                navUnit.INT_UnitNumber__c,
+                commonCode.CRM_Parent_Code__c
+            );
             createMessage(thread, task.NKS_Comments__c);
         } catch (Exception e) {
             System.debug('createNavTask error: ' + e.getMessage());
@@ -118,6 +125,7 @@ public without sharing class NKS_FedrekvotesakenController {
         ];
     }
 
+    // TODO: Consider making this and other methods static to reduce load time and only call once.
     private static User getAccountAndContactId() {
         return [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
     }
@@ -140,14 +148,18 @@ public without sharing class NKS_FedrekvotesakenController {
         thread.CRM_Theme__c = theme; // Foreldre- og svangerskapspenger
         thread.Name = 'Skriv til bruker';
         thread.CRM_Thread_Type__c = 'STB';
-        thread.CRM_isActive__c = false;
-        thread.CRM_Closed_Date__c = Datetime.now();
         thread.NKS_Experience_Site_Source__c = 'Fedrekvotesaken';
 
         try {
             insert thread;
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
+        } finally {
+            // Set closed/isactive after insert to ensure correct order of operations.
+            // We do not want to close/set to inactive before other functionality has ran.
+            thread.CRM_isActive__c = false;
+            thread.CRM_Closed_Date__c = Datetime.now();
+            update thread;
         }
         return thread;
     }
