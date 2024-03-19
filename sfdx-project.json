@@ -20,10 +20,6 @@
                     "versionNumber": "0.18.0.LATEST"
                 },
                 {
-                    "package": "crm-henvendelse-base",
-                    "versionNumber": "0.18.0.LATEST"
-                },
-                {
                     "package": "crm-platform-integration",
                     "versionNumber": "0.100.0.LATEST"
                 },
@@ -54,10 +50,6 @@
                 {
                     "package": "crm-henvendelse",
                     "versionNumber": "0.119.0.3"
-                },
-                {
-                    "package": "crm-henvendelse",
-                    "versionNumber": "0.120.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
