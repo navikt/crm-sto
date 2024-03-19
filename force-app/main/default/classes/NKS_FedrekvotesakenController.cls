@@ -83,8 +83,6 @@ public without sharing class NKS_FedrekvotesakenController {
                     'Fikk du dekket lønn av arbeidsgiver under permisjonen? - ' +
                     englishToNorwegianMap.get(child.leave.salary.toLowerCase()) +
                     '\n';
-            } else {
-                comment += 'Gjennomfør vurdering av brukers situasjon' + '\n';
             }
             comment += '\n';
         }
@@ -171,17 +169,6 @@ public without sharing class NKS_FedrekvotesakenController {
         message.CRM_Thread__c = thread.Id;
 
         String modifiedComments = comments.replace('Bruker hatt', 'Har du hatt').replace('Brukers', 'Ditt');
-
-        Integer indexToRemove = comments.indexOf('Gjennomfør vurdering av brukers situasjon');
-        if (indexToRemove != -1) {
-            Integer newlineIndex = comments.indexOf('\n', indexToRemove);
-            if (newlineIndex != -1) {
-                modifiedComments =
-                    modifiedComments.substring(0, indexToRemove) + modifiedComments.substring(newlineIndex + 1);
-            } else {
-                modifiedComments = modifiedComments.remove('Gjennomfør vurdering av brukers situasjon');
-            }
-        }
         message.CRM_Message_Text__c += '\n\nDu har oppgitt følgende informasjon: \n\n' + modifiedComments;
 
         try {
