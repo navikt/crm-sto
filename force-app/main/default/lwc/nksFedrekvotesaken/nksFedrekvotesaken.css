@@ -1,0 +1,47 @@
+.header {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-start {
+    text-align: start;
+}
+
+.addMargin {
+    margin-left: 20px;
+}
+
+.removeMargin {
+    margin-left: -15px;
+}
+
+.descholder {
+    margin-top: 1em;
+}
+
+.childWrap > *:not(:last-child) {
+    border-bottom: solid 1px #000000;
+}
+
+.spacing {
+    padding-bottom: 20px;
+    margin-top: 20px;
+}
+
+.sizeAround {
+    background-color: #fff;
+    display: block;
+    padding: 1rem 1rem 1rem 1rem;
+    border-radius: 4px;
+}
+
+@media screen and (min-height: 480px) {
+    .sizeAround {
+        padding-left: 0px;
+    }
+}
