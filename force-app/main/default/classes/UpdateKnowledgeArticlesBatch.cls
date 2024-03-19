@@ -49,7 +49,6 @@ public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject>
             // Get new article categories found in scope
             Map<Id, List<String>> newArticleCategoriesMap = new Map<Id, List<String>>();
             if (!Test.isRunningTest()) {
-                // Hacky stuff to get more test coverage
                 for (Knowledge__DataCategorySelection selection : scope) {
                     if (!newArticleCategoriesMap.containsKey(selection.ParentId)) {
                         newArticleCategoriesMap.put(selection.ParentId, new List<String>());
