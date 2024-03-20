@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
-import PUT_BACK_LABEL from '@salesforce/label/c.STO_Put_Back';
-import RESERVE_LABEL from '@salesforce/label/c.STO_Reserve_For_Me';
+import PUT_BACK_LABEL from '@salesforce/label/c.NKS_Put_Back';
+import RESERVE_LABEL from '@salesforce/label/c.NKS_Reserve_For_Me';
 
 import { publishToAmplitude } from 'c/amplitude';
 

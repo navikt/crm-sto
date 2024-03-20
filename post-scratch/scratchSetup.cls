@@ -30,7 +30,8 @@ PermissionSet permSet = [Select id, Name from permissionset where name='STO_expe
 PermissionSetAssignment psa = new PermissionSetAssignment (PermissionSetId = permSet.Id, AssigneeId = user1.Id);
 upsert psa;
 
-// STO Service resource creation.
+// TO Service resource creation.
+/*
 ServiceResource sr = new ServiceResource(RelatedRecordId = usr.Id, ResourceType = 'A', Name = 'User User', IsActive = true);
 insert sr;
 List<ServiceResourceSkill> srs = new List<ServiceResourceSkill>();
@@ -40,3 +41,4 @@ for(Skill sk : skills) {
     srs.add(new ServiceResourceSkill(EffectiveStartDate = yesterday , ServiceResourceId = sr.Id, SkillId = sk.Id));
 }
 insert srs;
+*/
