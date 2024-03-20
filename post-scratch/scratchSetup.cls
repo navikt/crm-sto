@@ -29,16 +29,3 @@ Database.insert(user1);
 PermissionSet permSet = [Select id, Name from permissionset where name='STO_experience'];
 PermissionSetAssignment psa = new PermissionSetAssignment (PermissionSetId = permSet.Id, AssigneeId = user1.Id);
 upsert psa;
-
-// TO Service resource creation.
-/*
-ServiceResource sr = new ServiceResource(RelatedRecordId = usr.Id, ResourceType = 'A', Name = 'User User', IsActive = true);
-insert sr;
-List<ServiceResourceSkill> srs = new List<ServiceResourceSkill>();
-List<Skill> skills = [Select Id from Skill where DeveloperName in :nksGetStoUtilityController.allRelevantSkills];
-Date yesterday = Date.today().addDays(-1);
-for(Skill sk : skills) {
-    srs.add(new ServiceResourceSkill(EffectiveStartDate = yesterday , ServiceResourceId = sr.Id, SkillId = sk.Id));
-}
-insert srs;
-*/

@@ -15,7 +15,7 @@
         "postinstall": "node bin/check-version.js",
         "activateMock": "sfdx force:apex:execute -f post-scratch/activateMock.cls",
         "deactivateMock": "sfdx force:apex:execute -f post-scratch/deactivateMock.cls",
-        "scratchSetup": "sfdx force:apex:execute -f post-scratch/scratchSetup.cls",
+        "scratchSetup": "sfdx force:apex:execute -f post-scratch/scratchSetup.cls && sf apex execute -f post-scratch/serviceResource.cls",
         "prepare": "husky install"
     },
     "engines": {
