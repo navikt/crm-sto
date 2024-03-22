@@ -2,13 +2,13 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
+import userId from '@salesforce/user/Id';
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import COMPANY_NAME from '@salesforce/schema/User.CompanyName';
 import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
-import userId from '@salesforce/user/Id';
 
 const englishCompanyTranslations = {
     'DIR Ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
@@ -58,7 +58,6 @@ export default class CrmStoMessagingV2 extends LightningElement {
     connectedCallback() {
         this.template.addEventListener('toolbaraction', (event) => {
             let flowInputs = [];
-            //logic to validate and create correct flowInputs for the flow to be triggered
             switch (event.detail.flowName) {
                 case 'CRM_Case_Journal_STO_Thread':
                     flowInputs = [
@@ -68,7 +67,6 @@ export default class CrmStoMessagingV2 extends LightningElement {
                             value: event.threadId
                         }
                     ];
-                    //Adding the flowInputs parameters to the event
                     event.detail.flowInputs = flowInputs;
                     break;
                 case 'CRM_STO_transfer':
@@ -88,10 +86,8 @@ export default class CrmStoMessagingV2 extends LightningElement {
                 default:
                     break;
             }
-            //Adding the flowInputs parameters to the event
             event.detail.flowInputs = flowInputs;
-
-            this.dispatchStoToolbarAction(event); //Forwards the event to parent
+            this.dispatchStoToolbarAction(event);
         });
         this.wireField =
             this.objectApiName === 'Case'
@@ -102,7 +98,6 @@ export default class CrmStoMessagingV2 extends LightningElement {
     }
 
     dispatchStoToolbarAction(event) {
-        //Sending event to parent to initialize flow
         const toolbarActionEvent = new CustomEvent('sto_toolbaraction', event);
 
         this.dispatchEvent(toolbarActionEvent);
@@ -110,7 +105,6 @@ export default class CrmStoMessagingV2 extends LightningElement {
 
     getNorwegianCompanyName() {
         try {
-            // Return all "Kontaktsenter"-units as "NAV Kontaktsenter"
             if (
                 this.companyName.toLowerCase().includes('kontaktsenter') &&
                 !this.companyName.toLowerCase().toLowerCase().includes('styringsenhet')
@@ -129,7 +123,6 @@ export default class CrmStoMessagingV2 extends LightningElement {
                 'Ytelser',
                 'Ytelsesutvikling'
             ];
-            // Check for related units
             if (startWords.some((str) => this.companyName.startsWith(str))) {
                 let listString = this.companyName.toLowerCase().split(' ');
                 for (let i = 0; i < listString.length; i++) {
@@ -161,7 +154,6 @@ export default class CrmStoMessagingV2 extends LightningElement {
 
     getEnglishCompanyName() {
         try {
-            // English translation for management units
             if (this.norwegianCompanyName in englishCompanyTranslations) {
                 return englishCompanyTranslations[this.norwegianCompanyName];
             }
@@ -311,9 +303,7 @@ export default class CrmStoMessagingV2 extends LightningElement {
             .then((threadId) => {
                 this.threadId = threadId;
             })
-            .catch(() => {
-                //Failure yields rollback to using record id as reference
-            });
+            .catch(() => {});
     }
 
     @wire(getRecord, {

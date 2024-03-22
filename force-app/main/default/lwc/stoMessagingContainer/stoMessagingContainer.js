@@ -14,11 +14,10 @@ export default class StoMessagingContainer extends LightningElement {
 
     @track singleThread = true;
 
-    reserve = RESERVE_LABEL;
-    putBack = PUT_BACK_LABEL;
     showFlow = false;
     showReserve = false;
     showPutBack = false;
+    labels = { RESERVE_LABEL, PUT_BACK_LABEL };
     label;
 
     get inputVariables() {
@@ -39,15 +38,8 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     handleShowFlows() {
-        if (this.label === this.reserve) {
-            this.showReserve = true;
-            this.showPutBack = false;
-        }
-
-        if (this.label === this.putBack) {
-            this.showPutBack = true;
-            this.showReserve = false;
-        }
+        this.showReserve = this.label === this.labels.RESERVE_LABEL;
+        this.showPutBack = this.label === this.labels.PUT_BACK_LABEL;
     }
 
     handleStatusChange(event) {
@@ -79,7 +71,6 @@ export default class StoMessagingContainer extends LightningElement {
 
     handleFlowStatusChange(event) {
         if (event.detail.status === 'FINISHED') {
-            // Closes the modal when the flow finishes
             this.showPanel = false;
         }
     }
