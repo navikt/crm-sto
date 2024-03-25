@@ -56,51 +56,12 @@ export default class CrmStoMessagingV2 extends LightningElement {
     threadType;
 
     connectedCallback() {
-        this.template.addEventListener('toolbaraction', (event) => {
-            let flowInputs = [];
-            switch (event.detail.flowName) {
-                case 'CRM_Case_Journal_STO_Thread':
-                    flowInputs = [
-                        {
-                            name: 'Thread_ID',
-                            type: 'String',
-                            value: event.threadId
-                        }
-                    ];
-                    event.detail.flowInputs = flowInputs;
-                    break;
-                case 'CRM_STO_transfer':
-                    flowInputs = [
-                        {
-                            name: 'recordId',
-                            type: 'String',
-                            value: this.recordId
-                        },
-                        {
-                            name: 'Thread_ID',
-                            type: 'String',
-                            value: event.threadId
-                        }
-                    ];
-                    break;
-                default:
-                    break;
-            }
-            event.detail.flowInputs = flowInputs;
-            this.dispatchStoToolbarAction(event);
-        });
         this.wireField =
             this.objectApiName === 'Case'
                 ? [this.objectApiName + '.Id', CASE_THREAD_API_REFERENCE]
                 : [this.objectApiName + '.Id'];
         this.userId = userId;
         this.accountApiName = this.getAccountApiName();
-    }
-
-    dispatchStoToolbarAction(event) {
-        const toolbarActionEvent = new CustomEvent('sto_toolbaraction', event);
-
-        this.dispatchEvent(toolbarActionEvent);
     }
 
     getNorwegianCompanyName() {

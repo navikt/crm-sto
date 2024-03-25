@@ -1,7 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import PUT_BACK_LABEL from '@salesforce/label/c.NKS_Put_Back';
 import RESERVE_LABEL from '@salesforce/label/c.NKS_Reserve_For_Me';
-
 import { publishToAmplitude } from 'c/amplitude';
 
 export default class StoMessagingContainer extends LightningElement {
@@ -58,15 +57,6 @@ export default class StoMessagingContainer extends LightningElement {
 
     closeModal() {
         this.showPanel = false;
-    }
-
-    handleToolbarAction(event) {
-        const flowName = event.detail.flowName;
-        const flowInputs = event.detail.flowInputs;
-        this.showPanel = true;
-
-        const flow = this.template.querySelector('lightning-flow');
-        flow.startFlow(flowName, flowInputs);
     }
 
     handleFlowStatusChange(event) {
