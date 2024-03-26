@@ -416,4 +416,36 @@
         <value>Here you can send us information relevant to your case. You will receive a
             confirmation that we have received your message.</value>
     </labels>
+    <labels>
+        <fullName>NKS_Transfer</fullName>
+        <categories>STO, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Transfer</shortDescription>
+        <value>Transfer</value>
+    </labels>
+    <labels>
+        <fullName>NKS_Transfer_Display_Text</fullName>
+        <categories>STO, Flow, Display text</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Transfer Display Text</shortDescription>
+        <value>Case cannot be transferred.</value>
+    </labels>
+    <labels>
+        <fullName>NKS_Put_Back</fullName>
+        <categories>NKS, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Put Back</shortDescription>
+        <value>Put back</value>
+    </labels>
+    <labels>
+        <fullName>NKS_Reserve_For_Me</fullName>
+        <categories>NKS, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Reserve For Me</shortDescription>
+        <value>Reserve for me</value>
+    </labels>
 </CustomLabels>
