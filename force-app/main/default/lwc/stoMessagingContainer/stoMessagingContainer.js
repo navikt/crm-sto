@@ -1,6 +1,7 @@
 import { LightningElement, api, track } from 'lwc';
 import PUT_BACK_LABEL from '@salesforce/label/c.NKS_Put_Back';
 import RESERVE_LABEL from '@salesforce/label/c.NKS_Reserve_For_Me';
+import TRANSFER_LABEL from '@salesforce/label/c.NKS_Transfer';
 import { publishToAmplitude } from 'c/amplitude';
 
 export default class StoMessagingContainer extends LightningElement {
@@ -16,8 +17,17 @@ export default class StoMessagingContainer extends LightningElement {
     showFlow = false;
     showReserve = false;
     showPutBack = false;
-    labels = { RESERVE_LABEL, PUT_BACK_LABEL };
+    showTransfer = false;
+    labels = { RESERVE_LABEL, PUT_BACK_LABEL, TRANSFER_LABEL };
     label;
+
+    get isThread() {
+        return this.objectApiName === 'Thread__c';
+    }
+
+    get reserveFlowName() {
+        return this.isThread ? 'STO_Action_Reserve' : 'STO_Case_Set_Reserved';
+    }
 
     get inputVariables() {
         return [
@@ -39,6 +49,7 @@ export default class StoMessagingContainer extends LightningElement {
     handleShowFlows() {
         this.showReserve = this.label === this.labels.RESERVE_LABEL;
         this.showPutBack = this.label === this.labels.PUT_BACK_LABEL;
+        this.showTransfer = this.label === this.labels.TRANSFER_LABEL;
     }
 
     handleStatusChange(event) {
@@ -47,6 +58,8 @@ export default class StoMessagingContainer extends LightningElement {
             this.showFlow = false;
         }
     }
+
+    /** Modal */
 
     renderedCallback() {
         const modal = this.template.querySelector('.firstfocusable');

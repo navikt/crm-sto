@@ -38,6 +38,7 @@ export default class CrmStoMessagingV2 extends LightningElement {
     @api showClose = false;
     @api checkMedskriv = false;
     @api caseId;
+    @api isThread;
 
     wireField;
     accountId;

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Translations xmlns="http://soap.sforce.com/2006/04/metadata">
     <customLabels>
+        <label>Overfør</label>
+        <name>NKS_Transfer</name>
+    </customLabels>
+    <customLabels>
+        <label>Henvendelsen kan ikke overføres.</label>
+        <name>NKS_Transfer_Display_Text</name>
+    </customLabels>
+    <customLabels>
+        <label>Legg tilbake</label>
+        <name>NKS_Put_Back</name>
+    </customLabels>
+    <customLabels>
+        <label>Reserver til meg</label>
+        <name>NKS_Reserve_For_Me</name>
+    </customLabels>
+    <customLabels>
         <label>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har
             mottatt beskjeden din.</label>
         <name>Beskjed_til_oss_intro_text</name>

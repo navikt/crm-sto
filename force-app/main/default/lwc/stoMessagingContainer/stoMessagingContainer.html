@@ -12,12 +12,22 @@
                         ></lightning-button>
                     </lightning-layout-item>
                     <lightning-layout-item class="slds-size_6-of-12">
-                        <lightning-button
-                            class="button"
-                            label={labels.PUT_BACK_LABEL}
-                            variant="brand"
-                            onclick={toggleFlow}
-                        ></lightning-button>
+                        <template if:false={isThread}>
+                            <lightning-button
+                                class="button"
+                                label={labels.PUT_BACK_LABEL}
+                                variant="brand"
+                                onclick={toggleFlow}
+                            ></lightning-button>
+                        </template>
+                        <template if:true={isThread}>
+                            <lightning-button
+                                class="button"
+                                label={labels.TRANSFER_LABEL}
+                                variant="brand"
+                                onclick={toggleFlow}
+                            ></lightning-button>
+                        </template>
                     </lightning-layout-item>
                 </lightning-layout>
             </lightning-layout-item>
@@ -27,7 +37,7 @@
                         <div class="slds-var-m-top_xx-small">
                             <lightning-card>
                                 <lightning-flow
-                                    flow-api-name="STO_Case_Set_Reserved"
+                                    flow-api-name={reserveFlowName}
                                     flow-input-variables={inputVariables}
                                     onstatuschange={handleStatusChange}
                                 >
@@ -53,6 +63,22 @@
                     </template>
                 </template>
             </lightning-layout-item>
+            <lightning-layout-item class="slds-size_12-of-12">
+                <template if:true={showTransfer}>
+                    <template if:true={showFlow}>
+                        <div class="slds-var-m-top_xx-small">
+                            <lightning-card>
+                                <lightning-flow
+                                    flow-api-name="STO_Thread_Initiate_Transfer_v_2"
+                                    flow-input-variables={inputVariables}
+                                    onstatuschange={handleStatusChange}
+                                >
+                                </lightning-flow>
+                            </lightning-card>
+                        </div>
+                    </template>
+                </template>
+            </lightning-layout-item>
         </lightning-layout>
         <c-crm-sto-messaging-v-2
             record-id={recordId}
@@ -62,6 +88,7 @@
             card-title={cardTitle}
             show-close={showClose}
             check-medskriv={checkMedskriv}
+            is-thread={isThread}
         ></c-crm-sto-messaging-v-2>
 
         <template if:true={showPanel}>
