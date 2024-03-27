@@ -17,35 +17,59 @@
             <targetReference>Submit_Transfer_Event</targetReference>
         </connector>
     </assignments>
-    <choices>
-        <name>Transfer_to_Queue</name>
-        <choiceText>Annen kø</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>QUEUE_TRANSFER</stringValue>
-        </value>
-    </choices>
     <decisions>
-        <name>Check_if_in_queue</name>
+        <name>Check_if_has_case</name>
+        <label>Check if has case</label>
+        <locationX>380</locationX>
+        <locationY>242</locationY>
+        <defaultConnector>
+            <targetReference>has_no_case</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>has_case</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Case__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread.CRM_Case__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue></stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_if_in_queue_0</targetReference>
+            </connector>
+            <label>has case</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_if_in_queue_0</name>
         <label>Check if in queue</label>
         <locationX>182</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <defaultConnector>
             <targetReference>Not_In_Queue_Screen</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>in_queue</name>
+            <name>in_queue_0</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Case.CRM_In_Queue__c</leftValueReference>
+                <leftValueReference>Get_Thread.CRM_Case__r.CRM_In_Queue__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Thread</targetReference>
+                <targetReference>Transfer_Screen</targetReference>
             </connector>
             <label>in queue</label>
         </rules>
@@ -86,14 +110,14 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
-        <description>Query the case information</description>
-        <name>Get_Case</name>
-        <label>Get Case</label>
-        <locationX>182</locationX>
+        <description>Get the STO Thread information</description>
+        <name>Get_Thread</name>
+        <label>Get Thread</label>
+        <locationX>380</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_if_in_queue</targetReference>
+            <targetReference>Check_if_has_case</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -101,28 +125,6 @@
             <operator>EqualTo</operator>
             <value>
                 <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Case</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <description>Get the STO Thread information</description>
-        <name>Get_Thread</name>
-        <label>Get Thread</label>
-        <locationX>50</locationX>
-        <locationY>350</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Transfer_Screen</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_API_Reference__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Case.NKS_Henvendelse_BehandlingsId__c</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -174,10 +176,27 @@
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
+        <name>has_no_case</name>
+        <label>has no case</label>
+        <locationX>578</locationX>
+        <locationY>350</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Case_Not_Found_Screen</name>
+            <fieldText>&lt;p&gt;{!$Label.NKS_Transfer_Display_Text}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Not_In_Queue_Screen</name>
         <label>Not In Queue Screen</label>
         <locationX>314</locationX>
-        <locationY>350</locationY>
+        <locationY>458</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -224,7 +243,7 @@
                     <choiceReferences>STO_Categories</choiceReferences>
                     <dataType>String</dataType>
                     <defaultValue>
-                        <elementReference>Get_Case.STO_Category__c</elementReference>
+                        <elementReference>Get_Thread.CRM_Case__r.STO_Category__c</elementReference>
                     </defaultValue>
                     <fieldText>Velg kø:</fieldText>
                     <fieldType>RadioButtons</fieldType>
@@ -257,10 +276,10 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>254</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Case</targetReference>
+            <targetReference>Get_Thread</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -294,37 +313,7 @@
         </inputAssignments>
     </subflows>
     <variables>
-        <name>Queue_IDs</name>
-        <dataType>String</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <description>STO queue names</description>
-        <name>Queue_Names</name>
-        <dataType>String</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
         <name>recordId</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>STO_QUEUES</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>Group</objectType>
-    </variables>
-    <variables>
-        <name>Thread_ID</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>

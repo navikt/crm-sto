@@ -430,7 +430,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Transfer Display Text</shortDescription>
-        <value>Case cannot be transferred.</value>
+        <value>Something went wrong while transferring the case.</value>
     </labels>
     <labels>
         <fullName>NKS_Put_Back</fullName>

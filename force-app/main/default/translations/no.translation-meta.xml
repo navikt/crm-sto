@@ -5,7 +5,7 @@
         <name>NKS_Transfer</name>
     </customLabels>
     <customLabels>
-        <label>Henvendelsen kan ikke overføres.</label>
+        <label>Noe gikk galt ved å overføre henvendelsen.</label>
         <name>NKS_Transfer_Display_Text</name>
     </customLabels>
     <customLabels>
