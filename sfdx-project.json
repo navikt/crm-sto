@@ -4,24 +4,28 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.128.0.NEXT",
+            "versionNumber": "1.132.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.198.0.LATEST"
+                    "versionNumber": "0.218.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
                     "versionNumber": "0.36.0.LATEST"
                 },
                 {
+                    "package": "crm-henvendelse-base",
+                    "versionNumber": "0.18.0.LATEST"
+                },
+                {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.99.0.LATEST"
+                    "versionNumber": "0.100.0.LATEST"
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.25.0.LATEST"
+                    "versionNumber": "0.26.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -29,7 +33,7 @@
                 },
                 {
                     "package": "crm-platform-oppgave",
-                    "versionNumber": "0.48.0.LATEST"
+                    "versionNumber": "0.51.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -41,15 +45,11 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.86.0.LATEST"
-                },
-                {
-                    "package": "crm-henvendelse-base",
-                    "versionNumber": "0.18.0.LATEST"
+                    "versionNumber": "0.102.0.LATEST"
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.102.0.LATEST"
+                    "versionNumber": "0.120.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
