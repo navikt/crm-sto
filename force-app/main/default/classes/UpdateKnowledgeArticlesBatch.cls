@@ -1,4 +1,4 @@
-public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject> {
+public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject>, Schedulable {
     private LoggerUtility logger = new LoggerUtility('UpdateKnowledgeArticlesBatch');
     private static Map<String, String> categoryLabelMap = KnowledgeDataCategoryHelper.fetchDataCategoryLabels();
     private String inputQuery;
