@@ -135,7 +135,7 @@ public with sharing class stoInboxHelper {
         i.recordId = t.Id;
         i.lastModifiedDate = t.LastModifiedDate;
         i.closeDate = t.CRM_Date_Time_Registered__c;
-        i.numberOfUnreadMessages = 1;
+        i.numberOfUnreadMessages = t.CRM_Is_Read__c == true ? 0 : 1;
         i.latestMessageDate = t.CRM_Date_Time_Registered__c;
         i.objectName = 'samtalereferat';
         i.status = 'Avsluttet';
