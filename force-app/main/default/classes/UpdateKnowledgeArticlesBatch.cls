@@ -1,4 +1,4 @@
-public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject> {
+public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject>, Schedulable {
     private LoggerUtility logger = new LoggerUtility('UpdateKnowledgeArticlesBatch');
     private static Map<String, String> categoryLabelMap = KnowledgeDataCategoryHelper.fetchDataCategoryLabels();
     private String inputQuery;
@@ -16,6 +16,9 @@ public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject>
             ? inputQuery
             : 'SELECT ParentId, DataCategoryName FROM Knowledge__DataCategorySelection WHERE CreatedDate >= :yesterday AND Parent.IsLatestVersion = TRUE';
         return Database.getQueryLocator(query);
+    }
+
+    public void execute(SchedulableContext SC) {
     }
 
     public void execute(Database.BatchableContext BC, List<Knowledge__DataCategorySelection> scope) {
