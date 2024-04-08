@@ -18,6 +18,9 @@ public class UpdateKnowledgeArticlesBatch implements Database.Batchable<sObject>
         return Database.getQueryLocator(query);
     }
 
+    public void execute(SchedulableContext SC) {
+    }
+
     public void execute(Database.BatchableContext BC, List<Knowledge__DataCategorySelection> scope) {
         try {
             List<Id> knowledgeArticleIds = new List<Id>();
