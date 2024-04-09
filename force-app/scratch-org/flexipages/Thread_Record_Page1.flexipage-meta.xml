@@ -22,6 +22,27 @@
                         <valueListItems>
                             <value>Thread__c.STO_Reserve</value>
                             <visibilityRule>
+                                <booleanFilter>1 AND 2 AND 3</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!$Permission.CustomPermission.STO_Beta}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>true</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.CRM_Case__r.Status}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Reserved</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.CRM_Case__r.Status}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Closed</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Thread__c.STO_Complete</value>
+                            <visibilityRule>
                                 <booleanFilter>1 AND 2</booleanFilter>
                                 <criteria>
                                     <leftValue>{!$Permission.CustomPermission.STO_Beta}</leftValue>
@@ -30,18 +51,8 @@
                                 </criteria>
                                 <criteria>
                                     <leftValue>{!Record.CRM_Case__r.Status}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>Reserved</rightValue>
-                                </criteria>
-                            </visibilityRule>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Thread__c.STO_Complete</value>
-                            <visibilityRule>
-                                <criteria>
-                                    <leftValue>{!$Permission.CustomPermission.STO_Beta}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>true</rightValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Closed</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>

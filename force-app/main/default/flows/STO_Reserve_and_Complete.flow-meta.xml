@@ -205,7 +205,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Thread_Stopper</name>
-            <conditionLogic>(1 OR 2) AND 3</conditionLogic>
+            <conditionLogic>(1 OR 2 OR 4) AND 3</conditionLogic>
             <conditions>
                 <leftValueReference>caseToUpdate.Status</leftValueReference>
                 <operator>EqualTo</operator>
@@ -225,6 +225,13 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
                 <operator>StartsWith</operator>
                 <rightValue>
                     <stringValue>a1j</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>recordId</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>caseToUpdate.OwnerId</elementReference>
                 </rightValue>
             </conditions>
             <connector>
