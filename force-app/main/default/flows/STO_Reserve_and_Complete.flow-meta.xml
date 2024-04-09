@@ -541,7 +541,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <allowPause>false</allowPause>
         <fields>
             <name>Not_In_Progress_Reserved</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Du kan ikke ferdigstille denne henvendelsen for den er verken reservert til deg eller under arbeid.&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(68, 68, 68); font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;Du kan ikke ferdigstille denne henvendelsen for den er ikke reservert til deg.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
@@ -599,7 +599,7 @@ Thread__C is a custom object, and Id prefix will be different in each scratch or
         <inputAssignments>
             <name>Log_Message</name>
             <value>
-                <stringValue>Received an unhandled Id-type when attempting to do &quot;{!actionType}&quot;-quickAction. Case Id was: {!caseToUpdate.Id}</stringValue>
+                <stringValue>Received an unhandled Id-type when attempting to do &quot;{!actionType}&quot;-quickAction. </stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
