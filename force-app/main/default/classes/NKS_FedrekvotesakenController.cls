@@ -164,7 +164,7 @@ public without sharing class NKS_FedrekvotesakenController {
 
     private static void createMessage(Thread__c thread, String comments) {
         Message__c message = new Message__c();
-        message.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg.';
+        message.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg. Saksbehandlingstid er opp til 8 måneder.';
         message.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
         message.CRM_Thread__c = thread.Id;
 
