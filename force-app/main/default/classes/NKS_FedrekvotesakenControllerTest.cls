@@ -81,7 +81,7 @@ private class NKS_FedrekvotesakenControllerTest {
             child.leave = new NKS_FedrekvotesakenController.Leave();
             child.leave.type = leaveType;
             child.leave.salary = 'Yes';
-            if (leaveType == 'Partly') {
+            if (leaveType == 'Partly' || leaveType == 'Yes') {
                 child.leave.dates = new NKS_FedrekvotesakenController.Dates();
                 child.leave.dates.fromDate = Date.today().addDays(-1).toString();
                 child.leave.dates.toDate = Date.today().toString();
