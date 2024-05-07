@@ -1,6 +1,10 @@
-.button {
+.button,
+.redactButton {
     display: grid;
     width: 100%;
+}
+
+.button {
     --slds-c-button-brand-color-background: #549fa4;
     --slds-c-button-brand-color-background-hover: #549fa4;
     --slds-c-button-brand-color-background-active: #549fa4;
@@ -11,4 +15,18 @@
 
 .border {
     border-width: 2px;
+}
+
+.redactButton {
+    --slds-c-button-brand-color-background: #66a5f4;
+    --slds-c-button-brand-color-background-hover: #66a5f4;
+    --slds-c-button-brand-color-background-active: #66a5f4;
+    --slds-c-button-brand-color-border: #66a5f4;
+}
+
+.active {
+    --slds-c-button-outline-brand-color-background: #cce1ff;
+    --slds-c-button-outline-brand-color-border: #0056b4;
+    --slds-c-button-outline-brand-color-background-hover: #cce1ff;
+    --slds-c-button-outline-brand-color-background-active: #cce1ff;
 }

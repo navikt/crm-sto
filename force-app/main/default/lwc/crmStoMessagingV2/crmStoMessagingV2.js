@@ -9,6 +9,8 @@ import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
+import MEDSKRIV_TEXT from '@salesforce/label/c.STO_Medskriv_Text';
+import MEDSKRIV_LABEL from '@salesforce/label/c.STO_Medskriv_Label';
 
 const englishCompanyTranslations = {
     'DIR Ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
@@ -37,8 +39,7 @@ export default class CrmStoMessagingV2 extends LightningElement {
     @api cardTitle;
     @api showClose = false;
     @api checkMedskriv = false;
-    @api caseId;
-    @api isThread;
+    @api submitButtonLabel;
 
     wireField;
     accountId;
@@ -56,6 +57,11 @@ export default class CrmStoMessagingV2 extends LightningElement {
     medskriv = false;
     threadType;
 
+    labels = {
+        medskrivText: MEDSKRIV_TEXT,
+        medskrivLabel: MEDSKRIV_LABEL
+    };
+
     connectedCallback() {
         this.wireField =
             this.objectApiName === 'Case'
@@ -63,6 +69,35 @@ export default class CrmStoMessagingV2 extends LightningElement {
                 : [this.objectApiName + '.Id'];
         this.userId = userId;
         this.accountApiName = this.getAccountApiName();
+    }
+
+    get textTemplate() {
+        let salutation = this.userName == null ? 'Hei,' : 'Hei, ' + this.userName;
+        let regards = 'Med vennlig hilsen';
+
+        if (this.englishTextTemplate === true) {
+            salutation = this.userName == null ? 'Hi,' : 'Hi ' + this.userName + ',';
+            regards = 'Kind regards';
+        }
+
+        return `${salutation}\n\n\n\n${regards}\n${this.supervisorName}\n${
+            this.englishTextTemplate === true ? this.englishCompanyName : this.norwegianCompanyName
+        }`;
+    }
+
+    get computeClasses() {
+        return this.threadType === 'BTO' ? 'greenHeader' : '';
+    }
+
+    get actualCardTitle() {
+        if (this.objectApiName === 'Case' && ['BTO', 'STO'].includes(this.threadType))
+            return this.threadType === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
+
+        return this.cardTitle;
+    }
+
+    get showMedskrivBlocker() {
+        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
     }
 
     getNorwegianCompanyName() {
@@ -177,31 +212,6 @@ export default class CrmStoMessagingV2 extends LightningElement {
             console.log('Problem getting English company name: ' + error);
             return '';
         }
-    }
-
-    get textTemplate() {
-        let salutation = this.userName == null ? 'Hei,' : 'Hei, ' + this.userName;
-        let regards = 'Med vennlig hilsen';
-
-        if (this.englishTextTemplate === true) {
-            salutation = this.userName == null ? 'Hi,' : 'Hi ' + this.userName + ',';
-            regards = 'Kind regards';
-        }
-
-        return `${salutation}\n\n\n\n${regards}\n${this.supervisorName}\n${
-            this.englishTextTemplate === true ? this.englishCompanyName : this.norwegianCompanyName
-        }`;
-    }
-
-    get computeClasses() {
-        return this.threadType === 'BTO' ? 'greenHeader' : '';
-    }
-
-    get actualCardTitle() {
-        if (this.objectApiName === 'Case' && ['BTO', 'STO'].includes(this.threadType))
-            return this.threadType === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
-
-        return this.cardTitle;
     }
 
     getAccountApiName() {
@@ -345,7 +355,7 @@ export default class CrmStoMessagingV2 extends LightningElement {
         child.focus();
     }
 
-    get showMedskrivBlocker() {
-        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
+    handleSubmit() {
+        this.dispatchEvent(new CustomEvent('submitfromparent'));
     }
 }

@@ -1,8 +1,7 @@
 <template>
-    <c-crm-messaging-message-component-v-2
+    <c-crm-messaging-message-component
         tabindex="0"
         record-id={threadId}
-        case-id={caseId}
         single-thread={singleThread}
         card-title={actualCardTitle}
         text-template={textTemplate}
@@ -11,21 +10,27 @@
         onenglisheventtwo={handleEnglishEventTwo}
         class={computeClasses}
         show-quick
-        is-thread={isThread}
+        new-design
+        submit-button-label={submitButtonLabel}
+        onsubmitfromchild={handleSubmit}
     >
         <template if:true={showMedskrivBlocker}>
             <div slot="messages">
                 <div class="slds-align_absolute-center slds-grid_vertical medskrivBlocker scroller">
-                    <p class="slds-text-body_regular slds-var-m-bottom_small">
-                        Brukeren har ikke samtykket til medskriv
-                    </p>
+                    <p class="slds-text-body_regular slds-var-m-bottom_small">{labels.medskrivText}</p>
                     <lightning-button
                         variant="brand"
-                        label="Vis melding"
+                        label={labels.medskrivLabel}
                         onclick={handleMedskrivClick}
                     ></lightning-button>
                 </div>
             </div>
         </template>
-    </c-crm-messaging-message-component-v-2>
+        <div slot="buttonContainer">
+            <slot name="buttonContainer"></slot>
+        </div>
+        <div slot="flowSection">
+            <slot name="flowSection"></slot>
+        </div>
+    </c-crm-messaging-message-component>
 </template>

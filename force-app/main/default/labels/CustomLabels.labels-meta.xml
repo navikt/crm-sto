@@ -417,7 +417,7 @@
             confirmation that we have received your message.</value>
     </labels>
     <labels>
-        <fullName>NKS_Transfer</fullName>
+        <fullName>STO_Transfer</fullName>
         <categories>STO, Buttons</categories>
         <language>en_US</language>
         <protected>false</protected>
@@ -425,7 +425,7 @@
         <value>Transfer</value>
     </labels>
     <labels>
-        <fullName>NKS_Transfer_Display_Text</fullName>
+        <fullName>STO_Transfer_Display_Text</fullName>
         <categories>STO, Flow, Display text</categories>
         <language>en_US</language>
         <protected>false</protected>
@@ -433,19 +433,59 @@
         <value>Something went wrong while transferring the case.</value>
     </labels>
     <labels>
-        <fullName>NKS_Put_Back</fullName>
-        <categories>NKS, Buttons</categories>
+        <fullName>STO_Put_Back</fullName>
+        <categories>STO, Buttons</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Put Back</shortDescription>
         <value>Put back</value>
     </labels>
     <labels>
-        <fullName>NKS_Reserve_For_Me</fullName>
-        <categories>NKS, Buttons</categories>
+        <fullName>STO_Reserve_For_Me</fullName>
+        <categories>STO, Buttons</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Reserve For Me</shortDescription>
         <value>Reserve for me</value>
+    </labels>
+    <labels>
+        <fullName>STO_Complete_And_Share</fullName>
+        <categories>NKS, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Complete and share with user</shortDescription>
+        <value>Complete and share with user</value>
+    </labels>
+    <labels>
+        <fullName>STO_Medskriv_Label</fullName>
+        <categories>STO, Labels</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Medskriv Label</shortDescription>
+        <value>Show message</value>
+    </labels>
+    <labels>
+        <fullName>STO_Medskriv_Text</fullName>
+        <categories>STO, Display text</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Medskriv Text</shortDescription>
+        <value>The user has not consented to co-sign.</value>
+    </labels>
+    <labels>
+        <fullName>STO_Case_Completed</fullName>
+        <categories>STO, Display text</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Case Completed</shortDescription>
+        <value>The case has already been completed.</value>
+    </labels>
+    <labels>
+        <fullName>STO_Case_Reserved</fullName>
+        <categories>STO, Display text</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>STO Case Reserved</shortDescription>
+        <value>You cannot complete this case because it is neither reserved for you nor in progress.</value>
     </labels>
 </CustomLabels>

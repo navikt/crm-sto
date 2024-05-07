@@ -3,95 +3,167 @@
         <lightning-layout class="slds-var-p-bottom_medium slds-border_bottom border" multiple-rows="true" size="12">
             <lightning-layout-item class="slds-size_12-of-12">
                 <lightning-layout>
-                    <lightning-layout-item class="slds-size_6-of-12 slds-var-p-right_small">
+                    <lightning-layout-item class="slds-size_4-of-12 slds-var-p-right_small">
                         <lightning-button
                             class="button"
-                            label={labels.RESERVE_LABEL}
+                            label={labels.reserve}
                             variant="brand"
                             onclick={toggleFlow}
+                            disabled={reserveDisabled}
+                            aria-expanded={reserveExpanded}
                         ></lightning-button>
                     </lightning-layout-item>
-                    <lightning-layout-item class="slds-size_6-of-12">
-                        <template if:false={isThread}>
+                    <lightning-layout-item class="slds-size_4-of-12 slds-var-p-right_small">
+                        <template lwc:if={isThread}>
                             <lightning-button
                                 class="button"
-                                label={labels.PUT_BACK_LABEL}
+                                label={labels.transfer}
                                 variant="brand"
                                 onclick={toggleFlow}
+                                disabled={transferDisabled}
+                                aria-expanded={transferExpanded}
                             ></lightning-button>
                         </template>
-                        <template if:true={isThread}>
+                        <template lwc:else>
                             <lightning-button
                                 class="button"
-                                label={labels.TRANSFER_LABEL}
+                                label={labels.putBack}
                                 variant="brand"
                                 onclick={toggleFlow}
+                                disabled={putBackDisabled}
+                                aria-expanded={putBackExpanded}
                             ></lightning-button>
                         </template>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-size_4-of-12 slds-var-p-right_small">
+                        <lightning-button
+                            class="redactButton"
+                            label={labels.setToRedaction}
+                            variant="brand"
+                            onclick={toggleFlow}
+                            aria-expanded={setToRedactionExpanded}
+                        ></lightning-button>
                     </lightning-layout-item>
                 </lightning-layout>
             </lightning-layout-item>
             <lightning-layout-item class="slds-size_12-of-12">
-                <template if:true={showReserve}>
-                    <template if:true={showFlow}>
-                        <div class="slds-var-m-top_xx-small">
-                            <lightning-card>
-                                <lightning-flow
-                                    flow-api-name={reserveFlowName}
-                                    flow-input-variables={inputVariables}
-                                    onstatuschange={handleStatusChange}
-                                >
-                                </lightning-flow>
-                            </lightning-card>
-                        </div>
-                    </template>
+                <template lwc:if={showReserve}>
+                    <div class="slds-var-m-top_xx-small">
+                        <lightning-card>
+                            <lightning-flow
+                                flow-api-name="Case_STO_Reserve_v_2"
+                                flow-input-variables={inputVariables}
+                                onstatuschange={handleFlowStatusChange}
+                            >
+                            </lightning-flow>
+                        </lightning-card>
+                    </div>
                 </template>
-            </lightning-layout-item>
-            <lightning-layout-item class="slds-size_12-of-12">
-                <template if:true={showPutBack}>
-                    <template if:true={showFlow}>
-                        <div class="slds-var-m-top_xx-small">
-                            <lightning-card>
-                                <lightning-flow
-                                    flow-api-name="Case_STO_Put_Back"
-                                    flow-input-variables={inputVariables}
-                                    onstatuschange={handleStatusChange}
-                                >
-                                </lightning-flow>
-                            </lightning-card>
-                        </div>
-                    </template>
+                <template lwc:elseif={showPutBack}>
+                    <div class="slds-var-m-top_xx-small">
+                        <lightning-card>
+                            <lightning-flow
+                                flow-api-name="Case_STO_Put_Back"
+                                flow-input-variables={inputVariables}
+                                onstatuschange={handleFlowStatusChange}
+                            >
+                            </lightning-flow>
+                        </lightning-card>
+                    </div>
                 </template>
-            </lightning-layout-item>
-            <lightning-layout-item class="slds-size_12-of-12">
-                <template if:true={showTransfer}>
-                    <template if:true={showFlow}>
-                        <div class="slds-var-m-top_xx-small">
-                            <lightning-card>
-                                <lightning-flow
-                                    flow-api-name="STO_Transfer_v_2"
-                                    flow-input-variables={inputVariables}
-                                    onstatuschange={handleStatusChange}
-                                >
-                                </lightning-flow>
-                            </lightning-card>
-                        </div>
-                    </template>
+                <template lwc:elseif={showTransfer}>
+                    <div class="slds-var-m-top_xx-small">
+                        <lightning-card>
+                            <lightning-flow
+                                flow-api-name="STO_Transfer_v_2"
+                                flow-input-variables={inputVariables}
+                                onstatuschange={handleFlowStatusChange}
+                            >
+                            </lightning-flow>
+                        </lightning-card>
+                    </div>
+                </template>
+                <template lwc:elseif={showRedact}>
+                    <div class="slds-var-m-top_xx-small">
+                        <lightning-card>
+                            <lightning-flow
+                                flow-api-name={redactFlowName}
+                                flow-input-variables={inputVariables}
+                                onstatuschange={handleFlowStatusChange}
+                            >
+                            </lightning-flow>
+                        </lightning-card>
+                    </div>
                 </template>
             </lightning-layout-item>
         </lightning-layout>
         <c-crm-sto-messaging-v-2
             record-id={recordId}
-            case-id={recordId}
             object-api-name={objectApiName}
             single-thread={singleThread}
             card-title={cardTitle}
             show-close={showClose}
             check-medskriv={checkMedskriv}
-            is-thread={isThread}
-        ></c-crm-sto-messaging-v-2>
+            submit-button-label={submitButtonLabel}
+            onsubmitfromparent={handleSubmit}
+        >
+            <div slot="buttonContainer">
+                <lightning-layout class="slds-float_right">
+                    <lightning-layout-item class="slds-var-p-right_small">
+                        <lightning-button
+                            label={labels.journal}
+                            data-id="journal"
+                            variant="brand-outline"
+                            onclick={toggleFlow}
+                            aria-expanded={journalExpanded}
+                        ></lightning-button>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-right_small">
+                        <lightning-button
+                            label={labels.createNavTask}
+                            data-id="createNavTask"
+                            variant="brand-outline"
+                            onclick={toggleFlow}
+                            aria-expanded={createNavTaskExpanded}
+                        ></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            <div slot="flowSection">
+                <template lwc:if={showComplete}>
+                    <lightning-card>
+                        <lightning-flow
+                            flow-api-name="Case_STO_Complete_v_2"
+                            flow-input-variables={inputVariables}
+                            onstatuschange={handleSubmitStatusChange}
+                        >
+                        </lightning-flow>
+                    </lightning-card>
+                </template>
+                <template lwc:elseif={showCreateNavTask}>
+                    <lightning-card>
+                        <lightning-flow
+                            flow-api-name={createNavTaskFlowName}
+                            flow-input-variables={inputVariables}
+                            onstatuschange={handleFlowStatusChange}
+                        >
+                        </lightning-flow>
+                    </lightning-card>
+                </template>
+                <template lwc:elseif={showJournal}>
+                    <lightning-card>
+                        <lightning-flow
+                            flow-api-name={journalFlowName}
+                            flow-input-variables={inputVariables}
+                            onstatuschange={handleFlowStatusChange}
+                        >
+                        </lightning-flow>
+                    </lightning-card>
+                </template>
+            </div>
+        </c-crm-sto-messaging-v-2>
 
-        <template if:true={showPanel}>
+        <template lwc:if={showPanel}>
             <div onkeyup={handleModalKey}>
                 <section
                     role="dialog"
@@ -120,7 +192,7 @@
                             style="border-radius: 0.3em; overflow: visible"
                             id="modal-content-id-1"
                         >
-                            <lightning-flow onstatuschange={handleFlowStatusChange}></lightning-flow>
+                            <lightning-flow onstatuschange={handleModalStatusChange}></lightning-flow>
                         </div>
                     </div>
                 </section>
