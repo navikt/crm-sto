@@ -37,7 +37,7 @@ export default class NksFedrekvotesakenChild extends LightningElement {
         return this.chosenOption === 'yes' || this.chosenOption === 'partly';
     }
     get showDateRange() {
-        return this.chosenOption === 'partly';
+        return this.chosenOption === 'yes' || this.chosenOption === 'partly';
     }
 
     @api
@@ -52,8 +52,8 @@ export default class NksFedrekvotesakenChild extends LightningElement {
         if (name == null || name === '') invalid.push('name');
         if (birthday == null) invalid.push('birthday');
         if (leave == null || leave === '') invalid.push('leave');
-        if (leave === 'partly' && fromDate == null) invalid.push('fromDate');
-        if (leave === 'partly' && toDate == null) invalid.push('toDate');
+        if ((leave === 'yes' || leave === 'partly') && fromDate == null) invalid.push('fromDate');
+        if ((leave === 'yes' || leave === 'partly') && toDate == null) invalid.push('toDate');
         if ((leave === 'yes' || leave === 'partly') && (salary == null || salary === '')) invalid.push('salary');
         let childData = {
             name: name,
