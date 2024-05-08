@@ -1,6 +1,13 @@
 <template>
-    <c-crm-messaging-community-thread-viewer
-        record-id={_recordId}
-        max-length={maxLength}
-    ></c-crm-messaging-community-thread-viewer>
+    <c-crm-messaging-community-thread-viewer record-id={_recordId} max-length={maxLength}>
+        <div slot="messageArea">
+            <div class="infocontainer slds-var-p-top_medium slds-var-p-horizontal_medium largePadding">
+                <c-crm-community-alert-stripe
+                    class="alertbox"
+                    type="feil"
+                    alerttext="Vi har tekniske problemer med tjenesten og feilretting pågår. Du har kun mulighet til å lese innholdet i din innboks på nåværende tidspunkt. Dersom du har behov for å gi viktig informasjon til NAV vedrørende din sak, ring oss på 5555 3333 i vår åpningstid mellom 09:00 og 15:00."
+                ></c-crm-community-alert-stripe>
+            </div>
+        </div>
+    </c-crm-messaging-community-thread-viewer>
 </template>
