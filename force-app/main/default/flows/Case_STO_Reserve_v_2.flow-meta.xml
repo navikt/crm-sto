@@ -151,12 +151,19 @@
         <connector>
             <targetReference>Is_Reserved</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
+        <filterLogic>or</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>get_thread.CRM_Case__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>NKS_Henvendelse_BehandlingsId__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>get_thread.CRM_API_Reference__c</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>

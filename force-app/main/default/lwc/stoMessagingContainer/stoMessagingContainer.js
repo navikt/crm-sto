@@ -170,21 +170,6 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     /**
-     * Flow API names
-     */
-    get journalFlowName() {
-        return this.isThread ? 'STO_Create_Thread_Journal_Entry' : 'CRM_Case_Journal_STO_Thread';
-    }
-
-    get createNavTaskFlowName() {
-        return this.isThread ? 'NKS_Thread_Send_NAV_Task' : 'NKS_Case_Send_NAV_Task';
-    }
-
-    get redactFlowName() {
-        return this.isThread ? 'Thread_Set_To_Redaction' : 'Case_STO_Sladd';
-    }
-
-    /**
      * Show Flow Condition
      */
     get showReserve() {
