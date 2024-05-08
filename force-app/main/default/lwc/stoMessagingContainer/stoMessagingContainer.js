@@ -11,7 +11,6 @@ import COMPLIETE_AND_SHARE_WITH_USER_LABEL from '@salesforce/label/c.STO_Complet
 import JOURNAL_LABEL from '@salesforce/label/c.NKS_Journal';
 import CREATE_NAV_TASK_LABEL from '@salesforce/label/c.NKS_Create_NAV_Task';
 import SET_TO_REDACTION_LABEL from '@salesforce/label/c.NKS_Set_To_Redaction';
-
 import { publishToAmplitude } from 'c/amplitude';
 
 const CONSTANTS = {
@@ -53,7 +52,6 @@ export default class StoMessagingContainer extends LightningElement {
     status;
     closed = false;
     inQueue = false;
-    showComplete = false;
 
     connectedCallback() {
         this.getCaseId();
@@ -89,14 +87,6 @@ export default class StoMessagingContainer extends LightningElement {
         }
     }
 
-    handleStatusChange(event, showVariable) {
-        let flowStatus = event.detail.status;
-        if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
-            refreshApex(this.wiredCase);
-            showVariable = false;
-        }
-    }
-
     toggleFlow(event) {
         this.showFlow = !this.showFlow;
         if (event.target?.dataset.id) {
@@ -111,7 +101,11 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     handleFlowStatusChange(event) {
-        this.handleStatusChange(event, this.showFlow);
+        let flowStatus = event.detail.status;
+        if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
+            refreshApex(this.wiredCase);
+            this.showFlow = false;
+        }
     }
 
     changeColor(dataId) {
@@ -133,13 +127,9 @@ export default class StoMessagingContainer extends LightningElement {
 
     handleSubmit() {
         if (!this.completeDisabled) {
-            this.showComplete = !this.showComplete;
+            this.showFlow = !this.showFlow;
             publishToAmplitude('STO', { type: 'Complete/Send pressed' });
         }
-    }
-
-    handleSubmitStatusChange(event) {
-        this.handleStatusChange(event, this.showComplete);
     }
 
     get inputVariables() {
@@ -156,6 +146,13 @@ export default class StoMessagingContainer extends LightningElement {
         return this.objectApiName === CONSTANTS.THREAD;
     }
 
+    get submitButtonLabel() {
+        return this.completeDisabled ? 'Send' : this.labels.completeAndShare;
+    }
+
+    /**
+     * Disabled
+     */
     get completeDisabled() {
         return this.status !== CONSTANTS.IN_PROGRESS && this.status !== CONSTANTS.RESERVED;
     }
@@ -172,10 +169,9 @@ export default class StoMessagingContainer extends LightningElement {
         return !this.inQueue;
     }
 
-    get submitButtonLabel() {
-        return this.completeDisabled ? 'Send' : this.labels.completeAndShare;
-    }
-
+    /**
+     * Flow API names
+     */
     get journalFlowName() {
         return this.isThread ? 'STO_Create_Thread_Journal_Entry' : 'CRM_Case_Journal_STO_Thread';
     }
@@ -188,6 +184,9 @@ export default class StoMessagingContainer extends LightningElement {
         return this.isThread ? 'Thread_Set_To_Redaction' : 'Case_STO_Sladd';
     }
 
+    /**
+     * Show Flow Condition
+     */
     get showReserve() {
         return this.showFlow && this.label === this.labels.reserve;
     }
@@ -212,6 +211,13 @@ export default class StoMessagingContainer extends LightningElement {
         return this.showFlow && this.dataId === CONSTANTS.JOURNAL;
     }
 
+    get showComplete() {
+        return this.showFlow && this.submitButtonLabel === this.labels.completeAndShare;
+    }
+
+    /**
+     * Aria Expanded
+     */
     get createNavTaskExpanded() {
         return this.showCreateNavTask.toString();
     }
