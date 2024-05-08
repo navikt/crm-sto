@@ -72,12 +72,7 @@ public without sharing class NKS_FedrekvotesakenController {
                 englishToNorwegianMap.get(child.leave.type.toLowerCase()) +
                 '\n';
 
-            if (child.leave.type == 'Yes') {
-                comment +=
-                    'Fikk du dekket lønn av arbeidsgiver under permisjonen? - ' +
-                    englishToNorwegianMap.get(child.leave.salary.toLowerCase()) +
-                    '\n';
-            } else if (child.leave.type == 'Partly') {
+            if (child.leave.type == 'Yes' || child.leave.type == 'Partly') {
                 comment += 'Tidsrom: ' + child.leave.dates.fromDate + ' - ' + child.leave.dates.toDate + '\n';
                 comment +=
                     'Fikk du dekket lønn av arbeidsgiver under permisjonen? - ' +
