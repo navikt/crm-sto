@@ -33,17 +33,81 @@
                                     ></c-community-expandable-panel>
                                 </template>
                             </div>
-                            <div>
-                                <div
-                                    class="infocontainer slds-var-p-top_medium slds-var-p-horizontal_medium largePadding"
-                                >
-                                    <c-crm-community-alert-stripe
-                                        class="alertbox"
-                                        type="feil"
-                                        alerttext="Vi har tekniske problemer med tjenesten og jobber med feilretting. Du vil ikke ha mulighet til å svare på meldinger i din innboks nå. Hvis du har behov for å gi viktig informasjon om din sak, ring oss på 55 55 33 33 i vår åpningstid mellom 0900 og 1500."
-                                    ></c-crm-community-alert-stripe>
+                            <template if:true={showOpenThreadWarning}>
+                                <div class="slds-var-m-top_xx-large slds-text-align_left">
+                                    <c-crm-community-alert-stripe type={alertType} alerttext={openThreadText}>
+                                    </c-crm-community-alert-stripe>
                                 </div>
-                            </div>
+                            </template>
+                            <template if:true={showTextArea}>
+                                <!-- Textarea -->
+                                <div class="slds-var-m-top_xx-large">
+                                    <c-community-textarea
+                                        max-length={maxLength}
+                                        class="inputTextbox"
+                                        ontextchanged={handleTextChange}
+                                    ></c-community-textarea>
+                                </div>
+                                <!-- Medskriv radiobutton -->
+                                <div class="">
+                                    <c-ds-radio
+                                        style="text-align: left"
+                                        title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i NAV?"
+                                        options={medskrivOptions}
+                                        class="radioFocus"
+                                        ><div slot="legend" class="slds-grid">
+                                            <p>
+                                                Godtar du at vi kan bruke samtalen din til opplæring av veiledere i NAV?
+                                            </p>
+                                            <c-ds-help-text
+                                                style="margin-left: 16px"
+                                                title="Hva betyr dette?"
+                                                text="For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt."
+                                            ></c-ds-help-text></div
+                                    ></c-ds-radio>
+                                </div>
+                                <!-- Vilkaer checkbox -->
+                                <div class="skjemaelement checkbox">
+                                    <c-community-checkbox
+                                        label-text={label.acceptermtext}
+                                        oncheckedchanged={handleChecked}
+                                        class="checkboxContainer"
+                                    ></c-community-checkbox
+                                    ><button
+                                        onclick={showTerms}
+                                        class="slds-var-m-left_small vilkar-link navds-link focusBtn"
+                                        tabindex="0"
+                                    >
+                                        {label.showtermstext}
+                                    </button>
+                                </div>
+
+                                <button
+                                    class="sendbutton navds-button navds-button--primary navds-button--medium"
+                                    type="submit"
+                                    style="padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px) 2.5rem"
+                                    aria-disabled="false"
+                                    label="Send"
+                                    onclick={submitRequest}
+                                >
+                                    Send
+                                </button>
+                            </template>
+                            <template if:false={showTextArea}>
+                                <h2 class="navds-heading navds-heading--medium leftAlign topBigGap">
+                                    Dine åpne samtaler om {selectedTheme}
+                                </h2>
+                                <div class="nav-wrapper">
+                                    <template for:each={openThreadList} for:item="thread" for:index="index">
+                                        <c-sto-inbox-close-item
+                                            thread={thread}
+                                            key={thread.recordId}
+                                            index={index}
+                                            onclosethread={handleCloseThread}
+                                        ></c-sto-inbox-close-item>
+                                    </template>
+                                </div>
+                            </template>
                         </template>
                         <template if:true={showspinner}>
                             <svg
@@ -76,6 +140,55 @@
                     </div>
                 </template>
             </div>
+        </div>
+        <div>
+            <c-community-modal
+                show-modal={modalOpen}
+                onmodalclosed={closeTerms}
+                onkeyup={handleKeyboardEvent}
+                onfocuslast={handleFocusLast}
+                hide-padding-mobile
+            >
+                <h1
+                    slot="modalHeader"
+                    class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l textLeftAlign-mobile leftMargin-mobile"
+                >
+                    {label.SERVICE_TERMS_HEADER}
+                </h1>
+                <div slot="modalContent">
+                    <section>
+                        <form class="betingelser-panel panel side-innhold">
+                            <div class="blokk-m slds-var-m-top_medium" style="text-align: left">
+                                <lightning-formatted-rich-text value={termsContentText}></lightning-formatted-rich-text>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+                <div slot="modalFooter" class="btnPositioning topGap">
+                    <div class="svar-godta text-center blokk-m">
+                        <button
+                            class="navds-button navds-button--primary navds-button--medium knapp-width"
+                            aria-controls="betingelser"
+                            onclick={termsAccepted}
+                            type="submit"
+                            label="Godta"
+                        >
+                            {label.ACCEPT_TERMS_BUTTON}
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <button
+                            class="navds-button navds-button--secondary navds-button--medium knapp-width lastFocusElement"
+                            type="submit"
+                            aria-controls="betingelser"
+                            role="button"
+                            onclick={termsDenied}
+                        >
+                            {label.DENY_TERMS_BUTTON}
+                        </button>
+                    </div>
+                </div>
+            </c-community-modal>
         </div>
     </div>
 </template>

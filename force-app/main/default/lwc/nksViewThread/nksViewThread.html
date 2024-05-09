@@ -1,13 +1,6 @@
 <template>
-    <c-crm-messaging-community-thread-viewer record-id={_recordId} max-length={maxLength}>
-        <div slot="messageArea">
-            <div class="infocontainer slds-var-p-top_medium slds-var-p-horizontal_medium largePadding">
-                <c-crm-community-alert-stripe
-                    class="alertbox"
-                    type="feil"
-                    alerttext="Vi har tekniske problemer med tjenesten og jobber med feilretting. Du vil ikke ha mulighet til å svare på meldinger i din innboks nå. Hvis du har behov for å gi viktig informasjon om din sak, ring oss på 55 55 33 33 i vår åpningstid mellom 0900 og 1500."
-                ></c-crm-community-alert-stripe>
-            </div>
-        </div>
-    </c-crm-messaging-community-thread-viewer>
+    <c-crm-messaging-community-thread-viewer
+        record-id={_recordId}
+        max-length={maxLength}
+    ></c-crm-messaging-community-thread-viewer>
 </template>

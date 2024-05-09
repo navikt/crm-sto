@@ -150,11 +150,3 @@
 .testClass:focus {
     background: initial;
 }
-
-.largePadding {
-    padding-bottom: 3.5em;
-}
-
-.infocontainer {
-    margin-top: 2em;
-}
