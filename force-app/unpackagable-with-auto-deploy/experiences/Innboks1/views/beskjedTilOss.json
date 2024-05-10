@@ -91,6 +91,14 @@
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:refreshCookie",
+                                    "id": "f6f4ef0a-0a1e-4a3a-a8e7-8a181838c1b1",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
                                 }
                             ],
                             "id": "ddc2ab0e-b70f-424a-9ced-f9358fc8eb61",
