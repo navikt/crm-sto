@@ -291,7 +291,7 @@
             <inputParameters>
                 <name>message</name>
                 <value>
-                    <elementReference>$Label.STO_Case_Not_Reserved</elementReference>
+                    <elementReference>$Label.STO_Case_Reserved</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>

@@ -35,7 +35,7 @@
     <customLabels>
         <label>Du kan ikke ferdigstille denne henvendelsen for den er verken reservert til deg eller
             under arbeid.</label>
-        <name>STO_Case_Not_Reserved</name>
+        <name>STO_Case_Reserved</name>
     </customLabels>
     <customLabels>
         <label>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har
