@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <apiVersion>49.0</apiVersion>
+    <apiVersion>58.0</apiVersion>
     <assignments>
         <name>Set_Thread_Category</name>
         <label>Set Thread Category</label>
@@ -18,16 +18,16 @@
         </connector>
     </assignments>
     <decisions>
-        <name>Check_if_has_case</name>
-        <label>Check if has case</label>
+        <name>Check_If_Has_Case</name>
+        <label>Check If Has Case</label>
         <locationX>380</locationX>
         <locationY>242</locationY>
         <defaultConnector>
-            <targetReference>has_no_case</targetReference>
+            <targetReference>Has_No_Case</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>has_case</name>
+            <name>Has_Case</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Thread.CRM_Case__c</leftValueReference>
@@ -44,14 +44,14 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Check_if_in_queue_0</targetReference>
+                <targetReference>Check_If_In_Queue</targetReference>
             </connector>
-            <label>has case</label>
+            <label>Has Case</label>
         </rules>
     </decisions>
     <decisions>
-        <name>Check_if_in_queue_0</name>
-        <label>Check if in queue</label>
+        <name>Check_If_In_Queue</name>
+        <label>Check If In Queue</label>
         <locationX>182</locationX>
         <locationY>350</locationY>
         <defaultConnector>
@@ -59,7 +59,7 @@
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>in_queue_0</name>
+            <name>In_Queue</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Thread.CRM_Case__r.CRM_In_Queue__c</leftValueReference>
@@ -71,7 +71,7 @@
             <connector>
                 <targetReference>Transfer_Screen</targetReference>
             </connector>
-            <label>in queue</label>
+            <label>In Queue</label>
         </rules>
     </decisions>
     <dynamicChoiceSets>
@@ -117,7 +117,7 @@
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_if_has_case</targetReference>
+            <targetReference>Check_If_Has_Case</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -168,16 +168,16 @@
         <object>Case</object>
     </recordUpdates>
     <recordUpdates>
-        <name>Update_thread</name>
-        <label>Update thread</label>
+        <name>Update_Thread</name>
+        <label>Update Thread</label>
         <locationX>50</locationX>
         <locationY>890</locationY>
         <inputReference>Get_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
-        <name>has_no_case</name>
-        <label>has no case</label>
+        <name>Has_No_Case</name>
+        <label>Has No Case</label>
         <locationX>578</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
@@ -185,7 +185,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Case_Not_Found_Screen</name>
-            <fieldText>&lt;p&gt;{!$Label.NKS_Transfer_Display_Text}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;{!$Label.STO_Transfer_Display_Text}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
@@ -202,7 +202,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>display_text</name>
-            <fieldText>&lt;p&gt;{!$Label.NKS_Transfer_Display_Text}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;{!$Label.STO_Transfer_Display_Text}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
@@ -290,7 +290,7 @@
         <locationX>50</locationX>
         <locationY>782</locationY>
         <connector>
-            <targetReference>Update_thread</targetReference>
+            <targetReference>Update_Thread</targetReference>
         </connector>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>

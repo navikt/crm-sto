@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>54.0</apiVersion>
+    <apiVersion>58.0</apiVersion>
     <assignments>
         <name>Assign_On_Hold_Status</name>
         <label>Assign On Hold Status</label>
-        <locationX>314</locationX>
-        <locationY>758</locationY>
+        <locationX>776</locationX>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>Get_Case.Status</assignToReference>
             <operator>Assign</operator>
@@ -17,11 +17,27 @@
             <targetReference>Update_Case</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>Assign_On_Hold_Status_0</name>
+        <label>Assign On Hold Status 0</label>
+        <locationX>72</locationX>
+        <locationY>566</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_0.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>On Hold</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Case_0</targetReference>
+        </connector>
+    </assignments>
     <decisions>
-        <name>case_reserved_or_in_progress</name>
-        <label>case reserved or in progress</label>
-        <locationX>446</locationX>
-        <locationY>650</locationY>
+        <name>Case_Reserved_Or_In_Progress</name>
+        <label>Case Reserved Or In Progress</label>
+        <locationX>908</locationX>
+        <locationY>566</locationY>
         <defaultConnector>
             <targetReference>case_reserved</targetReference>
         </defaultConnector>
@@ -50,16 +66,49 @@
         </rules>
     </decisions>
     <decisions>
-        <name>check_record_id</name>
-        <label>check record id</label>
-        <locationX>248</locationX>
-        <locationY>134</locationY>
+        <name>Case_Reserved_Or_In_Progress_0</name>
+        <label>Case Reserved Or In Progress 0</label>
+        <locationX>204</locationX>
+        <locationY>458</locationY>
         <defaultConnector>
-            <targetReference>get_thread</targetReference>
+            <isGoTo>true</isGoTo>
+            <targetReference>case_reserved</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>is_case</name>
+            <name>Reserved</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>In progress</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Reserved</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_On_Hold_Status_0</targetReference>
+            </connector>
+            <label>Reserved</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Record_Id</name>
+        <label>Check Record Id</label>
+        <locationX>402</locationX>
+        <locationY>134</locationY>
+        <defaultConnector>
+            <targetReference>Get_Thread</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_Case</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>recordId</leftValueReference>
@@ -69,22 +118,22 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Case</targetReference>
+                <targetReference>Get_Case_0</targetReference>
             </connector>
-            <label>is case</label>
+            <label>Is Case</label>
         </rules>
     </decisions>
     <decisions>
         <name>Check_Status</name>
         <label>Check Status</label>
-        <locationX>248</locationX>
-        <locationY>542</locationY>
+        <locationX>754</locationX>
+        <locationY>458</locationY>
         <defaultConnector>
-            <targetReference>case_reserved_or_in_progress</targetReference>
+            <targetReference>Case_Reserved_Or_In_Progress</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>already_completed</name>
+            <name>Already_Completed</name>
             <conditionLogic>or</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Case.Status</leftValueReference>
@@ -108,9 +157,48 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>case_completed</targetReference>
+                <targetReference>Case_Completed</targetReference>
             </connector>
-            <label>already completed</label>
+            <label>Already Completed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Status_0</name>
+        <label>Check Status 0</label>
+        <locationX>50</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>Case_Reserved_Or_In_Progress_0</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Already_Completed_0</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>On Hold</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Forwarded</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Case_Completed</targetReference>
+            </connector>
+            <label>Already Completed</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -138,11 +226,39 @@
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>116</locationX>
-        <locationY>242</locationY>
+        <locationX>754</locationX>
+        <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Status</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Case__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>NKS_Henvendelse_BehandlingsId__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_API_Reference__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Case</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Case_0</name>
+        <label>Get Case 0</label>
+        <locationX>50</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Status_0</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -157,41 +273,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>get_case_1</name>
-        <label>get case</label>
-        <locationX>380</locationX>
-        <locationY>350</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Check_Status</targetReference>
-        </connector>
-        <filterLogic>or</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>get_thread.CRM_Case__c</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>NKS_Henvendelse_BehandlingsId__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>get_thread.CRM_API_Reference__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Case</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>get_thread</name>
-        <label>get thread</label>
-        <locationX>380</locationX>
+        <name>Get_Thread</name>
+        <label>Get Thread</label>
+        <locationX>754</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>get_case_1</targetReference>
+            <targetReference>Get_Case</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -208,18 +296,29 @@
     <recordUpdates>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>314</locationX>
-        <locationY>866</locationY>
+        <locationX>776</locationX>
+        <locationY>782</locationY>
         <connector>
             <targetReference>Close_Screen</targetReference>
         </connector>
         <inputReference>Get_Case</inputReference>
     </recordUpdates>
+    <recordUpdates>
+        <name>Update_Case_0</name>
+        <label>Update Case 0</label>
+        <locationX>72</locationX>
+        <locationY>674</locationY>
+        <connector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Close_Screen</targetReference>
+        </connector>
+        <inputReference>Get_Case_0</inputReference>
+    </recordUpdates>
     <screens>
-        <name>case_completed</name>
-        <label>case completed</label>
-        <locationX>50</locationX>
-        <locationY>650</locationY>
+        <name>Case_Completed</name>
+        <label>Case Completed</label>
+        <locationX>402</locationX>
+        <locationY>1358</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -261,8 +360,8 @@
     <screens>
         <name>case_reserved</name>
         <label>case reserved</label>
-        <locationX>578</locationX>
-        <locationY>758</locationY>
+        <locationX>1040</locationX>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -304,8 +403,8 @@
     <screens>
         <name>Close_Screen</name>
         <label>Close Screen</label>
-        <locationX>314</locationX>
-        <locationY>974</locationY>
+        <locationX>776</locationX>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -351,10 +450,10 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>122</locationX>
+        <locationX>276</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>check_record_id</targetReference>
+            <targetReference>Check_Record_Id</targetReference>
         </connector>
     </start>
     <status>Active</status>

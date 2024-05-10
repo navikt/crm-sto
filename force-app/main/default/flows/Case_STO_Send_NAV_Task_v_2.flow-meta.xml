@@ -32,11 +32,9 @@
                 <stringValue>success</stringValue>
             </value>
         </inputParameters>
-        <nameSegment>c:fcFlowToaster</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
-    <apiVersion>52.0</apiVersion>
+    <apiVersion>58.0</apiVersion>
     <assignments>
         <description>Assigns the appropriate values from the input screen to the NAV task.</description>
         <name>Case_NAV_Task_Assignment</name>
@@ -325,7 +323,9 @@
     <formulas>
         <name>Task_Name</name>
         <dataType>String</dataType>
-        <expression>Case({!Task_Type_Selector.selectedTaskType}, &apos;KONT_BRUK&apos;, &apos;Kontakt bruker&apos;, &apos;VURD_HENV&apos;, &apos;Vurder henvendelse&apos;, &apos;Vurder konsekvens for ytelse&apos;)</expression>
+        <expression>Case({!Task_Type_Selector.selectedTaskType}, &apos;KONT_BRUK&apos;,
+            &apos;Kontakt bruker&apos;, &apos;VURD_HENV&apos;, &apos;Vurder henvendelse&apos;,
+            &apos;Vurder konsekvens for ytelse&apos;)</expression>
     </formulas>
     <formulas>
         <name>Task_Theme_Code</name>
@@ -466,15 +466,14 @@
             </defaultValue>
             <fieldText>Prioritet</fieldText>
             <fieldType>RadioButtons</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <fields>
             <name>Task_Description_1</name>
             <fieldText>Oppgave til NAV-enhet</fieldText>
             <fieldType>LargeTextArea</fieldType>
-            <helpText>&lt;p&gt;Husk at oppgavebeskrivelsen ikke skal inneholde personsensitive opplysninger!&lt;/p&gt;</helpText>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <helpText>&lt;p&gt;Husk at oppgavebeskrivelsen ikke skal inneholde personsensitive
+                opplysninger!&lt;/p&gt;</helpText>
             <isRequired>true</isRequired>
         </fields>
         <fields>
@@ -537,7 +536,9 @@
         </fields>
         <fields>
             <name>no_account_error</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er ikke relatert til en bruker.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
+                rgb(68, 68, 68);&quot;&gt;Henvendelsen er ikke relatert til en
+                bruker.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
@@ -552,7 +553,12 @@
         </fields>
         <fields>
             <name>Post_Error_Text</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 12px; font-family: -apple-system, system-ui, &amp;quot;Segoe UI&amp;quot;, Roboto, Oxygen, Ubuntu, &amp;quot;Fira Sans&amp;quot;, &amp;quot;Droid Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; color: rgb(0, 0, 0);&quot;&gt;Oppgaveopprettelse feilet. En utvikler har fått beskjed og vil feilsøke dette. Bruk Modia for å opprette oppgaven for denne brukeren.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);
+                font-size: 12px; font-family: -apple-system, system-ui, &amp;quot;Segoe
+                UI&amp;quot;, Roboto, Oxygen, Ubuntu, &amp;quot;Fira Sans&amp;quot;, &amp;quot;Droid
+                Sans&amp;quot;, &amp;quot;Helvetica Neue&amp;quot;, sans-serif; color: rgb(0, 0,
+                0);&quot;&gt;Oppgaveopprettelse feilet. En utvikler har fått beskjed og vil feilsøke
+                dette. Bruk Modia for å opprette oppgaven for denne brukeren.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
@@ -634,15 +640,14 @@
             </defaultValue>
             <fieldText>Prioritet</fieldText>
             <fieldType>RadioButtons</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <fields>
             <name>Task_Description</name>
             <fieldText>Oppgave til NAV-enhet</fieldText>
             <fieldType>LargeTextArea</fieldType>
-            <helpText>&lt;p&gt;Husk at oppgavebeskrivelsen ikke skal inneholde personsensitive opplysninger!&lt;/p&gt;</helpText>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <helpText>&lt;p&gt;Husk at oppgavebeskrivelsen ikke skal inneholde personsensitive
+                opplysninger!&lt;/p&gt;</helpText>
             <isRequired>true</isRequired>
         </fields>
         <fields>

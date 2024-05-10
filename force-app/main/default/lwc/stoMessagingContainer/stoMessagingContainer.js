@@ -52,6 +52,7 @@ export default class StoMessagingContainer extends LightningElement {
     status;
     closed = false;
     inQueue = false;
+    showComplete = false;
 
     connectedCallback() {
         this.getCaseId();
@@ -127,8 +128,16 @@ export default class StoMessagingContainer extends LightningElement {
 
     handleSubmit() {
         if (!this.completeDisabled) {
-            this.showFlow = !this.showFlow;
+            this.showComplete = !this.showComplete;
             publishToAmplitude('STO', { type: 'Complete/Send pressed' });
+        }
+    }
+
+    handleSubmitStatusChange(event) {
+        let flowStatus = event.detail.status;
+        if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
+            refreshApex(this.wiredCase);
+            this.showComplete = false;
         }
     }
 
@@ -194,10 +203,6 @@ export default class StoMessagingContainer extends LightningElement {
 
     get showJournal() {
         return this.showFlow && this.dataId === CONSTANTS.JOURNAL;
-    }
-
-    get showComplete() {
-        return this.showFlow && this.submitButtonLabel === this.labels.completeAndShare;
     }
 
     /**

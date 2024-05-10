@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>52.0</apiVersion>
+    <apiVersion>58.0</apiVersion>
     <decisions>
-        <name>check_record_id</name>
-        <label>check record id</label>
+        <name>Check_Record_Id</name>
+        <label>Check Record Id</label>
         <locationX>182</locationX>
         <locationY>134</locationY>
         <defaultConnector>
@@ -11,7 +11,7 @@
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>is_case</name>
+            <name>Is_Case</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>recordId</leftValueReference>
@@ -23,7 +23,7 @@
             <connector>
                 <targetReference>Get_Case</targetReference>
             </connector>
-            <label>is case</label>
+            <label>Is Case</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -120,21 +120,21 @@
     </recordLookups>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
-        <name>Copy_1_of_Journal_Success_Screen</name>
-        <label>Copy 1 of Journal Success Screen</label>
-        <locationX>50</locationX>
-        <locationY>782</locationY>
+        <name>Journal_Success_Screen_0</name>
+        <label>Journal Success Screen</label>
+        <locationX>314</locationX>
+        <locationY>674</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>Notify_Thread_Change_1</name>
+            <name>Notify_Thread_Change</name>
             <extensionName>c:crmRecordChangeNotifier</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>recordId</name>
                 <value>
-                    <elementReference>Get_Thread_1.Id</elementReference>
+                    <elementReference>recordId</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -151,21 +151,21 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Journal_Success_Screen_0</name>
-        <label>Journal Success Screen</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
+        <name>Journal_Success_Screen_1</name>
+        <label>Journal Success Screen 1</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>Notify_Thread_Change</name>
+            <name>Notify_Thread_Change_1</name>
             <extensionName>c:crmRecordChangeNotifier</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>recordId</name>
                 <value>
-                    <elementReference>recordId</elementReference>
+                    <elementReference>Get_Thread_1.Id</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -255,7 +255,7 @@
         <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>check_record_id</targetReference>
+            <targetReference>Check_Record_Id</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -347,7 +347,7 @@
         <inputAssignments>
             <name>recordId</name>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>Get_Thread_1.Id</elementReference>
             </value>
         </inputAssignments>
     </subflows>
@@ -385,7 +385,7 @@
         <locationX>50</locationX>
         <locationY>674</locationY>
         <connector>
-            <targetReference>Copy_1_of_Journal_Success_Screen</targetReference>
+            <targetReference>Journal_Success_Screen_1</targetReference>
         </connector>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>

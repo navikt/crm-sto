@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>54.0</apiVersion>
+    <apiVersion>58.0</apiVersion>
     <assignments>
         <name>Set_Thread_Sensitive_Info</name>
         <label>Set Thread Sensitive Info</label>
         <locationX>446</locationX>
-        <locationY>758</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>Get_Thread.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -22,6 +22,29 @@
         </assignmentItems>
         <connector>
             <targetReference>Update_thread</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Thread_Sensitive_Info_0</name>
+        <label>Set Thread Sensitive Info</label>
+        <locationX>1238</locationX>
+        <locationY>566</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Thread_0.STO_Sensitive_Information__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread_0.Cause__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Cause_0</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Thread_0</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -52,7 +75,7 @@
         <name>Check_If_STO_Case_Is_Updated</name>
         <label>Check If STO-Case Is Updated</label>
         <locationX>446</locationX>
-        <locationY>974</locationY>
+        <locationY>890</locationY>
         <defaultConnector>
             <targetReference>Error_Toast</targetReference>
         </defaultConnector>
@@ -84,7 +107,7 @@
         <name>Check_If_Thread_Is_Set_To_Redaction</name>
         <label>Check If Thread Is Set To Redaction</label>
         <locationX>248</locationX>
-        <locationY>542</locationY>
+        <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Case_STO_Sladd</targetReference>
         </defaultConnector>
@@ -99,13 +122,6 @@
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>get_thread_1.STO_Sensitive_Information__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
             <connector>
                 <targetReference>Message_Screen</targetReference>
             </connector>
@@ -113,16 +129,73 @@
         </rules>
     </decisions>
     <decisions>
-        <name>check_record_id</name>
-        <label>check record id</label>
-        <locationX>248</locationX>
-        <locationY>134</locationY>
+        <name>Check_If_Thread_Is_Set_To_Redaction_0</name>
+        <label>Check If Thread Is Set To Redaction</label>
+        <locationX>1040</locationX>
+        <locationY>350</locationY>
         <defaultConnector>
-            <targetReference>get_thread_1</targetReference>
+            <targetReference>Redact_Thread</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>is_case</name>
+            <name>IsRedacted_0</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Thread_0.STO_Sensitive_Information__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Message_Screen_0</targetReference>
+            </connector>
+            <label>IsRedacted</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_If_Thread_Is_Updated</name>
+        <label>Check If Thread Is Updated</label>
+        <locationX>1238</locationX>
+        <locationY>782</locationY>
+        <defaultConnector>
+            <targetReference>Error_Toast_0</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Thread_0.STO_Sensitive_Information__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Thread_0.Cause__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Cause_0</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Success_Toast_0</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Record_Id</name>
+        <label>Check Record Id</label>
+        <locationX>644</locationX>
+        <locationY>134</locationY>
+        <defaultConnector>
+            <targetReference>Get_Thread_0</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_Case</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>recordId</leftValueReference>
@@ -134,7 +207,7 @@
             <connector>
                 <targetReference>Get_Case</targetReference>
             </connector>
-            <label>is case</label>
+            <label>Is Case</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -162,7 +235,7 @@
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>116</locationX>
+        <locationX>248</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -183,7 +256,7 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>116</locationX>
+        <locationX>248</locationX>
         <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -209,13 +282,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>get_thread_1</name>
-        <label>get thread</label>
-        <locationX>380</locationX>
+        <name>Get_Thread_0</name>
+        <label>Get Thread 0</label>
+        <locationX>1040</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_If_Thread_Is_Set_To_Redaction</targetReference>
+            <targetReference>Check_If_Thread_Is_Set_To_Redaction_0</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -233,18 +306,28 @@
         <name>Update_thread</name>
         <label>Update thread</label>
         <locationX>446</locationX>
-        <locationY>866</locationY>
+        <locationY>782</locationY>
         <connector>
             <targetReference>Check_If_STO_Case_Is_Updated</targetReference>
         </connector>
         <inputReference>Get_Thread</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Thread_0</name>
+        <label>Update Thread</label>
+        <locationX>1238</locationX>
+        <locationY>674</locationY>
+        <connector>
+            <targetReference>Check_If_Thread_Is_Updated</targetReference>
+        </connector>
+        <inputReference>Get_Thread_0</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Case_STO_Sladd</name>
         <label>Case STO Sladd</label>
         <locationX>446</locationX>
-        <locationY>650</locationY>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -260,7 +343,6 @@
             <defaultSelectedChoiceReference>Sendt_feil_bruker</defaultSelectedChoiceReference>
             <fieldText>Årsak</fieldText>
             <fieldType>DropdownBox</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <nextOrFinishButtonLabel>Ferdig</nextOrFinishButtonLabel>
@@ -271,10 +353,10 @@
         <name>Error_Toast</name>
         <label>Error Toast</label>
         <locationX>578</locationX>
-        <locationY>1082</locationY>
-        <allowBack>true</allowBack>
+        <locationY>998</locationY>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <fields>
             <name>Error_toast_finisher</name>
             <extensionName>c:fcFlowCloseWithToast</extensionName>
@@ -306,27 +388,78 @@
             <inputParameters>
                 <name>variant</name>
                 <value>
-                    <stringValue>success</stringValue>
+                    <stringValue>error</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <showFooter>true</showFooter>
+        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Error_Toast_0</name>
+        <label>Error Toast</label>
+        <locationX>1370</locationX>
+        <locationY>890</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Error_toast_finisher_0</name>
+            <extensionName>c:fcFlowCloseWithToast</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>closeModal</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>mode</name>
+                <value>
+                    <stringValue>dismissible</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>message</name>
+                <value>
+                    <stringValue>Klarte ikke å sette samtaletråden til sladding.</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>title</name>
+                <value>
+                    <stringValue>Det oppstod en feil!</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>variant</name>
+                <value>
+                    <stringValue>error</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>Message_Screen</name>
         <label>Message Screen</label>
         <locationX>50</locationX>
-        <locationY>650</locationY>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>Redacted_Message_Info</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Henvendelsen er allerede satt til sladding.&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede satt til sladding.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
@@ -334,10 +467,53 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>Message_Screen_0</name>
+        <label>Message Screen</label>
+        <locationX>842</locationX>
+        <locationY>458</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Redacted_Message_Info_0</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(68, 68, 68);&quot;&gt;Samtaletråden er allerede satt til sladding.&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Redact_Thread</name>
+        <label>Redact Thread</label>
+        <locationX>1238</locationX>
+        <locationY>458</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Set_Thread_Sensitive_Info_0</targetReference>
+        </connector>
+        <fields>
+            <name>Cause_0</name>
+            <choiceReferences>Ikke_statlig_dialog</choiceReferences>
+            <choiceReferences>Sendt_feil_bruker</choiceReferences>
+            <choiceReferences>Sensitive_personopplysninger</choiceReferences>
+            <dataType>String</dataType>
+            <defaultSelectedChoiceReference>Sendt_feil_bruker</defaultSelectedChoiceReference>
+            <fieldText>Årsak</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <nextOrFinishButtonLabel>Ferdig</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Success_Toast</name>
         <label>Success Toast</label>
         <locationX>314</locationX>
-        <locationY>1082</locationY>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -379,14 +555,64 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <showFooter>true</showFooter>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Success_Toast_0</name>
+        <label>Success Toast</label>
+        <locationX>1106</locationX>
+        <locationY>890</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Success_toast_finisher_0</name>
+            <extensionName>c:fcFlowCloseWithToast</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>closeModal</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>mode</name>
+                <value>
+                    <stringValue>dismissible</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>message</name>
+                <value>
+                    <stringValue>Henvendelsen ble satt til sladding.</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>title</name>
+                <value>
+                    <stringValue>Vellykket!</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>variant</name>
+                <value>
+                    <stringValue>success</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>122</locationX>
+        <locationX>518</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>check_record_id</targetReference>
+            <targetReference>Check_Record_Id</targetReference>
         </connector>
     </start>
     <status>Active</status>
