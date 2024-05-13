@@ -34,6 +34,7 @@ export default class StoMessagingContainer extends LightningElement {
     @api checkMedskriv = false;
 
     @track singleThread = true;
+    @track label;
 
     showPanel = false;
     showFlow = false;
@@ -46,7 +47,6 @@ export default class StoMessagingContainer extends LightningElement {
         setToRedaction: SET_TO_REDACTION_LABEL,
         completeAndShare: COMPLIETE_AND_SHARE_WITH_USER_LABEL
     };
-    label;
     caseId;
     wiredCase;
     status;
@@ -198,11 +198,11 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     get showCreateNavTask() {
-        return this.showFlow && this.dataId === CONSTANTS.CREATE_NAV_TASK;
+        return this.showFlow && this.label === this.labels.createNavTask;
     }
 
     get showJournal() {
-        return this.showFlow && this.dataId === CONSTANTS.JOURNAL;
+        return this.showFlow && this.label === this.labels.journal;
     }
 
     /**
