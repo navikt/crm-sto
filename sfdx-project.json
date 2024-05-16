@@ -16,6 +16,10 @@
                     "versionNumber": "0.36.0.LATEST"
                 },
                 {
+                    "package": "crm-sf-saf",
+                    "versionNumber": "0.23.0.LATEST"
+                },
+                {
                     "package": "crm-henvendelse-base",
                     "versionNumber": "0.18.0.LATEST"
                 },
@@ -50,6 +54,14 @@
                 {
                     "package": "crm-henvendelse",
                     "versionNumber": "0.120.0.LATEST"
+                },
+                {
+                    "package": "crm-thread-view",
+                    "versionNumber": "0.2.0.LATEST"
+                },
+                {
+                    "package": "crm-nks-integration",
+                    "versionNumber": "0.63.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
@@ -97,6 +109,9 @@
         "crm-nks-chat": "0Ho7U000000000GSAQ",
         "crm-nks-base-components": "0Ho7U000000000LSAQ",
         "crm-sto": "0Ho2o000000fxXpCAI",
-        "crm-nks-survey": "0Ho7U0000000014SAA"
+        "crm-nks-survey": "0Ho7U0000000014SAA",
+        "crm-sf-saf": "0Ho7U0000000001SAA",
+        "crm-thread-view": "0Ho7U000000000zSAA",
+        "crm-nks-integration": "0Ho2o000000fxX6CAI"
     }
 }
