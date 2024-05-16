@@ -13,7 +13,7 @@
                 },
                 {
                     "package": "crm-platform-reporting",
-                    "versionNumber": "0.36.0.LATEST"
+                    "versionNumber": "0.37.0.LATEST"
                 },
                 {
                     "package": "crm-henvendelse-base",
@@ -41,7 +41,7 @@
                 },
                 {
                     "package": "crm-shared-user-notification",
-                    "versionNumber": "0.22.0.LATEST"
+                    "versionNumber": "0.23.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
