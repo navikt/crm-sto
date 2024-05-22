@@ -61,11 +61,11 @@
                 },
                 {
                     "package": "crm-nks-integration",
-                    "versionNumber": "0.63.0.LATEST"
+                    "versionNumber": "0.64.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
-                    "versionNumber": "0.31.0.LATEST"
+                    "versionNumber": "0.52.0.LATEST"
                 },
                 {
                     "package": "crm-nks-chat",
