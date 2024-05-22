@@ -17,7 +17,7 @@
                 },
                 {
                     "package": "crm-henvendelse-base",
-                    "versionNumber": "0.18.0.LATEST"
+                    "versionNumber": "0.19.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
@@ -25,7 +25,7 @@
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.26.0.LATEST"
+                    "versionNumber": "0.27.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -49,7 +49,7 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.120.0.LATEST"
+                    "versionNumber": "0.125.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
