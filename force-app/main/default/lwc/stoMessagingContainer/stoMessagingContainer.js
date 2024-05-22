@@ -7,7 +7,7 @@ import IN_QUEUE_FIELD from '@salesforce/schema/Case.CRM_In_Queue__c';
 import PUT_BACK_LABEL from '@salesforce/label/c.STO_Put_Back';
 import RESERVE_LABEL from '@salesforce/label/c.STO_Reserve_For_Me';
 import TRANSFER_LABEL from '@salesforce/label/c.STO_Transfer';
-import COMPLIETE_AND_SHARE_WITH_USER_LABEL from '@salesforce/label/c.STO_Complete_And_Share';
+import SHARE_WITH_USER_LABEL from '@salesforce/label/c.STO_Share_With_User';
 import JOURNAL_LABEL from '@salesforce/label/c.NKS_Journal';
 import CREATE_NAV_TASK_LABEL from '@salesforce/label/c.NKS_Create_NAV_Task';
 import SET_TO_REDACTION_LABEL from '@salesforce/label/c.NKS_Set_To_Redaction';
@@ -34,25 +34,29 @@ export default class StoMessagingContainer extends LightningElement {
     @api checkMedskriv = false;
 
     @track singleThread = true;
-    @track label;
 
-    showPanel = false;
-    showFlow = false;
-    labels = {
-        reserve: RESERVE_LABEL,
-        putBack: PUT_BACK_LABEL,
-        transfer: TRANSFER_LABEL,
-        createNavTask: CREATE_NAV_TASK_LABEL,
-        journal: JOURNAL_LABEL,
-        setToRedaction: SET_TO_REDACTION_LABEL,
-        completeAndShare: COMPLIETE_AND_SHARE_WITH_USER_LABEL
-    };
     caseId;
     wiredCase;
+    label;
     status;
     closed = false;
     inQueue = false;
     showComplete = false;
+    showReserve = false;
+    showPutBack = false;
+    showTransfer = false;
+    showRedact = false;
+    showCreateNavTask = false;
+    showJournal = false;
+    labels = {
+        RESERVE_LABEL,
+        PUT_BACK_LABEL,
+        TRANSFER_LABEL,
+        CREATE_NAV_TASK_LABEL,
+        JOURNAL_LABEL,
+        SET_TO_REDACTION_LABEL,
+        SHARE_WITH_USER_LABEL
+    };
 
     connectedCallback() {
         this.getCaseId();
@@ -88,34 +92,41 @@ export default class StoMessagingContainer extends LightningElement {
         }
     }
 
-    toggleFlow(event) {
-        this.showFlow = !this.showFlow;
-        if (event.target?.dataset.id) {
-            this.dataId = event.target.dataset.id;
-            this.changeColor(this.dataId);
-        }
+    toggleButton(buttonName, event) {
+        this.label = event.target?.label;
+        const buttons = ['Reserve', 'PutBack', 'Transfer', 'Journal', 'CreateNavTask', 'Redact'];
+        buttons.forEach((button) => {
+            this[`show${button}`] = button === buttonName ? !this[`show${button}`] : false;
+        });
+        const dataId = event.target?.dataset.id;
+        this.changeColor(dataId, this[`show${buttonName}`]);
+    }
 
-        if (event.target?.label) {
-            this.label = event.target.label;
-            publishToAmplitude('STO', { type: `${this.label} pressed` });
-        }
+    resetFlowFlags() {
+        this.showPutBack = false;
+        this.showReserve = false;
+        this.showTransfer = false;
+        this.showRedact = false;
+        this.showJournal = false;
+        this.showCreateNavTask = false;
     }
 
     handleFlowStatusChange(event) {
         let flowStatus = event.detail.status;
         if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
             refreshApex(this.wiredCase);
-            this.showFlow = false;
+            this.resetFlowFlags();
+            publishToAmplitude('STO', { type: `${this.label} pressed` });
         }
     }
 
-    changeColor(dataId) {
+    changeColor(dataId, condition) {
         const buttons = this.template.querySelectorAll('lightning-button');
         buttons.forEach((button) => {
             button.classList.remove('active');
         });
-        let currentButton = this.template.querySelector(`lightning-button[data-id="${dataId}"]`);
-        if (currentButton && this.showFlow) {
+        const currentButton = this.template.querySelector(`lightning-button[data-id="${dataId}"]`);
+        if (currentButton && condition) {
             currentButton.classList.add('active');
         }
     }
@@ -128,8 +139,8 @@ export default class StoMessagingContainer extends LightningElement {
 
     handleSubmit() {
         if (!this.completeDisabled) {
+            this.resetFlowFlags();
             this.showComplete = !this.showComplete;
-            publishToAmplitude('STO', { type: 'Complete/Send pressed' });
         }
     }
 
@@ -138,6 +149,7 @@ export default class StoMessagingContainer extends LightningElement {
         if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
             refreshApex(this.wiredCase);
             this.showComplete = false;
+            publishToAmplitude('STO', { type: 'Complete/Send pressed' });
         }
     }
 
@@ -155,8 +167,100 @@ export default class StoMessagingContainer extends LightningElement {
         return this.objectApiName === CONSTANTS.THREAD;
     }
 
-    get submitButtonLabel() {
-        return this.completeDisabled ? 'Send' : this.labels.completeAndShare;
+    get topButtonConfigs() {
+        return [
+            {
+                id: 'reserve',
+                class: 'button',
+                label: this.labels.RESERVE_LABEL,
+                disabled: this.reserveDisabled,
+                onclick: this.toggleButton.bind(this, 'Reserve'),
+                expanded: this.reserveExpanded
+            },
+            {
+                id: 'conditional',
+                class: 'button',
+                label: this.isThread ? this.labels.TRANSFER_LABEL : this.labels.PUT_BACK_LABEL,
+                disabled: this.isThread ? this.transferDisabled : this.putBackDisabled,
+                onclick: this.isThread
+                    ? this.toggleButton.bind(this, 'Transfer')
+                    : this.toggleButton.bind(this, 'PutBack'),
+                expanded: this.isThread ? this.transferExpanded : this.putBackExpanded
+            },
+            {
+                id: 'redact',
+                class: 'redactButton',
+                label: this.labels.SET_TO_REDACTION_LABEL,
+                disabled: false,
+                onclick: this.toggleButton.bind(this, 'Redact'),
+                expanded: this.redactExpanded
+            }
+        ];
+    }
+
+    get bottomButtonConfigs() {
+        return [
+            {
+                id: 'journal',
+                label: this.labels.JOURNAL_LABEL,
+                onclick: this.toggleButton.bind(this, 'Journal'),
+                expanded: this.journalExpanded
+            },
+            {
+                id: 'createNavTask',
+                label: this.labels.CREATE_NAV_TASK_LABEL,
+                onclick: this.toggleButton.bind(this, 'CreateNavTask'),
+                expanded: this.createNavTaskExpanded
+            }
+        ];
+    }
+
+    get topFlowConfigs() {
+        return [
+            {
+                id: 'reserve',
+                condition: this.showReserve,
+                flowApiName: 'Case_STO_Reserve_v_2'
+            },
+            {
+                id: 'putBack',
+                condition: this.showPutBack,
+                flowApiName: 'Case_STO_Put_Back'
+            },
+            {
+                id: 'transfer',
+                condition: this.showTransfer,
+                flowApiName: 'STO_Transfer_v_2'
+            },
+            {
+                id: 'redact',
+                condition: this.showRedact,
+                flowApiName: 'Case_STO_Redact_v_2'
+            }
+        ];
+    }
+
+    get bottomFlowConfigs() {
+        return [
+            {
+                id: 'journal',
+                condition: this.showJournal,
+                flowApiName: 'Case_STO_Journal_v_2',
+                handleStatusChange: this.handleFlowStatusChange
+            },
+            {
+                id: 'createNavTask',
+                condition: this.showCreateNavTask,
+                flowApiName: 'Case_STO_Send_NAV_Task_v_2',
+                handleStatusChange: this.handleFlowStatusChange
+            },
+            {
+                id: 'complete',
+                condition: this.showComplete,
+                flowApiName: 'Case_STO_Complete_v_2',
+                handleStatusChange: this.handleSubmitStatusChange
+            }
+        ];
     }
 
     /**
@@ -176,33 +280,6 @@ export default class StoMessagingContainer extends LightningElement {
 
     get transferDisabled() {
         return !this.inQueue;
-    }
-
-    /**
-     * Show Flow Condition
-     */
-    get showReserve() {
-        return this.showFlow && this.label === this.labels.reserve;
-    }
-
-    get showPutBack() {
-        return this.showFlow && this.label === this.labels.putBack;
-    }
-
-    get showTransfer() {
-        return this.showFlow && this.label === this.labels.transfer;
-    }
-
-    get showRedact() {
-        return this.showFlow && this.label === this.labels.setToRedaction;
-    }
-
-    get showCreateNavTask() {
-        return this.showFlow && this.label === this.labels.createNavTask;
-    }
-
-    get showJournal() {
-        return this.showFlow && this.label === this.labels.journal;
     }
 
     /**
@@ -230,34 +307,5 @@ export default class StoMessagingContainer extends LightningElement {
 
     get redactExpanded() {
         return this.showRedact.toString();
-    }
-
-    /** Modal */
-    renderedCallback() {
-        const modal = this.template.querySelector('.firstfocusable');
-        if (modal) {
-            modal.focus();
-        }
-    }
-
-    closeModal() {
-        this.showPanel = false;
-    }
-
-    handleModalStatusChange(event) {
-        if (event.detail.status === 'FINISHED') {
-            this.showPanel = false;
-        }
-    }
-
-    handleModalKey(event) {
-        if (event.keyCode === 27 || event.code === 'Escape') {
-            this.closeModal();
-        } else if (event.keyCode === 9 || event.code === 'Tab') {
-            const el = document.activeElement;
-            if (el.classList.contains('lastfocusable') || el.classList.contains('firstfocusable')) {
-                this.template.querySelector('[data-id="focusElement"]').focus();
-            }
-        }
     }
 }

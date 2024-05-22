@@ -10,17 +10,17 @@
         onenglisheventtwo={handleEnglishEventTwo}
         class={computeClasses}
         show-quick
-        new-design
         submit-button-label={submitButtonLabel}
         onsubmitfromchild={handleSubmit}
+        new-design
     >
-        <template if:true={showMedskrivBlocker}>
+        <template lwc:if={showMedskrivBlocker}>
             <div slot="messages">
                 <div class="slds-align_absolute-center slds-grid_vertical medskrivBlocker scroller">
-                    <p class="slds-text-body_regular slds-var-m-bottom_small">{labels.medskrivText}</p>
+                    <p class="slds-text-body_regular slds-var-m-bottom_small">{labels.MEDSKRIV_TEXT}</p>
                     <lightning-button
                         variant="brand"
-                        label={labels.medskrivLabel}
+                        label={labels.MEDSKRIV_LABEL}
                         onclick={handleMedskrivClick}
                     ></lightning-button>
                 </div>

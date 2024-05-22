@@ -17,8 +17,8 @@
         <name>STO_Reserve_For_Me</name>
     </customLabels>
     <customLabels>
-        <label>Ferdigstill og del med brukeren</label>
-        <name>STO_Complete_And_Share</name>
+        <label>Del med brukeren</label>
+        <name>STO_Share_With_User</name>
     </customLabels>
     <customLabels>
         <label>Vis melding</label>

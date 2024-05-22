@@ -8,7 +8,11 @@ import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
+import MEDSKRIV_TEXT from '@salesforce/label/c.STO_Medskriv_Text';
+import MEDSKRIV_LABEL from '@salesforce/label/c.STO_Medskriv_Label';
 import userId from '@salesforce/user/Id';
+import newDesignTemplate from './newDesignTemplate.html';
+import oldDesignTemplate from './oldDesignTemplate.html';
 
 const englishCompanyTranslations = {
     'DIR Ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
@@ -37,6 +41,8 @@ export default class CrmStoMessaging extends LightningElement {
     @api cardTitle;
     @api showClose = false;
     @api checkMedskriv = false;
+    @api newDesign = false;
+    @api submitButtonLabel;
 
     wireField;
     accountId;
@@ -54,44 +60,55 @@ export default class CrmStoMessaging extends LightningElement {
     medskriv = false;
     threadType;
 
-    connectedCallback() {
-        this.template.addEventListener('toolbaraction', (event) => {
-            let flowInputs = [];
-            //logic to validate and create correct flowInputs for the flow to be triggered
-            switch (event.detail.flowName) {
-                case 'CRM_Case_Journal_STO_Thread':
-                    flowInputs = [
-                        {
-                            name: 'Thread_ID',
-                            type: 'String',
-                            value: event.threadId
-                        }
-                    ];
-                    //Adding the flowInputs parameters to the event
-                    event.detail.flowInputs = flowInputs;
-                    break;
-                case 'CRM_STO_transfer':
-                    flowInputs = [
-                        {
-                            name: 'recordId',
-                            type: 'String',
-                            value: this.recordId
-                        },
-                        {
-                            name: 'Thread_ID',
-                            type: 'String',
-                            value: event.threadId
-                        }
-                    ];
-                    break;
-                default:
-                    break;
-            }
-            //Adding the flowInputs parameters to the event
-            event.detail.flowInputs = flowInputs;
+    labels = {
+        MEDSKRIV_TEXT,
+        MEDSKRIV_LABEL
+    };
 
-            this.dispatchStoToolbarAction(event); //Forwards the event to parent
-        });
+    render() {
+        return this.newDesign ? newDesignTemplate : oldDesignTemplate;
+    }
+
+    connectedCallback() {
+        if (!this.newDesign) {
+            this.template.addEventListener('toolbaraction', (event) => {
+                let flowInputs = [];
+                //logic to validate and create correct flowInputs for the flow to be triggered
+                switch (event.detail.flowName) {
+                    case 'CRM_Case_Journal_STO_Thread':
+                        flowInputs = [
+                            {
+                                name: 'Thread_ID',
+                                type: 'String',
+                                value: event.threadId
+                            }
+                        ];
+                        //Adding the flowInputs parameters to the event
+                        event.detail.flowInputs = flowInputs;
+                        break;
+                    case 'CRM_STO_transfer':
+                        flowInputs = [
+                            {
+                                name: 'recordId',
+                                type: 'String',
+                                value: this.recordId
+                            },
+                            {
+                                name: 'Thread_ID',
+                                type: 'String',
+                                value: event.threadId
+                            }
+                        ];
+                        break;
+                    default:
+                        break;
+                }
+                //Adding the flowInputs parameters to the event
+                event.detail.flowInputs = flowInputs;
+
+                this.dispatchStoToolbarAction(event); //Forwards the event to parent
+            });
+        }
         this.wireField =
             this.objectApiName === 'Case'
                 ? [this.objectApiName + '.Id', CASE_THREAD_API_REFERENCE]
@@ -249,6 +266,10 @@ export default class CrmStoMessaging extends LightningElement {
         return this.cardTitle;
     }
 
+    get showMedskrivBlocker() {
+        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
+    }
+
     getAccountApiName() {
         if (this.objectApiName === 'Case') {
             return 'AccountId';
@@ -283,7 +304,7 @@ export default class CrmStoMessaging extends LightningElement {
                 this.personId = this.resolve('CRM_Person__c', record);
             })
             .catch((error) => {
-                console.log(error);
+                console.log('Problem getting person id: ', error);
             });
     }
 
@@ -293,7 +314,7 @@ export default class CrmStoMessaging extends LightningElement {
     })
     wiredRecord({ error, data }) {
         if (error) {
-            console.log(error);
+            console.log('problem getting record: ', error);
         } else if (data) {
             if (this.objectApiName === 'Case') {
                 let ThreadApiReference = getFieldValue(data, CASE_THREAD_API_REFERENCE);
@@ -310,8 +331,8 @@ export default class CrmStoMessaging extends LightningElement {
             .then((threadId) => {
                 this.threadId = threadId;
             })
-            .catch(() => {
-                //Failure yields rollback to using record id as reference
+            .catch((error) => {
+                console.log('Problem getting thread id: ', error);
             });
     }
 
@@ -321,7 +342,7 @@ export default class CrmStoMessaging extends LightningElement {
     })
     wiredAccount({ error, data }) {
         if (error) {
-            console.log(error);
+            console.log('Problem getting account: ', error);
         } else if (data) {
             if (this.accountId) {
                 this.getPersonId();
@@ -335,7 +356,7 @@ export default class CrmStoMessaging extends LightningElement {
     })
     wiredPerson({ error, data }) {
         if (error) {
-            console.log(error);
+            console.log('Problem getting person', error);
         } else if (data) {
             if (this.accountId && this.personId) {
                 let fullName = getFieldValue(data, PERSON_FULL_NAME);
@@ -350,7 +371,7 @@ export default class CrmStoMessaging extends LightningElement {
     })
     wiredUser({ error, data }) {
         if (error) {
-            console.log(error);
+            console.log('Problem getting user: ', error);
         } else if (data) {
             this.supervisorName = getFieldValue(data, NKS_FULL_NAME);
             this.companyName = getFieldValue(data, COMPANY_NAME);
@@ -358,7 +379,7 @@ export default class CrmStoMessaging extends LightningElement {
                 this.norwegianCompanyName = this.getNorwegianCompanyName();
                 this.englishCompanyName = this.getEnglishCompanyName();
             } catch (error2) {
-                console.log(error2);
+                console.log('Problem getting company name: ', error2);
             }
         }
     }
@@ -366,8 +387,7 @@ export default class CrmStoMessaging extends LightningElement {
     @wire(getRecord, { recordId: '$threadId', fields: [THREAD_MEDSKRIV_REFERENCE, THREAD_TYPE] })
     wiredThread({ error, data }) {
         if (error) {
-            console.log('Medskriv error:');
-            console.log(error);
+            console.log('Medskriv error: ', error);
         }
         if (data) {
             this.medskriv = getFieldValue(data, THREAD_MEDSKRIV_REFERENCE);
@@ -392,7 +412,7 @@ export default class CrmStoMessaging extends LightningElement {
         child.focus();
     }
 
-    get showMedskrivBlocker() {
-        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
+    handleSubmit() {
+        this.dispatchEvent(new CustomEvent('submitfromparent'));
     }
 }

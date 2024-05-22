@@ -449,12 +449,12 @@
         <value>Reserve for me</value>
     </labels>
     <labels>
-        <fullName>STO_Complete_And_Share</fullName>
+        <fullName>STO_Share_With_User</fullName>
         <categories>NKS, Buttons</categories>
         <language>en_US</language>
         <protected>false</protected>
-        <shortDescription>Complete and share with user</shortDescription>
-        <value>Complete and share with user</value>
+        <shortDescription>Share with user</shortDescription>
+        <value>Share with user</value>
     </labels>
     <labels>
         <fullName>STO_Medskriv_Label</fullName>
