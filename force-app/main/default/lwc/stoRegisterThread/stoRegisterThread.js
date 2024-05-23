@@ -217,18 +217,25 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 msgText: this.message,
                 medskriv: medskriv,
                 type: this.threadTypeToMake
-            }).then((thread) => {
-                this.showspinner = false;
-                if (this.subpath === '/beskjed-til-oss/') {
-                    this.navigateToBTO(thread);
-                } else {
-                    // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
-                    window.open(
-                        (this.linkUrl = basepath + this.subpath + thread.Id + '/' + encodeURIComponent(thread.Name)),
-                        '_self'
-                    );
-                }
-            });
+            })
+                .then((thread) => {
+                    this.showspinner = false;
+                    if (this.subpath === '/beskjed-til-oss/') {
+                        this.navigateToBTO(thread);
+                    } else {
+                        // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
+                        window.open(
+                            (this.linkUrl =
+                                basepath + this.subpath + thread.Id + '/' + encodeURIComponent(thread.Name)),
+                            '_self'
+                        );
+                    }
+                })
+                .catch((err) => {
+                    this.template.querySelector('c-alertdialog').showModal();
+                    this.showspinner = false;
+                    console.error(err);
+                });
         } else {
             this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
             if (!this.message || this.message.length == null) {
