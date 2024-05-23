@@ -47,7 +47,11 @@
             <div slot="buttonContainer">
                 <lightning-layout class="slds-float_right">
                     <template for:each={bottomButtonConfigs} for:item="config">
-                        <lightning-layout-item key={config.id} class="slds-var-p-right_small">
+                        <lightning-layout-item
+                            key={config.id}
+                            class="slds-var-p-right_small"
+                            data-expanded={config.expanded}
+                        >
                             <lightning-button
                                 class={config.class}
                                 label={config.label}

@@ -39,15 +39,15 @@ export default class StoMessagingContainer extends LightningElement {
     wiredCase;
     label;
     status;
-    closed = false;
     inQueue = false;
     showComplete = false;
     showReserve = false;
     showPutBack = false;
     showTransfer = false;
     showRedact = false;
-    showCreateNavTask = false;
     showJournal = false;
+    showCreateNavTask = false;
+
     labels = {
         RESERVE_LABEL,
         PUT_BACK_LABEL,
@@ -59,7 +59,7 @@ export default class StoMessagingContainer extends LightningElement {
     };
 
     connectedCallback() {
-        this.getCaseId();
+        this.initializeCaseId();
     }
 
     @wire(getRecord, { recordId: '$caseId', fields: [STATUS_FIELD, IN_QUEUE_FIELD] })
@@ -70,11 +70,11 @@ export default class StoMessagingContainer extends LightningElement {
             this.status = getFieldValue(data, STATUS_FIELD);
             this.inQueue = getFieldValue(data, IN_QUEUE_FIELD);
         } else if (error) {
-            console.log(error.body.message);
+            console.error(error.body.message);
         }
     }
 
-    getCaseId() {
+    initializeCaseId() {
         if (this.isThread) {
             getRelatedRecord({
                 parentId: this.recordId,
@@ -85,7 +85,7 @@ export default class StoMessagingContainer extends LightningElement {
                     this.caseId = this.resolve(CONSTANTS.CASE_FIELD_API_NAME, record);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.error(error);
                 });
         } else {
             this.caseId = this.recordId;
@@ -98,13 +98,11 @@ export default class StoMessagingContainer extends LightningElement {
         buttons.forEach((button) => {
             this[`show${button}`] = button === buttonName ? !this[`show${button}`] : false;
         });
-        const dataId = event.target?.dataset.id;
-        this.changeColor(dataId, this[`show${buttonName}`]);
     }
 
-    resetFlowFlags() {
-        this.showPutBack = false;
+    resetButtonVisibility() {
         this.showReserve = false;
+        this.showPutBack = false;
         this.showTransfer = false;
         this.showRedact = false;
         this.showJournal = false;
@@ -112,45 +110,32 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     handleFlowStatusChange(event) {
-        let flowStatus = event.detail.status;
+        const flowStatus = event.detail.status;
         if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
             refreshApex(this.wiredCase);
-            this.resetFlowFlags();
+            this.resetButtonVisibility();
             publishToAmplitude('STO', { type: `${this.label} pressed` });
         }
     }
 
-    changeColor(dataId, condition) {
-        const buttons = this.template.querySelectorAll('lightning-button');
-        buttons.forEach((button) => {
-            button.classList.remove('active');
-        });
-        const currentButton = this.template.querySelector(`lightning-button[data-id="${dataId}"]`);
-        if (currentButton && condition) {
-            currentButton.classList.add('active');
-        }
-    }
-
-    resolve(path, obj) {
-        return path.split('.').reduce(function (prev, curr) {
-            return prev ? prev[curr] : null;
-        }, obj);
-    }
-
     handleSubmit() {
         if (!this.completeDisabled) {
-            this.resetFlowFlags();
+            this.resetButtonVisibility();
             this.showComplete = !this.showComplete;
         }
     }
 
     handleSubmitStatusChange(event) {
-        let flowStatus = event.detail.status;
+        const flowStatus = event.detail.status;
         if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
             refreshApex(this.wiredCase);
             this.showComplete = false;
             publishToAmplitude('STO', { type: 'Complete/Send pressed' });
         }
+    }
+
+    resolve(path, obj) {
+        return path.split('.').reduce((prev, curr) => (prev ? prev[curr] : null), obj);
     }
 
     get inputVariables() {
@@ -175,7 +160,7 @@ export default class StoMessagingContainer extends LightningElement {
                 label: this.labels.RESERVE_LABEL,
                 disabled: this.reserveDisabled,
                 onclick: this.toggleButton.bind(this, 'Reserve'),
-                expanded: this.reserveExpanded
+                expanded: this.showReserve.toString()
             },
             {
                 id: 'conditional',
@@ -185,7 +170,7 @@ export default class StoMessagingContainer extends LightningElement {
                 onclick: this.isThread
                     ? this.toggleButton.bind(this, 'Transfer')
                     : this.toggleButton.bind(this, 'PutBack'),
-                expanded: this.isThread ? this.transferExpanded : this.putBackExpanded
+                expanded: this.isThread ? this.showTransfer.toString() : this.showPutBack.toString()
             },
             {
                 id: 'redact',
@@ -193,7 +178,7 @@ export default class StoMessagingContainer extends LightningElement {
                 label: this.labels.SET_TO_REDACTION_LABEL,
                 disabled: false,
                 onclick: this.toggleButton.bind(this, 'Redact'),
-                expanded: this.redactExpanded
+                expanded: this.showRedact.toString()
             }
         ];
     }
@@ -204,13 +189,13 @@ export default class StoMessagingContainer extends LightningElement {
                 id: 'journal',
                 label: this.labels.JOURNAL_LABEL,
                 onclick: this.toggleButton.bind(this, 'Journal'),
-                expanded: this.journalExpanded
+                expanded: this.showJournal.toString()
             },
             {
                 id: 'createNavTask',
                 label: this.labels.CREATE_NAV_TASK_LABEL,
                 onclick: this.toggleButton.bind(this, 'CreateNavTask'),
-                expanded: this.createNavTaskExpanded
+                expanded: this.showCreateNavTask.toString()
             }
         ];
     }
@@ -263,9 +248,6 @@ export default class StoMessagingContainer extends LightningElement {
         ];
     }
 
-    /**
-     * Disabled
-     */
     get completeDisabled() {
         return this.status !== CONSTANTS.IN_PROGRESS && this.status !== CONSTANTS.RESERVED;
     }
@@ -280,32 +262,5 @@ export default class StoMessagingContainer extends LightningElement {
 
     get transferDisabled() {
         return !this.inQueue;
-    }
-
-    /**
-     * Aria Expanded
-     */
-    get createNavTaskExpanded() {
-        return this.showCreateNavTask.toString();
-    }
-
-    get journalExpanded() {
-        return this.showJournal.toString();
-    }
-
-    get reserveExpanded() {
-        return this.showReserve.toString();
-    }
-
-    get putBackExpanded() {
-        return this.showPutBack.toString();
-    }
-
-    get transferExpanded() {
-        return this.showTransfer.toString();
-    }
-
-    get redactExpanded() {
-        return this.showRedact.toString();
     }
 }
