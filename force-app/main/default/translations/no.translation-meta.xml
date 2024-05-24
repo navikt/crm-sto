@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Translations xmlns="http://soap.sforce.com/2006/04/metadata">
     <customLabels>
+        <label>Overfør</label>
+        <name>STO_Transfer</name>
+    </customLabels>
+    <customLabels>
+        <label>Noe gikk galt ved å overføre henvendelsen.</label>
+        <name>STO_Transfer_Display_Text</name>
+    </customLabels>
+    <customLabels>
+        <label>Legg tilbake</label>
+        <name>STO_Put_Back</name>
+    </customLabels>
+    <customLabels>
+        <label>Reserver til meg</label>
+        <name>STO_Reserve_For_Me</name>
+    </customLabels>
+    <customLabels>
+        <label>Del med brukeren</label>
+        <name>STO_Share_With_User</name>
+    </customLabels>
+    <customLabels>
+        <label>Vis melding</label>
+        <name>STO_Medskriv_Label</name>
+    </customLabels>
+    <customLabels>
+        <label>Brukeren har ikke samtykket til medskriv.</label>
+        <name>STO_Medskriv_Text</name>
+    </customLabels>
+    <customLabels>
+        <label>Henvendelsen er allerede ferdigstilt.</label>
+        <name>STO_Case_Completed</name>
+    </customLabels>
+    <customLabels>
+        <label>Du kan ikke ferdigstille denne henvendelsen for den er verken reservert til deg eller
+            under arbeid.</label>
+        <name>STO_Case_Reserved</name>
+    </customLabels>
+    <customLabels>
         <label>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har
             mottatt beskjeden din.</label>
         <name>Beskjed_til_oss_intro_text</name>
