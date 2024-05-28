@@ -234,7 +234,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 .catch((err) => {
                     this.template.querySelector('c-alertdialog').showModal();
                     this.showspinner = false;
-                    console.error(err);
                 });
         } else {
             this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
