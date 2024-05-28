@@ -54,7 +54,6 @@ public with sharing class stoHelperClass {
         Thread__c thread;
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-
         thread = createThread(null, theme, personUser, medskriv, type);
         createMessage(thread, msgText, personUser.ContactId);
 
@@ -103,6 +102,7 @@ public with sharing class stoHelperClass {
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
+            throw new threadOrMessageException();
         }
         return thread;
     }
@@ -119,6 +119,7 @@ public with sharing class stoHelperClass {
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
+            throw new threadOrMessageException();
         }
     }
     /**
@@ -221,5 +222,7 @@ public with sharing class stoHelperClass {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
         }
+    }
+    public class threadOrMessageException extends Exception {
     }
 }
