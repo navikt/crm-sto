@@ -30,3 +30,7 @@
     --slds-c-button-outline-brand-color-background-hover: #cce1ff;
     --slds-c-button-outline-brand-color-background-active: #cce1ff;
 }
+
+.flowButton:last-child {
+    padding-right: 0px;
+}

@@ -1,10 +1,15 @@
 <template>
-    <div class="slds-card slds-theme_default slds-var-p-around_medium">
-        <lightning-layout class="slds-var-p-bottom_medium slds-border_bottom border" multiple-rows="true" size="12">
+    <div
+        class="slds-card slds-theme_default slds-var-p-horizontal_medium slds-var-p-bottom_medium slds-var-p-top_xx-large"
+    >
+        <lightning-layout class="slds-var-p-bottom_xx-large slds-border_bottom border" multiple-rows="true" size="12">
             <lightning-layout-item class="slds-size_12-of-12">
                 <lightning-layout>
                     <template for:each={topButtonConfigs} for:item="config">
-                        <lightning-layout-item key={config.id} class="slds-size_4-of-12 slds-var-p-right_small">
+                        <lightning-layout-item
+                            key={config.id}
+                            class="slds-size_4-of-12 slds-var-p-right_medium flowButton"
+                        >
                             <lightning-button
                                 class={config.class}
                                 label={config.label}
