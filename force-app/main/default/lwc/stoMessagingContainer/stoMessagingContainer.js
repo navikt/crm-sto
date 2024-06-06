@@ -156,7 +156,6 @@ export default class StoMessagingContainer extends LightningElement {
         return [
             {
                 id: 'reserve',
-                class: 'button',
                 label: this.labels.RESERVE_LABEL,
                 disabled: this.reserveDisabled,
                 onclick: this.toggleButton.bind(this, 'Reserve'),
@@ -164,7 +163,6 @@ export default class StoMessagingContainer extends LightningElement {
             },
             {
                 id: 'conditional',
-                class: 'button',
                 label: this.isThread ? this.labels.TRANSFER_LABEL : this.labels.PUT_BACK_LABEL,
                 disabled: this.isThread ? this.transferDisabled : this.putBackDisabled,
                 onclick: this.isThread
@@ -174,7 +172,6 @@ export default class StoMessagingContainer extends LightningElement {
             },
             {
                 id: 'redact',
-                class: 'redactButton',
                 label: this.labels.SET_TO_REDACTION_LABEL,
                 disabled: false,
                 onclick: this.toggleButton.bind(this, 'Redact'),
