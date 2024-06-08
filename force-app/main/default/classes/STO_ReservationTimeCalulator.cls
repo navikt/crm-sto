@@ -46,7 +46,7 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
         );
         Long diff = BusinessHours.diff(STO_BUSINESS_HOURS_ID, Datetime.now(), nextStartDate);
         Long diff = BusinessHours.diff(STO_BUSINESS_HOURS_ID, Datetime.now(), nextStartDate);
-        Intenger diffTime = (diff / 1000 / 60).intValue();
+        Integer diffTime = (diff / 1000 / 60).intValue();
         if(diffTime < 1) {
             return 1;
         }
