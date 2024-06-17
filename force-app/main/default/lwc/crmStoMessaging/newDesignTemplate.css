@@ -10,3 +10,9 @@
 .greenHeader {
     --overwrite-header-color: #ccf1d6;
 }
+
+.threadNotFound {
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 2rem;
+}
