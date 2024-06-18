@@ -33,6 +33,19 @@
             <targetReference>Update_Case_0</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>Set_publish_Notification_To_True</name>
+        <label>Set publish Notification To True</label>
+        <locationX>776</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>Publish_Notification</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+    </assignments>
     <decisions>
         <name>Check_Record_Id</name>
         <label>Check Record Id</label>
@@ -271,7 +284,7 @@
         <locationX>776</locationX>
         <locationY>782</locationY>
         <connector>
-            <targetReference>Finish_Screen_0</targetReference>
+            <targetReference>Set_publish_Notification_To_True</targetReference>
         </connector>
         <inputReference>Get_Case</inputReference>
     </recordUpdates>
@@ -282,7 +295,7 @@
         <locationY>674</locationY>
         <connector>
             <isGoTo>true</isGoTo>
-            <targetReference>Finish_Screen_0</targetReference>
+            <targetReference>Set_publish_Notification_To_True</targetReference>
         </connector>
         <inputReference>Get_Case_0</inputReference>
     </recordUpdates>
@@ -321,55 +334,6 @@
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
-    <screens>
-        <name>Finish_Screen_0</name>
-        <label>Finish Screen</label>
-        <locationX>776</locationX>
-        <locationY>890</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>Success_toast</name>
-            <extensionName>c:fcFlowCloseWithToast</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>closeModal</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>mode</name>
-                <value>
-                    <stringValue>dismissible</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>message</name>
-                <value>
-                    <stringValue>Henvendelsen er reservert.</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>title</name>
-                <value>
-                    <stringValue>Reservert</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>success</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
     <start>
         <locationX>276</locationX>
         <locationY>0</locationY>
@@ -378,6 +342,16 @@
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>Publish_Notification</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>

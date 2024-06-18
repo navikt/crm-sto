@@ -2,6 +2,32 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>58.0</apiVersion>
     <assignments>
+        <name>Set_Publish_Notification_To_True</name>
+        <label>Set Publish Notification To True</label>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>Publish_Notification</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Set_Publish_Notification_To_True_0</name>
+        <label>Set Publish Notification To True</label>
+        <locationX>1106</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>Publish_Notification</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
         <name>Set_Thread_Sensitive_Info</name>
         <label>Set Thread Sensitive Info</label>
         <locationX>446</locationX>
@@ -98,7 +124,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Success_Toast</targetReference>
+                <targetReference>Set_Publish_Notification_To_True</targetReference>
             </connector>
             <label>isUpdated</label>
         </rules>
@@ -180,7 +206,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Success_Toast_0</targetReference>
+                <targetReference>Set_Publish_Notification_To_True_0</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -509,105 +535,6 @@
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
-    <screens>
-        <name>Success_Toast</name>
-        <label>Success Toast</label>
-        <locationX>314</locationX>
-        <locationY>998</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>Success_toast_finisher</name>
-            <extensionName>c:fcFlowCloseWithToast</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>closeModal</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>mode</name>
-                <value>
-                    <stringValue>dismissible</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>message</name>
-                <value>
-                    <stringValue>Henvendelsen ble satt til sladding.</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>title</name>
-                <value>
-                    <stringValue>Vellykket!</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>success</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Success_Toast_0</name>
-        <label>Success Toast</label>
-        <locationX>1106</locationX>
-        <locationY>890</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Success_toast_finisher_0</name>
-            <extensionName>c:fcFlowCloseWithToast</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>closeModal</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>mode</name>
-                <value>
-                    <stringValue>dismissible</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>message</name>
-                <value>
-                    <stringValue>Henvendelsen ble satt til sladding.</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>title</name>
-                <value>
-                    <stringValue>Vellykket!</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>success</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
     <start>
         <locationX>518</locationX>
         <locationY>0</locationY>
@@ -616,6 +543,16 @@
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>Publish_Notification</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>
