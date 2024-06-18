@@ -10,14 +10,14 @@
                             key={config.id}
                             class="slds-size_4-of-12 slds-var-p-right_medium flowButton"
                         >
-                            <lightning-button
-                                class="button"
-                                label={config.label}
-                                variant="brand"
+                            <button
+                                class="slds-button slds-button_brand slds-button_stretch top-button"
                                 onclick={config.onclick}
                                 disabled={config.disabled}
                                 aria-expanded={config.expanded}
-                            ></lightning-button>
+                            >
+                                {config.label}
+                            </button>
                         </lightning-layout-item>
                     </template>
                 </lightning-layout>
@@ -58,7 +58,7 @@
                             data-expanded={config.expanded}
                         >
                             <lightning-button
-                                class={config.class}
+                                class="bottom-button"
                                 label={config.label}
                                 data-id={config.id}
                                 variant="brand-outline"
