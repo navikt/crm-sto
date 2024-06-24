@@ -326,6 +326,7 @@ export default class CrmStoMessaging extends LightningElement {
         }
     }
 
+    isThreadIdNull = false;
     getThreadId(apiRef) {
         getThreadId({ apiRef: apiRef })
             .then((threadId) => {
@@ -333,6 +334,9 @@ export default class CrmStoMessaging extends LightningElement {
             })
             .catch((error) => {
                 console.log('Problem getting thread id: ', error);
+            })
+            .finally(() => {
+                this.isThreadIdNull = this.threadId == null;
             });
     }
 
