@@ -41,6 +41,8 @@ export default class StoMessagingContainer extends LightningElement {
     label;
     status;
     inQueue = false;
+
+    // Button visibility state
     showComplete = false;
     showReserve = false;
     showPutBack = false;
@@ -59,18 +61,23 @@ export default class StoMessagingContainer extends LightningElement {
         SHARE_WITH_USER_LABEL
     };
 
+    @wire(getRecord, { recordId: '$caseId', fields: [STATUS_FIELD, IN_QUEUE_FIELD] })
+    wiredRecord(result) {
+        this.wiredCase = result;
+        if (result.data) {
+            this.status = getFieldValue(result.data, STATUS_FIELD);
+            this.inQueue = getFieldValue(result.data, IN_QUEUE_FIELD);
+        } else if (result.error) {
+            console.error(result.error.body.message);
+        }
+    }
+
     connectedCallback() {
         this.initializeCaseId();
     }
 
     get inputVariables() {
-        return [
-            {
-                name: 'recordId',
-                type: 'String',
-                value: this.recordId
-            }
-        ];
+        return [{ name: 'recordId', type: 'String', value: this.recordId }];
     }
 
     get isThread() {
@@ -190,18 +197,6 @@ export default class StoMessagingContainer extends LightningElement {
         return this.template.querySelector('c-nks-notification-box');
     }
 
-    @wire(getRecord, { recordId: '$caseId', fields: [STATUS_FIELD, IN_QUEUE_FIELD] })
-    wiredRecord(result) {
-        this.wiredCase = result;
-        const { data, error } = result;
-        if (data) {
-            this.status = getFieldValue(data, STATUS_FIELD);
-            this.inQueue = getFieldValue(data, IN_QUEUE_FIELD);
-        } else if (error) {
-            console.error(error.body.message);
-        }
-    }
-
     initializeCaseId() {
         if (this.isThread) {
             getRelatedRecord({
@@ -222,24 +217,21 @@ export default class StoMessagingContainer extends LightningElement {
 
     toggleButton(buttonName, event) {
         this.label = event.target?.label;
-        const buttons = ['Reserve', 'PutBack', 'Transfer', 'Journal', 'CreateNavTask', 'Redact'];
-        buttons.forEach((button) => {
+        ['Reserve', 'PutBack', 'Transfer', 'Journal', 'CreateNavTask', 'Redact'].forEach((button) => {
             this[`show${button}`] = button === buttonName ? !this[`show${button}`] : false;
         });
     }
 
     resetButtonVisibility() {
-        this.showReserve = false;
-        this.showPutBack = false;
-        this.showTransfer = false;
-        this.showRedact = false;
-        this.showJournal = false;
-        this.showCreateNavTask = false;
+        ['showReserve', 'showPutBack', 'showTransfer', 'showRedact', 'showJournal', 'showCreateNavTask'].forEach(
+            (state) => {
+                this[state] = false;
+            }
+        );
     }
 
     handleFlowStatusChange(event) {
         const { status, outputVariables, flowTitle } = event.detail;
-
         if (status === CONSTANTS.FINISHED || status === CONSTANTS.FINISHED_SCREEN) {
             refreshApex(this.wiredCase);
             this.resetButtonVisibility();

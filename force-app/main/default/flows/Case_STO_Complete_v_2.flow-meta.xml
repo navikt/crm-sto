@@ -298,9 +298,6 @@
         <label>Update Case</label>
         <locationX>776</locationX>
         <locationY>782</locationY>
-        <connector>
-            <targetReference>Close_Screen</targetReference>
-        </connector>
         <inputReference>Get_Case</inputReference>
     </recordUpdates>
     <recordUpdates>
@@ -308,17 +305,13 @@
         <label>Update Case 0</label>
         <locationX>72</locationX>
         <locationY>674</locationY>
-        <connector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Close_Screen</targetReference>
-        </connector>
         <inputReference>Get_Case_0</inputReference>
     </recordUpdates>
     <screens>
         <name>Case_Completed</name>
         <label>Case Completed</label>
         <locationX>402</locationX>
-        <locationY>1358</locationY>
+        <locationY>1250</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -391,55 +384,6 @@
                 <name>message</name>
                 <value>
                     <elementReference>$Label.STO_Case_Reserved</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Close_Screen</name>
-        <label>Close Screen</label>
-        <locationX>776</locationX>
-        <locationY>890</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>Success_toast</name>
-            <extensionName>c:fcFlowCloseWithToast</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>closeModal</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>mode</name>
-                <value>
-                    <stringValue>dismissible</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>message</name>
-                <value>
-                    <stringValue>Henvendelsen ble ferdigstilt.</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>title</name>
-                <value>
-                    <stringValue>Ferdigstilt</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>success</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
