@@ -41,7 +41,6 @@ export default class StoMessagingContainer extends LightningElement {
     label;
     status;
     inQueue = false;
-
     showComplete = false;
     showReserveButton = false;
     showPutBackButton = false;
