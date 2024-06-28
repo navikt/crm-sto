@@ -12,6 +12,7 @@ import JOURNAL_LABEL from '@salesforce/label/c.NKS_Journal';
 import CREATE_NAV_TASK_LABEL from '@salesforce/label/c.NKS_Create_NAV_Task';
 import SET_TO_REDACTION_LABEL from '@salesforce/label/c.NKS_Set_To_Redaction';
 import { publishToAmplitude } from 'c/amplitude';
+import { handleShowNotifications } from 'c/nksButtonContainerUtils';
 
 const CONSTANTS = {
     CREATE_NAV_TASK: 'createNavTask',
@@ -41,12 +42,12 @@ export default class StoMessagingContainer extends LightningElement {
     status;
     inQueue = false;
     showComplete = false;
-    showReserve = false;
-    showPutBack = false;
-    showTransfer = false;
-    showRedact = false;
-    showJournal = false;
-    showCreateNavTask = false;
+    showReserveButton = false;
+    showPutBackButton = false;
+    showTransferButton = false;
+    showRedactButton = false;
+    showJournalButton = false;
+    showCreateNavTaskButton = false;
 
     labels = {
         RESERVE_LABEL,
@@ -74,78 +75,8 @@ export default class StoMessagingContainer extends LightningElement {
         }
     }
 
-    initializeCaseId() {
-        if (this.isThread) {
-            getRelatedRecord({
-                parentId: this.recordId,
-                relationshipField: CONSTANTS.CASE_FIELD_API_NAME,
-                objectApiName: this.objectApiName
-            })
-                .then((record) => {
-                    this.caseId = this.resolve(CONSTANTS.CASE_FIELD_API_NAME, record);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        } else {
-            this.caseId = this.recordId;
-        }
-    }
-
-    toggleButton(buttonName, event) {
-        this.label = event.target?.label;
-        const buttons = ['Reserve', 'PutBack', 'Transfer', 'Journal', 'CreateNavTask', 'Redact'];
-        buttons.forEach((button) => {
-            this[`show${button}`] = button === buttonName ? !this[`show${button}`] : false;
-        });
-    }
-
-    resetButtonVisibility() {
-        this.showReserve = false;
-        this.showPutBack = false;
-        this.showTransfer = false;
-        this.showRedact = false;
-        this.showJournal = false;
-        this.showCreateNavTask = false;
-    }
-
-    handleFlowStatusChange(event) {
-        const flowStatus = event.detail.status;
-        if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
-            refreshApex(this.wiredCase);
-            this.resetButtonVisibility();
-            publishToAmplitude('STO', { type: `${this.label} pressed` });
-        }
-    }
-
-    handleSubmit() {
-        if (!this.completeDisabled) {
-            this.resetButtonVisibility();
-            this.showComplete = !this.showComplete;
-        }
-    }
-
-    handleSubmitStatusChange(event) {
-        const flowStatus = event.detail.status;
-        if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
-            refreshApex(this.wiredCase);
-            this.showComplete = false;
-            publishToAmplitude('STO', { type: 'Complete/Send pressed' });
-        }
-    }
-
-    resolve(path, obj) {
-        return path.split('.').reduce((prev, curr) => (prev ? prev[curr] : null), obj);
-    }
-
     get inputVariables() {
-        return [
-            {
-                name: 'recordId',
-                type: 'String',
-                value: this.recordId
-            }
-        ];
+        return [{ name: 'recordId', type: 'String', value: this.recordId }];
     }
 
     get isThread() {
@@ -159,7 +90,7 @@ export default class StoMessagingContainer extends LightningElement {
                 label: this.labels.RESERVE_LABEL,
                 disabled: this.reserveDisabled,
                 onclick: this.toggleButton.bind(this, 'Reserve'),
-                expanded: this.showReserve.toString()
+                expanded: this.showReserveButton.toString()
             },
             {
                 id: 'conditional',
@@ -168,14 +99,14 @@ export default class StoMessagingContainer extends LightningElement {
                 onclick: this.isThread
                     ? this.toggleButton.bind(this, 'Transfer')
                     : this.toggleButton.bind(this, 'PutBack'),
-                expanded: this.isThread ? this.showTransfer.toString() : this.showPutBack.toString()
+                expanded: this.isThread ? this.showTransferButton.toString() : this.showPutBackButton.toString()
             },
             {
                 id: 'redact',
                 label: this.labels.SET_TO_REDACTION_LABEL,
                 disabled: false,
                 onclick: this.toggleButton.bind(this, 'Redact'),
-                expanded: this.showRedact.toString()
+                expanded: this.showRedactButton.toString()
             }
         ];
     }
@@ -186,13 +117,13 @@ export default class StoMessagingContainer extends LightningElement {
                 id: 'journal',
                 label: this.labels.JOURNAL_LABEL,
                 onclick: this.toggleButton.bind(this, 'Journal'),
-                expanded: this.showJournal.toString()
+                expanded: this.showJournalButton.toString()
             },
             {
                 id: 'createNavTask',
                 label: this.labels.CREATE_NAV_TASK_LABEL,
                 onclick: this.toggleButton.bind(this, 'CreateNavTask'),
-                expanded: this.showCreateNavTask.toString()
+                expanded: this.showCreateNavTaskButton.toString()
             }
         ];
     }
@@ -201,22 +132,22 @@ export default class StoMessagingContainer extends LightningElement {
         return [
             {
                 id: 'reserve',
-                condition: this.showReserve,
+                condition: this.showReserveButton,
                 flowApiName: 'Case_STO_Reserve_v_2'
             },
             {
                 id: 'putBack',
-                condition: this.showPutBack,
+                condition: this.showPutBackButton,
                 flowApiName: 'Case_STO_Put_Back'
             },
             {
                 id: 'transfer',
-                condition: this.showTransfer,
+                condition: this.showTransferButton,
                 flowApiName: 'STO_Transfer_v_2'
             },
             {
                 id: 'redact',
-                condition: this.showRedact,
+                condition: this.showRedactButton,
                 flowApiName: 'Case_STO_Redact_v_2'
             }
         ];
@@ -226,13 +157,13 @@ export default class StoMessagingContainer extends LightningElement {
         return [
             {
                 id: 'journal',
-                condition: this.showJournal,
+                condition: this.showJournalButton,
                 flowApiName: 'Case_STO_Journal_v_2',
                 handleStatusChange: this.handleFlowStatusChange
             },
             {
                 id: 'createNavTask',
-                condition: this.showCreateNavTask,
+                condition: this.showCreateNavTaskButton,
                 flowApiName: 'Case_STO_Send_NAV_Task_v_2',
                 handleStatusChange: this.handleFlowStatusChange
             },
@@ -259,5 +190,77 @@ export default class StoMessagingContainer extends LightningElement {
 
     get transferDisabled() {
         return !this.inQueue;
+    }
+
+    get notificationBoxTemplate() {
+        return this.template.querySelector('c-nks-notification-box');
+    }
+
+    initializeCaseId() {
+        if (this.isThread) {
+            getRelatedRecord({
+                parentId: this.recordId,
+                relationshipField: CONSTANTS.CASE_FIELD_API_NAME,
+                objectApiName: this.objectApiName
+            })
+                .then((record) => {
+                    this.caseId = this.resolve(CONSTANTS.CASE_FIELD_API_NAME, record);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        } else {
+            this.caseId = this.recordId;
+        }
+    }
+
+    toggleButton(buttonName, event) {
+        this.label = event.target?.label;
+        ['Reserve', 'PutBack', 'Transfer', 'Journal', 'CreateNavTask', 'Redact'].forEach((button) => {
+            this[`show${button}`] = button === buttonName ? !this[`show${button}`] : false;
+        });
+    }
+
+    resetButtonVisibility() {
+        [
+            'showReserveButton',
+            'showPutBackButton',
+            'showTransferButton',
+            'showRedactButton',
+            'showJournalButton',
+            'showCreateNavTaskButton'
+        ].forEach((state) => {
+            this[state] = false;
+        });
+    }
+
+    handleFlowStatusChange(event) {
+        const { status, outputVariables, flowTitle } = event.detail;
+        if (status === CONSTANTS.FINISHED || status === CONSTANTS.FINISHED_SCREEN) {
+            refreshApex(this.wiredCase);
+            this.resetButtonVisibility();
+            publishToAmplitude('STO', { type: `${this.label} pressed` });
+            handleShowNotifications(flowTitle, outputVariables, this.notificationBoxTemplate);
+        }
+    }
+
+    handleSubmit() {
+        if (!this.completeDisabled) {
+            this.resetButtonVisibility();
+            this.showComplete = !this.showComplete;
+        }
+    }
+
+    handleSubmitStatusChange(event) {
+        const flowStatus = event.detail.status;
+        if (flowStatus === CONSTANTS.FINISHED || flowStatus === CONSTANTS.FINISHED_SCREEN) {
+            refreshApex(this.wiredCase);
+            this.showComplete = false;
+            publishToAmplitude('STO', { type: 'Complete/Send pressed' });
+        }
+    }
+
+    resolve(path, obj) {
+        return path.split('.').reduce((prev, curr) => (prev ? prev[curr] : null), obj);
     }
 }

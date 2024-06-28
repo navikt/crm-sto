@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>58.0</apiVersion>
+    <assignments>
+        <name>Set_Publish_Notification_To_True</name>
+        <label>Set Publish Notification To True</label>
+        <locationX>314</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>Publish_Notification</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Set_Publish_Notification_To_True_1</name>
+        <label>Set Publish Notification To True</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>Publish_Notification</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+    </assignments>
     <decisions>
         <name>Check_Record_Id</name>
         <label>Check Record Id</label>
@@ -120,68 +146,6 @@
     </recordLookups>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
-        <name>Journal_Success_Screen_0</name>
-        <label>Journal Success Screen</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Notify_Thread_Change</name>
-            <extensionName>c:crmRecordChangeNotifier</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>recordId</name>
-                <value>
-                    <elementReference>recordId</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>autoFlowFinish</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Journal_Success_Screen_1</name>
-        <label>Journal Success Screen 1</label>
-        <locationX>50</locationX>
-        <locationY>782</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Notify_Thread_Change_1</name>
-            <extensionName>c:crmRecordChangeNotifier</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>recordId</name>
-                <value>
-                    <elementReference>Get_Thread_1.Id</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>autoFlowFinish</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
         <name>Thread_Journal_Screen</name>
         <label>Thread Journal Screen</label>
         <locationX>314</locationX>
@@ -210,7 +174,22 @@
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <outputParameters>
+                <assignToReference>Selected_NAV_Case_Id</assignToReference>
+                <name>selectedCaseId</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_NAV_Case_Legacy_System</assignToReference>
+                <name>selectedCaseLegacySystem</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_NAV_Case_Theme</assignToReference>
+                <name>selectedCaseTheme</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_Theme_SF_Id</assignToReference>
+                <name>selectedCaseThemeSfId</name>
+            </outputParameters>
         </fields>
         <nextOrFinishButtonLabel>Journalfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -245,7 +224,22 @@
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <outputParameters>
+                <assignToReference>Selected_NAV_Case_Id</assignToReference>
+                <name>selectedCaseId</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_NAV_Case_Legacy_System</assignToReference>
+                <name>selectedCaseLegacySystem</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_NAV_Case_Theme</assignToReference>
+                <name>selectedCaseTheme</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_Theme_SF_Id</assignToReference>
+                <name>selectedCaseThemeSfId</name>
+            </outputParameters>
         </fields>
         <nextOrFinishButtonLabel>Journalfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -271,13 +265,13 @@
         <inputAssignments>
             <name>Journal_Case_ID</name>
             <value>
-                <elementReference>NAV_Case_Overview.selectedCaseId</elementReference>
+                <elementReference>Selected_NAV_Case_Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <name>Journal_Case_Legacy_System</name>
             <value>
-                <elementReference>NAV_Case_Overview.selectedCaseLegacySystem</elementReference>
+                <elementReference>Selected_NAV_Case_Legacy_System</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -295,7 +289,7 @@
         <inputAssignments>
             <name>Journal_Theme_Code</name>
             <value>
-                <elementReference>NAV_Case_Overview.selectedCaseTheme</elementReference>
+                <elementReference>Selected_NAV_Case_Theme</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -317,13 +311,13 @@
         <inputAssignments>
             <name>Journal_Case_ID</name>
             <value>
-                <elementReference>NAV_Case_Overview_1.selectedCaseId</elementReference>
+                <elementReference>Selected_NAV_Case_Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <name>Journal_Case_Legacy_System</name>
             <value>
-                <elementReference>NAV_Case_Overview_1.selectedCaseLegacySystem</elementReference>
+                <elementReference>Selected_NAV_Case_Legacy_System</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -341,7 +335,7 @@
         <inputAssignments>
             <name>Journal_Theme_Code</name>
             <value>
-                <elementReference>NAV_Case_Overview_1.selectedCaseTheme</elementReference>
+                <elementReference>Selected_NAV_Case_Theme</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -357,7 +351,7 @@
         <locationX>314</locationX>
         <locationY>566</locationY>
         <connector>
-            <targetReference>Journal_Success_Screen_0</targetReference>
+            <targetReference>Set_Publish_Notification_To_True</targetReference>
         </connector>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>
@@ -385,7 +379,7 @@
         <locationX>50</locationX>
         <locationY>674</locationY>
         <connector>
-            <targetReference>Journal_Success_Screen_1</targetReference>
+            <targetReference>Set_Publish_Notification_To_True_1</targetReference>
         </connector>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>
@@ -408,10 +402,48 @@
         </inputAssignments>
     </subflows>
     <variables>
+        <name>Publish_Notification</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+    <variables>
         <name>recordId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_NAV_Case_Id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_NAV_Case_Legacy_System</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_NAV_Case_Theme</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_Theme_SF_Id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
     </variables>
 </Flow>
