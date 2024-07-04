@@ -216,8 +216,9 @@ export default class StoMessagingContainer extends LightningElement {
 
     toggleButton(buttonName, event) {
         this.label = event.target?.label;
-        ['Reserve', 'PutBack', 'Transfer', 'Journal', 'CreateNavTask', 'Redact'].forEach((button) => {
-            this[`show${button}`] = button === buttonName ? !this[`show${button}`] : false;
+        const buttons = ['Reserve', 'PutBack', 'Transfer', 'Journal', 'CreateNavTask', 'Redact'];
+        buttons.forEach((button) => {
+            this[`show${button}Button`] = button === buttonName ? !this[`show${button}Button`] : false;
         });
     }
 
