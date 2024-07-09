@@ -1,46 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>58.0</apiVersion>
-    <assignments>
-        <name>Set_Publish_Notification_To_True</name>
-        <label>Set Publish Notification To True</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
-        <assignmentItems>
-            <assignToReference>Publish_Notification</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Publish_Notification_From_Subflow</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>Existing_Journal</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Existing_Journal_From_Subflow</elementReference>
-            </value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
-        <name>Set_Publish_Notification_To_True_1</name>
-        <label>Set Publish Notification To True</label>
-        <locationX>50</locationX>
-        <locationY>782</locationY>
-        <assignmentItems>
-            <assignToReference>Publish_Notification</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Publish_Notification_From_Subflow</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>Existing_Journal</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Existing_Journal_From_Subflow</elementReference>
-            </value>
-        </assignmentItems>
-    </assignments>
     <decisions>
         <name>Check_Record_Id</name>
         <label>Check Record Id</label>
@@ -313,11 +273,11 @@
             </value>
         </inputAssignments>
         <outputAssignments>
-            <assignToReference>Existing_Journal_From_Subflow</assignToReference>
+            <assignToReference>Existing_Journal</assignToReference>
             <name>Existing_Journal</name>
         </outputAssignments>
         <outputAssignments>
-            <assignToReference>Publish_Notification_From_Subflow</assignToReference>
+            <assignToReference>Publish_Notification</assignToReference>
             <name>Publish_Notification</name>
         </outputAssignments>
     </subflows>
@@ -367,11 +327,11 @@
             </value>
         </inputAssignments>
         <outputAssignments>
-            <assignToReference>Existing_Journal_From_Subflow</assignToReference>
+            <assignToReference>Existing_Journal</assignToReference>
             <name>Existing_Journal</name>
         </outputAssignments>
         <outputAssignments>
-            <assignToReference>Publish_Notification_From_Subflow</assignToReference>
+            <assignToReference>Publish_Notification</assignToReference>
             <name>Publish_Notification</name>
         </outputAssignments>
     </subflows>
@@ -380,9 +340,6 @@
         <label>Create Thread Journal Event</label>
         <locationX>314</locationX>
         <locationY>566</locationY>
-        <connector>
-            <targetReference>Set_Publish_Notification_To_True</targetReference>
-        </connector>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>
             <name>Event_Message</name>
@@ -408,9 +365,6 @@
         <label>Create Thread Journal Event 1</label>
         <locationX>50</locationX>
         <locationY>674</locationY>
-        <connector>
-            <targetReference>Set_Publish_Notification_To_True_1</targetReference>
-        </connector>
         <flowName>CRM_Create_Thread_Event</flowName>
         <inputAssignments>
             <name>Event_Message</name>
@@ -442,31 +396,11 @@
         </value>
     </variables>
     <variables>
-        <name>Existing_Journal_From_Subflow</name>
-        <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <booleanValue>false</booleanValue>
-        </value>
-    </variables>
-    <variables>
         <name>Publish_Notification</name>
         <dataType>Boolean</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
-        <value>
-            <booleanValue>false</booleanValue>
-        </value>
-    </variables>
-    <variables>
-        <name>Publish_Notification_From_Subflow</name>
-        <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
         <value>
             <booleanValue>false</booleanValue>
         </value>

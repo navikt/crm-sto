@@ -103,7 +103,7 @@
         <locationX>446</locationX>
         <locationY>890</locationY>
         <defaultConnector>
-            <targetReference>Error_Toast</targetReference>
+            <targetReference>Error_Screen_0</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -185,7 +185,7 @@
         <locationX>1238</locationX>
         <locationY>782</locationY>
         <defaultConnector>
-            <targetReference>Error_Toast_0</targetReference>
+            <targetReference>Error_Screen</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -376,103 +376,37 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Error_Toast</name>
-        <label>Error Toast</label>
-        <locationX>578</locationX>
-        <locationY>998</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Error_toast_finisher</name>
-            <extensionName>c:fcFlowCloseWithToast</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>closeModal</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>mode</name>
-                <value>
-                    <stringValue>dismissible</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>message</name>
-                <value>
-                    <stringValue>Klarte ikke å sette henvendelsen til sladding.</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>title</name>
-                <value>
-                    <stringValue>Det oppstod en feil!</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>error</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Error_Toast_0</name>
-        <label>Error Toast</label>
+        <name>Error_Screen</name>
+        <label>Error Screen</label>
         <locationX>1370</locationX>
         <locationY>890</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>Error_toast_finisher_0</name>
-            <extensionName>c:fcFlowCloseWithToast</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>closeModal</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>mode</name>
-                <value>
-                    <stringValue>dismissible</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>message</name>
-                <value>
-                    <stringValue>Klarte ikke å sette samtaletråden til sladding.</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>title</name>
-                <value>
-                    <stringValue>Det oppstod en feil!</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>error</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <name>Error_Message</name>
+            <fieldText>&lt;p&gt;Klarte ikke å sette samtaletråden til sladding.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
-        <showFooter>false</showFooter>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Error_Screen_0</name>
+        <label>Error Screen</label>
+        <locationX>578</locationX>
+        <locationY>998</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Error_Message_0</name>
+            <fieldText>&lt;p&gt;Klarte ikke å sette henvendelsen til sladding.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
