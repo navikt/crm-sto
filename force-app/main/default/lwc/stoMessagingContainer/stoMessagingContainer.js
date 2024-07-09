@@ -12,7 +12,7 @@ import JOURNAL_LABEL from '@salesforce/label/c.NKS_Journal';
 import CREATE_NAV_TASK_LABEL from '@salesforce/label/c.NKS_Create_NAV_Task';
 import SET_TO_REDACTION_LABEL from '@salesforce/label/c.NKS_Set_To_Redaction';
 import { publishToAmplitude } from 'c/amplitude';
-import { handleShowNotifications } from 'c/nksComponentsUtils';
+import { resolve, handleShowNotifications, getOutputVariableValue } from 'c/nksComponentsUtils';
 
 const CONSTANTS = {
     CREATE_NAV_TASK: 'createNavTask',
@@ -204,7 +204,7 @@ export default class StoMessagingContainer extends LightningElement {
                 objectApiName: this.objectApiName
             })
                 .then((record) => {
-                    this.caseId = this.resolve(CONSTANTS.CASE_FIELD_API_NAME, record);
+                    this.caseId = resolve(CONSTANTS.CASE_FIELD_API_NAME, record);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -242,6 +242,10 @@ export default class StoMessagingContainer extends LightningElement {
             this.resetButtonVisibility();
             publishToAmplitude('STO', { type: `${this.label} pressed` });
             handleShowNotifications(flowTitle, outputVariables, this.notificationBoxTemplate);
+            const publishNotification = getOutputVariableValue(outputVariables, 'Publish_Notification');
+            if (publishNotification) {
+                this.notificationBoxTemplate.scrollIntoView({ behavior: 'smooth' });
+            }
         }
     }
 
@@ -250,6 +254,7 @@ export default class StoMessagingContainer extends LightningElement {
             this.resetButtonVisibility();
             this.showComplete = !this.showComplete;
         }
+        this.template.querySelector('c-crm-sto-messaging').scrollIntoView({ behavior: 'smooth' });
     }
 
     handleSubmitStatusChange(event) {
@@ -259,9 +264,5 @@ export default class StoMessagingContainer extends LightningElement {
             this.showComplete = false;
             publishToAmplitude('STO', { type: 'Complete/Send pressed' });
         }
-    }
-
-    resolve(path, obj) {
-        return path.split('.').reduce((prev, curr) => (prev ? prev[curr] : null), obj);
     }
 }
