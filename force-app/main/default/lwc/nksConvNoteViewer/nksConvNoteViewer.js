@@ -1,5 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import getconvnote from '@salesforce/apex/NKS_DialogueViewController.getConvNote';
+import { resolve } from 'c/nksComponentsUtils';
 
 export default class NksConvNoteViewer extends LightningElement {
     @api recordId;
@@ -22,17 +23,6 @@ export default class NksConvNoteViewer extends LightningElement {
     }
 
     get convNoteTheme() {
-        return this.conversationNote ? this.resolve('CRM_Theme__r.Name', this.conversationNote) : '';
-    }
-
-    /**
-     * Retrieves the value from the given object's data path
-     * @param {data path} path
-     * @param {JS object} obj
-     */
-    resolve(path, obj) {
-        return path.split('.').reduce(function (prev, curr) {
-            return prev ? prev[curr] : null;
-        }, obj);
+        return this.conversationNote ? resolve('CRM_Theme__r.Name', this.conversationNote) : '';
     }
 }
