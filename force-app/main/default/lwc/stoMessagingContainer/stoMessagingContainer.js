@@ -254,6 +254,7 @@ export default class StoMessagingContainer extends LightningElement {
             this.resetButtonVisibility();
             this.showComplete = !this.showComplete;
         }
+        this.template.querySelector('c-crm-sto-messaging').scrollIntoView({ behavior: 'smooth' });
     }
 
     handleSubmitStatusChange(event) {
