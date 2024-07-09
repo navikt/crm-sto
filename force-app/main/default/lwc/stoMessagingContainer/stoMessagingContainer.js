@@ -12,7 +12,7 @@ import JOURNAL_LABEL from '@salesforce/label/c.NKS_Journal';
 import CREATE_NAV_TASK_LABEL from '@salesforce/label/c.NKS_Create_NAV_Task';
 import SET_TO_REDACTION_LABEL from '@salesforce/label/c.NKS_Set_To_Redaction';
 import { publishToAmplitude } from 'c/amplitude';
-import { handleShowNotifications } from 'c/nksButtonContainerUtils';
+import { handleShowNotifications } from 'c/nksComponentsUtils';
 
 const CONSTANTS = {
     CREATE_NAV_TASK: 'createNavTask',
