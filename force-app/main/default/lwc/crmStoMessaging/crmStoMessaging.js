@@ -13,6 +13,7 @@ import MEDSKRIV_LABEL from '@salesforce/label/c.STO_Medskriv_Label';
 import userId from '@salesforce/user/Id';
 import newDesignTemplate from './newDesignTemplate.html';
 import oldDesignTemplate from './oldDesignTemplate.html';
+import { resolve } from 'c/nksComponentsUtils';
 
 const englishCompanyTranslations = {
     'DIR Ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
@@ -287,7 +288,7 @@ export default class CrmStoMessaging extends LightningElement {
             objectApiName: this.objectApiName
         })
             .then((record) => {
-                this.accountId = this.resolve(this.accountApiName, record);
+                this.accountId = resolve(this.accountApiName, record);
             })
             .catch((error) => {
                 console.log(error);
@@ -301,7 +302,7 @@ export default class CrmStoMessaging extends LightningElement {
             objectApiName: 'Account'
         })
             .then((record) => {
-                this.personId = this.resolve('CRM_Person__c', record);
+                this.personId = resolve('CRM_Person__c', record);
             })
             .catch((error) => {
                 console.log('Problem getting person id: ', error);
@@ -397,12 +398,6 @@ export default class CrmStoMessaging extends LightningElement {
             this.medskriv = getFieldValue(data, THREAD_MEDSKRIV_REFERENCE);
             this.threadType = getFieldValue(data, THREAD_TYPE);
         }
-    }
-
-    resolve(path, obj) {
-        return path.split('.').reduce(function (prev, curr) {
-            return prev ? prev[curr] : null;
-        }, obj);
     }
 
     handleEnglishEventTwo(event) {
