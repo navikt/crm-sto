@@ -1,4 +1,4 @@
-public class KnowledgeDataCategoryHelper {
+public without sharing class KnowledgeDataCategoryHelper {
     public static Map<String, String> fetchDataCategoryLabels() {
         Map<String, String> categoryLabels = new Map<String, String>();
 
