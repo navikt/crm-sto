@@ -1,41 +1,58 @@
 public without sharing class KnowledgeDataCategoryHelper {
     public static Map<String, String> fetchDataCategoryLabels() {
-        Map<String, String> categoryLabels = new Map<String, String>();
+        return getCategoryLabelsForType('KnowledgeArticleVersion');
+    }
 
-        List<String> objType = new List<String>{ 'KnowledgeArticleVersion' };
+    private static Map<String, String> getCategoryLabelsForType(String objectType) {
         // Get data category groups for KnowledgeArticleVersion => ('Tema')
-        List<DescribeDataCategoryGroupResult> describeCategoryResult = Schema.describeDataCategoryGroups(objType);
-        List<DataCategoryGroupSobjectTypePair> pairs = new List<DataCategoryGroupSobjectTypePair>();
-
-        for (DescribeDataCategoryGroupResult res : describeCategoryResult) {
-            DataCategoryGroupSobjectTypePair p = new DataCategoryGroupSobjectTypePair();
-            p.setSobject(res.getSobject());
-            p.setDataCategoryGroupName(res.getName());
-            pairs.add(p);
-        }
-
-        List<DescribeDataCategoryGroupStructureResult> describeCategoryStructureResult = Schema.describeDataCategoryGroupStructures(
-            pairs,
-            false
+        List<DescribeDataCategoryGroupResult> categoryGroupResults = Schema.describeDataCategoryGroups(
+            new List<String>{ objectType }
+        );
+        Map<String, String> categoryLabelsByName = new Map<String, String>();
+        List<DescribeDataCategoryGroupStructureResult> categoryStructureResults = getCategoryGroupStructures(
+            categoryGroupResults
         );
 
-        // Get all data categories under data category group
-        for (DescribeDataCategoryGroupStructureResult structureRes : describeCategoryStructureResult) {
-            List<DataCategory> allCategories = getAllCategories(structureRes.getTopCategories());
-            for (DataCategory category : allCategories) {
-                String key = category.getName();
-                categoryLabels.put(key, category.getLabel());
-            }
+        for (DescribeDataCategoryGroupStructureResult structureResult : categoryStructureResults) {
+            categoryLabelsByName.putAll(getCategoryLabelsFromStructure(structureResult));
         }
-        return categoryLabels;
+        
+        return categoryLabelsByName;
+    }
+
+    private static List<DescribeDataCategoryGroupStructureResult> getCategoryGroupStructures(
+        List<DescribeDataCategoryGroupResult> categoryGroupResults
+    ) {
+        List<DataCategoryGroupSobjectTypePair> pairs = new List<DataCategoryGroupSobjectTypePair>();
+        for (DescribeDataCategoryGroupResult groupResult : categoryGroupResults) {
+            DataCategoryGroupSobjectTypePair pair = new DataCategoryGroupSobjectTypePair();
+            pair.setSobject(groupResult.getSobject());
+            pair.setDataCategoryGroupName(groupResult.getName());
+            pairs.add(pair);
+        }
+
+        return Schema.describeDataCategoryGroupStructures(pairs, false);
+    }
+
+    private static Map<String, String> getCategoryLabelsFromStructure(
+        DescribeDataCategoryGroupStructureResult structureResult
+    ) {
+        Map<String, String> categoryLabelsByName = new Map<String, String>();
+        for (DataCategory category : getAllCategories(structureResult.getTopCategories())) {
+            categoryLabelsByName.put(category.getName(), category.getLabel());
+        }
+
+        return categoryLabelsByName;
     }
 
     private static List<DataCategory> getAllCategories(List<DataCategory> categories) {
         List<DataCategory> allCategories = new List<DataCategory>();
+
         for (DataCategory category : categories) {
             allCategories.add(category);
             allCategories.addAll(getAllCategories(category.getChildCategories()));
         }
+
         return allCategories;
     }
 }
