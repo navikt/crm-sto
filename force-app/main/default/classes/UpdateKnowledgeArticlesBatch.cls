@@ -56,6 +56,7 @@ public without sharing class UpdateKnowledgeArticlesBatch implements Database.Ba
                 knowledgeArticleIds.add(selection.ParentId);
             }
         }
+
         return knowledgeArticleIds;
     }
 
@@ -73,6 +74,7 @@ public without sharing class UpdateKnowledgeArticlesBatch implements Database.Ba
                 articleCategoryMap.put(article.Id, article.NKS_Category__c);
             }
         }
+
         return articleCategoryMap;
     }
 
@@ -89,6 +91,7 @@ public without sharing class UpdateKnowledgeArticlesBatch implements Database.Ba
                 }
             }
         }
+
         return newArticleCategoriesMap;
     }
 
@@ -104,16 +107,29 @@ public without sharing class UpdateKnowledgeArticlesBatch implements Database.Ba
             if (existingArticleCategoryMap.containsKey(articleId)) {
                 String existingCategories = existingArticleCategoryMap.get(articleId);
                 if (!String.isBlank(existingCategories)) {
-                    uniqueCategories.addAll(existingCategories.split(','));
+                    for (String category : existingCategories.split(',')) {
+                        String trimmedExistingCategory = category.trim();
+                        if (!String.isBlank(trimmedExistingCategory)) {
+                            uniqueCategories.add(trimmedExistingCategory);
+                        }
+                    }
                 }
             }
 
-            uniqueCategories.addAll(newArticleCategoriesMap.get(articleId));
+            Set<String> newCategories = newArticleCategoriesMap.get(articleId);
+            for (String newCategory : newCategories) {
+                String trimmedNewCategory = newCategory.trim();
+                if (!String.isBlank(trimmedNewCategory) && !uniqueCategories.contains(trimmedNewCategory)) {
+                    uniqueCategories.add(trimmedNewCategory);
+                }
+            }
+
             String concatenatedCategories = String.join(new List<String>(uniqueCategories), ', ').trim();
 
             Knowledge__kav article = new Knowledge__kav(Id = articleId, NKS_Category__c = concatenatedCategories);
             articlesToUpdate.add(article);
         }
+
         return articlesToUpdate;
     }
 
