@@ -124,7 +124,7 @@ public without sharing class UpdateKnowledgeArticlesBatch implements Database.Ba
                 }
             }
 
-            String concatenatedCategories = String.join(new List<String>(uniqueCategories), ', ').trim();
+            String concatenatedCategories = String.join(uniqueCategories, ', ').trim();
 
             Knowledge__kav article = new Knowledge__kav(Id = articleId, NKS_Category__c = concatenatedCategories);
             articlesToUpdate.add(article);
@@ -137,7 +137,7 @@ public without sharing class UpdateKnowledgeArticlesBatch implements Database.Ba
         logger.error(
             'scope: ' +
                 scope +
-                ' One or more Knowledge article records failed to update. Error message: ' +
+                ' One or more Knowledge article records failed to update NKS_Category field. Error message: ' +
                 e.getMessage() +
                 '. Stacktrace string: ' +
                 e.getStackTraceString(),
