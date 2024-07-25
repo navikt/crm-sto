@@ -15,27 +15,6 @@ public class UpdateKnowledgeArticlesBatchTest {
             knowledgeArticles.add(article);
         }
         insert knowledgeArticles;
-        /*
-        List<Knowledge__DataCategorySelection> dataCategorySelections = new List<Knowledge__DataCategorySelection>();
-        for (Knowledge__kav article : knowledgeArticles) {
-            Knowledge__DataCategorySelection selection = new Knowledge__DataCategorySelection(
-                ParentId = article.Id,
-                DataCategoryName = 'Sykepenger',
-                DataCategoryGroupName = 'Tema'
-            );
-            dataCategorySelections.add(selection);
-        }
-
-        // Add some more selections to same articles to see if database lock errors occur
-        for (Knowledge__kav article : knowledgeArticles) {
-            Knowledge__DataCategorySelection selection = new Knowledge__DataCategorySelection(
-                ParentId = article.Id,
-                DataCategoryName = 'Dagpenger',
-                DataCategoryGroupName = 'Tema'
-            );
-            dataCategorySelections.add(selection);
-        }
-        insert dataCategorySelections;*/
     }
 
     // Hacky tests to get code coverage.
@@ -45,22 +24,6 @@ public class UpdateKnowledgeArticlesBatchTest {
         Test.startTest();
         Database.executeBatch(new UpdateKnowledgeArticlesBatch(), 20);
         Test.stopTest();
-
-        /*List<Knowledge__kav> updatedArticles = [
-            SELECT Id, Title, NKS_Category__c
-            FROM Knowledge__kav
-            WHERE Id IN :knowledgeArticles
-        ];
-
-        System.assertEquals(3, updatedArticles.size(), 'Number of updated articles should match test data');
-        for (Knowledge__kav article : updatedArticles) {
-            Assert.areNotEqual(null, article.NKS_Category__c, 'NKS_Category__c should not be null');
-            Assert.areEqual(
-                'test',
-                article.NKS_Category__c.substring(0, 4),
-                'NKS_Category__c first word should be "test"'
-            );
-        }*/
     }
 
     @isTest
