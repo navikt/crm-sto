@@ -60,6 +60,7 @@ export default class CrmStoMessaging extends LightningElement {
     acceptedMedskriv = false;
     medskriv = false;
     threadType;
+    userInput;
 
     labels = {
         MEDSKRIV_TEXT,
@@ -245,13 +246,19 @@ export default class CrmStoMessaging extends LightningElement {
     get textTemplate() {
         let salutation = this.userName == null ? 'Hei,' : 'Hei, ' + this.userName;
         let regards = 'Med vennlig hilsen';
+        let userText = '';
+
+        if (this.userInput != null) {
+            let reg = this.userInput.match(/(?:Hi,|Hei,).*?\n{1,}([\s\S]*?)\n{1,}(?:Kind regards|Med vennlig hilsen)/);
+            userText = reg ? reg[1].trim() : '';
+        }
 
         if (this.englishTextTemplate === true) {
-            salutation = this.userName == null ? 'Hi,' : 'Hi ' + this.userName + ',';
+            salutation = this.userName == null ? 'Hi,' : 'Hi, ' + this.userName;
             regards = 'Kind regards';
         }
 
-        return `${salutation}\n\n\n\n${regards}\n${this.supervisorName}\n${
+        return `${salutation}\n\n${userText}\n\n${regards}\n${this.supervisorName}\n${
             this.englishTextTemplate === true ? this.englishCompanyName : this.norwegianCompanyName
         }`;
     }
@@ -401,7 +408,8 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     handleEnglishEventTwo(event) {
-        this.englishTextTemplate = event.detail;
+        this.englishTextTemplate = event.detail.englishTextTemplate;
+        this.userInput = event.detail.userInput;
     }
 
     handleMedskrivClick() {
