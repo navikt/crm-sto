@@ -44,6 +44,7 @@ export default class CrmStoMessaging extends LightningElement {
     @api checkMedskriv = false;
     @api newDesign = false;
     @api submitButtonLabel;
+    @api isThread;
 
     wireField;
     accountId;

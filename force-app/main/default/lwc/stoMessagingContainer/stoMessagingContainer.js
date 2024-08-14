@@ -196,6 +196,18 @@ export default class StoMessagingContainer extends LightningElement {
         return this.template.querySelector('c-nks-notification-box');
     }
 
+    get topButtonStyle() {
+        return `slds-button slds-button_brand slds-button_stretch slds-grid slds-align-center slds-grid_align-center top-button${
+            this.isThread ? ' threadResponsiveBtn' : ' caseResponsiveBtn'
+        }`;
+    }
+
+    get bottomButtonStyle() {
+        return `slds-button slds-button_outline-brand slds-button_stretch slds-grid slds-align-center slds-grid_align-center bottom-button${
+            this.isThread ? ' threadResponsiveBtn' : ' caseResponsiveBtn'
+        }`;
+    }
+
     initializeCaseId() {
         if (this.isThread) {
             getRelatedRecord({
