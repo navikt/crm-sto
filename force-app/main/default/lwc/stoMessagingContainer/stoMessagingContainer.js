@@ -206,7 +206,7 @@ export default class StoMessagingContainer extends LightningElement {
 
     getButtonStyle(baseClass) {
         return `${baseClass} slds-button slds-button_stretch slds-grid slds-grid_align-center ${
-            this.isThread ? 'threadResponsiveBtn' : 'caseResponsiveBtn'
+            this.isThread ? 'thread-responsive-button' : 'case-responsive-button'
         }`;
     }
 
