@@ -197,14 +197,16 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     get topButtonStyle() {
-        return `slds-button slds-button_brand slds-button_stretch slds-grid slds-align-center slds-grid_align-center top-button${
-            this.isThread ? ' threadResponsiveBtn' : ' caseResponsiveBtn'
-        }`;
+        return this.getButtonStyle('slds-button_brand top-button');
     }
 
     get bottomButtonStyle() {
-        return `slds-button slds-button_outline-brand slds-button_stretch slds-grid slds-align-center slds-grid_align-center bottom-button${
-            this.isThread ? ' threadResponsiveBtn' : ' caseResponsiveBtn'
+        return this.getButtonStyle('slds-button_outline-brand bottom-button');
+    }
+
+    getButtonStyle(baseClass) {
+        return `${baseClass} slds-button slds-button_stretch slds-grid slds-grid_align-center ${
+            this.isThread ? 'threadResponsiveBtn' : 'caseResponsiveBtn'
         }`;
     }
 
