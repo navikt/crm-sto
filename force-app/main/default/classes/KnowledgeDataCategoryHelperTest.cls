@@ -12,4 +12,11 @@ public with sharing class KnowledgeDataCategoryHelperTest {
             Assert.areNotEqual(null, result.get(knownCategory), 'The known category should have a label.');
         }
     }
+
+    @IsTest
+    static void testGetAllCategories() {
+       Test.startTest();
+       KnowledgeDataCategoryHelper.getAllCategories (new List<DataCategory>());
+       Test.stopTest();
+    } 
 }
