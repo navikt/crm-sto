@@ -10,10 +10,10 @@ public with sharing class EntitlementFixBatchTest {
         Database.QueryLocator queryLocator = batch.start(null);
         Database.BatchableContext context = new MockBatchableContext();
 
-        try {
+        try { 
             batch.execute(context, new List<SObject>());
         } catch (Exception ex) {
-            System.debug('Exception caught: ' + ex.getMessage());
+            Assert.areEqual( 'List has no rows for assignment to SObject', ex.getMessage());
         }
 
         batch.finish(context);

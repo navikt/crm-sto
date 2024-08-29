@@ -16,7 +16,9 @@ public with sharing class KnowledgeDataCategoryHelperTest {
     @IsTest
     static void testGetAllCategories() {
        Test.startTest();
-       KnowledgeDataCategoryHelper.getAllCategories (new List<DataCategory>());
+       List<DataCategory> result = KnowledgeDataCategoryHelper.getAllCategories (new List<DataCategory>());
        Test.stopTest();
+
+       Assert.areNotEqual(null, result, 'Result should not be null.');
     } 
 }
