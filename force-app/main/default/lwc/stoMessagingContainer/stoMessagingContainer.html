@@ -8,10 +8,10 @@
                     <template for:each={topButtonConfigs} for:item="config">
                         <lightning-layout-item
                             key={config.id}
-                            class="slds-size_4-of-12 slds-var-p-right_medium flowButton"
+                            class="slds-size_4-of-12 slds-var-p-right_medium flow-button"
                         >
                             <button
-                                class="slds-button slds-button_brand slds-button_stretch top-button"
+                                class={topButtonStyle}
                                 onclick={config.onclick}
                                 disabled={config.disabled}
                                 aria-expanded={config.expanded}
@@ -48,6 +48,7 @@
             submit-button-label={labels.SHARE_WITH_USER_LABEL}
             onsubmitfromparent={handleSubmit}
             new-design
+            is-thread={isThread}
         >
             <div slot="buttonContainer">
                 <lightning-layout class="slds-float_right">
@@ -57,14 +58,15 @@
                             class="slds-var-p-right_small"
                             data-expanded={config.expanded}
                         >
-                            <lightning-button
-                                class="bottom-button"
-                                label={config.label}
+                            <button
+                                class={bottomButtonStyle}
                                 data-id={config.id}
-                                variant="brand-outline"
                                 onclick={config.onclick}
                                 aria-expanded={config.expanded}
-                            ></lightning-button>
+                                type="button"
+                            >
+                                {config.label}
+                            </button>
                         </lightning-layout-item>
                     </template>
                 </lightning-layout>
