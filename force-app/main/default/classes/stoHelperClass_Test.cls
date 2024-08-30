@@ -113,4 +113,30 @@ public with sharing class stoHelperClass_Test {
         System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
     }
+
+    @isTest 
+    static void closeThreadTest () {
+        Contact personContact = [
+            SELECT Id, AccountId
+            FROM Contact
+            WHERE Account.CRM_Person__r.Name = '12345678910'
+            LIMIT 1
+        ];
+
+        Thread__c t = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            personContact.AccountId,
+            personContact.Id,
+            true,
+            'STO'
+        );
+
+        Test.startTest();
+        stoHelperClass.closeThread(t.Id);
+        Test.stopTest();
+
+        Assert.areEqual(false, t.CRM_isActive__c);
+    }
+    
 }
