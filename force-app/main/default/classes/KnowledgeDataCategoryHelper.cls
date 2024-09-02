@@ -45,6 +45,7 @@ public without sharing class KnowledgeDataCategoryHelper {
         return categoryLabelsByName;
     }
 
+    @TestVisible
     private static List<DataCategory> getAllCategories(List<DataCategory> categories) {
         List<DataCategory> allCategories = new List<DataCategory>();
 
@@ -52,7 +53,6 @@ public without sharing class KnowledgeDataCategoryHelper {
             allCategories.add(category);
             allCategories.addAll(getAllCategories(category.getChildCategories()));
         }
-
         return allCategories;
     }
 }
