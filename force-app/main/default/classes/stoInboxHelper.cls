@@ -46,7 +46,7 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
-            inboxlist.add(formatConversationNote(t));
+            inboxlist.add(formatConversationNote(t, true));
         }
         return inboxlist;
     }
@@ -96,7 +96,7 @@ public with sharing class stoInboxHelper {
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
-            inboxlist.add(formatConversationNote(t));
+            inboxlist.add(formatConversationNote(t, false));
         }
         return inboxlist;
     }
@@ -128,14 +128,14 @@ public with sharing class stoInboxHelper {
         return null;
     }
 
-    public static thread formatConversationNote(Conversation_Note__c t) {
+    public static thread formatConversationNote(Conversation_Note__c t, Boolean read) {
         thread i = new thread();
         message m = new message();
         i.name = t.STO_External_Name__c;
         i.recordId = t.Id;
         i.lastModifiedDate = t.LastModifiedDate;
         i.closeDate = t.CRM_Date_Time_Registered__c;
-        i.numberOfUnreadMessages = 1;
+        i.numberOfUnreadMessages = read ? 0 : 1;
         i.latestMessageDate = t.CRM_Date_Time_Registered__c;
         i.objectName = 'samtalereferat';
         i.status = 'Avsluttet';

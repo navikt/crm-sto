@@ -1,5 +1,9 @@
 <template>
+    <lightning-layout lwc:if={isThreadIdNull} class="threadNotFound">
+        <lightning-layout-item> Du har ikke tilgang til dialogen </lightning-layout-item>
+    </lightning-layout>
     <c-crm-messaging-message-component
+        lwc:else
         tabindex="0"
         record-id={threadId}
         single-thread={singleThread}
@@ -12,13 +16,13 @@
         show-quick
     >
         <c-crm-sto-messaging-toolbar slot="toolbar" object-api-name={objectApiName}></c-crm-sto-messaging-toolbar>
-        <template if:true={showMedskrivBlocker}>
+        <template lwc:if={showMedskrivBlocker}>
             <div slot="messages">
                 <div class="slds-align_absolute-center slds-grid_vertical medskrivBlocker scroller">
-                    <p class="slds-text-body_regular slds-m-bottom_small">Brukeren har ikke samtykket til medskriv</p>
+                    <p class="slds-text-body_regular slds-var-m-bottom_small">{labels.MEDSKRIV_TEXT}</p>
                     <lightning-button
                         variant="brand"
-                        label="Vis melding"
+                        label={labels.MEDSKRIV_LABEL}
                         onclick={handleMedskrivClick}
                     ></lightning-button>
                 </div>

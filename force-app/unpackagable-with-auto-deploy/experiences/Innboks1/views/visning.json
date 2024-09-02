@@ -110,6 +110,14 @@
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
                                     "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:refreshCookie",
+                                    "id": "2002a436-fe32-43f4-9c1c-c53ae189d94e",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
                                 }
                             ],
                             "id": "2bac5174-1f8b-476f-8601-9277e07b39f9",

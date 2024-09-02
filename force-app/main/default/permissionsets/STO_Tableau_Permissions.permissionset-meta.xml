@@ -18,12 +18,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ReportingData__c.CRM_Category__c</field>
+        <field>ReportingData__c.CRM_Category_Index__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ReportingData__c.CRM_Category_Index__c</field>
+        <field>ReportingData__c.CRM_Category__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -39,6 +39,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ReportingData__c.STO_MilestoneId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NavTask__c.NKS_Experience_Site_Source__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>

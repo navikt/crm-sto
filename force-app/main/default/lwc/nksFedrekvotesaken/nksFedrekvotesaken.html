@@ -1,0 +1,103 @@
+<template>
+    <div style="margin-bottom: 4rem">
+        <div>
+            <div class="header">
+                <h1 class="navds-heading navds-heading--2xlarge">Berørt av fedrekvotesaken?</h1>
+            </div>
+            <div class="text-center sizeAround">
+                <template lwc:if={loading}>
+                    <svg
+                        tabindex="0"
+                        aria-labelledby="loader-navds-id-4"
+                        class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
+                        focusable="false"
+                        viewBox="0 0 50 50"
+                        preserveAspectRatio="xMidYMid"
+                    >
+                        <title id="loader-navds-id-4">Laster</title>
+                        <circle
+                            class="navds-loader__background"
+                            xmlns="http://www.w3.org/2000/svg"
+                            cx="25"
+                            cy="25"
+                            r="20"
+                            fill="none"
+                        ></circle>
+                        <circle
+                            class="navds-loader__foreground"
+                            cx="25"
+                            cy="25"
+                            r="20"
+                            fill="none"
+                            stroke-dasharray="50 155"
+                        ></circle>
+                    </svg>
+                </template>
+                <template lwc:else>
+                    <template lwc:if={hasNavTask}>
+                        <p style="margin: 1.5rem" aria-live="polite">
+                            Saken din er registrert hos oss. Du finner oversikt over informasjonen du har gitt oss i
+                            innboksen din som en kvittering, eller referat fra tidligere dialog. Vi tar kontakt hvis vi
+                            trenger flere opplysninger fra deg.
+                            <br />
+                            <br />
+                            Trenger du å endre på informasjonen som du allerede har sendt inn, ber vi om at du&nbsp;
+                            <a href="https://www.nav.no/kontaktoss">kontakter oss</a>. Saksbehandlingstid er opp til 8
+                            måneder.
+                        </p>
+                    </template>
+                    <template lwc:else>
+                        <div class="descholder slds-var-m-bottom_large">
+                            <p class="navds-body-short navds-body-short--small blokk-xs description">
+                                Hvis du kan være berørt av fedrekvotesaken, ber vi om at du fyller ut dette skjemaet så
+                                vi kan vurdere saken din. Du blir kontaktet hvis vi trenger flere opplysninger fra deg.
+                            </p>
+                        </div>
+                        <div class="text-start addMargin navds-form-field navds-form-field--medium">
+                            <c-community-error-summary
+                                error-list={errorList}
+                                onclickedevent={handleErrorClick}
+                                class="errorSummary"
+                                style="text-align: left"
+                            >
+                            </c-community-error-summary>
+                            <div class="childWrap">
+                                <template for:each={childList} for:item="child">
+                                    <div key={child} class="spacing">
+                                        <c-nks-fedrekvotesaken-child
+                                            data-id={child}
+                                            class="children"
+                                        ></c-nks-fedrekvotesaken-child>
+                                    </div>
+                                </template>
+                            </div>
+                            <c-ds-button
+                                class="removeMargin"
+                                variant="tertiary"
+                                size="medium"
+                                text="Legg til et barn til"
+                                icon={plusCircle}
+                                onbuttonclick={addChild}
+                            ></c-ds-button>
+
+                            <c-ds-text-field
+                                type="tel"
+                                maxlength="12"
+                                class="phoneNumber"
+                                required="true"
+                                label="Ditt telefonnummer"
+                                style="width: 195.2px; margin-bottom: 1rem; margin-top: 2rem"
+                            ></c-ds-text-field>
+                            <c-ds-button
+                                variant="primary"
+                                size="medium"
+                                text="Send"
+                                onbuttonclick={validateInputs}
+                            ></c-ds-button>
+                        </div>
+                    </template>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>
