@@ -27,6 +27,8 @@
     <forgotPasswordTemplate>unfiled$public/CommunityForgotPasswordEmailTemplate</forgotPasswordTemplate>
     <gatherCustomerSentimentData>false</gatherCustomerSentimentData>
     <networkMemberGroups>
+        <permissionSet>STO_Experience</permissionSet>
+        <permissionSet>CRM_ManageCommunities</permissionSet>
         <profile>admin</profile>
         <!--<profile>NAV Administrator - Modify all data</profile>-->
         <!--<profile>Delegated Administrator - Salesforce</profile>-->
@@ -42,7 +44,8 @@
     <selfRegistration>false</selfRegistration>
     <sendWelcomeEmail>true</sendWelcomeEmail>
     <site>Innboks</site>
-    <status>UnderConstruction</status>
+    <siteArchiveStatus>NotArchived</siteArchiveStatus>
+    <status>Live</status>
     <tabs>
         <defaultTab>home</defaultTab>
         <standardTab>Chatter</standardTab>
