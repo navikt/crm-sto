@@ -415,4 +415,8 @@ export default class CrmStoMessaging extends LightningElement {
     handleSubmit() {
         this.dispatchEvent(new CustomEvent('submitfromparent'));
     }
+
+    forwardEvent(event) {
+        this.dispatchEvent(new CustomEvent(event.type));
+    }
 }
