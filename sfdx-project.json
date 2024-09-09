@@ -9,7 +9,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.220.0.LATEST"
+                    "versionNumber": "0.225.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
@@ -25,11 +25,11 @@
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.109.0.LATEST"
+                    "versionNumber": "0.123.0.LATEST"
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.27.0.LATEST"
+                    "versionNumber": "0.30.0.LATEST"
                 },
                 {
                     "package": "crm-platform-oppgave",
@@ -65,7 +65,7 @@
                 },
                 {
                     "package": "crm-nks-base-components",
-                    "versionNumber": "0.58.0.LATEST"
+                    "versionNumber": "0.63.0.LATEST"
                 },
                 {
                     "package": "crm-nks-chat",
