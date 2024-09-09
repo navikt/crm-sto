@@ -52,13 +52,9 @@
             is-thread={isThread}
         >
             <div slot="buttonContainer">
-                <lightning-layout class="slds-float_right">
+                <lightning-layout class="slds-float_right button-container">
                     <template for:each={bottomButtonConfigs} for:item="config">
-                        <lightning-layout-item
-                            key={config.id}
-                            class="slds-var-p-right_small"
-                            data-expanded={config.expanded}
-                        >
+                        <lightning-layout-item key={config.id} data-expanded={config.expanded}>
                             <button
                                 class={bottomButtonStyle}
                                 data-id={config.id}

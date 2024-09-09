@@ -1,3 +1,5 @@
+@import 'c/cssLibrary';
+
 .top-button {
     --slds-c-button-brand-color-background: #99c3ff;
     --slds-c-button-brand-color-border: #99c3ff;
@@ -22,20 +24,4 @@
 
 .flow-button:last-child {
     padding-right: 0px;
-}
-
-@media only screen and (max-width: 2200px) {
-    .case-responsive-button {
-        height: 3rem; /* Set a fixed height for buttons on smaller screens */
-        line-height: 1; /* Reduce space between lines on smaller screens */
-        padding: 4px;
-    }
-}
-
-@media only screen and (max-width: 1920px) {
-    .thread-responsive-button {
-        height: 3rem;
-        line-height: 1;
-        padding: 4px;
-    }
 }

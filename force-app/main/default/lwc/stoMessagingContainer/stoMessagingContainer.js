@@ -197,11 +197,11 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     get topButtonStyle() {
-        return this.getButtonStyle('slds-button_brand top-button');
+        return this.getButtonStyle('slds-button_brand top-button custom-button');
     }
 
     get bottomButtonStyle() {
-        return this.getButtonStyle('slds-button_outline-brand bottom-button');
+        return this.getButtonStyle('slds-button_outline-brand bottom-button custom-button');
     }
 
     getButtonStyle(baseClass) {
