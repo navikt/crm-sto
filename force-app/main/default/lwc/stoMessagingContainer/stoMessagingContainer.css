@@ -25,3 +25,7 @@
 .flow-button:last-child {
     padding-right: 0px;
 }
+
+.button-container {
+    gap: 0.5rem;
+}
