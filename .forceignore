@@ -132,3 +132,6 @@ sto_process*
 # **/components/SiteHeader.component
 # **/components/SiteLogin.component
 # **/components/SitePoweredBy.component
+**/tsconfig.json
+
+**/*.ts

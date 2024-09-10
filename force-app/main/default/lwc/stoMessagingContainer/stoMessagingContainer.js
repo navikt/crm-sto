@@ -279,4 +279,8 @@ export default class StoMessagingContainer extends LightningElement {
             publishToAmplitude('STO', { type: 'Complete/Send pressed' });
         }
     }
+
+    handleClosed() {
+        refreshApex(this.wiredCase);
+    }
 }
