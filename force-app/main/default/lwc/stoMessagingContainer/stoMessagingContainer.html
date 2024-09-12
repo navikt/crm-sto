@@ -10,14 +10,13 @@
                             key={config.id}
                             class="slds-size_4-of-12 slds-var-p-right_medium flow-button"
                         >
-                            <button
-                                class={topButtonStyle}
+                            <c-nks-button
+                                class="top-button"
                                 onclick={config.onclick}
                                 disabled={config.disabled}
                                 aria-expanded={config.expanded}
-                            >
-                                {config.label}
-                            </button>
+                                button-label={config.label}
+                            ></c-nks-button>
                         </lightning-layout-item>
                     </template>
                 </lightning-layout>
@@ -55,15 +54,12 @@
                 <lightning-layout class="slds-float_right button-container">
                     <template for:each={bottomButtonConfigs} for:item="config">
                         <lightning-layout-item key={config.id} data-expanded={config.expanded}>
-                            <button
-                                class={bottomButtonStyle}
-                                data-id={config.id}
+                            <c-nks-button
+                                button-label={config.label}
+                                button-styling="secondary"
                                 onclick={config.onclick}
                                 aria-expanded={config.expanded}
-                                type="button"
-                            >
-                                {config.label}
-                            </button>
+                            ></c-nks-button>
                         </lightning-layout-item>
                     </template>
                 </lightning-layout>
