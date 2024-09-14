@@ -93,6 +93,13 @@ export default class StoMessagingContainer extends LightningElement {
                 expanded: this.showReserveButton.toString()
             },
             {
+                id: 'redact',
+                label: this.labels.SET_TO_REDACTION_LABEL,
+                disabled: false,
+                onclick: this.toggleButton.bind(this, 'Redact'),
+                expanded: this.showRedactButton.toString()
+            },
+            {
                 id: 'conditional',
                 label: this.isThread ? this.labels.TRANSFER_LABEL : this.labels.PUT_BACK_LABEL,
                 disabled: this.isThread ? this.transferDisabled : this.putBackDisabled,
@@ -100,13 +107,6 @@ export default class StoMessagingContainer extends LightningElement {
                     ? this.toggleButton.bind(this, 'Transfer')
                     : this.toggleButton.bind(this, 'PutBack'),
                 expanded: this.isThread ? this.showTransferButton.toString() : this.showPutBackButton.toString()
-            },
-            {
-                id: 'redact',
-                label: this.labels.SET_TO_REDACTION_LABEL,
-                disabled: false,
-                onclick: this.toggleButton.bind(this, 'Redact'),
-                expanded: this.showRedactButton.toString()
             }
         ];
     }
@@ -241,10 +241,13 @@ export default class StoMessagingContainer extends LightningElement {
             refreshApex(this.wiredCase);
             this.resetButtonVisibility();
             publishToAmplitude('STO', { type: `${this.label} pressed` });
-            handleShowNotifications(flowTitle, outputVariables, this.notificationBoxTemplate);
-            const publishNotification = getOutputVariableValue(outputVariables, 'Publish_Notification');
-            if (publishNotification) {
-                this.notificationBoxTemplate.scrollIntoView({ behavior: 'smooth' });
+
+            if (!outputVariables == null) {
+                handleShowNotifications(flowTitle, outputVariables, this.notificationBoxTemplate);
+                const publishNotification = getOutputVariableValue(outputVariables, 'Publish_Notification');
+                if (publishNotification) {
+                    this.notificationBoxTemplate.scrollIntoView({ behavior: 'smooth' });
+                }
             }
         }
     }
