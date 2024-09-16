@@ -62,6 +62,8 @@ export default class CrmStoMessaging extends LightningElement {
     medskriv = false;
     threadType;
     userInput;
+    showLanguageChangeModal = false;
+    resetTemplate = false;
 
     labels = {
         MEDSKRIV_TEXT,
@@ -245,23 +247,32 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get textTemplate() {
-        let salutation = this.userName == null ? 'Hei,' : 'Hei, ' + this.userName;
-        let regards = 'Med vennlig hilsen';
+        const defaultSalutation = this.englishTextTemplate ? 'Hi,' : 'Hei,';
+        const defaultRegards = this.englishTextTemplate ? 'Kind regards' : 'Med vennlig hilsen';
+        const companyName = this.englishTextTemplate ? this.englishCompanyName : this.norwegianCompanyName;
+
+        const salutation = this.userName ? `${defaultSalutation} ${this.userName}` : defaultSalutation;
+        let regards = defaultRegards;
         let userText = '';
-
-        if (this.userInput != null) {
-            let reg = this.userInput.match(/(?:Hi,|Hei,).*?\n{1,}([\s\S]*?)\n{1,}(?:Kind regards|Med vennlig hilsen)/);
-            userText = reg ? reg[1].trim() : '';
+        if (!this.resetTemplate) {
+            if (this.userInput) {
+                const regex = new RegExp(/(?:Hi,|Hei,).*?\n{1,}([\s\S]*?)\n{1,}(?:Kind regards|Med vennlig hilsen)/);
+                const match = this.userInput.match(regex);
+                if (match) {
+                    userText = match[1].trim();
+                    this.showLanguageChangeModal = false;
+                } else {
+                    this.showLanguageChangeModal = true;
+                }
+            }
+            if (this.showLanguageChangeModal) {
+                return this.userInput;
+            }
+        } else {
+            this.showLanguageChangeModal = false;
         }
 
-        if (this.englishTextTemplate === true) {
-            salutation = this.userName == null ? 'Hi,' : 'Hi, ' + this.userName;
-            regards = 'Kind regards';
-        }
-
-        return `${salutation}\n\n${userText}\n\n${regards}\n${this.supervisorName}\n${
-            this.englishTextTemplate === true ? this.englishCompanyName : this.norwegianCompanyName
-        }`;
+        return `${salutation}\n\n${userText}\n\n${regards}\n${this.supervisorName}\n${companyName}`;
     }
 
     get computeClasses() {
@@ -411,6 +422,8 @@ export default class CrmStoMessaging extends LightningElement {
     handleEnglishEventTwo(event) {
         this.englishTextTemplate = event.detail.englishTextTemplate;
         this.userInput = event.detail.userInput;
+        this.resetTemplate = event.detail.resetTemplate;
+        this.showLanguageChangeModal = event.detail._showLanguageChangeModal;
     }
 
     handleMedskrivClick() {
