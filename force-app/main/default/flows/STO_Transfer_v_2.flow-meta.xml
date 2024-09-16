@@ -273,7 +273,7 @@
         </fields>
         <nextOrFinishButtonLabel>Overfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <start>
         <locationX>254</locationX>
