@@ -34,7 +34,7 @@
             <assignToReference>NavTask.NKS_Comments__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Task_Description</elementReference>
+                <elementReference>Task_Description_1</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
