@@ -242,7 +242,7 @@ export default class StoMessagingContainer extends LightningElement {
             this.resetButtonVisibility();
             publishToAmplitude('STO', { type: `${this.label} pressed` });
 
-            if (!outputVariables == null) {
+            if (outputVariables != null) {
                 handleShowNotifications(flowTitle, outputVariables, this.notificationBoxTemplate);
                 const publishNotification = getOutputVariableValue(outputVariables, 'Publish_Notification');
                 if (publishNotification) {
