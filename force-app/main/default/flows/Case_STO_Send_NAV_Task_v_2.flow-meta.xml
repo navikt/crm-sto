@@ -34,7 +34,7 @@
             <assignToReference>NavTask.NKS_Comments__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Task_Description</elementReference>
+                <elementReference>Task_Description_1</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -488,6 +488,12 @@
                     <elementReference>Get_Thread.CRM_Theme__c</elementReference>
                 </value>
             </inputParameters>
+            <inputParameters>
+                <name>autoFocus</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <outputParameters>
@@ -691,6 +697,12 @@
                 <name>theme</name>
                 <value>
                     <elementReference>Get_Thread.CRM_Theme__c</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>autoFocus</name>
+                <value>
+                    <booleanValue>true</booleanValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
