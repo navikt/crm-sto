@@ -256,7 +256,10 @@ export default class CrmStoMessaging extends LightningElement {
         let userText = '';
         if (!this.resetTemplate) {
             if (this.userInput) {
-                const regex = new RegExp(/(?:Hi,|Hei,).*?\n{1,}([\s\S]*?)\n{1,}(?:Kind regards|Med vennlig hilsen)/);
+                let regStart = this.userName
+                    ? '(?:Hi,|Hei,)(?: ' + this.userName + '\\s*\\n)'
+                    : '(?:Hi,\\s*\\n|Hei,\\s*\\n)';
+                const regex = new RegExp(`${regStart}.*?([\\s\\S]*?)\\n{1,}(?:Kind regards|Med vennlig hilsen)`);
                 const match = this.userInput.match(regex);
                 if (match) {
                     userText = match[1].trim();
