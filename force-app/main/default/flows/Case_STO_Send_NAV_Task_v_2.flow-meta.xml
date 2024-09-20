@@ -172,7 +172,7 @@
             <assignToReference>NavTask.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Selected_Subtheme_SF_Id</elementReference>
+                <elementReference>Selected_Theme_SF_Id</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
