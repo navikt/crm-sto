@@ -64,6 +64,7 @@ export default class CrmStoMessaging extends LightningElement {
     userInput;
     showLanguageChangeModal = false;
     resetTemplate = false;
+    closeLanguageModal = false;
 
     labels = {
         MEDSKRIV_TEXT,
@@ -247,35 +248,41 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get textTemplate() {
-        const defaultSalutation = this.englishTextTemplate ? 'Hi,' : 'Hei,';
-        const defaultRegards = this.englishTextTemplate ? 'Kind regards' : 'Med vennlig hilsen';
-        const companyName = this.englishTextTemplate ? this.englishCompanyName : this.norwegianCompanyName;
-
+        const isEnglish = this.englishTextTemplate;
+        const defaultSalutation = isEnglish ? 'Hi,' : 'Hei,';
+        const defaultRegards = isEnglish ? 'Kind regards' : 'Med vennlig hilsen';
+        const companyName = isEnglish ? this.englishCompanyName : this.norwegianCompanyName;
         const salutation = this.userName ? `${defaultSalutation} ${this.userName}` : defaultSalutation;
-        let regards = defaultRegards;
         let userText = '';
-        if (!this.resetTemplate) {
-            if (this.userInput) {
-                let regStart = this.userName
-                    ? '(?:Hi,|Hei,)(?: ' + this.userName + '\\s*\\n)'
-                    : '(?:Hi,\\s*\\n|Hei,\\s*\\n)';
-                const regex = new RegExp(`${regStart}.*?([\\s\\S]*?)\\n{1,}(?:Kind regards|Med vennlig hilsen)`);
-                const match = this.userInput.match(regex);
-                if (match) {
-                    userText = match[1].trim();
-                    this.showLanguageChangeModal = false;
-                } else {
-                    this.showLanguageChangeModal = true;
-                }
+
+        if (!this.resetTemplate && this.userInput) {
+            const regCompanyName = isEnglish ? this.norwegianCompanyName : this.englishCompanyName;
+            const regStart = this.userName
+                ? `^(?:Hi,|Hei,)(?: ${this.userName}\\s*\\n)`
+                : '^(?:Hi,\\s*\\n|Hei,\\s*\\n)';
+            const regEnd = `.*?([\\s\\S]*?)\\n+(?:Kind regards\\s*|Med vennlig hilsen\\s*)(?:${this.supervisorName}\\s*)(?:${regCompanyName}\\s*)$`;
+
+            const regex = new RegExp(`${regStart}${regEnd}`);
+            const match = this.userInput.match(regex);
+
+            if (match) {
+                userText = match[1].trim();
+                this.showLanguageChangeModal = false;
+            } else {
+                this.showLanguageChangeModal = true;
             }
+
             if (this.showLanguageChangeModal) {
+                if (this.closeLanguageModal) {
+                    this.showLanguageChangeModal = false;
+                }
                 return this.userInput;
             }
         } else {
             this.showLanguageChangeModal = false;
         }
 
-        return `${salutation}\n\n${userText}\n\n${regards}\n${this.supervisorName}\n${companyName}`;
+        return `${salutation}\n\n${userText}\n\n${defaultRegards}\n${this.supervisorName}\n${companyName}`;
     }
 
     get computeClasses() {
@@ -426,7 +433,7 @@ export default class CrmStoMessaging extends LightningElement {
         this.englishTextTemplate = event.detail.englishTextTemplate;
         this.userInput = event.detail.userInput;
         this.resetTemplate = event.detail.resetTemplate;
-        this.showLanguageChangeModal = event.detail._showLanguageChangeModal;
+        this.closeLanguageModal = event.detail.closeLanguageModal;
     }
 
     handleMedskrivClick() {
