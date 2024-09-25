@@ -483,6 +483,10 @@
         <apexPage>UnderConstruction</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
+    <pageAccesses>
+        <apexPage>IdPortenTokenRefresh</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
     <tabVisibilities>
         <tab>standard-LiveChatTranscript</tab>
         <visibility>DefaultOff</visibility>

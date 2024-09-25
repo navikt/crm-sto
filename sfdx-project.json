@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.149.0.NEXT",
+            "versionNumber": "1.150.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
@@ -45,7 +45,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.109.0.LATEST"
+                    "versionNumber": "0.118.0.LATEST"
                 },
                 {
                     "package": "crm-henvendelse",

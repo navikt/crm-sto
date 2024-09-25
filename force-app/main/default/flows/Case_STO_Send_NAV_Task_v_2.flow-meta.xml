@@ -172,7 +172,7 @@
             <assignToReference>NavTask.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Selected_Subtheme_SF_Id</elementReference>
+                <elementReference>Selected_Theme_SF_Id</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -473,7 +473,7 @@
             <inputParameters>
                 <name>themeGroup</name>
                 <value>
-                    <elementReference>Get_Thread.CRM_Theme_Group__c</elementReference>
+                    <elementReference>NavTask.NKS_Theme_Group__c</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -485,13 +485,31 @@
             <inputParameters>
                 <name>theme</name>
                 <value>
-                    <elementReference>Get_Thread.CRM_Theme__c</elementReference>
+                    <elementReference>NavTask.NKS_Theme__c</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
                 <name>autoFocus</name>
                 <value>
                     <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>variant</name>
+                <value>
+                    <stringValue>HIDE_THEME_GROUP</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>subtheme</name>
+                <value>
+                    <elementReference>NavTask.NKS_Subtheme__c</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>subtype</name>
+                <value>
+                    <elementReference>NavTask.CRM_Subtype__c</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -526,7 +544,7 @@
             <inputParameters>
                 <name>theme</name>
                 <value>
-                    <elementReference>Get_Thread.CRM_Theme_Code__c</elementReference>
+                    <elementReference>Task_Theme_Code</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -703,6 +721,12 @@
                 <name>autoFocus</name>
                 <value>
                     <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>variant</name>
+                <value>
+                    <stringValue>HIDE_THEME_GROUP</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
