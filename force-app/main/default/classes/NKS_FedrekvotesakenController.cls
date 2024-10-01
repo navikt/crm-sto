@@ -3,6 +3,16 @@ public without sharing class NKS_FedrekvotesakenController {
 
     @AuraEnabled
     public static Id createNavTask(String jsonData) {
+        if (hasExistingNavTasks()) {
+            logger.error(
+                'User already has exsisting Nav task related to fedrekvotesaken',
+                null,
+                CRM_ApplicationDomain.Domain.NKS
+            );
+            logger.publish();
+            return '';
+        }
+
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
         if (fedrekvoteData == null) {
             logger.error('Fedrekvotedata from LWC was null.', null, CRM_ApplicationDomain.Domain.NKS);

@@ -52,6 +52,13 @@ public with sharing class stoHelperClass {
     public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type) {
         String relatedObjId;
         Thread__c thread;
+        List<stoInboxHelper.Thread> openThreads = getOpenThreads(theme);
+
+        if (openThreads != null && openThreads.size() > 2) {
+            logger.error('More than three threads in the same category', null, CRM_ApplicationDomain.Domain.NKS);
+            logger.publish();
+            throw new threadOrMessageException();
+        }
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
         thread = createThread(null, theme, personUser, medskriv, type);

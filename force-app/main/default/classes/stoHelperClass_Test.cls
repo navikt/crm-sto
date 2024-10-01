@@ -99,6 +99,24 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
+    static void createThreadWithCaseMoreThanThreeThreadsErrorTest() {
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+        Exception ex;
+
+        Test.startTest();
+        try {
+            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+        } catch (Exception e) {
+            ex = e;
+        }
+        Test.stopTest();
+
+        Assert.areNotEqual(null, ex);
+    }
+
+    @isTest
     static void getSTONewsTest() {
         Test.startTest();
         List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'STO');
@@ -114,8 +132,8 @@ public with sharing class stoHelperClass_Test {
         Test.stopTest();
     }
 
-    @isTest 
-    static void closeThreadTest () {
+    @isTest
+    static void closeThreadTest() {
         Contact personContact = [
             SELECT Id, AccountId
             FROM Contact
@@ -138,5 +156,4 @@ public with sharing class stoHelperClass_Test {
 
         Assert.areEqual(false, t.CRM_isActive__c);
     }
-    
 }
