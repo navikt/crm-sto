@@ -16,7 +16,8 @@
         "activateMock": "sf apex run -f post-scratch/activateMock.cls",
         "deactivateMock": "sf apex run -f post-scratch/deactivateMock.cls",
         "scratchSetup": "sf apex run -f post-scratch/scratchSetup.cls && sf apex run -f post-scratch/serviceResource.cls && sf apex run -f dummy-data/GenerateData.apex",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "deployUnpackaged": "sh post-scratch/deployUnpackaged.sh"
     },
     "engines": {
         "node": ">= 16.0.0",

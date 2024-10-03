@@ -75,6 +75,7 @@ To set up the "innboks" experience you need to go through a couple of easy steps
     1. Gå tilbake til All Sites og åpne builderen
     1. Publish siden
 1. Gå til kontoen Doktor Proktor for å logge inn i innboksen
+1. For å få til routing av henvendelse som blir sendt inn, må det kjøres `npm run deployUnpackaged`.
 
 ## Sider i innboksen
 
