@@ -52,9 +52,8 @@ public with sharing class stoHelperClass {
     public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type) {
         String relatedObjId;
         Thread__c thread;
-        List<stoInboxHelper.Thread> openThreads = getOpenThreads(theme);
 
-        if (openThreads != null && openThreads.size() > 2) {
+        if (hasMoreThanThreeThreads(theme)) {
             logger.error('More than three threads in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
             throw new threadOrMessageException();
@@ -231,5 +230,9 @@ public with sharing class stoHelperClass {
         }
     }
     public class threadOrMessageException extends Exception {
+    }
+
+    private static Boolean hasMoreThanThreeThreads(String theme) {
+        return [SELECT COUNT() FROM Thread__c WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme] > 2;
     }
 }
