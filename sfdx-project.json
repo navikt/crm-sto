@@ -9,11 +9,11 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.225.0.LATEST"
+                    "versionNumber": "0.226.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
-                    "versionNumber": "0.37.0.LATEST"
+                    "versionNumber": "0.38.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -49,7 +49,7 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.134.0.LATEST"
+                    "versionNumber": "0.144.0.LATEST"
                 },
                 {
                     "package": "crm-sf-saf",
@@ -68,12 +68,12 @@
                     "versionNumber": "0.65.0.LATEST"
                 },
                 {
-                    "package": "crm-nks-chat",
+                    "package": "crm-nks-survey",
                     "versionNumber": "0.10.0.LATEST"
                 },
                 {
-                    "package": "crm-nks-survey",
-                    "versionNumber": "0.10.0.LATEST"
+                    "package": "crm-nks-chat",
+                    "versionNumber": "0.40.0.LATEST"
                 }
             ]
         }

@@ -1,8 +1,40 @@
 public without sharing class NKS_FedrekvotesakenController {
     private static LoggerUtility logger = new LoggerUtility('Fedrekvotesaken');
 
+    private static User accountAndContactId {
+        get {
+            if (accountAndContactId == null) {
+                accountAndContactId = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+            }
+            return accountAndContactId;
+        }
+        set {
+        }
+    }
+
+    private static NavUnit__c navUnit {
+        get {
+            if (navUnit == null) {
+                navUnit = [SELECT Id, INT_UnitNumber__c FROM NavUnit__c WHERE INT_UnitNumber__c = '4863' LIMIT 1];
+            }
+            return navUnit;
+        }
+        set {
+        }
+    }
+
     @AuraEnabled
     public static Id createNavTask(String jsonData) {
+        if (hasExistingNavTasks()) {
+            logger.error(
+                'User already has exsisting Nav task related to fedrekvotesaken',
+                null,
+                CRM_ApplicationDomain.Domain.NKS
+            );
+            logger.publish();
+            return '';
+        }
+
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
         if (fedrekvoteData == null) {
             logger.error('Fedrekvotedata from LWC was null.', null, CRM_ApplicationDomain.Domain.NKS);
@@ -10,14 +42,12 @@ public without sharing class NKS_FedrekvotesakenController {
             return '';
         }
 
-        User personUser = getAccountAndContactId();
         Common_Code__c commonCode = getThemeAndSubTheme();
-        NavUnit__c navUnit = getNavUnit();
 
         NavTask__c task = new NavTask__c();
         task.Name = 'Vurder henvendelse';
         task.CRM_NoPersonInformation__c = false;
-        task.CRM_Account__c = personUser?.AccountId;
+        task.CRM_Account__c = accountAndContactId?.AccountId;
         task.NKS_Theme__c = commonCode?.CRM_Parent_Code__c;
         task.NKS_TaskType__c = getType();
         task.CRM_Priority__c = 'LAV';
@@ -37,7 +67,7 @@ public without sharing class NKS_FedrekvotesakenController {
 
             thread = createSTBThread(
                 outputTask.Id,
-                personUser,
+                accountAndContactId,
                 navUnit.INT_UnitNumber__c,
                 commonCode.CRM_Parent_Code__c
             );
@@ -88,8 +118,8 @@ public without sharing class NKS_FedrekvotesakenController {
     // Max create 1 NavTask per user. Filter on createddate as extra security.
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
-        Id accountId = getAccountAndContactId()?.AccountId;
-        Id navUnit = getNavUnit()?.Id;
+        Id accountId = accountAndContactId?.AccountId;
+        Id navUnit = navUnit?.Id;
         List<NavTask__c> existingNavTasks = [
             SELECT Id
             FROM NavTask__c
@@ -99,10 +129,6 @@ public without sharing class NKS_FedrekvotesakenController {
                 AND NKS_Experience_Site_Source__c = 'Fedrekvotesaken'
         ];
         return existingNavTasks.size() > 0;
-    }
-
-    private static NavUnit__c getNavUnit() {
-        return [SELECT Id, INT_UnitNumber__c FROM NavUnit__c WHERE INT_UnitNumber__c = '4863' LIMIT 1];
     }
 
     private static Id getType() {
@@ -116,11 +142,6 @@ public without sharing class NKS_FedrekvotesakenController {
             WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Gjelder'
             LIMIT 1
         ];
-    }
-
-    // TODO: Consider making this and other methods static to reduce load time and only call once.
-    private static User getAccountAndContactId() {
-        return [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
     }
 
     private static Thread__c createSTBThread(String relatedObjId, User personUser, String unitNumber, Id theme) {

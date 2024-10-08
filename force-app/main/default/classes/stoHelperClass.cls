@@ -53,6 +53,12 @@ public with sharing class stoHelperClass {
         String relatedObjId;
         Thread__c thread;
 
+        if (hasMoreThanThreeThreads(theme)) {
+            logger.error('More than three threads in the same category', null, CRM_ApplicationDomain.Domain.NKS);
+            logger.publish();
+            throw new threadOrMessageException();
+        }
+
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
         thread = createThread(null, theme, personUser, medskriv, type);
         createMessage(thread, msgText, personUser.ContactId);
@@ -224,5 +230,9 @@ public with sharing class stoHelperClass {
         }
     }
     public class threadOrMessageException extends Exception {
+    }
+
+    private static Boolean hasMoreThanThreeThreads(String theme) {
+        return [SELECT COUNT() FROM Thread__c WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme] > 2;
     }
 }
