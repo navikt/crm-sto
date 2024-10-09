@@ -35,6 +35,18 @@ const englishCompanyTranslations = {
     Ytelseslinjen: 'NAV Benefits Administration'
 };
 
+const norwegianCompanyNameTranslations = {
+    'Arbeid og ytelser': 'Work and Benefits',
+    'Familie- og pensjonsytelser': 'Family Benefits and Pensions',
+    Hjelpemiddelsentral: 'Department of assistive technology',
+    Klageinstans: 'Appeals',
+    Kontaktsenter: 'Call and Service Center',
+    'Kontroll Analyse': 'Control Analysis',
+    Kontroll: 'Control',
+    Tiltak: 'Department for employment measures',
+    Ytelseslinjen: 'Benefits Administration'
+};
+
 export default class CrmStoMessaging extends LightningElement {
     @api recordId;
     @api objectApiName;
@@ -61,6 +73,7 @@ export default class CrmStoMessaging extends LightningElement {
     acceptedMedskriv = false;
     medskriv = false;
     threadType;
+    isThreadIdNull = false;
 
     labels = {
         MEDSKRIV_TEXT,
@@ -172,7 +185,7 @@ export default class CrmStoMessaging extends LightningElement {
             }
             return this.companyName;
         } catch (error) {
-            console.log('Problem getting Norwegian company name: ' + error);
+            console.error('Problem getting Norwegian company name: ' + error);
             return '';
         }
     }
@@ -206,31 +219,15 @@ export default class CrmStoMessaging extends LightningElement {
                 //'NAV Øst i Agder'
             ];
 
-            if (this.norwegianCompanyName.includes('Arbeid og ytelser')) {
-                ecn = this.norwegianCompanyName.replace('Arbeid og ytelser', 'Work and Benefits');
-            } else if (this.norwegianCompanyName.includes('Familie- og pensjonsytelser')) {
-                ecn = this.norwegianCompanyName.replace('Familie- og pensjonsytelser', 'Family Benefits and Pensions');
-            } else if (this.norwegianCompanyName.includes('Hjelpemiddelsentral')) {
-                ecn = this.norwegianCompanyName.replace('Hjelpemiddelsentral', 'Department of assistive technology');
-            } else if (this.norwegianCompanyName.includes('Klageinstans')) {
-                ecn = this.norwegianCompanyName.replace('Klageinstans', 'Appeals');
-            } else if (this.norwegianCompanyName.includes('Kontaktsenter')) {
-                ecn = this.norwegianCompanyName.replace('Kontaktsenter', 'Call and Service Center');
-            } else if (this.norwegianCompanyName.includes('Kontroll Analyse')) {
-                ecn = this.norwegianCompanyName.replace('Kontroll Analyse', 'Control Analysis');
-            } else if (this.norwegianCompanyName.includes('Kontroll')) {
-                ecn = this.norwegianCompanyName.replace('Kontroll', 'Control');
-            } else if (this.norwegianCompanyName.includes('Tiltak')) {
-                ecn = this.norwegianCompanyName.replace('Tiltak', 'Department for employment measures');
-            } else if (this.norwegianCompanyName.includes('Ytelseslinjen')) {
-                ecn = this.norwegianCompanyName.replace('Ytelseslinjen', 'Benefits Administration');
+            if (this.norwegianCompanyName in norwegianCompanyNameTranslations) {
+                ecn = norwegianCompanyNameTranslations[this.norwegianCompanyName];
             } else {
                 if (unitsWithPrepositions.includes(this.norwegianCompanyName)) {
                     ecn = this.norwegianCompanyName.replace(/\b(?:og|i)\b/gi, (matched) => mapObj[matched]);
                     return ecn;
                 }
                 hasEnglishTranslation = false;
-                console.log('There is no translation for this CompanyName.');
+                console.error('There is no translation for this CompanyName.');
                 return this.norwegianCompanyName;
             }
             if (hasEnglishTranslation) {
@@ -238,7 +235,7 @@ export default class CrmStoMessaging extends LightningElement {
             }
             return ecn;
         } catch (error) {
-            console.log('Problem getting English company name: ' + error);
+            console.error('Problem getting English company name: ' + error);
             return '';
         }
     }
@@ -278,7 +275,6 @@ export default class CrmStoMessaging extends LightningElement {
         } else if (this.objectApiName === 'Thread__c') {
             return 'CRM_Account__c';
         }
-        console.log('Something is wrong with Account API name');
         return null;
     }
 
@@ -292,7 +288,7 @@ export default class CrmStoMessaging extends LightningElement {
                 this.accountId = resolve(this.accountApiName, record);
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
     }
 
@@ -306,7 +302,7 @@ export default class CrmStoMessaging extends LightningElement {
                 this.personId = resolve('CRM_Person__c', record);
             })
             .catch((error) => {
-                console.log('Problem getting person id: ', error);
+                console.error('Problem getting person id: ', error);
             });
     }
 
@@ -316,30 +312,25 @@ export default class CrmStoMessaging extends LightningElement {
     })
     wiredRecord({ error, data }) {
         if (error) {
-            console.log('problem getting record: ', error);
+            console.error('wiredRecord failed: ', error);
         } else if (data) {
             if (this.objectApiName === 'Case') {
-                let ThreadApiReference = getFieldValue(data, CASE_THREAD_API_REFERENCE);
-                this.getThreadId(ThreadApiReference);
+                const threadApiReference = getFieldValue(data, CASE_THREAD_API_REFERENCE);
+                getThreadId({ apiRef: threadApiReference })
+                    .then((threadId) => {
+                        this.threadId = threadId;
+                    })
+                    .catch((err) => {
+                        console.error('getThreadId failed: ', err);
+                    })
+                    .finally(() => {
+                        this.isThreadIdNull = this.threadId == null;
+                    });
             } else if (this.objectApiName === 'Thread__c') {
                 this.threadId = this.recordId;
             }
             this.getAccountId();
         }
-    }
-
-    isThreadIdNull = false;
-    getThreadId(apiRef) {
-        getThreadId({ apiRef: apiRef })
-            .then((threadId) => {
-                this.threadId = threadId;
-            })
-            .catch((error) => {
-                console.log('Problem getting thread id: ', error);
-            })
-            .finally(() => {
-                this.isThreadIdNull = this.threadId == null;
-            });
     }
 
     @wire(getRecord, {
@@ -348,7 +339,7 @@ export default class CrmStoMessaging extends LightningElement {
     })
     wiredAccount({ error, data }) {
         if (error) {
-            console.log('Problem getting account: ', error);
+            console.error('wiredAccount failed: ', error);
         } else if (data) {
             if (this.accountId) {
                 this.getPersonId();
@@ -362,7 +353,7 @@ export default class CrmStoMessaging extends LightningElement {
     })
     wiredPerson({ error, data }) {
         if (error) {
-            console.log('Problem getting person', error);
+            console.error('wiredPerson failed', error);
         } else if (data) {
             if (this.accountId && this.personId) {
                 let fullName = getFieldValue(data, PERSON_FULL_NAME);
@@ -377,15 +368,15 @@ export default class CrmStoMessaging extends LightningElement {
     })
     wiredUser({ error, data }) {
         if (error) {
-            console.log('Problem getting user: ', error);
+            console.error('wiredUser failed: ', error);
         } else if (data) {
             this.supervisorName = getFieldValue(data, NKS_FULL_NAME);
             this.companyName = getFieldValue(data, COMPANY_NAME);
             try {
                 this.norwegianCompanyName = this.getNorwegianCompanyName();
                 this.englishCompanyName = this.getEnglishCompanyName();
-            } catch (error2) {
-                console.log('Problem getting company name: ', error2);
+            } catch (err) {
+                console.error('Problem getting company name: ', err);
             }
         }
     }
@@ -393,7 +384,7 @@ export default class CrmStoMessaging extends LightningElement {
     @wire(getRecord, { recordId: '$threadId', fields: [THREAD_MEDSKRIV_REFERENCE, THREAD_TYPE] })
     wiredThread({ error, data }) {
         if (error) {
-            console.log('Medskriv error: ', error);
+            console.error('wiredThread failed: ', error);
         }
         if (data) {
             this.medskriv = getFieldValue(data, THREAD_MEDSKRIV_REFERENCE);
