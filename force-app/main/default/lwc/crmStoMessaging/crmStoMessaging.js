@@ -35,18 +35,6 @@ const englishCompanyTranslations = {
     Ytelseslinjen: 'NAV Benefits Administration'
 };
 
-const norwegianCompanyNameTranslations = {
-    'Arbeid og ytelser': 'Work and Benefits',
-    'Familie- og pensjonsytelser': 'Family Benefits and Pensions',
-    Hjelpemiddelsentral: 'Department of assistive technology',
-    Klageinstans: 'Appeals',
-    Kontaktsenter: 'Call and Service Center',
-    'Kontroll Analyse': 'Control Analysis',
-    Kontroll: 'Control',
-    Tiltak: 'Department for employment measures',
-    Ytelseslinjen: 'Benefits Administration'
-};
-
 export default class CrmStoMessaging extends LightningElement {
     @api recordId;
     @api objectApiName;
@@ -219,8 +207,24 @@ export default class CrmStoMessaging extends LightningElement {
                 //'NAV Øst i Agder'
             ];
 
-            if (this.norwegianCompanyName in norwegianCompanyNameTranslations) {
-                ecn = norwegianCompanyNameTranslations[this.norwegianCompanyName];
+            if (this.norwegianCompanyName.includes('Arbeid og ytelser')) {
+                ecn = this.norwegianCompanyName.replace('Arbeid og ytelser', 'Work and Benefits');
+            } else if (this.norwegianCompanyName.includes('Familie- og pensjonsytelser')) {
+                ecn = this.norwegianCompanyName.replace('Familie- og pensjonsytelser', 'Family Benefits and Pensions');
+            } else if (this.norwegianCompanyName.includes('Hjelpemiddelsentral')) {
+                ecn = this.norwegianCompanyName.replace('Hjelpemiddelsentral', 'Department of assistive technology');
+            } else if (this.norwegianCompanyName.includes('Klageinstans')) {
+                ecn = this.norwegianCompanyName.replace('Klageinstans', 'Appeals');
+            } else if (this.norwegianCompanyName.includes('Kontaktsenter')) {
+                ecn = this.norwegianCompanyName.replace('Kontaktsenter', 'Call and Service Center');
+            } else if (this.norwegianCompanyName.includes('Kontroll Analyse')) {
+                ecn = this.norwegianCompanyName.replace('Kontroll Analyse', 'Control Analysis');
+            } else if (this.norwegianCompanyName.includes('Kontroll')) {
+                ecn = this.norwegianCompanyName.replace('Kontroll', 'Control');
+            } else if (this.norwegianCompanyName.includes('Tiltak')) {
+                ecn = this.norwegianCompanyName.replace('Tiltak', 'Department for employment measures');
+            } else if (this.norwegianCompanyName.includes('Ytelseslinjen')) {
+                ecn = this.norwegianCompanyName.replace('Ytelseslinjen', 'Benefits Administration');
             } else {
                 if (unitsWithPrepositions.includes(this.norwegianCompanyName)) {
                     ecn = this.norwegianCompanyName.replace(/\b(?:og|i)\b/gi, (matched) => mapObj[matched]);
