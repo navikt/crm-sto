@@ -1,7 +1,7 @@
 public with sharing class stoHelperClass {
     private static final LoggerUtility logger = new LoggerUtility('STO');
     private static final List<String> allowedThreadTypes = new List<String>{ 'STO', 'BTO' };
-
+    private static final Integer maxThreadCount = 3;
     private static final Map<String, List<String>> threadTypeMap = new Map<String, List<String>>{
         'STO' => new List<String>{ 'STO', 'STB' },
         'BTO' => new List<String>{ 'BTO' },
@@ -53,10 +53,10 @@ public with sharing class stoHelperClass {
         String relatedObjId;
         Thread__c thread;
 
-        if (hasMoreThanThreeThreads(theme)) {
-            logger.error('More than three threads in the same category', null, CRM_ApplicationDomain.Domain.NKS);
+        if (isMaxThreadCount(theme, type)) {
+            logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
-            throw new threadOrMessageException();
+            throw new maxThreadLimitReachedException();
         }
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
@@ -229,10 +229,14 @@ public with sharing class stoHelperClass {
             logger.publish();
         }
     }
-    public class threadOrMessageException extends Exception {
+
+    private static Boolean isMaxThreadCount(String theme, String threadType) {
+        return [SELECT COUNT() FROM Thread__c WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c = :threadType] >= maxThreadCount;
     }
 
-    private static Boolean hasMoreThanThreeThreads(String theme) {
-        return [SELECT COUNT() FROM Thread__c WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme] > 2;
+    public class threadOrMessageException extends Exception {
     }
+    
+    public class maxThreadLimitReachedException extends Exception {
+    }    
 }
