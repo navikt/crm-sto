@@ -30,7 +30,7 @@ const CONSTANTS = {
 export default class StoMessagingContainer extends LightningElement {
     @api recordId;
     @api objectApiName;
-    @api cardTitle = '';
+    @api cardTitle;
     @api showClose = false;
     @api checkMedskriv = false;
 
