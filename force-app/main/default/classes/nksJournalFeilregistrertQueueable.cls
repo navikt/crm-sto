@@ -17,14 +17,26 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
 
     private void startQueue() {
         String query = fieldQuery + ' WHERE ' + queryFilter;
-        locator = Database.getCursor(query);
+        if(!Test.isRunningTest()) {
+            locator = Database.getCursor(query);
+        }
         position = 0;
         System.enqueueJob(this);
     }
 
     public void execute(QueueableContext context) {
-        List<Journal_entry__c> scope = locator.fetch(position, chunkSize);
-        position += scope.size();
+        List<Journal_entry__c> scope;
+        if(Test.isRunningTest()) {
+            scope = Database.query(fieldQuery);
+        } else {
+            Integer actualSize = Math.min(chunkSize, locator.getNumRecords() - position);
+            scope = locator.fetch(position, actualSize);
+            position += scope.size();
+        }
+        processJournals(scope);
+    }
+
+    private void processJournals(List<Journal_entry__c> scope) {
         for(Journal_entry__c jEntry : scope) {
             try {
                 Map<String, Object> inputParameters = new Map<String, Object>();
@@ -59,12 +71,19 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
                     }
                 }
                 journalRequest.eksternReferanseId += 'Rerun';
-                CRM_JournalUtilities.postJournal(journalRequest, referenceId, jEntry.CRM_Created_By_Ident__c);
+                CRM_JournalUtilities.UtilityResponse resp = CRM_JournalUtilities.postJournal(journalRequest, referenceId, jEntry.CRM_Created_By_Ident__c);
+                
+                if(resp == null || resp.success == false ) {
+                    logger.error('Could not post rerun Journal, error: ' + resp.errorMessage, jEntry, CRM_ApplicationDomain.Domain.NKS);
+                } else {
+                    jEntry.Journal_Entry_ID__c = resp.journalpostId;
+                }
             } catch (Exception e) {
-                logger.error('Queued failed, error: ' + e.getMessage(), jEntry, CRM_ApplicationDomain.Domain.NKS);
+                logger.error('Queued failed, exception: ' + e.getMessage(), jEntry, CRM_ApplicationDomain.Domain.NKS);
             }
         }
-        if(position < locator.getNumRecords()) {
+        update scope;
+        if(!Test.isRunningTest() && position < locator.getNumRecords()) {
             System.enqueueJob(this);
         } else {
             logger.info('Done with nksJournalFeilregistrertQueueable', null, CRM_ApplicationDomain.Domain.NKS);
