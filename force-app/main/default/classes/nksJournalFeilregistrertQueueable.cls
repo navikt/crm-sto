@@ -73,9 +73,14 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
                 journalRequest.eksternReferanseId += 'Rerun';
                 CRM_JournalUtilities.UtilityResponse resp = CRM_JournalUtilities.postJournal(journalRequest, referenceId, jEntry.CRM_Created_By_Ident__c);
                 
+                jEntry.Journal_Entry_Status__c = resp.success ? 'Completed' : 'Failed';
                 if(resp == null || resp.success == false ) {
+                    jEntry.Journal_Entry_ID__c = null;
                     logger.error('Could not post rerun Journal, error: ' + resp.errorMessage, jEntry, CRM_ApplicationDomain.Domain.NKS);
                 } else {
+                    if (resp.duplicate) {
+                        jEntry.Journal_Entry_Status__c = 'Duplicate';
+                    }
                     jEntry.Journal_Entry_ID__c = resp.journalpostId;
                 }
             } catch (Exception e) {
