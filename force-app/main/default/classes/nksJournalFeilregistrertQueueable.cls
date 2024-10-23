@@ -4,13 +4,22 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
     private Database.Cursor locator;
     private integer position;
     private integer chunkSize = 20;
+    private String externalReferenceSuffix = 'Rerun';
     private LoggerUtility logger = new LoggerUtility('Journal');
 
     public nksJournalFeilregistrertQueueable() {
         startQueue();
     }
 
-    public nksJournalFeilregistrertQueueable(String queryFilter) {
+    public nksJournalFeilregistrertQueueable(String externalReferenceSuffix) {
+        this.externalReferenceSuffix = externalReferenceSuffix;
+        startQueue();
+    }
+    
+    public nksJournalFeilregistrertQueueable(String externalReferenceSuffix, String queryFilter) {
+        if(externalReferenceSuffix != null) {
+            this.externalReferenceSuffix = externalReferenceSuffix;
+        }
         this.queryFilter = queryFilter;
         startQueue();
     }
@@ -81,9 +90,8 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
                     jEntry.CRM_Created_By_Ident__c
                 );
 
-                jEntry.Journal_Entry_Status__c = resp.success ? 'Completed' : 'Failed';
+                jEntry.Journal_Entry_Status__c = resp.success ? 'Completed' : 'RerunFailed';
                 if (resp == null || resp.success == false) {
-                    jEntry.Journal_Entry_ID__c = null;
                     logger.error(
                         'Could not post rerun Journal, error: ' + resp.errorMessage,
                         jEntry,
