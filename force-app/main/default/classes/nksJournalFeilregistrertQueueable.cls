@@ -15,9 +15,9 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
         this.externalReferenceSuffix = externalReferenceSuffix;
         startQueue();
     }
-    
+
     public nksJournalFeilregistrertQueueable(String externalReferenceSuffix, String queryFilter) {
-        if(externalReferenceSuffix != null) {
+        if (externalReferenceSuffix != null) {
             this.externalReferenceSuffix = externalReferenceSuffix;
         }
         this.queryFilter = queryFilter;
