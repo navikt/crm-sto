@@ -83,7 +83,7 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
                         journalRequest = (CRM_JournalEntryWrapper) threadFlow.getVariableValue('Journal_Request');
                     }
                 }
-                journalRequest.eksternReferanseId += 'Rerun';
+                journalRequest.eksternReferanseId += this.externalReferenceSuffix;
                 CRM_JournalUtilities.UtilityResponse resp = CRM_JournalUtilities.postJournal(
                     journalRequest,
                     referenceId,
