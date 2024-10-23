@@ -90,7 +90,7 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
                     jEntry.CRM_Created_By_Ident__c
                 );
 
-                jEntry.Journal_Entry_Status__c = resp.success ? 'Completed' : 'RerunFailed';
+                jEntry.Journal_Entry_Status__c = resp.success ? 'Completed' : 'Rerun Failed';
                 if (resp == null || resp.success == false) {
                     logger.error(
                         'Could not post rerun Journal, error: ' + resp.errorMessage,
