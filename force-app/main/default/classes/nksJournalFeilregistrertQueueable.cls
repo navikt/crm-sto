@@ -113,6 +113,7 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
             System.enqueueJob(this);
         } else {
             logger.info('Done with nksJournalFeilregistrertQueueable', null, CRM_ApplicationDomain.Domain.NKS);
+            logger.publish();
         }
     }
 }
