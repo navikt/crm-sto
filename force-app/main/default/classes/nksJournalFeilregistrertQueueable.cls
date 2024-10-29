@@ -108,11 +108,11 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
             }
         }
         update scope;
+        logger.publish();
         if (!Test.isRunningTest() && position < locator.getNumRecords()) {
             System.enqueueJob(this);
         } else {
             logger.info('Done with nksJournalFeilregistrertQueueable', null, CRM_ApplicationDomain.Domain.NKS);
         }
-        logger.publish();
     }
 }
