@@ -84,6 +84,20 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
                     }
                 }
                 journalRequest.eksternReferanseId += this.externalReferenceSuffix;
+                Blob checker = Blob.valueOf(JSON.serialize(journalRequest, true));
+                // below converts blob to hexadecimal representation; four ones and zeros 
+                // from blob will get converted to single hexadecimal character
+                String hexString = EncodingUtil.convertToHex(checker);
+
+                // One byte consists of eight ones and zeros so, one byte consists of two 
+                // hex characters, hence the number of bytes would be
+                Integer numOfBytes = hexString.length() / 2;
+                logger.info('Byte size is ' + numOfBytes, null, CRM_ApplicationDomain.Domain.NKS);
+                if(numOfBytes < 4500) {
+                    logger.error('Journal entry ' + jEntry.Id + ' resulted in a request of size ' + numOfBytes + ', aborting request. The full request was: \n' + JSON.serialize(journalRequest, true),  null, CRM_ApplicationDomain.Domain.NKS);
+                    jEntry.Journal_Entry_Status__c = 'Rerun Failed';
+                    continue;
+                }
                 CRM_JournalUtilities.UtilityResponse resp = CRM_JournalUtilities.postJournal(
                     journalRequest,
                     referenceId,
