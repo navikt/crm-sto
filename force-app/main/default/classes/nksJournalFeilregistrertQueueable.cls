@@ -1,28 +1,24 @@
-public with sharing class nksJournalFeilregistrertQueueable implements Queueable, Database.AllowsCallouts {
+public with sharing class nksJournalFeilregistrertQueueable implements  Database.Batchable<SObject>, Database.Stateful, Database.AllowsCallouts {
     private String fieldQuery = 'Select CRM_Journal_Post_Type__c, CRM_Theme_Code__c , CRM_Conversation_Note__c, CRM_Created_By_Ident__c, CRM_Created_By_NAV_Unit__c, CRM_NAV_Case_Legacy_System__c, CRM_Thread__c, NAV_Case_Reference__c, Theme__c, CRM_Thread__r.CRM_Type__c, Theme__r.CRM_Code__c FROM Journal_Entry__c';
     private String queryFilter = 'Journal_Entry_ID__c != null AND ( ( CRM_Journal_Post_Type__c IN (\'UTGAAENDE\', \'INNGAAENDE\') AND CRM_Thread__r.CRM_Closed_Date__c >= 2024-10-18T11:30:00Z AND CRM_Thread__r.CRM_Closed_Date__c <= 2024-10-21T09:25:00Z AND CRM_Thread__r.CRM_Type__c IN (\'CHAT\', \'STB\') ) OR ( CRM_Conversation_note__c != null AND CreatedDate >= 2024-10-18T11:30:00Z AND CreatedDate <= 2024-10-21T09:25:00Z ) OR ( CRM_Journal_Post_Type__c IN (\'UTGAAENDE\', \'INNGAAENDE\') AND CRM_Thread__r.CRM_Type__c IN (\'STO\', \'BTO\', \'STB\') AND DAY_ONLY(CRM_Thread__r.CRM_Closed_Date__c) >= 2024-10-18 AND DAY_ONLY(CRM_Thread__r.CRM_Closed_Date__c) <= 2024-10-20 ))';
-    private Database.Cursor locator;
-    private integer position;
-    private integer chunkSize = 20;
+    private final static integer chunkSize = 20;
     private String externalReferenceSuffix = 'Rerun';
-    private LoggerUtility logger = new LoggerUtility('Journal Rerun');
+    private final LoggerUtility logger = new LoggerUtility('Journal Rerun');
 
     @AuraEnabled
     public static void startFromComponent(String externalReferenceSuffix, String queryFilter){
         try {
-            new nksJournalFeilregistrertQueueable(externalReferenceSuffix, queryFilter);
+            Database.executeBatch(new nksJournalFeilregistrertQueueable(externalReferenceSuffix, queryFilter), chunkSize);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
     }
 
     public nksJournalFeilregistrertQueueable() {
-        startQueue();
     }
 
     public nksJournalFeilregistrertQueueable(String externalReferenceSuffix) {
         this.externalReferenceSuffix = externalReferenceSuffix;
-        startQueue();
     }
 
     public nksJournalFeilregistrertQueueable(String externalReferenceSuffix, String queryFilter) {
@@ -32,28 +28,15 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
         if (queryFilter != null && String.isNotBlank(queryFilter)) {
             this.queryFilter = queryFilter;
         }
-        startQueue();
     }
 
-    private void startQueue() {
+    public Database.QueryLocator start(Database.BatchableContext BC) {
         String query = fieldQuery + ' WHERE ' + queryFilter;
-        if (!Test.isRunningTest()) {
-            locator = Database.getCursor(query);
-        }
-        position = 0;
-        System.enqueueJob(this);
+        return Database.getQueryLocator(query);
     }
 
-    public void execute(QueueableContext context) {
-        List<Journal_entry__c> scope;
-        if (Test.isRunningTest()) {
-            scope = Database.query(fieldQuery);
-        } else {
-            Integer actualSize = Math.min(chunkSize, locator.getNumRecords() - position);
-            scope = locator.fetch(position, actualSize);
-            position += scope.size();
-        }
-        processJournals(scope);
+    public void execute(Database.BatchableContext BC, List<SObject> scope) {
+        processJournals((List<Journal_entry__c>) scope);
     }
 
     private void processJournals(List<Journal_entry__c> scope) {
@@ -133,11 +116,10 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
         }
         update scope;
         logger.publish();
-        if (!Test.isRunningTest() && position < locator.getNumRecords()) {
-            System.enqueueJob(this);
-        } else {
-            logger.info('Done with nksJournalFeilregistrertQueueable', null, CRM_ApplicationDomain.Domain.NKS);
-            logger.publish();
-        }
+    }
+    
+    public void finish(Database.BatchableContext BC) {
+        logger.info('Done with nksJournalFeilregistrertQueueable', null, CRM_ApplicationDomain.Domain.NKS);
+        logger.publish();
     }
 }
