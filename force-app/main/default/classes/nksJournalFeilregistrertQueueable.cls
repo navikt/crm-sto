@@ -6,10 +6,11 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
     private final LoggerUtility logger = new LoggerUtility('Journal Rerun');
 
     @AuraEnabled
-    public static void startFromComponent(String externalReferenceSuffix, String queryFilter){
+    public static void startFromComponent(String externalReferenceSuffix, String wantedLimit){
         try {
             nksJournalFeilregistrertQueueable journalRerun =  new nksJournalFeilregistrertQueueable(externalReferenceSuffix);
-            List<Journal_Entry__c> scope = (List<Journal_entry__c>) Database.query(fieldQuery + ' where Journal_Entry_Status__c = \'Rerun Failed\' limit 40');
+            String actualLimit = wantedLimit != null && String.isNotBlank(wantedLimit) ? wantedLimit : '20';
+            List<Journal_Entry__c> scope = (List<Journal_entry__c>) Database.query(fieldQuery + ' where Journal_Entry_Status__c = \'Rerun Failed\' limit ' + actualLimit);
             journalRerun.processJournals(scope);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
