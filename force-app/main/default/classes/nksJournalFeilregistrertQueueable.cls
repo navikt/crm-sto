@@ -46,6 +46,7 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
                 inputParameters.put('doReturnRecord', true);
 
                 CRM_JournalEntryWrapper journalRequest;
+                Flow.Interview journalFlow;
                 Id referenceId;
                 if (jEntry.CRM_Conversation_Note__c != null) {
                     referenceId = jEntry.CRM_Conversation_Note__c;
@@ -55,28 +56,21 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
                     inputParameters.put('Journal_Entry_NAV_Ident', jEntry.CRM_Created_By_Ident__c);
                     inputParameters.put('Journal_Entry_Unit', jEntry.CRM_Created_By_NAV_Unit__c);
                     inputParameters.put('Journal_Theme_Code', jEntry.Theme__r.CRM_Code__c);
-                    Flow.Interview.CRM_Journal_Conversation_Note_v_2 cNoteFlow = new Flow.Interview.CRM_Journal_Conversation_Note_v_2(
-                        inputParameters
-                    );
-                    cNoteFlow.start();
-                    journalRequest = (CRM_JournalEntryWrapper) cNoteFlow.getVariableValue('Journal_Request');
+                    journalFlow = Flow.Interview.createInterview('CRM_Journal_Conversation_Note_v_2', inputParameters);
                 } else if (jEntry.CRM_Thread__c != null) {
                     referenceId = jEntry.CRM_Thread__c;
                     inputParameters.put('Journal_Entry_SF', jEntry);
                     if (jEntry.CRM_Thread__r.CRM_Type__c == 'CHAT') {
-                        Flow.Interview.CHAT_Journal_CHAT_Thread chatFlow = new Flow.Interview.CHAT_Journal_CHAT_Thread(
-                            inputParameters
-                        );
-                        chatFlow.start();
-                        journalRequest = (CRM_JournalEntryWrapper) chatFlow.getVariableValue('Journal_Request');
+                        journalFlow = Flow.Interview.createInterview('CHAT_Journal_CHAT_Thread', inputParameters);
                     } else if (new List<String>{ 'STO', 'BTO', 'STB' }.contains(jEntry.CRM_Thread__r.CRM_Type__c)) {
-                        Flow.Interview.CRM_Journal_Message_Thread threadFlow = new Flow.Interview.CRM_Journal_Message_Thread(
-                            inputParameters
-                        );
-                        threadFlow.start();
-                        journalRequest = (CRM_JournalEntryWrapper) threadFlow.getVariableValue('Journal_Request');
+                        journalFlow = Flow.Interview.createInterview('CRM_Journal_Message_Thread', inputParameters);
                     }
                 }
+                if(journalFlow == null) {
+                    continue;
+                }
+                journalFlow.start();
+                journalRequest = (CRM_JournalEntryWrapper) journalFlow.getVariableValue('Journal_Request');
                 journalRequest.eksternReferanseId += this.externalReferenceSuffix;
                 Blob checker = Blob.valueOf(JSON.serialize(journalRequest, true));
                 // below converts blob to hexadecimal representation; four ones and zeros 
