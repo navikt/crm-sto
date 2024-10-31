@@ -93,7 +93,7 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
                 // hex characters, hence the number of bytes would be
                 Integer numOfBytes = hexString.length() / 2;
                 if(numOfBytes < 4500) {
-                    logger.error('Journal entry ' + jEntry.Id + ' resulted in a request of size ' + numOfBytes + ', aborting request. The full request was: \n' + JSON.serialize(journalRequest, true),  null, CRM_ApplicationDomain.Domain.NKS);
+                    logger.error('Journal entry ' + jEntry.Id + ' resulted in a request of size ' + numOfBytes + ', aborting request. The full request was: \n' + JSON.serialize(journalRequest, true) + ' \nInputs were: ' + JSON.serialize(inputParameters, true),  null, CRM_ApplicationDomain.Domain.NKS);
                     jEntry.Journal_Entry_Status__c = 'Rerun Failed';
                     continue;
                 }
