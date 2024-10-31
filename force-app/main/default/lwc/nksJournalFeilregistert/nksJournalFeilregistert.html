@@ -1,0 +1,21 @@
+<template>
+    <lightning-card variant="narrow" title="Journal rerun">
+        <div class="slds-var-p-around_medium">
+            <p lwc:if={statusText}>{statusText}</p>
+            <lightning-input
+                lwc:ref="suffix"
+                type="text"
+                label="External reference suffix"
+                style="width: 50%"
+            ></lightning-input>
+            <lightning-input lwc:ref="filter" type="text" label="queryFilter" style="width: 50%"></lightning-input>
+            <br />
+            <lightning-button
+                disabled={disabled}
+                variant="brand"
+                label="Start journal rerun"
+                onclick={startJournalRerun}
+            ></lightning-button>
+        </div>
+    </lightning-card>
+</template>
