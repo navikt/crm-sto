@@ -18,10 +18,10 @@ export default class NksJournalFeilregistert extends LightningElement {
         this.disabled = true;
 
         const suffix = this.refs.suffix?.value;
-        const limit = this.refs.limit?.value;
+        const filter = this.refs.filter?.value;
         startFromComponent({
             externalReferenceSuffix: suffix,
-            wantedLimit: limit
+            filterQuery: filter
         })
             .then(() => {
                 this.statusText = 'Rerun started';

@@ -6,12 +6,14 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
     private final LoggerUtility logger = new LoggerUtility('Journal Rerun');
 
     @AuraEnabled
-    public static void startFromComponent(String externalReferenceSuffix, String wantedLimit){
+    public static void startFromComponent(String externalReferenceSuffix, String filterQuery){
+    // public static void startFromComponent(String externalReferenceSuffix, String wantedLimit){
         try {
-            nksJournalFeilregistrertQueueable journalRerun =  new nksJournalFeilregistrertQueueable(externalReferenceSuffix);
-            String actualLimit = wantedLimit != null && String.isNotBlank(wantedLimit) ? wantedLimit : '20';
-            List<Journal_Entry__c> scope = (List<Journal_entry__c>) Database.query(fieldQuery + ' where Journal_Entry_Status__c = \'Rerun Failed\' limit ' + actualLimit);
-            journalRerun.processJournals(scope);
+            // nksJournalFeilregistrertQueueable journalRerun =  new nksJournalFeilregistrertQueueable(externalReferenceSuffix);
+            // String actualLimit = wantedLimit != null && String.isNotBlank(wantedLimit) ? wantedLimit : '20';
+            // List<Journal_Entry__c> scope = (List<Journal_entry__c>) Database.query(fieldQuery + ' where Journal_Entry_Status__c = \'Rerun Failed\' limit ' + actualLimit);
+            // journalRerun.processJournals(scope);
+            Database.executeBatch(new nksJournalFeilregistrertQueueable(externalReferenceSuffix), filterQuery);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
@@ -54,12 +56,13 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
     }
 
     private void processJournals(List<Journal_entry__c> scope) {
+        List<Journal_Entry__c> jEntriesToUpdate = new List<Journal_Entry__c>();
         for (Journal_entry__c jEntry : scope) {
             try {
                 Map<String, Object> inputParameters = new Map<String, Object>();
-                inputParameters.put('doReturnRecord', true);
+                inputParameters.put('PERFORM_DML', false);
+                inputParameters.put('externalReferenceSuffix', this.externalReferenceSuffix);
 
-                CRM_JournalEntryWrapper journalRequest;
                 Flow.Interview journalFlow;
                 Id referenceId;
                 if (jEntry.CRM_Conversation_Note__c != null) {
@@ -84,45 +87,47 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
                     continue;
                 }
                 journalFlow.start();
-                journalRequest = (CRM_JournalEntryWrapper) journalFlow.getVariableValue('Journal_Request');
-                journalRequest.eksternReferanseId += this.externalReferenceSuffix;
-                Blob checker = Blob.valueOf(JSON.serialize(journalRequest, true));
-                // below converts blob to hexadecimal representation; four ones and zeros 
-                // from blob will get converted to single hexadecimal character
-                String hexString = EncodingUtil.convertToHex(checker);
+                jEntriesToUpdate.add((Journal_Entry__c ) journalFlow.getVariableValue('Journal_Entry_SF'));
 
-                // One byte consists of eight ones and zeros so, one byte consists of two 
-                // hex characters, hence the number of bytes would be
-                Integer numOfBytes = hexString.length() / 2;
-                if(numOfBytes < 4500) {
-                    logger.error('Journal entry ' + jEntry.Id + ' resulted in a request of size ' + numOfBytes + ', aborting request. The full request was: \n' + JSON.serialize(journalRequest, true) + ' \nInputs were: ' + JSON.serialize(inputParameters, true),  null, CRM_ApplicationDomain.Domain.NKS);
-                    jEntry.Journal_Entry_Status__c = 'Rerun Failed';
-                    continue;
-                }
-                CRM_JournalUtilities.UtilityResponse resp = CRM_JournalUtilities.postJournal(
-                    journalRequest,
-                    referenceId,
-                    jEntry.CRM_Created_By_Ident__c
-                );
+                // journalRequest = (CRM_JournalEntryWrapper) journalFlow.getVariableValue('Journal_Request');
+                // journalRequest.eksternReferanseId += this.externalReferenceSuffix;
+                // Blob checker = Blob.valueOf(JSON.serialize(journalRequest, true));
+                // // below converts blob to hexadecimal representation; four ones and zeros 
+                // // from blob will get converted to single hexadecimal character
+                // String hexString = EncodingUtil.convertToHex(checker);
 
-                jEntry.Journal_Entry_Status__c = resp.success ? 'Completed' : 'Rerun Failed';
-                if (resp == null || resp.success == false) {
-                    logger.error(
-                        'Could not post rerun Journal, error: ' + resp.errorMessage,
-                        jEntry,
-                        CRM_ApplicationDomain.Domain.NKS
-                    );
-                } else {
-                    if (resp.duplicate) {
-                        jEntry.Journal_Entry_Status__c = 'Duplicate';
-                    }
-                    jEntry.Journal_Entry_ID__c = resp.journalpostId;
-                }
+                // // One byte consists of eight ones and zeros so, one byte consists of two 
+                // // hex characters, hence the number of bytes would be
+                // Integer numOfBytes = hexString.length() / 2;
+                // if(numOfBytes < 4500) {
+                //     logger.error('Journal entry ' + jEntry.Id + ' resulted in a request of size ' + numOfBytes + ', aborting request. The full request was: \n' + JSON.serialize(journalRequest, true) + ' \nInputs were: ' + JSON.serialize(inputParameters, true),  null, CRM_ApplicationDomain.Domain.NKS);
+                //     jEntry.Journal_Entry_Status__c = 'Rerun Failed';
+                //     continue;
+                // }
+                // CRM_JournalUtilities.UtilityResponse resp = CRM_JournalUtilities.postJournal(
+                //     journalRequest,
+                //     referenceId,
+                //     jEntry.CRM_Created_By_Ident__c
+                // );
+
+                // jEntry.Journal_Entry_Status__c = resp.success ? 'Completed' : 'Rerun Failed';
+                // if (resp == null || resp.success == false) {
+                //     logger.error(
+                //         'Could not post rerun Journal, error: ' + resp.errorMessage,
+                //         jEntry,
+                //         CRM_ApplicationDomain.Domain.NKS
+                //     );
+                // } else {
+                //     if (resp.duplicate) {
+                //         jEntry.Journal_Entry_Status__c = 'Duplicate';
+                //     }
+                //     jEntry.Journal_Entry_ID__c = resp.journalpostId;
+                // }
             } catch (Exception e) {
                 logger.error('Queued failed, exception: ' + e.getMessage(), jEntry, CRM_ApplicationDomain.Domain.NKS);
             }
         }
-        update scope;
+        // update scope;
         logger.publish();
     }
     
