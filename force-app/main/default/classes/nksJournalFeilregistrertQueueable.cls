@@ -5,7 +5,7 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
     private integer position;
     private integer chunkSize = 20;
     private String externalReferenceSuffix = 'Rerun';
-    private LoggerUtility logger = new LoggerUtility('Journal');
+    private LoggerUtility logger = new LoggerUtility('Journal Rerun');
 
     public nksJournalFeilregistrertQueueable() {
         startQueue();
