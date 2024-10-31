@@ -69,7 +69,7 @@ public with sharing class nksJournalFeilregistrertQueueable_Test {
         List<Journal_Entry__c> oldJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
         String normalSuffix = 'NormalSuffix';
         Test.startTest();
-        nksJournalFeilregistrertQueueable.startFromComponent(normalSuffix, null);
+        nksJournalFeilregistrertQueueable.startFromComponent(normalSuffix, 'Id != null');
         Test.stopTest();
         List<Journal_Entry__c> newJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
         Assert.areEqual(4, oldJEntries.size());
