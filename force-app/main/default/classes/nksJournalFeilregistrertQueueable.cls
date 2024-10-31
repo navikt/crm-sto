@@ -8,7 +8,9 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
     @AuraEnabled
     public static void startFromComponent(String externalReferenceSuffix, String queryFilter){
         try {
-            Database.executeBatch(new nksJournalFeilregistrertQueueable(externalReferenceSuffix, queryFilter), chunkSize);
+            nksJournalFeilregistrertQueueable journalRerun =  new nksJournalFeilregistrertQueueable(externalReferenceSuffix);
+            List<Journal_Entry__c> scope = [Select Id from Journal_entry__c where Journal_Entry_Status__c = 'Rerun Failed' limit 40];
+            journalRerun.processJournals(scope);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
@@ -18,7 +20,9 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
     }
 
     public nksJournalFeilregistrertQueueable(String externalReferenceSuffix) {
-        this.externalReferenceSuffix = externalReferenceSuffix;
+        if (externalReferenceSuffix != null && String.isNotBlank(externalReferenceSuffix)) {
+            this.externalReferenceSuffix = externalReferenceSuffix;
+        }
     }
 
     public nksJournalFeilregistrertQueueable(String externalReferenceSuffix, String queryFilter) {
