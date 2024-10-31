@@ -7,6 +7,15 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
     private String externalReferenceSuffix = 'Rerun';
     private LoggerUtility logger = new LoggerUtility('Journal Rerun');
 
+    @AuraEnabled
+    public static void startFromComponent(String externalReferenceSuffix, String queryFilter){
+        try {
+            new nksJournalFeilregistrertQueueable(externalReferenceSuffix, queryFilter);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
     public nksJournalFeilregistrertQueueable() {
         startQueue();
     }
@@ -17,10 +26,12 @@ public with sharing class nksJournalFeilregistrertQueueable implements Queueable
     }
 
     public nksJournalFeilregistrertQueueable(String externalReferenceSuffix, String queryFilter) {
-        if (externalReferenceSuffix != null) {
+        if (externalReferenceSuffix != null && String.isNotBlank(externalReferenceSuffix)) {
             this.externalReferenceSuffix = externalReferenceSuffix;
         }
-        this.queryFilter = queryFilter;
+        if (queryFilter != null && String.isNotBlank(queryFilter)) {
+            this.queryFilter = queryFilter;
+        }
         startQueue();
     }
 
