@@ -1,6 +1,7 @@
 <template>
     <lightning-card variant="narrow" title="Journal rerun">
         <div class="slds-var-p-around_medium">
+            <p>Remaing total is {remainingCount}</p>
             <p lwc:if={statusText}>{statusText}</p>
             <lightning-input
                 lwc:ref="suffix"
