@@ -13,7 +13,7 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
             // String actualLimit = wantedLimit != null && String.isNotBlank(wantedLimit) ? wantedLimit : '20';
             // List<Journal_Entry__c> scope = (List<Journal_entry__c>) Database.query(fieldQuery + ' where Journal_Entry_Status__c = \'Rerun Failed\' limit ' + actualLimit);
             // journalRerun.processJournals(scope);
-            Database.executeBatch(new nksJournalFeilregistrertQueueable(externalReferenceSuffix), filterQuery);
+            Database.executeBatch(new nksJournalFeilregistrertQueueable(externalReferenceSuffix, filterQuery));
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
@@ -128,7 +128,22 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
             }
         }
         // update scope;
+        List<Database.SaveResult> jEntryUpdRes = Database.update(jEntriesToUpdate, false);
         logger.publish();
+    }
+
+    private void verifyUpdateResults(List<Database.SaveResult> updResults) {
+        for (Database.SaveResult updRes : updResults) {
+            if (updRes.isSuccess()) {
+                //Successfull update
+            } else {
+                String errorMsg = 'Failed to update rerun jorunal record with id: ' + updRes.getId() + '\n';
+                for (Database.Error err : updRes.getErrors()) {
+                    errorMsg += err.getMessage() + '\n';
+                }
+                logger.error(errorMsg, null, CRM_ApplicationDomain.Domain.NKS);
+            }
+        }
     }
     
     public void finish(Database.BatchableContext BC) {
