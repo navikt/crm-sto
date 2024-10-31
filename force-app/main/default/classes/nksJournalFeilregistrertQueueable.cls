@@ -1,5 +1,5 @@
 public with sharing class nksJournalFeilregistrertQueueable implements  Database.Batchable<SObject>, Database.Stateful, Database.AllowsCallouts {
-    private String fieldQuery = 'Select CRM_Journal_Post_Type__c, CRM_Theme_Code__c , CRM_Conversation_Note__c, CRM_Created_By_Ident__c, CRM_Created_By_NAV_Unit__c, CRM_NAV_Case_Legacy_System__c, CRM_Thread__c, NAV_Case_Reference__c, Theme__c, CRM_Thread__r.CRM_Type__c, Theme__r.CRM_Code__c FROM Journal_Entry__c';
+    private final static String fieldQuery = 'Select CRM_Journal_Post_Type__c, CRM_Theme_Code__c , CRM_Conversation_Note__c, CRM_Created_By_Ident__c, CRM_Created_By_NAV_Unit__c, CRM_NAV_Case_Legacy_System__c, CRM_Thread__c, NAV_Case_Reference__c, Theme__c, CRM_Thread__r.CRM_Type__c, Theme__r.CRM_Code__c FROM Journal_Entry__c';
     private String queryFilter = 'Journal_Entry_ID__c != null AND ( ( CRM_Journal_Post_Type__c IN (\'UTGAAENDE\', \'INNGAAENDE\') AND CRM_Thread__r.CRM_Closed_Date__c >= 2024-10-18T11:30:00Z AND CRM_Thread__r.CRM_Closed_Date__c <= 2024-10-21T09:25:00Z AND CRM_Thread__r.CRM_Type__c IN (\'CHAT\', \'STB\') ) OR ( CRM_Conversation_note__c != null AND CreatedDate >= 2024-10-18T11:30:00Z AND CreatedDate <= 2024-10-21T09:25:00Z ) OR ( CRM_Journal_Post_Type__c IN (\'UTGAAENDE\', \'INNGAAENDE\') AND CRM_Thread__r.CRM_Type__c IN (\'STO\', \'BTO\', \'STB\') AND DAY_ONLY(CRM_Thread__r.CRM_Closed_Date__c) >= 2024-10-18 AND DAY_ONLY(CRM_Thread__r.CRM_Closed_Date__c) <= 2024-10-20 ))';
     private final static integer chunkSize = 20;
     private String externalReferenceSuffix = 'Rerun';
@@ -8,7 +8,18 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
     @AuraEnabled
     public static void startFromComponent(String externalReferenceSuffix, String queryFilter){
         try {
-            Database.executeBatch(new nksJournalFeilregistrertQueueable(externalReferenceSuffix, queryFilter), chunkSize);
+            nksJournalFeilregistrertQueueable journalRerun =  new nksJournalFeilregistrertQueueable(externalReferenceSuffix);
+            List<Journal_Entry__c> scope = (List<Journal_entry__c>) Database.query(fieldQuery + ' where Journal_Entry_Status__c = \'Rerun Failed\' limit 40');
+            journalRerun.processJournals(scope);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled(cacheable = false)
+    public static Integer getRemainingCount(){
+        try {
+            return Database.countQuery('Select Count() from Journal_entry__c where Journal_Entry_Status__c = \'Rerun Failed\'');
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
@@ -18,7 +29,9 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
     }
 
     public nksJournalFeilregistrertQueueable(String externalReferenceSuffix) {
-        this.externalReferenceSuffix = externalReferenceSuffix;
+        if (externalReferenceSuffix != null && String.isNotBlank(externalReferenceSuffix)) {
+            this.externalReferenceSuffix = externalReferenceSuffix;
+        }
     }
 
     public nksJournalFeilregistrertQueueable(String externalReferenceSuffix, String queryFilter) {
