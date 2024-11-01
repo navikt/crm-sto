@@ -87,7 +87,6 @@ public with sharing class nksJournalFeilregistrertQueueable implements  Database
                 journalFlow.start();
 
                 journalRequest = (CRM_JournalEntryWrapper) journalFlow.getVariableValue('Journal_Request');
-                journalRequest.eksternReferanseId += this.externalReferenceSuffix;
                 Blob checker = Blob.valueOf(JSON.serialize(journalRequest, true));
                 // below converts blob to hexadecimal representation; four ones and zeros 
                 // from blob will get converted to single hexadecimal character
