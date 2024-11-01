@@ -308,12 +308,19 @@ export default class CrmStoMessaging extends LightningElement {
                 'NAV HJELPEMIDDELSENTRAL': 'Nav hjelpemiddelsentral',
                 'NAV KONTROLL': 'Nav kontroll',
                 'NAV OPPFØLGING UTLAND': 'Nav oppfølging utland',
-                'NAV STYRINGSENHET KONTAKTSENTER': 'NAV styringsenhet kontaktsenter',
+                'NAV STYRINGSENHET KONTAKTSENTER': 'Nav styringsenhet kontaktsenter',
                 'NAV ØKONOMI STØNAD': 'Nav økonomi stønad',
                 'NAV UTLAND OG FELLESTJENESTER': 'Nav utland og fellestjenester',
                 'NAV KONTROLL ANALYSE': 'Nav kontroll analyse',
                 'NAV KONTROLL STYRINGSENHET': 'Nav kontroll styringsenhet',
-                'NAV REGISTERFORVALTNING': 'Nav registerforvaltning'
+                'NAV REGISTERFORVALTNING': 'Nav registerforvaltning',
+                'NAV TILTAK': 'Nav tiltak',
+                'NAV KLAGEINSTANS': 'Nav klageinstans',
+                'SEKSJON FAG- OG YTELSESUTVIKLING': 'Seksjon fag- og ytelsesutvikling',
+                'SEKSJON INFORMASJONSFORVALTNING': 'Seksjon informasjonsforvaltning',
+                'SEKSJON JURIDISK': 'Seksjon juridisk',
+                'SEKSJON KOMPETANSEUTVIKLING': 'Seksjon kompetanseutvikling',
+                'SEKSJON STYRING': 'Seksjon styring'
             };
 
             const formatWord = (word) =>
@@ -377,9 +384,10 @@ export default class CrmStoMessaging extends LightningElement {
 
     getEnglishCompanyName() {
         try {
-            // English translation for management units
-            if (this.norwegianCompanyName in englishCompanyTranslations) {
-                return englishCompanyTranslations[this.norwegianCompanyName];
+            const normalizedCompanyName = this.norwegianCompanyName.trim();
+
+            if (normalizedCompanyName in englishCompanyTranslations) {
+                return englishCompanyTranslations[normalizedCompanyName];
             }
 
             let ecn = '';
