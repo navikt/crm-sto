@@ -18,13 +18,14 @@ export default class NksJournalFeilregistert extends LightningElement {
         this.disabled = true;
 
         const suffix = this.refs.suffix?.value;
-        const filter = this.refs.filter?.value;
+        const limit = this.refs.limit?.value;
+        this.statusText = 'Rerun started';
         startFromComponent({
             externalReferenceSuffix: suffix,
-            filterQuery: filter
+            wantedLimit: limit
         })
             .then(() => {
-                this.statusText = 'Rerun started';
+                this.statusText = 'Rerun completed';
             })
             .catch((e) => {
                 this.statusText = 'Rerun failed. ' + JSON.stringify(e);
