@@ -16,7 +16,7 @@ import oldDesignTemplate from './oldDesignTemplate.html';
 import { resolve } from 'c/nksComponentsUtils';
 
 const englishCompanyTranslations = {
-    'DIR Ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
+    'DIR ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
     'Nav arbeid og ytelser styringsenhet': 'Nav Work and Benefits Management Unit',
     'Nav familie- og pensjonsytelser': 'Nav Family Benefits and Pensions Management Unit',
     'Nav kontroll Øst': 'Nav Control Eastern Norway',
@@ -308,7 +308,26 @@ export default class CrmStoMessaging extends LightningElement {
                 'NAV HJELPEMIDDELSENTRAL': 'Nav hjelpemiddelsentral',
                 'NAV KONTROLL': 'Nav kontroll',
                 'NAV OPPFØLGING UTLAND': 'Nav oppfølging utland',
-                'NAV STYRINGSENHET KONTAKTSENTER': 'NAV styringsenhet kontaktsenter'
+                'NAV STYRINGSENHET KONTAKTSENTER': 'NAV styringsenhet kontaktsenter',
+                'NAV ØKONOMI STØNAD': 'Nav økonomi stønad',
+                'NAV UTLAND OG FELLESTJENESTER': 'Nav utland og fellestjenester',
+                'NAV KONTROLL ANALYSE': 'Nav kontroll analyse',
+                'NAV KONTROLL STYRINGSENHET': 'Nav kontroll styringsenhet',
+                'NAV REGISTERFORVALTNING': 'Nav registerforvaltning'
+            };
+
+            const formatWord = (word) =>
+                word
+                    .split('-')
+                    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+                    .join('-');
+
+            const formatRemainingWords = (name) => name.split(/\s+/).map(formatWord).join(' ');
+
+            const formatCompanyName = (key, formattedName) => {
+                const mappedPhrase = phraseMap[key];
+                const remainingName = formattedName.replace(key, '').trim();
+                return `${mappedPhrase} ${formatRemainingWords(remainingName)}`;
             };
 
             if (this.companyName === 'IT-AVDELINGEN') {
@@ -342,38 +361,16 @@ export default class CrmStoMessaging extends LightningElement {
                 return 'Nav kontaktsenter';
             }
 
-            let formattedName = this.companyName.toUpperCase();
-
-            for (let key of Object.keys(phraseMap)) {
+            const formattedName = this.companyName.toUpperCase();
+            for (const key in phraseMap) {
                 if (formattedName.includes(key)) {
-                    formattedName = formattedName.replace(key, phraseMap[key]);
-                    let remainingName = formattedName.replace(phraseMap[key], '').trim();
-                    let remainingWords = remainingName.split(/[\s]+/).map((word) => {
-                        if (word.includes('-')) {
-                            return word
-                                .split('-')
-                                .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-                                .join('-');
-                        }
-                        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-                    });
-                    return phraseMap[key] + (remainingWords.length > 0 ? ' ' + remainingWords.join(' ') : '');
+                    return formatCompanyName(key, formattedName);
                 }
             }
 
-            let words = this.companyName.split(/[\s]+/).map((word) => {
-                if (word.includes('-')) {
-                    return word
-                        .split('-')
-                        .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-                        .join('-');
-                }
-                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            });
-
-            return words.join(' ');
+            return formatRemainingWords(this.companyName);
         } catch (error) {
-            console.error('Problem getting Norwegian company name: ' + error);
+            console.error('Problem getting Norwegian company name:', error);
             return '';
         }
     }
