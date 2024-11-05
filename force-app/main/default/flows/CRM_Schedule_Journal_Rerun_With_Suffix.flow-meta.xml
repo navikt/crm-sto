@@ -5,7 +5,7 @@
         <label>Initiate journal rerun</label>
         <locationX>50</locationX>
         <locationY>468</locationY>
-        <actionName>nksJournalFeilregistrertQueueable</actionName>
+        <actionName>NKS_JournalRerunBatch</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
@@ -44,7 +44,9 @@
             <label>Has an uncompleted journal rerun request</label>
         </rules>
     </decisions>
-    <description>Schedules the initiation of the Journal rerun batch. This is used because of an error with the getContentAsPdf() method, which doesn&apos;t work in production unless the batch was started from an async process, like a scheduled flow.</description>
+    <description>Schedules the initiation of the Journal rerun batch. This is used because of an
+        error with the getContentAsPdf() method, which doesn&apos;t work in production unless the
+        batch was started from an async process, like a scheduled flow.</description>
     <interviewLabel>CRM_Schedule_Journal_rerun_with_suffix {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Schedule Journal Rerun With Suffix</label>
     <processMetadataValues>

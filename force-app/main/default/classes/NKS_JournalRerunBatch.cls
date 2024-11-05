@@ -1,4 +1,4 @@
-public without sharing class nksJournalFeilregistrertQueueable implements  Database.Batchable<SObject>, Database.Stateful, Database.AllowsCallouts {
+public without sharing class NKS_JournalRerunBatch implements  Database.Batchable<SObject>, Database.Stateful, Database.AllowsCallouts {
     private final static String fieldQuery = 'Select Id, CRM_Journal_Post_Type__c, CRM_Theme_Code__c , CRM_Conversation_Note__c, CRM_Created_By_Ident__c, CRM_Created_By_NAV_Unit__c, CRM_NAV_Case_Legacy_System__c, CRM_Thread__c, NAV_Case_Reference__c, Theme__c, CRM_Thread__r.CRM_Type__c, CRM_Subtheme_Code__c, Subtheme__c FROM Journal_Entry__c';
     private String queryFilter;
     private String externalReferenceSuffix;
@@ -11,11 +11,11 @@ public without sharing class nksJournalFeilregistrertQueueable implements  Datab
     )
     public static void initJournalBatcher(List<JournalRerunWrapper> inputs) {
         for(JournalRerunWrapper input: inputs){
-            Database.executeBatch(new nksJournalFeilregistrertQueueable(input.externalReferenceSuffix, input.scope), 20);
+            Database.executeBatch(new NKS_JournalRerunBatch(input.externalReferenceSuffix, input.scope), 20);
         }
     }
 
-    public nksJournalFeilregistrertQueueable(String externalReferenceSuffix, String queryFilter) {
+    public NKS_JournalRerunBatch(String externalReferenceSuffix, String queryFilter) {
         this.externalReferenceSuffix = externalReferenceSuffix;
         this.queryFilter = queryFilter;
     }
@@ -62,7 +62,7 @@ public without sharing class nksJournalFeilregistrertQueueable implements  Datab
     }
     
     public void finish(Database.BatchableContext BC) {
-        logger.info('Done with nksJournalFeilregistrertQueueable', null, CRM_ApplicationDomain.Domain.NKS);
+        logger.info('Done with NKS_JournalRerunBatch', null, CRM_ApplicationDomain.Domain.NKS);
         logger.publish();
     }
 
