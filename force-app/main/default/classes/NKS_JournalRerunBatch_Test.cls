@@ -13,9 +13,15 @@ public class NKS_JournalRerunBatch_Test {
             new Journal_Entry__c(CRM_Thread__c = chatThread.Id)
         );
         Thread__c stoThread = (Thread__c) STO_TestDataFactory.createRecord(new Thread__c(CRM_Thread_Type__c = 'STO'));
-        STO_TestDataFactory.createRecord(new Message__c(CRM_Thread__c = stoThread.Id, CRM_Message_Text__c = 'En melding.'));
-        STO_TestDataFactory.createRecord(new Message__c(CRM_Thread__c = stoThread.Id, CRM_Message_Text__c = 'En melding.'));
-        STO_TestDataFactory.createRecord(new Message__c(CRM_Thread__c = stoThread.Id, CRM_Message_Text__c = 'En melding.'));
+        STO_TestDataFactory.createRecord(
+            new Message__c(CRM_Thread__c = stoThread.Id, CRM_Message_Text__c = 'En melding.')
+        );
+        STO_TestDataFactory.createRecord(
+            new Message__c(CRM_Thread__c = stoThread.Id, CRM_Message_Text__c = 'En melding.')
+        );
+        STO_TestDataFactory.createRecord(
+            new Message__c(CRM_Thread__c = stoThread.Id, CRM_Message_Text__c = 'En melding.')
+        );
         Journal_Entry__c je3 = (Journal_Entry__c) STO_TestDataFactory.createRecord(
             new Journal_Entry__c(CRM_Thread__c = stoThread.Id)
         );
