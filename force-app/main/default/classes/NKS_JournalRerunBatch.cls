@@ -11,6 +11,9 @@ public without sharing class NKS_JournalRerunBatch implements  Database.Batchabl
     )
     public static void initJournalBatcher(List<JournalRerunWrapper> inputs) {
         for(JournalRerunWrapper input: inputs){
+            if(input.scope == null || String.isBlank(input.scope)) {
+                continue;
+            }
             Database.executeBatch(new NKS_JournalRerunBatch(input.externalReferenceSuffix, input.scope), 20);
         }
     }
