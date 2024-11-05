@@ -60,8 +60,23 @@ public without sharing class NKS_JournalRerunBatch implements  Database.Batchabl
                 logger.error('Queued failed, exception: ' + e.getMessage(), jEntry, CRM_ApplicationDomain.Domain.NKS);
             }
         }
-        update jEntriesToUpdate;
+        List<Database.SaveResult> jEntryUpdRes = Database.update(jEntriesToUpdate, false);
+        verifyUpdateResults(jEntryUpdRes);
         logger.publish();
+    }
+
+    private void verifyUpdateResults(List<Database.SaveResult> updResults) {
+        for (Database.SaveResult updRes : updResults) {
+            if (updRes.isSuccess()) {
+                //Successfull update
+            } else {
+                String errorMsg = 'Failed to update record with id: ' + updRes.getId() + '\n';
+                for (Database.Error err : updRes.getErrors()) {
+                    errorMsg += err.getMessage() + '\n';
+                }
+                logger.error(errorMsg, null, CRM_ApplicationDomain.Domain.NKS);
+            }
+        }
     }
     
     public void finish(Database.BatchableContext BC) {
