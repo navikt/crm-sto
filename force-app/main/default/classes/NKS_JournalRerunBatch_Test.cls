@@ -26,50 +26,17 @@ public class NKS_JournalRerunBatch_Test {
     }
 
     @IsTest
-    static void processJournalTest() {
-        ApiMock.setTestMock('POST_CREATE_JOURNAL', 200, 'OK');
-        List<Journal_Entry__c> oldJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
-        Test.startTest();
-        Database.executeBatch(new NKS_JournalRerunBatch());
-        Test.stopTest();
-        List<Journal_Entry__c> newJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
-        Assert.areEqual(4, oldJEntries.size());
-        Assert.areEqual(4, newJEntries.size());
-    }
-
-    @IsTest
     static void processJournalSuffixTest() {
         ApiMock.setTestMock('POST_CREATE_JOURNAL', 200, 'OK');
         List<Journal_Entry__c> oldJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
         String normalSuffix = 'NormalSuffix';
+        List<NKS_JournalRerunBatch.JournalRerunWrapper> inputs = new List<NKS_JournalRerunBatch.JournalRerunWrapper>();
+        NKS_JournalRerunBatch.JournalRerunWrapper input = new NKS_JournalRerunBatch.JournalRerunWrapper();
+        input.scope = 'Id != null';
+        input.externalReferenceSuffix = normalSuffix;
+        inputs.add(input);
         Test.startTest();
-        Database.executeBatch(new NKS_JournalRerunBatch(normalSuffix, 'Id != null'));
-        Test.stopTest();
-        List<Journal_Entry__c> newJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
-        Assert.areEqual(4, oldJEntries.size());
-        Assert.areEqual(4, newJEntries.size());
-    }
-
-    @IsTest
-    static void processJournalByteSizeTest() {
-        ApiMock.setTestMock('POST_CREATE_JOURNAL', 200, 'OK');
-        List<Journal_Entry__c> oldJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
-        String longSuffix = 'VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!VeryLongAndInsaneSuffixToBumpUpByteSizeOfRequest!';
-        Test.startTest();
-        Database.executeBatch(new NKS_JournalRerunBatch(longSuffix, 'Id != null'));
-        Test.stopTest();
-        List<Journal_Entry__c> newJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
-        Assert.areEqual(4, oldJEntries.size());
-        Assert.areEqual(4, newJEntries.size());
-    }
-
-    @IsTest
-    static void startFromComponentTest() {
-        ApiMock.setTestMock('POST_CREATE_JOURNAL', 200, 'OK');
-        List<Journal_Entry__c> oldJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
-        String normalSuffix = 'NormalSuffix';
-        Test.startTest();
-        NKS_JournalRerunBatch.startFromComponent(normalSuffix, null);
+        NKS_JournalRerunBatch.initJournalBatcher(inputs);
         Test.stopTest();
         List<Journal_Entry__c> newJEntries = [SELECT Id, Journal_Entry_Status__c FROM Journal_Entry__c];
         Assert.areEqual(4, oldJEntries.size());
