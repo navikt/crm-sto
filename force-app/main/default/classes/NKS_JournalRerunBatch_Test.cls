@@ -1,5 +1,5 @@
 @IsTest
-public with sharing class nksJournalFeilregistrertQueueable_Test {
+public class NKS_JournalRerunBatch_Test {
     @TestSetup
     static void makeData() {
         Conversation_Note__c convNote = (Conversation_Note__c) STO_TestDataFactory.createRecord(
