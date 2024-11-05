@@ -58,6 +58,6 @@ export default class StoInboxCloseItem extends LightningElement {
     }
 
     get threadName() {
-        return this.thread.name + (this.isExternal === true ? ': Du sendte en melding' : ': NAV sendte en melding');
+        return this.thread.name + (this.isExternal === true ? ': Du sendte en melding' : ': Nav sendte en melding');
     }
 }

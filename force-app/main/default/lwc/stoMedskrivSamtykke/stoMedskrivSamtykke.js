@@ -5,13 +5,13 @@ import ID_FIELD from '@salesforce/schema/Thread__c.Id';
 import LoggerUtility from 'c/loggerUtility';
 
 const titlesConst = {
-    false: 'Du har godkjent at denne samtalen kan brukes til opplæring av ansatte i NAV.',
+    false: 'Du har godkjent at denne samtalen kan brukes til opplæring av ansatte i Nav.',
     true: 'Godkjenningen din ble fjernet.'
 };
 
 const textConst = {
     false: 'For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt. Du kan når som helst trekke tilbake godkjenningen.',
-    true: 'Vi vil ikke bruke samtalen din til å lære opp veiledere i NAV.'
+    true: 'Vi vil ikke bruke samtalen din til å lære opp veiledere i Nav.'
 };
 
 export default class StoMedskrivSamtykke extends LightningElement {
