@@ -23,7 +23,7 @@ export default class StoMessageInboxItem extends LightningElement {
                 if (this.isExternal === true) {
                     return this.thread.name + ': Du sendte en melding';
                 }
-                return this.thread.name + ': NAV sendte en melding';
+                return this.thread.name + ': Nav sendte en melding';
             }
             return this.thread.name;
         }
@@ -31,7 +31,7 @@ export default class StoMessageInboxItem extends LightningElement {
             if (this.isExternal === true) {
                 return this.thread.name + ': Du sendte en melding';
             }
-            return this.thread.name + ': NAV sendte en melding';
+            return this.thread.name + ': Nav sendte en melding';
         }
         return this.thread.name;
     }

@@ -3,7 +3,7 @@
     <fullName>CRM_Person_Is_NAV_Employee__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <label>Person Is NAV Employee</label>
+    <label>Person Is Nav Employee</label>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
