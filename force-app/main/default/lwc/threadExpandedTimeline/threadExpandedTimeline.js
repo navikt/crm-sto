@@ -25,20 +25,19 @@ export default class ThreadExpandedTimeline extends NavigationMixin(LightningEle
         ],
         sortBy: ['Message__c.CRM_Sent_date__c']
     })
-    geirDonk(result) {
+    wiredMessages(result) {
         if (result.error) {
             this.error = result.error;
             console.log('Error: ' + JSON.stringify(result.error, null, 2));
         } else if (result.data) {
-            const geir = result.data.records.map((record) => {
+            const formattedMessages = result.data.records.map((record) => {
                 const retObj = {};
                 Object.keys(record.fields).forEach((field) => {
                     retObj[field] = record.fields[field].value;
                 });
                 return retObj;
             });
-            console.log('Geir: ' + JSON.stringify(geir, null, 2));
-            this.messages = geir;
+            this.messages = formattedMessages;
             this.hasMessages = true;
         }
     }
