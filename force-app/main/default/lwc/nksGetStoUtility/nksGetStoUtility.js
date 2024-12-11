@@ -102,7 +102,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
             const records = this.value === 'All' ? await getSto() : await getStoWithSkill({ skillId: this.value });
 
             records.forEach((record) => this.openCase(record.recordId, record.status === 'In Progress'));
-            this.minimizeUtility();
+            this.minimizeSTOUtility();
         } catch (error) {
             this.handleGetStoError(error);
         } finally {
