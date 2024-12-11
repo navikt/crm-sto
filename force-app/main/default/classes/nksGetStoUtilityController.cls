@@ -142,7 +142,7 @@ public without sharing class nksGetStoUtilityController {
             FROM Case
             WHERE
                 Status IN ('New', 'In progress', 'Reserved')
-                AND RecordType.Id = :recordTypeId
+                AND RecordTypeId = :recordTypeId
                 AND OwnerId = :UserInfo.getUserID()
             ORDER BY CreatedDate DESC
             LIMIT 5
