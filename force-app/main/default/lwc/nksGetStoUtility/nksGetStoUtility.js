@@ -35,9 +35,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     get lastIndex() {
-        let index = 0;
-        index = this.records.length - 1;
-        return index;
+        return this.records.length - 1;
     }
 
     connectedCallback() {
