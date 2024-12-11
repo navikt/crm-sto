@@ -134,21 +134,20 @@ public without sharing class nksGetStoUtilityController {
         return relatedCaseIds;
     }
 
-    @AuraEnabled
-    public static List<Record> getList(String limitNumber) {
-        List<Record> records = new List<Record>();
+    @AuraEnabled(cacheable=true)
+    public static List<Record> getList() {
+        Id recordTypeId = [SELECT Id FROM RecordType WHERE DeveloperName = 'STO_Case'].Id;
         List<Case> listtoreturn = [
-            SELECT LastModifiedDate, CreatedDate, toLabel(Status), STO_Category__c, CaseNumber
+            SELECT CreatedDate, toLabel(Status), STO_Category__c, CaseNumber
             FROM Case
             WHERE
                 Status IN ('New', 'In progress', 'Reserved')
-                AND RecordType.DeveloperName = 'STO_Case'
+                AND RecordType.Id = :recordTypeId
                 AND OwnerId = :UserInfo.getUserID()
             ORDER BY CreatedDate DESC
-            LIMIT :Integer.valueOf(limitNumber)
+            LIMIT 5
         ];
-        records = createRecords(listtoreturn);
-        return records;
+        return createRecords(listtoreturn);
     }
 
     private static Boolean hasInProgress() {

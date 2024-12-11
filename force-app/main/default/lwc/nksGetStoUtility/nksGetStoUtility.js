@@ -1,43 +1,49 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, wire } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import getList from '@salesforce/apex/nksGetStoUtilityController.getList';
 import getSto from '@salesforce/apex/nksGetStoUtilityController.getSto';
 import getStoWithSkill from '@salesforce/apex/nksGetStoUtilityController.getStoWithSkill';
 import getServiceResourceSkillIds from '@salesforce/apex/nksGetStoUtilityController.getServiceResourceSkillIds';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import hasStoBeta from '@salesforce/customPermission/STO_Beta';
 import { publishToAmplitude } from 'c/amplitude';
 
 export default class NksGetStoUtility extends NavigationMixin(LightningElement) {
-    listCount = 5;
-    @track records = [];
-
+    records = [];
+    isRefreshDisabled = false;
     showSpinner = false;
-    isInitiated = false;
     pageurl;
-    initRun = false;
     utilityId;
-
-    betaPermission = hasStoBeta;
-
+    getListResult;
     skillMap;
     value = 'All';
 
     get options() {
         const defaultLabel = [{ label: 'Alle tjenester jeg behandler', value: 'All' }];
-        if (this.skillMap != null) {
-            console.log(this.skillMap);
-            return defaultLabel.concat(
-                Object.keys(this.skillMap).map((id) => {
-                    return { label: this.skillMap[id], value: id };
-                })
-            );
-        }
-        return defaultLabel;
+        return this.skillMap
+            ? defaultLabel.concat(Object.keys(this.skillMap).map((id) => ({ label: this.skillMap[id], value: id })))
+            : defaultLabel;
     }
 
-    handleChange(event) {
-        this.value = event.detail.value;
+    get hasRecord() {
+        return this.records.length > 0;
+    }
+
+    get hasCasesInProgress() {
+        // eslint-disable-next-line compat/compat
+        return this.records.some((record) => ['In progress', 'New'].includes(record.status));
+    }
+
+    get lastIndex() {
+        let index = 0;
+        index = this.records.length - 1;
+        return index;
+    }
+
+    connectedCallback() {
+        publishToAmplitude('STO', { type: 'STO Utility opened' });
+        this.getUtilityId();
+        this.setNavigationUrl();
     }
 
     @wire(getServiceResourceSkillIds)
@@ -51,89 +57,81 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
         }
     }
 
-    connectedCallback() {
-        publishToAmplitude('STO', { type: 'STO Utility opened' });
-        this.getUtilityId();
-        // Navigate to list
+    @wire(getList)
+    wiredGetList(result) {
+        console.log('WIRED LOADLIST');
+        this.getListResult = result;
+        const { data, error } = result;
+        console.log('data: ', JSON.stringify(data));
+        console.log('error: ', JSON.stringify(error));
+        if (data) {
+            this.records = data;
+        } else if (error) {
+            let message = 'Unknown error';
+            if (Array.isArray(error.body)) {
+                message = error.body.map((e) => e.message).join(', ');
+            } else if (typeof error.body.message === 'string') {
+                message = error.body.message;
+            }
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message,
+                    variant: 'error'
+                })
+            );
+        }
+        this.showSpinner = false;
+    }
+
+    // Navigate to list
+    setNavigationUrl() {
         this[NavigationMixin.GenerateUrl]({
             type: 'standard__objectPage',
-            attributes: {
-                objectApiName: 'Case',
-                actionName: 'list'
-            },
-            state: {
-                filterName: 'NKS_Case_STO_Not_Completed'
-            }
+            attributes: { objectApiName: 'Case', actionName: 'list' },
+            state: { filterName: 'NKS_Case_STO_Not_Completed' }
         }).then((url) => {
             this.pageUrl = url;
         });
     }
 
-    registerClickHandler() {
-        let _this = this;
-        const eventHandler = () => {
-            _this.loadList();
-        };
-        this.invokeUtilityBarAPI('onUtilityClick', { utilityId: this.utilityId, eventHandler: eventHandler });
+    handleChange(event) {
+        this.value = event.detail.value;
     }
 
-    renderedCallback() {
-        if (this.initRun === false) {
-            this.initRun = true;
-            this.loadList();
+    async getNewSTOHandler() {
+        publishToAmplitude('STO', { type: 'getNewSTOHandler' });
+        this.showSpinner = true;
+
+        try {
+            const records = this.value === 'All' ? await getSto() : await getStoWithSkill({ skillId: this.value });
+
+            records.forEach((record) => this.openCase(record.recordId, record.status === 'In Progress'));
+            this.minimizeUtility();
+        } catch (error) {
+            this.handleGetStoError(error);
+        } finally {
+            this.refreshComponent();
         }
     }
 
-    getNewSTOHandler() {
-        publishToAmplitude('STO', { type: 'getNewSTOHandler' });
-        this.showSpinner = true;
-        (this.value === 'All' ? getSto() : getStoWithSkill({ skillId: this.value }))
-            .then((records) => {
-                console.log(records);
-                records.forEach((record) => {
-                    this.openCase(record.recordId, record.status === 'In Progress' ? true : false);
-                }, this);
-                this.minimizeSTOUtility();
-            }, this)
-            .catch((error) => {
-                console.log(error);
-                if (error.body.message === 'hasInProgress') {
-                    this.dispatchEvent(
-                        new ShowToastEvent({
-                            title: 'Du har allerede melding(er) under arbeid.',
-                            variant: 'warning'
-                        })
-                    );
-                } else if (typeof error.body.message === 'string' && error.body.message.startsWith('Max Attempt')) {
-                    this.dispatchEvent(
-                        new ShowToastEvent({
-                            title: 'Kunne ikke hente ny melding.',
-                            message: 'Prøv igjen.',
-                            variant: 'warning'
-                        })
-                    );
-                } else if (typeof error.body.message === 'string' && error.body.message.startsWith('NotFound')) {
-                    this.dispatchEvent(
-                        new ShowToastEvent({
-                            title: 'Kunne ikke hente ny melding.',
-                            message: 'Ingen flere meldinger på tjenester du behandler.',
-                            variant: 'info'
-                        })
-                    );
-                } else {
-                    this.dispatchEvent(
-                        new ShowToastEvent({
-                            title: 'Error.',
-                            message: error.body.message,
-                            variant: 'error'
-                        })
-                    );
-                }
-            })
-            .finally(() => {
-                this.loadList();
-            }, this);
+    handleGetStoError(error) {
+        const message = error?.body?.message;
+        if (message === 'hasInProgress') {
+            this.showToast('Warning', 'Du har allerede melding(er) under arbeid.', 'warning');
+        } else if (message?.startsWith('Max Attempt')) {
+            this.showToast('Warning', 'Kunne ikke hente ny melding. Prøv igjen.', 'warning');
+        } else if (message?.startsWith('NotFound')) {
+            this.showToast('Info', 'Ingen flere meldinger på tjenester du behandler.', 'info');
+        } else {
+            this.showToast('Error', message || 'Ukjent feil.', 'error');
+        }
     }
+
+    showToast(title, message, variant) {
+        this.dispatchEvent(new ShowToastEvent({ title, message, variant }));
+    }
+
     minimizeSTOUtility() {
         if (this.utilityId) this.invokeUtilityBarAPI('minimizeUtility', { utilityId: this.utilityId });
     }
@@ -141,44 +139,16 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     getUtilityId() {
         this.invokeUtilityBarAPI('getAllUtilityInfo').then((allUtilityInfo) => {
             var stoUtility = allUtilityInfo.find((e) => {
-                //Matches the label of the utility component defined in app manager
-                return e.utilityLabel === 'Hent ny melding';
+                return e.utilityLabel === 'Hent ny melding'; //Matches the label of the utility component defined in app manager
             });
             if (stoUtility) {
                 this.utilityId = stoUtility.id;
-                this.registerClickHandler();
             }
         }, this);
     }
 
     openCase(caseId, focus) {
         return this.invokeWorkspaceAPI('openTab', { recordId: caseId, focus: focus });
-    }
-    loadList() {
-        return getList({
-            limitNumber: this.listCount
-        })
-            .then((data) => {
-                this.records = data;
-            })
-            .catch((error) => {
-                let message = 'Unknown error';
-                if (Array.isArray(error.body)) {
-                    message = error.body.map((e) => e.message).join(', ');
-                } else if (typeof error.body.message === 'string') {
-                    message = error.body.message;
-                }
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error',
-                        message,
-                        variant: 'error'
-                    })
-                );
-            })
-            .finally(() => {
-                this.showSpinner = false;
-            });
     }
 
     navigateToList() {
@@ -195,43 +165,19 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
         });
     }
 
-    refreshList = () => {
-        this.isInitiated = true;
-        this.loadList();
-    };
-
-    loadMoreList() {
-        this.listCount += 3;
-        // eslint-disable-next-line @lwc/lwc/no-api-reassignments
-        this.loadList();
-    }
-
-    refreshComponent() {
-        publishToAmplitude('STO', { type: 'refreshComponent' });
+    async refreshComponent() {
         this.showSpinner = true;
-        return this.loadList();
+        this.isRefreshDisabled = true;
+        publishToAmplitude('STO', { type: 'refreshComponent' });
+        await refreshApex(this.getListResult);
+        this.showSpinner = false;
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        setTimeout(() => {
+            // 10 sec delay to avoid spamming refresh
+            this.isRefreshDisabled = false;
+        }, 10000);
     }
 
-    get hasRecord() {
-        return this.records.length > 0 ? true : false;
-    }
-
-    get hasCasesInProgress() {
-        try {
-            return this.records.some((e) => e.status === 'In progress' || e.status === 'New');
-        } catch {
-            // skip
-        }
-        return false;
-    }
-
-    get lastIndex() {
-        let index = 0;
-        index = this.records.length - 1;
-        return index;
-    }
-
-    //Helper method to invoke workspace API  from LWC
     invokeWorkspaceAPI(methodName, methodArgs) {
         return this.invokeAPI('workspaceAPI', methodName, methodArgs);
     }
