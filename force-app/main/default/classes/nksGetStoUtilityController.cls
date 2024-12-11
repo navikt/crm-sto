@@ -196,7 +196,7 @@ public without sharing class nksGetStoUtilityController {
         GroupedSkills retSkills = new GroupedSkills();
 
         for (ServiceResourceSkill srs : [
-            SELECT SkillId,  Skill.DeveloperName, Skill.MasterLabel
+            SELECT SkillId, Skill.DeveloperName, Skill.MasterLabel
             FROM ServiceResourceSkill
             WHERE
                 ServiceResource.RelatedRecordId = :userId
