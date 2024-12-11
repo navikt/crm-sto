@@ -52,18 +52,15 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
             this.skillMap = data.skillMap;
         }
         if (error) {
-            console.log('Could not get SRS');
-            console.log(error);
+            console.error('Could not get SRS. Error: ', error);
         }
     }
 
     @wire(getList)
     wiredGetList(result) {
-        console.log('WIRED LOADLIST');
         this.getListResult = result;
         const { data, error } = result;
-        console.log('data: ', JSON.stringify(data));
-        console.log('error: ', JSON.stringify(error));
+
         if (data) {
             this.records = data;
         } else if (error) {
