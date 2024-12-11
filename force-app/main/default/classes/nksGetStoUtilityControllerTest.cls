@@ -37,19 +37,19 @@ public with sharing class nksGetStoUtilityControllerTest {
     @isTest
     static void testGetSto() {
         User usr = (User) STO_TestDataFactory.createRecord(new User());
-        List<nksGetStoUtilityController.Record> records;
-        List<nksGetStoUtilityController.Record> noRecord;
+        Map<String, List<nksGetStoUtilityController.Record>> records;
+        Map<String, List<nksGetStoUtilityController.Record>> noRecord;
         List<nksGetStoUtilityController.Record> ownedList;
 
         Test.startTest();
         System.runAs(usr) {
-            records = nksGetStoUtilityController.getSto();
+            records = nksGetStoUtilityController.getSto().records;
             ownedList = nksGetStoUtilityController.getList();
         }
         delete [SELECT Id FROM Case];
         System.runAs(usr) {
             try {
-                noRecord = nksGetStoUtilityController.getSto();
+                noRecord = nksGetStoUtilityController.getSto().records;
                 System.assert(false);
             } catch (AuraHandledException auraEx) {
                 System.assert(true);

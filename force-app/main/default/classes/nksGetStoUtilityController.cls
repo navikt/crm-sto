@@ -44,16 +44,18 @@ public without sharing class nksGetStoUtilityController {
     private static GroupedSkills allUserSkills = new GroupedSkills();
 
     @AuraEnabled
-    public static List<Record> getStoWithSkill(Id skillId) {
+    public static Map<String, List<Record>> getStoWithSkill(Id skillId) {
         filteredSkillId = skillId;
         return getSto();
     }
 
     @AuraEnabled
-    public static List<Record> getSto() {
+    public static Map<String, List<Record>> getSto() {
         List<Record> records = new List<Record>();
-        if (hasInProgress())
-            throw new AuraHandledException('hasInProgress');
+        List<Record> ongoingSTOs = getList();
+        if (ongoingSTOs.size() > 0) {
+            throw new STOInProgressException('hasInProgress', ongoingSTOs);
+        }
 
         Record newStoRecord = new Record();
         newStoRecord.recordId = getNewSTO();
@@ -71,7 +73,7 @@ public without sharing class nksGetStoUtilityController {
             relatedStoRecord.status = 'Reserved';
             records.add(relatedStoRecord);
         }
-        return records;
+        return new Map<String, List<Record>>{'records' => records, 'ongoingSTOs' => ongoingSTOs};
     }
 
     @AuraEnabled
@@ -148,19 +150,6 @@ public without sharing class nksGetStoUtilityController {
             LIMIT 5
         ];
         return createRecords(listtoreturn);
-    }
-
-    private static Boolean hasInProgress() {
-        List<Case> casesInProgress = [
-            SELECT Id
-            FROM Case
-            WHERE
-                Status IN ('New', 'In progress')
-                AND RecordType.DeveloperName = 'STO_Case'
-                AND OwnerId = :UserInfo.getUserID()
-            LIMIT 1
-        ];
-        return casesInProgress.size() > 0 ? true : false;
     }
 
     public class Record {
@@ -271,5 +260,15 @@ public without sharing class nksGetStoUtilityController {
         public Map<Id, String> userConfidentialMap = new Map<Id, String>();
         @AuraEnabled
         public Map<Id, String> userOriginMap = new Map<Id, String>();
+    }
+
+    public class STOInProgressException extends Exception {
+        public List<Record> ongoingSTOs;
+    
+        // Constructor with message and object
+        public STOInProgressException(String message, List<Record> ongoingSTOs) {
+            super(message);
+            this.ongoingSTOs = ongoingSTOs;
+        }
     }
 }

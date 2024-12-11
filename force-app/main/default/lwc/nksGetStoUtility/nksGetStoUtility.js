@@ -97,16 +97,19 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     async getNewSTOHandler() {
         publishToAmplitude('STO', { type: 'getNewSTOHandler' });
         this.showSpinner = true;
-
+        let result;
         try {
-            const records = this.value === 'All' ? await getSto() : await getStoWithSkill({ skillId: this.value });
-
+            result = this.value === 'All' ? await getSto() : await getStoWithSkill({ skillId: this.value });
+            const records = result.records;
             records.forEach((record) => this.openCase(record.recordId, record.status === 'In Progress'));
             this.minimizeSTOUtility();
         } catch (error) {
             this.handleGetStoError(error);
+            this.records = error?.body?.ongoingSTOs;
         } finally {
-            this.refreshComponent();
+            if (result?.ongoingSTOs) {
+                this.records = result.ongoingSTOs;
+            }
         }
     }
 
