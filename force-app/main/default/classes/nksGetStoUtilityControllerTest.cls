@@ -44,7 +44,7 @@ public with sharing class nksGetStoUtilityControllerTest {
         Test.startTest();
         System.runAs(usr) {
             records = nksGetStoUtilityController.getSto();
-            ownedList = nksGetStoUtilityController.getList('10');
+            ownedList = nksGetStoUtilityController.getList();
         }
         delete [SELECT Id FROM Case];
         System.runAs(usr) {
