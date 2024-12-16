@@ -144,9 +144,11 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     registerClickHandler() {
-        const eventHandler = (event) => {
+        const eventHandler = async (event) => {
+            this.showSpinner = true;
             if (event?.panelVisible && !this.isRefreshDisabled) {
-                refreshApex(this.getListResult);
+                await refreshApex(this.getListResult);
+                this.showSpinner = false;
                 this.isRefreshDisabled = true;
                 // eslint-disable-next-line @lwc/lwc/no-async-operation
                 setTimeout(() => {
