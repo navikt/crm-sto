@@ -106,7 +106,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
         } catch (error) {
             this.handleGetStoError(error);
         } finally {
-            this.refreshComponent();
+            this.refreshComponent(true);
         }
     }
 
@@ -138,8 +138,18 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
             });
             if (stoUtility) {
                 this.utilityId = stoUtility.id;
+                this.registerClickHandler();
             }
         }, this);
+    }
+
+    registerClickHandler() {
+        const eventHandler = async (event) => {
+            if (event?.panelVisible && !this.isRefreshDisabled) {
+                this.refreshComponent(true);
+            }
+        };
+        this.invokeUtilityBarAPI('onUtilityClick', { utilityId: this.utilityId, eventHandler: eventHandler });
     }
 
     openCase(caseId, focus) {
@@ -160,10 +170,12 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
         });
     }
 
-    async refreshComponent() {
+    async refreshComponent(doNotPublish) {
         this.showSpinner = true;
         this.isRefreshDisabled = true;
-        publishToAmplitude('STO', { type: 'refreshComponent' });
+        if (!doNotPublish) {
+            publishToAmplitude('STO', { type: 'refreshComponent' });
+        }
         await refreshApex(this.getListResult);
         this.showSpinner = false;
         // eslint-disable-next-line @lwc/lwc/no-async-operation
