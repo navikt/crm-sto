@@ -144,8 +144,16 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     registerClickHandler() {
-        const eventHandler = () => {
-            refreshApex(this.getListResult);
+        const eventHandler = (event) => {
+            if (event?.panelVisible && !this.isRefreshDisabled) {
+                refreshApex(this.getListResult);
+                this.isRefreshDisabled = true;
+                // eslint-disable-next-line @lwc/lwc/no-async-operation
+                setTimeout(() => {
+                    // 10 sec delay to avoid spamming refresh
+                    this.isRefreshDisabled = false;
+                }, 10000);
+            }
         };
         this.invokeUtilityBarAPI('onUtilityClick', { utilityId: this.utilityId, eventHandler: eventHandler });
     }
