@@ -138,8 +138,16 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
             });
             if (stoUtility) {
                 this.utilityId = stoUtility.id;
+                this.registerClickHandler();
             }
         }, this);
+    }
+
+    registerClickHandler() {
+        const eventHandler = () => {
+            refreshApex(this.getListResult);
+        };
+        this.invokeUtilityBarAPI('onUtilityClick', { utilityId: this.utilityId, eventHandler: eventHandler });
     }
 
     openCase(caseId, focus) {
