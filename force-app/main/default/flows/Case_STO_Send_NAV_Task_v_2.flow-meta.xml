@@ -231,6 +231,13 @@
                 <elementReference>Get_Thread.CRM_API_Reference__c</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NavTask.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Task_Name</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <isGoTo>true</isGoTo>
             <targetReference>Send_NAV_Task</targetReference>
@@ -349,8 +356,10 @@
     <formulas>
         <name>Task_Name</name>
         <dataType>String</dataType>
-        <expression>Case({!Task_Type_Selector.selectedTaskType}, &apos;KONT_BRUK&apos;,
-            &apos;Kontakt bruker&apos;, &apos;VURD_HENV&apos;, &apos;Vurder henvendelse&apos;,
+        <expression>Case(
+IF(ISBLANK({!Task_Type_Selector.selectedTaskType}), {!Task_Type_Selector_1.selectedTaskType},{!Task_Type_Selector.selectedTaskType}), 
+            &apos;KONT_BRUK&apos;, &apos;Kontakt bruker&apos;, 
+            &apos;VURD_HENV&apos;, &apos;Vurder henvendelse&apos;,
             &apos;Vurder konsekvens for ytelse&apos;)</expression>
     </formulas>
     <formulas>
