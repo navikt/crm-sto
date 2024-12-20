@@ -45,10 +45,16 @@
                             alternative-text="Oppdater"
                             icon-name="utility:refresh"
                             onclick={refreshComponent}
+                            disabled={isRefreshDisabled}
                         ></lightning-button-icon>
                     </lightning-layout-item>
                     <template if:true={showSpinner} class="slds-spinner_container">
-                        <lightning-spinner title="Loading" size="medium" type="brand"></lightning-spinner>
+                        <lightning-spinner
+                            title="Loading"
+                            alternative-text="Loading..."
+                            size="medium"
+                            type="brand"
+                        ></lightning-spinner>
                     </template>
                 </lightning-layout>
                 <ul class="stripedList">
@@ -80,10 +86,16 @@
                         alternative-text="Oppdater"
                         icon-name="utility:refresh"
                         onclick={refreshComponent}
+                        disabled={isRefreshDisabled}
                     ></lightning-button-icon>
                 </lightning-layout-item>
                 <template if:true={showSpinner} class="slds-spinner_container">
-                    <lightning-spinner title="Loading" size="medium" type="brand"></lightning-spinner>
+                    <lightning-spinner
+                        title="Loading"
+                        alternative-text="Loading..."
+                        size="medium"
+                        type="brand"
+                    ></lightning-spinner>
                 </template>
                 <div class="slds-illustration slds-illustration_small">
                     <svg
