@@ -42,6 +42,24 @@ private class NKS_FedrekvotesakenControllerTest {
     }
 
     @isTest
+    static void testCreateNavTaskHasExistingNavTasksError() {
+        NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
+        String jsonData = JSON.serialize(fedrekvoteData);
+        Exception ex;
+
+        Test.startTest();
+        try {
+            NKS_FedrekvotesakenController.createNavTask(jsonData);
+            NKS_FedrekvotesakenController.createNavTask(jsonData);
+        } catch (Exception e) {
+            ex = e;
+        }
+        Test.stopTest();
+
+        Assert.areNotEqual(null, ex);
+    }
+
+    @isTest
     static void testFormatComment() {
         NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
 

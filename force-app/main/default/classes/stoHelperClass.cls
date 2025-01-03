@@ -1,7 +1,7 @@
 public with sharing class stoHelperClass {
     private static final LoggerUtility logger = new LoggerUtility('STO');
     private static final List<String> allowedThreadTypes = new List<String>{ 'STO', 'BTO' };
-
+    private static final Integer maxThreadCount = 3;
     private static final Map<String, List<String>> threadTypeMap = new Map<String, List<String>>{
         'STO' => new List<String>{ 'STO', 'STB' },
         'BTO' => new List<String>{ 'BTO' },
@@ -52,6 +52,12 @@ public with sharing class stoHelperClass {
     public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type) {
         String relatedObjId;
         Thread__c thread;
+
+        if (isMaxThreadCount(theme, type)) {
+            logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
+            logger.publish();
+            throw new maxThreadLimitReachedException();
+        }
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
         thread = createThread(null, theme, personUser, medskriv, type);
@@ -223,6 +229,14 @@ public with sharing class stoHelperClass {
             logger.publish();
         }
     }
+
+    private static Boolean isMaxThreadCount(String theme, String threadType) {
+        return [SELECT COUNT() FROM Thread__c WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c = :threadType] >= maxThreadCount;
+    }
+
     public class threadOrMessageException extends Exception {
     }
+    
+    public class maxThreadLimitReachedException extends Exception {
+    }    
 }

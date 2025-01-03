@@ -232,6 +232,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     }
                 })
                 .catch((err) => {
+                    console.error(err);
                     this.template.querySelector('c-alertdialog').showModal();
                     this.showspinner = false;
                 });
