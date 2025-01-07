@@ -1,9 +1,11 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { getRelatedListRecords } from 'lightning/uiRelatedListApi';
+import { publishToAmplitude } from 'c/amplitude';
 
 export default class ThreadExpandedTimeline extends NavigationMixin(LightningElement) {
     @api recordId;
+    @api logEvent;
     @track messages;
     hasMessages = false;
     error;
@@ -52,8 +54,8 @@ export default class ThreadExpandedTimeline extends NavigationMixin(LightningEle
                 actionName: 'view'
             }
         });
-        // if (this.logEvent) {
-        //     publishToAmplitude('Timeline', { type: 'Navigate to record' });
-        // }
+        if (this.logEvent) {
+            publishToAmplitude('Timeline', { type: 'Navigate to record' });
+        }
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <section role="log" class="slds-theme_default" style="border-bottom: 1px solid black; padding-bottom: 1.5rem">
+    <section role="log" class="slds-theme_default padding-border-bottom">
         <template if:true={hasMessages}>
             <template for:each={messages} for:item="message">
                 <c-crm-messaging-message-container message={message} key={message.Id}>
@@ -7,7 +7,7 @@
             </template>
         </template>
     </section>
-    <div style="padding-bottom: 1rem; padding-top: 1.5rem">
+    <div class="button-padding">
         <c-nks-button button-label="Behandle henvendelse" onclick={openRecord} is-link standard-length></c-nks-button>
     </div>
 </template>
