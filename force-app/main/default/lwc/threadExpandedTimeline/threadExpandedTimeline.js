@@ -1,4 +1,4 @@
-import { LightningElement, api, track, wire } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { getRelatedListRecords } from 'lightning/uiRelatedListApi';
 import { publishToAmplitude } from 'c/amplitude';
@@ -6,7 +6,7 @@ import { publishToAmplitude } from 'c/amplitude';
 export default class ThreadExpandedTimeline extends NavigationMixin(LightningElement) {
     @api recordId;
     @api logEvent;
-    @track messages;
+    messages;
     hasMessages = false;
     error;
 
@@ -32,14 +32,13 @@ export default class ThreadExpandedTimeline extends NavigationMixin(LightningEle
             this.error = result.error;
             console.log('Error: ' + JSON.stringify(result.error, null, 2));
         } else if (result.data) {
-            const formattedMessages = result.data.records.map((record) => {
+            this.messages = result.data.records.map((record) => {
                 const retObj = {};
                 Object.keys(record.fields).forEach((field) => {
                     retObj[field] = record.fields[field].value;
                 });
                 return retObj;
             });
-            this.messages = formattedMessages;
             this.hasMessages = true;
         }
     }
