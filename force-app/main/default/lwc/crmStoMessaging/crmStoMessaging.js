@@ -61,7 +61,12 @@ export default class CrmStoMessaging extends LightningElement {
     acceptedMedskriv = false;
     medskriv = false;
     threadType;
+    userInput;
+    showLanguageChangeModal = false;
+    resetTemplate = false;
+    closeLanguageModal = false;
     isThreadIdNull = false;
+
 
     labels = {
         MEDSKRIV_TEXT,
@@ -235,17 +240,41 @@ export default class CrmStoMessaging extends LightningElement {
 
     // Getters
     get textTemplate() {
-        let salutation = this.userName == null ? 'Hei,' : 'Hei, ' + this.userName;
-        let regards = 'Med vennlig hilsen';
+        const isEnglish = this.englishTextTemplate;
+        const defaultSalutation = isEnglish ? 'Hi,' : 'Hei,';
+        const defaultRegards = isEnglish ? 'Kind regards' : 'Med vennlig hilsen';
+        const companyName = isEnglish ? this.englishCompanyName : this.norwegianCompanyName;
+        const salutation = this.userName ? `${defaultSalutation} ${this.userName}` : defaultSalutation;
+        let userText = '';
 
-        if (this.englishTextTemplate === true) {
-            salutation = this.userName == null ? 'Hi,' : 'Hi ' + this.userName + ',';
-            regards = 'Kind regards';
+        if (!this.resetTemplate && this.userInput) {
+            const regCompanyName = isEnglish ? this.norwegianCompanyName : this.englishCompanyName;
+            const regStart = this.userName
+                ? `^(?:Hi,|Hei,)(?: ${this.userName}\\s*\\n)`
+                : '^(?:Hi,\\s*\\n|Hei,\\s*\\n)';
+            const regEnd = `.*?([\\s\\S]*?)\\n+(?:Kind regards\\s*|Med vennlig hilsen\\s*)(?:${this.supervisorName}\\s*)(?:${regCompanyName}\\s*)$`;
+
+            const regex = new RegExp(`${regStart}${regEnd}`);
+            const match = this.userInput.match(regex);
+
+            if (match) {
+                userText = match[1].trim();
+                this.showLanguageChangeModal = false;
+            } else {
+                this.showLanguageChangeModal = true;
+            }
+
+            if (this.showLanguageChangeModal) {
+                if (this.closeLanguageModal) {
+                    this.showLanguageChangeModal = false;
+                }
+                return this.userInput;
+            }
+        } else {
+            this.showLanguageChangeModal = false;
         }
 
-        return `${salutation}\n\n\n\n${regards}\n${this.supervisorName}\n${
-            this.englishTextTemplate === true ? this.englishCompanyName : this.norwegianCompanyName
-        }`;
+        return `${salutation}\n\n${userText}\n\n${defaultRegards}\n${this.supervisorName}\n${companyName}`;
     }
 
     get computeClasses() {
@@ -391,6 +420,13 @@ export default class CrmStoMessaging extends LightningElement {
             console.error('Problem getting Norwegian company name:', error);
             return '';
         }
+    }
+
+    handleEnglishEventTwo(event) {
+        this.englishTextTemplate = event.detail.englishTextTemplate;
+        this.userInput = event.detail.userInput;
+        this.resetTemplate = event.detail.resetTemplate;
+        this.closeLanguageModal = event.detail.closeLanguageModal;
     }
 
     getEnglishCompanyName() {
