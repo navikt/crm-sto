@@ -1,10 +1,10 @@
 import { LightningElement, api } from 'lwc';
+import { logNavigationEvent } from 'c/stoUtils';
 export default class NavButton extends LightningElement {
     @api title;
     @api url;
 
-    gotourl() {
-        console.log(this.url);
-        window.location.href = this.url + '&output=embed';
+    handleClick() {
+        logNavigationEvent({ url: this.url });
     }
 }

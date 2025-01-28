@@ -1,12 +1,14 @@
 import { LightningElement, wire, api, track } from 'lwc';
-
 import getThreads from '@salesforce/apex/stoInboxHelper.getThreads';
 import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads';
+import { logNavigationEvent } from 'c/stoUtils';
 
 export default class StoMessageInbox extends LightningElement {
     @api title;
+
     @track threads;
     @track recentthreads;
+
     wthreads;
     wrthreads;
     showthreads = false;
@@ -21,12 +23,7 @@ export default class StoMessageInbox extends LightningElement {
             this.setThreads();
         }
     }
-    setThreads() {
-        if (this.wthreads) {
-            this.threads = [...this.wthreads].sort(this.sortByDate);
-            this.showthreads = this.wthreads.length > 0;
-        }
-    }
+
     @wire(getRecentThreads, {})
     wirerecentthreads(result) {
         if (result.error) {
@@ -36,15 +33,23 @@ export default class StoMessageInbox extends LightningElement {
             this.setRecentThreads();
         }
     }
+
+    get noItems() {
+        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
+    }
+
+    setThreads() {
+        if (this.wthreads) {
+            this.threads = [...this.wthreads].sort(this.sortByDate);
+            this.showthreads = this.wthreads.length > 0;
+        }
+    }
+
     setRecentThreads() {
         if (this.wrthreads) {
             this.recentthreads = [...this.wrthreads].sort(this.sortByDate);
             this.showrecentthreads = this.wrthreads.length > 0;
         }
-    }
-
-    get noItems() {
-        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
     }
 
     sortByDate(t1, t2) {
@@ -57,5 +62,11 @@ export default class StoMessageInbox extends LightningElement {
             return 1;
         }
         return 0;
+    }
+
+    hanldeNavigation(event) {
+        logNavigationEvent({
+            url: event.target.href
+        });
     }
 }

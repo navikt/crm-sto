@@ -3,6 +3,7 @@ import navlogos from '@salesforce/resourceUrl/homelogo';
 import navStyling from '@salesforce/resourceUrl/navStyling';
 import index from '@salesforce/resourceUrl/index';
 import { loadStyle } from 'lightning/platformResourceLoader';
+import { logNavigationEvent } from 'c/stoUtils';
 
 export default class CommunityBreadCrumb extends LightningElement {
     @api firstLevel;
@@ -12,10 +13,15 @@ export default class CommunityBreadCrumb extends LightningElement {
     @api thirdLevel;
     @api thirdLevelLink;
     @api leafnode;
+
     homelogo = navlogos;
 
     renderedCallback() {
         loadStyle(this, index);
         loadStyle(this, navStyling);
+    }
+
+    handleClick(event) {
+        logNavigationEvent({ url: event.target.href });
     }
 }

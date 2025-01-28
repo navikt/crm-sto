@@ -55,6 +55,7 @@
                                         title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
                                         options={medskrivOptions}
                                         class="radioFocus"
+                                        onchange={handleRadioChange}
                                         ><div slot="legend" class="slds-grid">
                                             <p>
                                                 Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?
@@ -87,7 +88,6 @@
                                     type="submit"
                                     style="padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px) 2.5rem"
                                     aria-disabled="false"
-                                    label="Send"
                                     onclick={submitRequest}
                                 >
                                     Send
