@@ -253,10 +253,21 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get actualCardTitle() {
-        if (this.objectApiName === 'Case' && ['BTO', 'STO'].includes(this.threadType))
+        if (['BTO', 'STO'].includes(this.threadType))
             return this.threadType === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
+        else if (this.isThread && this.threadType === 'CHAT') {
+            return 'Chat';
+        }
 
         return this.cardTitle;
+    }
+
+    get iconName() {
+        return this.isThread && this.threadType === 'CHAT'
+            ? 'standard:live_chat'
+            : this.threadType === 'BTO'
+            ? 'standard:contact_request'
+            : 'standard:messaging_user';
     }
 
     get showMedskrivBlocker() {
