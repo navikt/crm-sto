@@ -30,11 +30,12 @@
                                         header={news.header}
                                         body={news.body}
                                         key={news.id}
+                                        page-type={pageType}
                                     ></c-community-expandable-panel>
                                 </template>
                             </div>
                             <template if:true={showOpenThreadWarning}>
-                                <div class="slds-var-m-top_xx-large slds-text-align_left">
+                                <div class="slds-var-m-top_xx-large slds-text-align_left" onclick={handleAlterBoxClick}>
                                     <c-crm-community-alert-stripe type={alertType} alerttext={openThreadText}>
                                     </c-crm-community-alert-stripe>
                                 </div>
@@ -55,7 +56,7 @@
                                         title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
                                         options={medskrivOptions}
                                         class="radioFocus"
-                                        onchange={handleRadioChange}
+                                        onradiochange={handleRadioChange}
                                         ><div slot="legend" class="slds-grid">
                                             <p>
                                                 Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?

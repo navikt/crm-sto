@@ -28,7 +28,7 @@ import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
-import { AnalyticsEvents, logAmplitudeEvent, changeParameter, logNavigationEvent } from 'c/stoUtils';
+import { AnalyticsEvents, changeParameter, logNavigationEvent, logButtonEvent } from 'c/stoUtils';
 
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
@@ -89,6 +89,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             .catch(() => {
                 // Failed getting sto categories
             });
+
+        // Set Page Type
+        changeParameter('pageType', this.selectedTheme);
     }
 
     renderedCallback() {
@@ -96,16 +99,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             let spinner = this.template.querySelector('.spinner');
             spinner.focus();
         }
-
-        // Set Page Type
-        changeParameter('pageType', this.selectedTheme);
-
-        // Log Amplitude Event
-        const link = this.template.querySelector('.thread-link');
-        link.addEventListener('click', (event) => {
-            event.preventDefault(); // Prevent the default navigation
-            logNavigationEvent({ url: event.target.href });
-        });
     }
 
     @wire(MessageContext)
@@ -172,9 +165,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             return (
                 'Du har allerede åpne samtaler om ' +
                 this.selectedTheme.toLowerCase() +
-                '. Hvis du lurer på noe mer, kan du <a class="thread-link" href="' +
+                '. Hvis du lurer på noe mer, kan du <a href="' +
                 this.openThreadLink +
-                '">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.'
+                '" onclick={handleClick}>fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.'
             );
         }
         return (
@@ -210,6 +203,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get introLabel() {
         return this.threadTypeToMake === 'BTO' ? this.label.welcomelabelBTO : this.label.welcomelabel;
+    }
+
+    // Used for Amplitude logging
+    get pageType() {
+        return `${this.subpath.replace(/\//g, '')} / ${this.selectedTheme} `;
     }
 
     setParametersBasedOnUrl() {
@@ -295,10 +293,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                         );
                     }
 
-                    // Log Amplitude Event
-                    logAmplitudeEvent(AnalyticsEvents.FORM_COMPLETED, {
-                        theme: this.selectedTheme
-                    });
+                    logButtonEvent(AnalyticsEvents.FORM_COMPLETED, 'Send', 'stoRegistrThread', 'opprett tråd');
                 })
                 .catch((err) => {
                     console.error(err);
@@ -393,7 +388,24 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     handleRadioChange(event) {
-        const medskriv = event.target.value;
-        logAmplitudeEvent(AnalyticsEvents.FORM_STEP_COMPLETED, { medskriv: medskriv });
+        // if value needed? const value = evnet.detail
+        logButtonEvent(
+            AnalyticsEvents.FORM_STEP_COMPLETED,
+            'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
+            'stoRegisterThread',
+            'medskriv'
+        );
+    }
+
+    handleAlterBoxClick() {
+        const regex = /href="([^"]*)"/;
+        const match = regex.exec(this.openThreadText);
+
+        if (match[1]) {
+            const hrefValue = match[1];
+            logNavigationEvent('stoRegisterThread', 'sto tråd', hrefValue, 'fortsette dine åpne samtaler');
+        } else {
+            console.log('No href found in the openThreadText');
+        }
     }
 }

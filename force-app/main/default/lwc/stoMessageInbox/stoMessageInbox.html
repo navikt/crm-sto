@@ -4,7 +4,12 @@
             <h1 class="navds-heading navds-heading--2xlarge">{title}</h1>
         </div>
         <div class="header aroundGap">
-            <c-nav-Button url="https://www.nav.no/kontaktoss" title="Kontakt oss"></c-nav-Button>
+            <c-nav-Button
+                url="https://www.nav.no/kontaktoss"
+                title="Kontakt oss"
+                log-amplitude-event
+                onbuttonclick={handleContactUsClick}
+            ></c-nav-Button>
         </div>
         <div class="nav-wrapper">
             <div class="body">
@@ -15,7 +20,7 @@
                             href="https://www.nav.no/dokumentarkiv"
                             target="_self"
                             class="lenke lenke-inline"
-                            onclick={handleNavigation}
+                            onclick={handleDocumentArchiveClick}
                             >brev og vedtak</a
                         >
                     </strong>

@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>51.0</apiVersion>
+    <apiVersion>62.0</apiVersion>
     <isExposed>false</isExposed>
     <masterLabel>Breadcrumb</masterLabel>
-     <targets>
-  <target>lightning__AppPage</target>
+    <targets>
+        <target>lightning__AppPage</target>
         <target>lightning__RecordPage</target>
         <target>lightning__HomePage</target>
-          <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
     </targets>
     <targetConfigs>
-       <targetConfig targets="  lightningCommunity__Default">
-            <property name="firstLevel" type="String"  label='First Level' />
-            <property name="firstLevelLink" type="String"  label='First Level URL Link location' />
-            <property name="secondLevel" type="String"  label='Second Level' />
-            <property name="secondLevelLink" type="String"  label='Second Level URL Link location' />
-            <property name="thirdLevel" type="String"  label='Third Level' />
-            <property name="thirdLevelLink" type="String"  label='Third Level URL Link location' />
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="firstLevel" type="String" label='First Level' />
+            <property name="firstLevelLink" type="String" label='First Level URL Link location' />
+            <property name="secondLevel" type="String" label='Second Level' />
+            <property name="secondLevelLink" type="String" label='Second Level URL Link location' />
+            <property name="thirdLevel" type="String" label='Third Level' />
+            <property name="thirdLevelLink" type="String" label='Third Level URL Link location' />
             <property name="leafnode" type="String" label='Leaf Node text' />
         </targetConfig>
     </targetConfigs>
-      <isExposed>true</isExposed>
 </LightningComponentBundle>

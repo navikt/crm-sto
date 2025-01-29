@@ -22,6 +22,11 @@ export default class CommunityBreadCrumb extends LightningElement {
     }
 
     handleClick(event) {
-        logNavigationEvent({ url: event.target.href });
+        logNavigationEvent(
+            'communityBreadCrumb',
+            'breadCrumb',
+            event.currentTarget.href,
+            event.currentTarget.textContent.trim()
+        );
     }
 }

@@ -1,18 +1,17 @@
 import { LightningElement, api } from 'lwc';
-import { AnalyticsEvents, logAmplitudeEvent } from 'c/stoUtils';
+import { logAccordionEvent } from 'c/stoUtils';
 
 export default class CommunityExpandablePanel extends LightningElement {
     @api header;
     @api body;
+    @api pageType;
 
     showpanel = false;
 
     togglevisible() {
         this.showpanel = !this.showpanel;
         this.performAnimation();
-        logAmplitudeEvent(this.showPanel ? AnalyticsEvents.ACC_EXPAND : AnalyticsEvents.ACC_COLLAPSE, {
-            title: this.header
-        });
+        logAccordionEvent(this.showPanel, this.header, this.pageType, 'community-expandable-panel');
     }
 
     get accordianClass() {

@@ -64,9 +64,11 @@ export default class StoMessageInbox extends LightningElement {
         return 0;
     }
 
-    hanldeNavigation(event) {
-        logNavigationEvent({
-            url: event.target.href
-        });
+    handleDocumentArchiveClick() {
+        logNavigationEvent('stoMessageInbox', 'brev og vedtak', 'https://www.nav.no/dokumentarkiv', 'brev og vedtak');
+    }
+
+    handleContactUsClick() {
+        logNavigationEvent('stoMessageInbox', 'kontakt oss', 'https://www.nav.no/kontaktoss', 'Kontakt oss');
     }
 }

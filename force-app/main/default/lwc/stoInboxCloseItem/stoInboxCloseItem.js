@@ -2,6 +2,7 @@ import { LightningElement, api, wire } from 'lwc';
 
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
+import { AnalyticsEvents, logButtonEvent, logModalEvent } from 'c/stoUtils';
 
 export default class StoInboxCloseItem extends LightningElement {
     @api thread;
@@ -31,6 +32,7 @@ export default class StoInboxCloseItem extends LightningElement {
         this.modalOpen = true;
         this.modal.focusModal();
         publish(this.messageContext, globalModalOpen, { status: 'true' });
+        logModalEvent(true, 'Avslutt samtale', 'stoInboxCloseItem', 'Dine åpne samtaler');
     }
 
     closeModal() {
@@ -38,6 +40,7 @@ export default class StoInboxCloseItem extends LightningElement {
         const btn = this.template.querySelector('.endDialogBtn');
         btn.focus();
         publish(this.messageContext, globalModalOpen, { status: 'false' });
+        logModalEvent(false, 'Avslutt samtale', 'stoInboxCloseItem', 'Dine åpne samtaler');
     }
 
     closeThread() {
@@ -45,6 +48,7 @@ export default class StoInboxCloseItem extends LightningElement {
             detail: this.index
         });
         this.dispatchEvent(closeThreadEvent);
+        logButtonEvent(AnalyticsEvents.MODAL_OPEN, 'Ja avslutt samtale', 'stoInboxCloseItem', 'Dine åpne samtaler');
     }
 
     handleKeyboardEvent(event) {

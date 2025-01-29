@@ -1,10 +1,12 @@
 import { LightningElement, api } from 'lwc';
-import { logNavigationEvent } from 'c/stoUtils';
 export default class NavButton extends LightningElement {
     @api title;
     @api url;
+    @api logAmplitudeEvent = false;
 
     handleClick() {
-        logNavigationEvent({ url: this.url });
+        if (this.logAmplitudeEvent) {
+            this.dispatchEvent(new CustomEvent('buttonclick'));
+        }
     }
 }
