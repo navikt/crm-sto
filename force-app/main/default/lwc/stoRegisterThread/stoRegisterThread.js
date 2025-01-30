@@ -293,7 +293,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                         );
                     }
 
-                    logButtonEvent(AnalyticsEvents.FORM_COMPLETED, 'Send', 'stoRegistrThread', 'opprett tråd');
+                    logButtonEvent(AnalyticsEvents.FORM_COMPLETED, 'Send', 'stoRegistrThread', this.title);
                 })
                 .catch((err) => {
                     console.error(err);
@@ -393,7 +393,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             AnalyticsEvents.FORM_STEP_COMPLETED,
             'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
             'stoRegisterThread',
-            'medskriv'
+            this.title
         );
     }
 
@@ -403,7 +403,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
         if (match[1]) {
             const hrefValue = match[1];
-            logNavigationEvent('stoRegisterThread', 'sto tråd', hrefValue, 'fortsette dine åpne samtaler');
+            logNavigationEvent('stoRegisterThread', this.title, hrefValue, 'fortsette dine åpne samtaler');
         } else {
             console.log('No href found in the openThreadText');
         }

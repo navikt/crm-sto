@@ -73,6 +73,6 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     hanldeNavigation(event) {
-        logNavigationEvent({ type: this.objectName, url: event.target.href });
+        logNavigationEvent('stoMessageInboxItem', 'Innboks', event.target.href, this.itemTitle);
     }
 }
