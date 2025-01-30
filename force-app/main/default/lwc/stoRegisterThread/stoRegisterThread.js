@@ -28,7 +28,7 @@ import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
-import { AnalyticsEvents, changeParameter, logNavigationEvent, logButtonEvent } from 'c/stoUtils';
+import { AnalyticsEvents, changeParameter, logNavigationEvent, logButtonEvent } from 'c/amplitude';
 
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };

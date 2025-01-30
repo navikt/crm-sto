@@ -3,7 +3,7 @@ import navlogos from '@salesforce/resourceUrl/homelogo';
 import navStyling from '@salesforce/resourceUrl/navStyling';
 import index from '@salesforce/resourceUrl/index';
 import { loadStyle } from 'lightning/platformResourceLoader';
-import { logNavigationEvent } from 'c/stoUtils';
+import { logNavigationEvent } from 'c/amplitude';
 
 export default class CommunityBreadCrumb extends LightningElement {
     @api firstLevel;

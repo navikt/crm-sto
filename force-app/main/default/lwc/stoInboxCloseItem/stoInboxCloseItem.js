@@ -2,7 +2,7 @@ import { LightningElement, api, wire } from 'lwc';
 
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
-import { AnalyticsEvents, logButtonEvent, logModalEvent } from 'c/stoUtils';
+import { AnalyticsEvents, logButtonEvent, logModalEvent } from 'c/amplitude';
 
 export default class StoInboxCloseItem extends LightningElement {
     @api thread;
