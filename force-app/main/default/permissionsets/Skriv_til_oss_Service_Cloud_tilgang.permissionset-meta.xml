@@ -206,4 +206,8 @@
         <apexPage>CRM_Thread_PDF</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
+    <recordTypeVisibilities>
+        <recordType>Thread__c.NKS_Thread</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
 </PermissionSet>

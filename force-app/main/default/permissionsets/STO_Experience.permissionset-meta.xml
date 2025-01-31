@@ -435,4 +435,8 @@
         <object>Thread__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <recordTypeVisibilities>
+        <recordType>Thread__c.NKS_Thread</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
 </PermissionSet>
