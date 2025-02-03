@@ -103,6 +103,10 @@ public with sharing class stoHelperClass {
         thread.CRM_Thread_Type__c = allowedThreadTypes.contains(type) ? type : 'STO';
         thread.STO_Category__c = theme;
         thread.STO_Medskriv__c = medskriv;
+        List<RecordType> recordType = [SELECT Id FROM RecordType WHERE SObjectType = 'Thread__c' AND Name = 'NKS Thread' LIMIT 1];
+        if (!recordType.isEmpty()) {
+            thread.recordTypeId = recordType[0].Id;
+        }
         try {
             insert thread;
         } catch (DmlException e) {
