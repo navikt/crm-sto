@@ -170,6 +170,10 @@
                 <assignToReference>Selected_Theme_SF_Id</assignToReference>
                 <name>selectedCaseThemeSfId</name>
             </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_Subtheme</assignToReference>
+                <name>selectedSubtheme</name>
+            </outputParameters>
         </fields>
         <nextOrFinishButtonLabel>Journalfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -226,6 +230,10 @@
                 <assignToReference>Selected_Theme_SF_Id</assignToReference>
                 <name>selectedCaseThemeSfId</name>
             </outputParameters>
+            <outputParameters>
+                <assignToReference>Selected_Subtheme</assignToReference>
+                <name>selectedSubtheme</name>
+            </outputParameters>
         </fields>
         <nextOrFinishButtonLabel>Journalfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -270,6 +278,12 @@
             <name>Journal_Entry_Unit</name>
             <value>
                 <elementReference>$User.Department</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Journal_Subtheme_Code</name>
+            <value>
+                <elementReference>Selected_Subtheme</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -324,6 +338,12 @@
             <name>Journal_Entry_Unit</name>
             <value>
                 <elementReference>$User.Department</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Journal_Subtheme_Code</name>
+            <value>
+                <elementReference>Selected_Subtheme</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -440,6 +460,13 @@
     </variables>
     <variables>
         <name>Selected_NAV_Case_Theme</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Selected_Subtheme</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
