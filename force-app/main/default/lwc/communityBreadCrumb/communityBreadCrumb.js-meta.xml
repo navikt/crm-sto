@@ -21,4 +21,5 @@
             <property name="leafnode" type="String" label='Leaf Node text' />
         </targetConfig>
     </targetConfigs>
+    <isExposed>true</isExposed>
 </LightningComponentBundle>
