@@ -36,8 +36,9 @@ export default class StoMedskrivSamtykke extends LightningElement {
         logButtonEvent(
             AnalyticsEvents.FORM_COMPLETED,
             'Fjern min godkjenning',
+            this.threadExternalName,
             'stoMedskrivSamtykke',
-            this.threadExternalName
+            'medskriv'
         );
     }
 

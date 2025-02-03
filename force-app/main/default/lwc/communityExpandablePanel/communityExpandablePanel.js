@@ -4,14 +4,14 @@ import { logAccordionEvent } from 'c/amplitude';
 export default class CommunityExpandablePanel extends LightningElement {
     @api header;
     @api body;
-    @api pageType;
+    @api contentType;
 
     showpanel = false;
 
     togglevisible() {
         this.showpanel = !this.showpanel;
         this.performAnimation();
-        logAccordionEvent(this.showPanel, this.header, this.pageType, 'communityExpandablePanel');
+        logAccordionEvent(this.showPanel, this.header, this.contentType, 'communityExpandablePanel');
     }
 
     get accordianClass() {

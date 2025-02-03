@@ -30,7 +30,7 @@
                                         header={news.header}
                                         body={news.body}
                                         key={news.id}
-                                        page-type={pageType}
+                                        content-type={contentType}
                                     ></c-community-expandable-panel>
                                 </template>
                             </div>
@@ -102,6 +102,7 @@
                                     <template for:each={openThreadList} for:item="thread" for:index="index">
                                         <c-sto-inbox-close-item
                                             thread={thread}
+                                            content-type={contentType}
                                             key={thread.recordId}
                                             index={index}
                                             onclosethread={handleCloseThread}

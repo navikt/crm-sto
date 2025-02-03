@@ -73,8 +73,9 @@ export default class StoInboxInformation extends LightningElement {
             });
 
         logNavigationEvent(
-            'stoInboxInformation',
             this.threadExternalName,
+            'stoInboxInformation',
+            'undersøkelse',
             this.completed ? this.url : this.surveyLink,
             'Klikk her for å svare'
         );

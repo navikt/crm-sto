@@ -7,7 +7,6 @@ import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
-
 import welcomelabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
 import welcomelabelBTO from '@salesforce/label/c.Beskjed_til_oss_intro_text';
 import headline from '@salesforce/label/c.Skriv_til_oss_headline';
@@ -23,7 +22,6 @@ import ACCEPT_TERMS_ERROR from '@salesforce/label/c.Skriv_til_oss_Accept_terms_e
 import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_Button';
 import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
 import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
-
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
@@ -206,7 +204,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     // Used for Amplitude logging
-    get pageType() {
+    get contentType() {
         return `${this.subpath.replace(/\//g, '')} / ${this.selectedTheme} `;
     }
 
@@ -293,7 +291,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                         );
                     }
 
-                    logButtonEvent(AnalyticsEvents.FORM_COMPLETED, 'Send', 'stoRegistrThread', this.title);
+                    logButtonEvent(
+                        AnalyticsEvents.FORM_COMPLETED,
+                        'Send',
+                        this.contentType,
+                        'stoRegistrThread',
+                        this.title
+                    );
                 })
                 .catch((err) => {
                     console.error(err);
@@ -392,6 +396,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         logButtonEvent(
             AnalyticsEvents.FORM_STEP_COMPLETED,
             'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
+            this.contentType,
             'stoRegisterThread',
             this.title
         );
@@ -403,7 +408,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
         if (match[1]) {
             const hrefValue = match[1];
-            logNavigationEvent('stoRegisterThread', this.title, hrefValue, 'fortsette dine åpne samtaler');
+            logNavigationEvent(
+                this.contentType,
+                'stoRegisterThread',
+                'modal',
+                hrefValue,
+                'fortsette dine åpne samtaler'
+            );
         } else {
             console.log('No href found in the openThreadText');
         }
