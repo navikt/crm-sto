@@ -30,11 +30,12 @@
                                         header={news.header}
                                         body={news.body}
                                         key={news.id}
+                                        content-type={contentType}
                                     ></c-community-expandable-panel>
                                 </template>
                             </div>
                             <template if:true={showOpenThreadWarning}>
-                                <div class="slds-var-m-top_xx-large slds-text-align_left">
+                                <div class="slds-var-m-top_xx-large slds-text-align_left" onclick={handleAlterBoxClick}>
                                     <c-crm-community-alert-stripe type={alertType} alerttext={openThreadText}>
                                     </c-crm-community-alert-stripe>
                                 </div>
@@ -55,6 +56,7 @@
                                         title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
                                         options={medskrivOptions}
                                         class="radioFocus"
+                                        onradiochange={handleRadioChange}
                                         ><div slot="legend" class="slds-grid">
                                             <p>
                                                 Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?
@@ -87,7 +89,6 @@
                                     type="submit"
                                     style="padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px) 2.5rem"
                                     aria-disabled="false"
-                                    label="Send"
                                     onclick={submitRequest}
                                 >
                                     Send
@@ -101,6 +102,7 @@
                                     <template for:each={openThreadList} for:item="thread" for:index="index">
                                         <c-sto-inbox-close-item
                                             thread={thread}
+                                            content-type={contentType}
                                             key={thread.recordId}
                                             index={index}
                                             onclosethread={handleCloseThread}
