@@ -5,7 +5,7 @@
         <name>Check_Inputs</name>
         <label>Check Inputs</label>
         <locationX>176</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <defaultConnector>
             <targetReference>Get_Thread_API_Reference</targetReference>
         </defaultConnector>
@@ -26,6 +26,7 @@
             <label>Has Thread ID</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <interviewLabel>Ca {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case Journal STO Thread</label>
     <processMetadataValues>
@@ -51,7 +52,7 @@
         <name>Get_Thread</name>
         <label>Get Thread</label>
         <locationX>176</locationX>
-        <locationY>494</locationY>
+        <locationY>434</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Thread_Journal_Screen</targetReference>
@@ -79,7 +80,7 @@
         <name>Get_Thread_API_Reference</name>
         <label>Get Thread API Reference</label>
         <locationX>264</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -103,7 +104,7 @@
         <name>Journal_Success_Screen_0</name>
         <label>Journal Success Screen</label>
         <locationX>176</locationX>
-        <locationY>974</locationY>
+        <locationY>866</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -134,7 +135,7 @@
         <name>Thread_Journal_Screen</name>
         <label>Thread Journal Screen</label>
         <locationX>176</locationX>
-        <locationY>614</locationY>
+        <locationY>542</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -177,7 +178,7 @@
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
         <locationX>176</locationX>
-        <locationY>734</locationY>
+        <locationY>650</locationY>
         <connector>
             <targetReference>Create_Thread_Journal_Event</targetReference>
         </connector>
@@ -207,6 +208,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <name>Journal_Subtheme_Code</name>
+            <value>
+                <elementReference>NAV_Case_Overview.selectedSubtheme</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <name>Journal_Theme_Code</name>
             <value>
                 <elementReference>NAV_Case_Overview.selectedCaseTheme</elementReference>
@@ -223,7 +230,7 @@
         <name>Create_Thread_Journal_Event</name>
         <label>Create Thread Journal Event</label>
         <locationX>176</locationX>
-        <locationY>854</locationY>
+        <locationY>758</locationY>
         <connector>
             <targetReference>Journal_Success_Screen_0</targetReference>
         </connector>

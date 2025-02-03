@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
+    <environments>Default</environments>
     <interviewLabel>Create Thread Journal Entry {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Create Thread Journal Entry</label>
     <processMetadataValues>
@@ -26,7 +27,7 @@
         <name>Get_Thread</name>
         <label>Get Thread</label>
         <locationX>176</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Thread_Journal_Screen</targetReference>
@@ -48,7 +49,7 @@
         <name>Journal_Success_Screen_0</name>
         <label>Journal Success Screen</label>
         <locationX>176</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -79,7 +80,7 @@
         <name>Thread_Journal_Screen</name>
         <label>Thread Journal Screen</label>
         <locationX>176</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -122,7 +123,7 @@
         <name>Create_Journal_Entry</name>
         <label>Create Journal Entry</label>
         <locationX>176</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <connector>
             <targetReference>Create_Thread_Journal_Event</targetReference>
         </connector>
@@ -152,6 +153,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <name>Journal_Subtheme_Code</name>
+            <value>
+                <elementReference>NAV_Case_Overview.selectedSubtheme</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <name>Journal_Theme_Code</name>
             <value>
                 <elementReference>NAV_Case_Overview.selectedCaseTheme</elementReference>
@@ -168,7 +175,7 @@
         <name>Create_Thread_Journal_Event</name>
         <label>Create Thread Journal Event</label>
         <locationX>176</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <connector>
             <targetReference>Journal_Success_Screen_0</targetReference>
         </connector>
