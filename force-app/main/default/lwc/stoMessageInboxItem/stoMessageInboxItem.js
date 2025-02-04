@@ -74,9 +74,9 @@ export default class StoMessageInboxItem extends LightningElement {
 
     handleNavigation(event) {
         logNavigationEvent(
-            'innboks - henvendelser',
+            'henvendelser',
             'stoMessageInboxItem',
-            'innboks item',
+            'valgt henvendelse',
             event.target.href,
             this.itemTitle
         );

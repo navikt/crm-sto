@@ -5,6 +5,7 @@ import ID_FIELD from '@salesforce/schema/Thread__c.Id';
 import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import LoggerUtility from 'c/loggerUtility';
 import { AnalyticsEvents, logButtonEvent } from 'c/amplitude';
+import { getContentType } from 'c/stoUtils';
 
 const titlesConst = {
     false: 'Du har godkjent at denne samtalen kan brukes til opplæring av ansatte i Nav.',
@@ -33,16 +34,17 @@ export default class StoMedskrivSamtykke extends LightningElement {
             LoggerUtility.logError('NKS', 'STO', error, 'Kunne ikke fjerne medskriv', this.recordId);
         });
 
+        console.log('thread external name: ', this.threadExternalName);
         logButtonEvent(
             AnalyticsEvents.FORM_COMPLETED,
             'Fjern min godkjenning',
-            this.threadExternalName,
+            getContentType(this.threadExternalName),
             'stoMedskrivSamtykke',
             'medskriv'
         );
     }
 
-    @wire(getRecord, { recordId: '$recordId', fields: MEDSKRIV_FIELD })
+    @wire(getRecord, { recordId: '$recordId', fields: [MEDSKRIV_FIELD, THREAD_NAME_FIELD] })
     thread;
 
     get medskriv() {

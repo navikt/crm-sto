@@ -66,7 +66,7 @@ export default class StoMessageInbox extends LightningElement {
 
     handleDocumentArchiveClick() {
         logNavigationEvent(
-            'innbokse - henvendelser',
+            'henvendelser',
             'stoMessageInbox',
             'brev og vedtak',
             'https://www.nav.no/dokumentarkiv',
@@ -76,7 +76,7 @@ export default class StoMessageInbox extends LightningElement {
 
     handleContactUsClick() {
         logNavigationEvent(
-            'innbokse - henvendelser',
+            'henvendelser',
             'stoMessageInbox',
             'kontakt oss',
             'https://www.nav.no/kontaktoss',

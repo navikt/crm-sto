@@ -50,7 +50,7 @@ export default class StoInboxCloseItem extends LightningElement {
         });
         this.dispatchEvent(closeThreadEvent);
         logButtonEvent(
-            AnalyticsEvents.MODAL_OPEN,
+            AnalyticsEvents.FORM_COMPLETED,
             'Ja avslutt samtale',
             this.contentType,
             'stoInboxCloseItem',

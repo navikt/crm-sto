@@ -8,6 +8,7 @@ import getSurvey from '@salesforce/apex/STO_SurveyHelper.getSurveyLink';
 import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
 import { logNavigationEvent } from 'c/amplitude';
+import { getContentType } from 'c/stoUtils';
 
 export default class StoInboxInformation extends LightningElement {
     @api recordId;
@@ -22,7 +23,7 @@ export default class StoInboxInformation extends LightningElement {
 
     @wire(getRecord, {
         recordId: '$recordId',
-        fields: [THREAD_IS_CLOSED_FIELD, THREAD_TYPE_FIELD, THREAD_RELATED_OBJECT_FIELD]
+        fields: [THREAD_IS_CLOSED_FIELD, THREAD_TYPE_FIELD, THREAD_RELATED_OBJECT_FIELD, THREAD_NAME_FIELD]
     })
     wiredThread({ data, error }) {
         if (data) {
@@ -73,7 +74,7 @@ export default class StoInboxInformation extends LightningElement {
             });
 
         logNavigationEvent(
-            this.threadExternalName,
+            getContentType(this.threadExternalName),
             'stoInboxInformation',
             'undersøkelse',
             this.completed ? this.url : this.surveyLink,
