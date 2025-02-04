@@ -11,7 +11,7 @@ export default class CommunityExpandablePanel extends LightningElement {
     togglevisible() {
         this.showpanel = !this.showpanel;
         this.performAnimation();
-        logAccordionEvent(this.showPanel, this.header, this.contentType, 'communityExpandablePanel');
+        logAccordionEvent(this.showpanel, this.header, this.contentType, 'communityExpandablePanel');
     }
 
     get accordianClass() {
