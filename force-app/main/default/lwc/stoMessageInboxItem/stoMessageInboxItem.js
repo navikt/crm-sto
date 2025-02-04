@@ -72,7 +72,7 @@ export default class StoMessageInboxItem extends LightningElement {
                   this.thread.recordName.replace(/[ -]+/g, '-');
     }
 
-    hanldeNavigation(event) {
+    handleNavigation(event) {
         logNavigationEvent(
             'innboks - henvendelser',
             'stoMessageInboxItem',
