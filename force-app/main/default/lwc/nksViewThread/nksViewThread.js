@@ -58,7 +58,7 @@ export default class NksViewThread extends LightningElement {
             AnalyticsEvents.FORM_COMPLETED,
             'Send',
             getContentType(this.threadExternalName),
-            'crmCommunityThreadViewer',
+            'nksViewThread',
             this.name,
             'ny melding'
         );
