@@ -4,7 +4,7 @@ import MEDSKRIV_FIELD from '@salesforce/schema/Thread__c.STO_Medskriv__c';
 import ID_FIELD from '@salesforce/schema/Thread__c.Id';
 import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import LoggerUtility from 'c/loggerUtility';
-import { AnalyticsEvents, logButtonEvent } from 'c/inboxAmplitude';
+import { AnalyticsEvents, logButtonEvent, getComponentName } from 'c/inboxAmplitude';
 import { getContentType } from 'c/stoUtils';
 
 const titlesConst = {
@@ -38,7 +38,7 @@ export default class StoMedskrivSamtykke extends LightningElement {
             AnalyticsEvents.FORM_COMPLETED,
             'Fjern min godkjenning',
             getContentType(this.threadExternalName),
-            'stoMedskrivSamtykke',
+            getComponentName('StoMedskrivSamtykke'),
             'medskriv'
         );
     }
