@@ -2,7 +2,7 @@
 public class STO_GroupMemberSkillService_Test {
     @TestSetup
     static void makeData() {
-        Group fortroligGroup = TestDataFactory.getPublicGroup('Fortrolig_Adresse_AD', 'Fortrolig_Adresse_AD');
+        Group fortroligGroup = TestDataFactory.getPublicGroup('group_AD_Fortrolig_Adresse', 'group_AD_Fortrolig_Adresse');
         Group skjermedeGroup = TestDataFactory.getPublicGroup('NKS_Skjermede_Personer_AD', 'NKS_Skjermede_Personer_AD');
 
         //Adds the testuser as a member in both groups
