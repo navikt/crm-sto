@@ -5,7 +5,7 @@ import THREAD_EXTERNAL_NAME from '@salesforce/schema/Thread__c.STO_ExternalName_
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import basepath from '@salesforce/community/basePath';
 import { getContentType } from 'c/stoUtils';
-import { AnalyticsEvents, logButtonEvent } from 'c/amplitude';
+import { AnalyticsEvents, logButtonEvent } from 'c/inboxAmplitude';
 
 const urlMap = {
     STO: (recordId) => basepath + '/skriv-til-oss/' + recordId,

@@ -1,7 +1,7 @@
 import { LightningElement, wire, api, track } from 'lwc';
 import getThreads from '@salesforce/apex/stoInboxHelper.getThreads';
 import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads';
-import { logNavigationEvent } from 'c/amplitude';
+import { logNavigationEvent } from 'c/inboxAmplitude';
 
 export default class StoMessageInbox extends LightningElement {
     @api title;

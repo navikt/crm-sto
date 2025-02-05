@@ -1,5 +1,5 @@
 import { LightningElement, api } from 'lwc';
-import { logAccordionEvent } from 'c/amplitude';
+import { logAccordionEvent } from 'c/inboxAmplitude';
 
 export default class CommunityExpandablePanel extends LightningElement {
     @api header;

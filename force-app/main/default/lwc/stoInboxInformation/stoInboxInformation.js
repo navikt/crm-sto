@@ -7,7 +7,7 @@ import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c'
 import getSurvey from '@salesforce/apex/STO_SurveyHelper.getSurveyLink';
 import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
-import { logNavigationEvent } from 'c/amplitude';
+import { logNavigationEvent } from 'c/inboxAmplitude';
 import { getContentType } from 'c/stoUtils';
 
 export default class StoInboxInformation extends LightningElement {
