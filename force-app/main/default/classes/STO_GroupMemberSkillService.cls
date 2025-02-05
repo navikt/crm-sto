@@ -2,12 +2,12 @@ public with sharing class STO_GroupMemberSkillService {
     private LoggerUtility logger = new LoggerUtility('AD_SKILL_SYNC');
     public static final String FORTOLIG_ADDRESSE_SKILL = 'Fortrolig_addresse';
     public static final String SKJERMEDE_PERSONER_SKILL = 'Skjermede_personer';
-    public static final String FORTROLIG_GROUP_NAME = 'Fortrolig_Adresse_AD';
+    public static final String FORTROLIG_GROUP_NAME = 'group_AD_Fortrolig_Adresse';
     public static final String SKJERMEDE_GROUP_NAME = 'NKS_Skjermede_Personer_AD';
     private Set<String> groupNamesToSync = new Set<String>{ FORTROLIG_GROUP_NAME, SKJERMEDE_GROUP_NAME };
 
     private final Map<String, String> groupSkillMap = new Map<String, String>{
-        'Fortrolig_Adresse_AD' => FORTOLIG_ADDRESSE_SKILL,
+        'group_AD_Fortrolig_Adresse' => FORTOLIG_ADDRESSE_SKILL,
         'NKS_Skjermede_Personer_AD' => SKJERMEDE_PERSONER_SKILL
     };
 
