@@ -34,7 +34,6 @@ export default class StoMedskrivSamtykke extends LightningElement {
             LoggerUtility.logError('NKS', 'STO', error, 'Kunne ikke fjerne medskriv', this.recordId);
         });
 
-        console.log('thread external name: ', this.threadExternalName);
         logButtonEvent(
             AnalyticsEvents.FORM_COMPLETED,
             'Fjern min godkjenning',

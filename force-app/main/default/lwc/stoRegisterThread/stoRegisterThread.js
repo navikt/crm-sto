@@ -25,7 +25,7 @@ import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
-import { AnalyticsEvents, logNavigationEvent, logButtonEvent } from 'c/inboxAmplitude';
+import { AnalyticsEvents, logNavigationEvent, logButtonEvent, getComponentName } from 'c/inboxAmplitude';
 
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
@@ -291,7 +291,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                         AnalyticsEvents.FORM_COMPLETED,
                         'Send',
                         this.contentType,
-                        'stoRegistrThread',
+                        getComponentName('StoRegisterThread'),
                         this.title,
                         'ny samtale'
                     );
@@ -393,7 +393,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             AnalyticsEvents.FORM_STEP_COMPLETED,
             'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
             this.contentType,
-            'stoRegisterThread',
+            getComponentName('StoRegisterThread'),
             this.title
         );
     }
@@ -406,7 +406,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             const hrefValue = match[1];
             logNavigationEvent(
                 this.contentType,
-                'stoRegisterThread',
+                getComponentName('StoRegisterThread'),
                 'modal',
                 hrefValue,
                 'fortsette dine åpne samtaler'
