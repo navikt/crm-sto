@@ -1,7 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
-import { AnalyticsEvents, logButtonEvent, logModalEvent, getComponentName } from 'c/inboxAmplitude';
+import { AnalyticsEvents, logButtonEvent, logModalEvent } from 'c/inboxAmplitude';
 
 export default class StoInboxCloseItem extends LightningElement {
     @api thread;
@@ -33,13 +33,7 @@ export default class StoInboxCloseItem extends LightningElement {
         this.modalOpen = true;
         this.modal.focusModal();
         publish(this.messageContext, globalModalOpen, { status: 'true' });
-        logModalEvent(
-            true,
-            'Avslutt samtale',
-            this.contentType,
-            getComponentName('StoInboxCloseItem'),
-            'Dine åpne samtaler'
-        );
+        logModalEvent(true, 'Avslutt samtale', this.contentType, 'stoInboxCloseItem', 'Dine åpne samtaler');
     }
 
     closeModal() {
@@ -47,13 +41,7 @@ export default class StoInboxCloseItem extends LightningElement {
         const btn = this.template.querySelector('.endDialogBtn');
         btn.focus();
         publish(this.messageContext, globalModalOpen, { status: 'false' });
-        logModalEvent(
-            false,
-            'Avslutt samtale',
-            this.contentType,
-            getComponentName('StoInboxCloseItem'),
-            'Dine åpne samtaler'
-        );
+        logModalEvent(false, 'Avslutt samtale', this.contentType, 'stoInboxCloseItem', 'Dine åpne samtaler');
     }
 
     closeThread() {
@@ -65,7 +53,7 @@ export default class StoInboxCloseItem extends LightningElement {
             AnalyticsEvents.FORM_COMPLETED,
             'Ja avslutt samtale',
             this.contentType,
-            getComponentName('StoInboxCloseItem'),
+            'stoInboxCloseItem',
             'Dine åpne samtaler'
         );
     }

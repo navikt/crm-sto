@@ -1,14 +1,13 @@
-import { LightningElement, wire, api, track } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import getThreads from '@salesforce/apex/stoInboxHelper.getThreads';
 import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads';
-import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
+import { logNavigationEvent } from 'c/inboxAmplitude';
 
 export default class StoMessageInbox extends LightningElement {
     @api title;
 
-    @track threads;
-    @track recentthreads;
-
+    threads;
+    recentthreads;
     wthreads;
     wrthreads;
     showthreads = false;
@@ -67,7 +66,7 @@ export default class StoMessageInbox extends LightningElement {
     handleDocumentArchiveClick() {
         logNavigationEvent(
             'henvendelser',
-            getComponentName('StoMessageInbox'),
+            'stoMessageInbox',
             'brev og vedtak',
             'https://www.nav.no/dokumentarkiv',
             'brev og vedtak'
@@ -77,7 +76,7 @@ export default class StoMessageInbox extends LightningElement {
     handleContactUsClick() {
         logNavigationEvent(
             'henvendelser',
-            getComponentName('StoMessageInbox'),
+            'stoMessageInbox',
             'kontakt oss',
             'https://www.nav.no/kontaktoss',
             'Kontakt oss'

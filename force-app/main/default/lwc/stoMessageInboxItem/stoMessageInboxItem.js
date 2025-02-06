@@ -1,7 +1,7 @@
 import { LightningElement, api } from 'lwc';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 import basepath from '@salesforce/community/basePath';
-import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
+import { logNavigationEvent } from 'c/inboxAmplitude';
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
@@ -75,7 +75,7 @@ export default class StoMessageInboxItem extends LightningElement {
     handleNavigation(event) {
         logNavigationEvent(
             'henvendelser',
-            getComponentName('StoMessageInboxItem'),
+            'stoMessageInboxItem',
             'valgt henvendelse',
             event.target.href,
             this.itemTitle

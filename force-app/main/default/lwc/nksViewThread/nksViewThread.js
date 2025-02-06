@@ -5,7 +5,7 @@ import THREAD_EXTERNAL_NAME from '@salesforce/schema/Thread__c.STO_ExternalName_
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import basepath from '@salesforce/community/basePath';
 import { getContentType } from 'c/stoUtils';
-import { AnalyticsEvents, logButtonEvent, getComponentName } from 'c/inboxAmplitude';
+import { AnalyticsEvents, logButtonEvent } from 'c/inboxAmplitude';
 
 const urlMap = {
     STO: (recordId) => basepath + '/skriv-til-oss/' + recordId,
@@ -58,8 +58,8 @@ export default class NksViewThread extends LightningElement {
             AnalyticsEvents.FORM_COMPLETED,
             'Send',
             getContentType(this.threadExternalName),
-            getComponentName('NksViewThread'),
-            this.name,
+            'nksViewThread',
+            this.threadExternalName,
             'ny melding'
         );
     }
