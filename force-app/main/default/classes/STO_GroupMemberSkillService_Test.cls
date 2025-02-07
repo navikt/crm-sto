@@ -1,7 +1,14 @@
-@isTest
+@IsTest
 public class STO_GroupMemberSkillService_Test {
     @TestSetup
-    static void makeData() {
+    private static void makeData() {
+        myTriggers.disable(PersonAccessHandler.class);
+        myTriggers.disable(UserPermissionSetAssignmentHandler.class);
+        myTriggers.disable(UserDefaultValuesHandler.class);
+        myTriggers.disable(UserProfileHandler.class);
+        myTriggers.disable(UserGroupMemberHandler.class);
+        myTriggers.disable(UserRegionHandler.class);
+        myTriggers.disable(UserRoleAssignmentHandler.class);
         Group fortroligGroup = TestDataFactory.getPublicGroup(
             'group_AD_Fortrolig_Adresse',
             'group_AD_Fortrolig_Adresse'
@@ -21,15 +28,31 @@ public class STO_GroupMemberSkillService_Test {
         memberList.add(new GroupMember(GroupId = fortroligGroup.Id, UserOrGroupId = usr2.Id));
         memberList.add(new GroupMember(GroupId = skjermedeGroup.Id, UserOrGroupId = usr2.Id));
         STO_TestDataFactory.createRecordList(memberList);
-        PermissionSetGroup kontaktsenterPSG = new PermissionSetGroup(
-            MasterLabel = 'Kontaktsenter',
-            DeveloperName = 'Kontaktsenter'
-        );
-        PermissionSetGroup servicetjenestenPSG = new PermissionSetGroup(
-            MasterLabel = 'Servicetjenesten',
-            DeveloperName = 'HOT_Servicetjenesten_Group'
-        );
-        insert new List<PermissionSetGroup>{ kontaktsenterPSG, servicetjenestenPSG };
+        PermissionSetGroup kontaktsenterPSG;
+        PermissionSetGroup servicetjenestenPSG;
+        List<PermissionSetGroup> psgs = [
+            SELECT Id, DeveloperName
+            FROM PermissionSetGroup
+            WHERE DeveloperName IN ('Kontaktsenter', 'HOT_Servicetjenesten_Group')
+        ];
+        for (PermissionSetGroup psg : psgs) {
+            if (psg.DeveloperName == 'Kontaktsenter') {
+                kontaktsenterPSG = psg;
+            } else if (psg.DeveloperName == 'HOT_Servicetjenesten_Group') {
+                servicetjenestenPSG = psg;
+            }
+        }
+        if (kontaktsenterPSG == null) {
+            kontaktsenterPSG = new PermissionSetGroup(MasterLabel = 'Kontaktsenter', DeveloperName = 'Kontaktsenter');
+            insert kontaktsenterPSG;
+        }
+        if (servicetjenestenPSG == null) {
+            servicetjenestenPSG = new PermissionSetGroup(
+                MasterLabel = 'Servicetjenesten',
+                DeveloperName = 'HOT_Servicetjenesten_Group'
+            );
+            insert servicetjenestenPSG;
+        }
         PermissionSetAssignment psa1 = new PermissionSetAssignment(
             AssigneeId = usr1.ID,
             PermissionSetGroupId = kontaktsenterPSG.Id
@@ -41,8 +64,8 @@ public class STO_GroupMemberSkillService_Test {
         insert new List<PermissionSetAssignment>{ psa1, psa2 };
     }
 
-    @isTest
-    static void nksServiceResourceWithSkillCreate() {
+    @IsTest
+    private static void nksServiceResourceWithSkillCreate() {
         STO_GroupMemberSkillService service = new STO_GroupMemberSkillService();
         System.assertEquals(
             2,
@@ -62,9 +85,23 @@ public class STO_GroupMemberSkillService_Test {
         service.handleGroupAndSkillSync();
         Test.stopTest();
 
-        System.assertEquals(1, [SELECT COUNT() FROM ServiceResource], 'Expected serviceresource for NKS user');
+        System.assertEquals(
+            1,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'SKILLED'],
+            'Expected serviceresource for NKS user'
+        );
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'PUPKIN'],
+            'Expected no serviceresource for HOT user'
+        );
 
-        ServiceResource nksSR = [SELECT Id, RelatedRecordId, CRM_Domain__c FROM ServiceResource LIMIT 1];
+        ServiceResource nksSR = [
+            SELECT Id, RelatedRecordId, CRM_Domain__c
+            FROM ServiceResource
+            WHERE RelatedRecord.LastName = 'SKILLED'
+            LIMIT 1
+        ];
         System.assertEquals(
             2,
             [
@@ -75,8 +112,8 @@ public class STO_GroupMemberSkillService_Test {
             'Expected 2 skills for NKS user'
         );
     }
-    @isTest
-    static void hotServiceResourceWithSkillCreate() {
+    @IsTest
+    private static void hotServiceResourceWithSkillCreate() {
         STO_GroupMemberSkillService service = new STO_GroupMemberSkillService(
             'HOT',
             'Servicetjenesten',
@@ -102,14 +139,23 @@ public class STO_GroupMemberSkillService_Test {
         service.handleGroupAndSkillSync();
         Test.stopTest();
 
-        System.assertEquals(1, [SELECT COUNT() FROM ServiceResource], 'Expected serviceresource for HOT user');
+        System.assertEquals(
+            1,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'PUPKIN'],
+            'Expected serviceresource for HOT user'
+        );
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'SKILLED'],
+            'Expected no serviceresource for NKS user'
+        );
 
         ServiceResource hotSR = [
             SELECT Id, RelatedRecordId, RelatedRecord.LastName, CRM_Domain__c
             FROM ServiceResource
+            WHERE RelatedRecord.LastName = 'PUPKIN'
             LIMIT 1
         ];
-        System.assertEquals('PUPKIN', hotSR.RelatedRecord.LastName, 'Expected HOT user');
         System.assertEquals('HOT', hotSR.CRM_Domain__c, 'Expected HOT domain');
         System.assertEquals(
             2,
@@ -122,8 +168,8 @@ public class STO_GroupMemberSkillService_Test {
         );
     }
 
-    @isTest
-    static void callableSync() {
+    @IsTest
+    private static void callableSync() {
         System.assertEquals(
             2,
             [
@@ -156,14 +202,23 @@ public class STO_GroupMemberSkillService_Test {
         }
         Test.stopTest();
 
-        System.assertEquals(1, [SELECT COUNT() FROM ServiceResource], 'Expected serviceresource for HOT user');
+        System.assertEquals(
+            1,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'PUPKIN'],
+            'Expected serviceresource for HOT user'
+        );
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'SKILLED'],
+            'Expected no serviceresource for NKS user'
+        );
 
         ServiceResource hotSR = [
             SELECT Id, RelatedRecordId, RelatedRecord.LastName, CRM_Domain__c
             FROM ServiceResource
+            WHERE RelatedRecord.LastName = 'PUPKIN'
             LIMIT 1
         ];
-        System.assertEquals('PUPKIN', hotSR.RelatedRecord.LastName, 'Expected HOT user');
         System.assertEquals('HOT', hotSR.CRM_Domain__c, 'Expected HOT domain');
         System.assertEquals(
             2,
@@ -176,8 +231,8 @@ public class STO_GroupMemberSkillService_Test {
         );
     }
 
-    @isTest
-    static void testSkillRemove() {
+    @IsTest
+    private static void testSkillRemove() {
         User testUser = [SELECT Id, Name FROM User WHERE LastName = 'SKILLED'];
         STO_GroupMemberSkillService service = new STO_GroupMemberSkillService();
         service.handleGroupAndSkillSync();
@@ -208,8 +263,8 @@ public class STO_GroupMemberSkillService_Test {
         );
     }
 
-    @isTest
-    static void testDmlVerification() {
+    @IsTest
+    private static void testDmlVerification() {
         Account testAcc = new Account(Name = 'Test Account');
         User testUser = [SELECT Id, Name FROM User WHERE LastName = 'SKILLED'];
         List<Database.SaveResult> saveResList = Database.insert(new List<SObject>{ testAcc, testUser }, false);

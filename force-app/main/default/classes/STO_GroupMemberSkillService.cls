@@ -17,7 +17,6 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
     private String permsetGroupName = PERMSET_GROUP_NAME;
     private String srDomain = SR_DOMAIN;
     private String srSubDomain;
-    private Set<String> groupNamesToSync = new Set<String>{ fortroligGroupName, skjermedeGroupName };
     private Set<Id> fortroligMembers = new Set<Id>();
     private Set<Id> skjermedeMembers = new Set<Id>();
     private Set<Id> fortroligSkillUsers = new Set<Id>();
