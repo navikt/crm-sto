@@ -8,7 +8,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
     private LoggerUtility logger = new LoggerUtility('AD_SKILL_SYNC');
     public static final String FORTOLIG_ADDRESSE_SKILL = 'Fortrolig_addresse';
     public static final String SKJERMEDE_PERSONER_SKILL = 'Skjermede_personer';
-    public static final String FORTROLIG_GROUP_NAME = 'Fortrolig_Adresse_AD';
+    public static final String FORTROLIG_GROUP_NAME = 'group_AD_Fortrolig_Adresse';
     public static final String SKJERMEDE_GROUP_NAME = 'NKS_Skjermede_Personer_AD';
     public static final String PERMSET_GROUP_NAME = 'Kontaktsenter';
     public static final String SR_DOMAIN = 'NKS';

@@ -2,7 +2,10 @@
 public class STO_GroupMemberSkillService_Test {
     @TestSetup
     static void makeData() {
-        Group fortroligGroup = TestDataFactory.getPublicGroup('Fortrolig_Adresse_AD', 'Fortrolig_Adresse_AD');
+        Group fortroligGroup = TestDataFactory.getPublicGroup(
+            'group_AD_Fortrolig_Adresse',
+            'group_AD_Fortrolig_Adresse'
+        );
         Group nksSkjermedeGroup = TestDataFactory.getPublicGroup(
             'NKS_Skjermede_Personer_AD',
             'NKS_Skjermede_Personer_AD'
@@ -49,7 +52,7 @@ public class STO_GroupMemberSkillService_Test {
                 WHERE
                     UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'SKILLED')
                     AND Group.DeveloperName IN (
-                        'Fortrolig_Adresse_AD',
+                        'group_AD_Fortrolig_Adresse',
                         'NKS_Skjermede_Personer_AD',
                         'Skjermede_Personer_AD'
                     )
@@ -78,7 +81,7 @@ public class STO_GroupMemberSkillService_Test {
             'HOT',
             'Servicetjenesten',
             'HOT_Servicetjenesten_Group',
-            'Fortrolig_Adresse_AD',
+            'group_AD_Fortrolig_Adresse',
             'Skjermede_Personer_AD'
         );
         System.assertEquals(
@@ -89,7 +92,7 @@ public class STO_GroupMemberSkillService_Test {
                 WHERE
                     UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'PUPKIN')
                     AND Group.DeveloperName IN (
-                        'Fortrolig_Adresse_AD',
+                        'group_AD_Fortrolig_Adresse',
                         'NKS_Skjermede_Personer_AD',
                         'Skjermede_Personer_AD'
                     )
@@ -129,7 +132,7 @@ public class STO_GroupMemberSkillService_Test {
                 WHERE
                     UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'PUPKIN')
                     AND Group.DeveloperName IN (
-                        'Fortrolig_Adresse_AD',
+                        'group_AD_Fortrolig_Adresse',
                         'NKS_Skjermede_Personer_AD',
                         'Skjermede_Personer_AD'
                     )
@@ -144,7 +147,7 @@ public class STO_GroupMemberSkillService_Test {
                     'domain' => 'HOT',
                     'subdomain' => 'Servicetjenesten',
                     'permsetgroup' => 'HOT_Servicetjenesten_Group',
-                    'fortroliggroup' => 'Fortrolig_Adresse_AD',
+                    'fortroliggroup' => 'group_AD_Fortrolig_Adresse',
                     'skjermedegroup' => 'Skjermede_Personer_AD'
                 }
             );
