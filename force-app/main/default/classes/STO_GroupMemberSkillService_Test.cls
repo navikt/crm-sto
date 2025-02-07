@@ -3,38 +3,190 @@ public class STO_GroupMemberSkillService_Test {
     @TestSetup
     static void makeData() {
         Group fortroligGroup = TestDataFactory.getPublicGroup('Fortrolig_Adresse_AD', 'Fortrolig_Adresse_AD');
-        Group skjermedeGroup = TestDataFactory.getPublicGroup('NKS_Skjermede_Personer_AD', 'NKS_Skjermede_Personer_AD');
+        Group nksSkjermedeGroup = TestDataFactory.getPublicGroup(
+            'NKS_Skjermede_Personer_AD',
+            'NKS_Skjermede_Personer_AD'
+        );
+        Group skjermedeGroup = TestDataFactory.getPublicGroup('Skjermede_Personer_AD', 'Skjermede_Personer_AD');
 
         //Adds the testuser as a member in both groups
-        User usr = (User) STO_TestDataFactory.createRecord(new User(FirstName = 'SUPER', LastName = 'SKILLED'));
+        User usr1 = (User) STO_TestDataFactory.createRecord(new User(FirstName = 'SUPER', LastName = 'SKILLED'));
+        User usr2 = (User) STO_TestDataFactory.createRecord(new User(FirstName = 'VASILIJ', LastName = 'PUPKIN'));
         List<GroupMember> memberList = new List<GroupMember>();
-        memberList.add(new GroupMember(GroupId = fortroligGroup.Id, UserOrGroupId = usr.Id));
-        memberList.add(new GroupMember(GroupId = skjermedeGroup.Id, UserOrGroupId = usr.Id));
+        memberList.add(new GroupMember(GroupId = fortroligGroup.Id, UserOrGroupId = usr1.Id));
+        memberList.add(new GroupMember(GroupId = nksSkjermedeGroup.Id, UserOrGroupId = usr1.Id));
+        memberList.add(new GroupMember(GroupId = fortroligGroup.Id, UserOrGroupId = usr2.Id));
+        memberList.add(new GroupMember(GroupId = skjermedeGroup.Id, UserOrGroupId = usr2.Id));
         STO_TestDataFactory.createRecordList(memberList);
+        PermissionSetGroup kontaktsenterPSG = new PermissionSetGroup(
+            MasterLabel = 'Kontaktsenter',
+            DeveloperName = 'Kontaktsenter'
+        );
+        PermissionSetGroup servicetjenestenPSG = new PermissionSetGroup(
+            MasterLabel = 'Servicetjenesten',
+            DeveloperName = 'HOT_Servicetjenesten_Group'
+        );
+        insert new List<PermissionSetGroup>{ kontaktsenterPSG, servicetjenestenPSG };
+        PermissionSetAssignment psa1 = new PermissionSetAssignment(
+            AssigneeId = usr1.ID,
+            PermissionSetGroupId = kontaktsenterPSG.Id
+        );
+        PermissionSetAssignment psa2 = new PermissionSetAssignment(
+            AssigneeId = usr2.ID,
+            PermissionSetGroupId = servicetjenestenPSG.Id
+        );
+        insert new List<PermissionSetAssignment>{ psa1, psa2 };
     }
 
     @isTest
-    static void testSkillCreate() {
-        User testUser = [SELECT Id, Name FROM User WHERE LastName = 'SKILLED'];
-        STO_GroupMemberSkillService.nksUserMap.clear();
-        STO_GroupMemberSkillService.nksUserMap.put(testUser.Id, testUser); //Override the return of the map since the permission set group does not exist in this package
+    static void nksServiceResourceWithSkillCreate() {
         STO_GroupMemberSkillService service = new STO_GroupMemberSkillService();
-
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM GroupMember
+                WHERE
+                    UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'SKILLED')
+                    AND Group.DeveloperName IN (
+                        'Fortrolig_Adresse_AD',
+                        'NKS_Skjermede_Personer_AD',
+                        'Skjermede_Personer_AD'
+                    )
+            ]
+        );
         Test.startTest();
         service.handleGroupAndSkillSync();
         Test.stopTest();
 
-        System.assertEquals(1, [SELECT COUNT() FROM ServiceResource]);
+        System.assertEquals(1, [SELECT COUNT() FROM ServiceResource], 'Expected serviceresource for NKS user');
+
+        ServiceResource nksSR = [SELECT Id, RelatedRecordId, CRM_Domain__c FROM ServiceResource LIMIT 1];
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM ServiceResourceSkill
+                WHERE ServiceResourceId = :nksSR.Id
+            ],
+            'Expected 2 skills for NKS user'
+        );
+    }
+    @isTest
+    static void hotServiceResourceWithSkillCreate() {
+        STO_GroupMemberSkillService service = new STO_GroupMemberSkillService(
+            'HOT',
+            'Servicetjenesten',
+            'HOT_Servicetjenesten_Group',
+            'Fortrolig_Adresse_AD',
+            'Skjermede_Personer_AD'
+        );
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM GroupMember
+                WHERE
+                    UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'PUPKIN')
+                    AND Group.DeveloperName IN (
+                        'Fortrolig_Adresse_AD',
+                        'NKS_Skjermede_Personer_AD',
+                        'Skjermede_Personer_AD'
+                    )
+            ]
+        );
+        Test.startTest();
+        service.handleGroupAndSkillSync();
+        Test.stopTest();
+
+        System.assertEquals(1, [SELECT COUNT() FROM ServiceResource], 'Expected serviceresource for HOT user');
+
+        ServiceResource hotSR = [
+            SELECT Id, RelatedRecordId, RelatedRecord.LastName, CRM_Domain__c
+            FROM ServiceResource
+            LIMIT 1
+        ];
+        System.assertEquals('PUPKIN', hotSR.RelatedRecord.LastName, 'Expected HOT user');
+        System.assertEquals('HOT', hotSR.CRM_Domain__c, 'Expected HOT domain');
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM ServiceResourceSkill
+                WHERE ServiceResourceId = :hotSR.Id
+            ],
+            'Expected 2 skills for HOT user'
+        );
+    }
+
+    @isTest
+    static void callableSync() {
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM GroupMember
+                WHERE
+                    UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'PUPKIN')
+                    AND Group.DeveloperName IN (
+                        'Fortrolig_Adresse_AD',
+                        'NKS_Skjermede_Personer_AD',
+                        'Skjermede_Personer_AD'
+                    )
+            ]
+        );
+        Test.startTest();
+        try {
+            Callable syncService = (Callable) Type.forName('STO_GroupMemberSkillService').newInstance();
+            syncService.call(
+                'handleGroupAndSkillSync',
+                new Map<String, Object>{
+                    'domain' => 'HOT',
+                    'subdomain' => 'Servicetjenesten',
+                    'permsetgroup' => 'HOT_Servicetjenesten_Group',
+                    'fortroliggroup' => 'Fortrolig_Adresse_AD',
+                    'skjermedegroup' => 'Skjermede_Personer_AD'
+                }
+            );
+        } catch (Exception e) {
+            System.Assert.isTrue(false, 'Could not call callable class' + e.getMessage());
+        }
+        Test.stopTest();
+
+        System.assertEquals(1, [SELECT COUNT() FROM ServiceResource], 'Expected serviceresource for HOT user');
+
+        ServiceResource hotSR = [
+            SELECT Id, RelatedRecordId, RelatedRecord.LastName, CRM_Domain__c
+            FROM ServiceResource
+            LIMIT 1
+        ];
+        System.assertEquals('PUPKIN', hotSR.RelatedRecord.LastName, 'Expected HOT user');
+        System.assertEquals('HOT', hotSR.CRM_Domain__c, 'Expected HOT domain');
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM ServiceResourceSkill
+                WHERE ServiceResourceId = :hotSR.Id
+            ],
+            'Expected 2 skills for HOT user'
+        );
     }
 
     @isTest
     static void testSkillRemove() {
         User testUser = [SELECT Id, Name FROM User WHERE LastName = 'SKILLED'];
-        STO_GroupMemberSkillService.nksUserMap.clear();
-        STO_GroupMemberSkillService.nksUserMap.put(testUser.Id, testUser); //Override the return of the map since the permission set group does not exist in this package
         STO_GroupMemberSkillService service = new STO_GroupMemberSkillService();
         service.handleGroupAndSkillSync();
-
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM ServiceResourceSkill
+                WHERE ServiceResource.RelatedRecordId = :testUser.Id
+            ],
+            'Expected 2 skills for NKS user'
+        );
         Test.startTest();
         //Removing from the skjermede group
         removeFromGroup(testUser.Id, 'NKS_Skjermede_Personer_AD');
@@ -42,6 +194,15 @@ public class STO_GroupMemberSkillService_Test {
         //Create new service as the memberlist have changed
         STO_GroupMemberSkillService service2 = new STO_GroupMemberSkillService();
         service2.handleGroupAndSkillSync();
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM ServiceResourceSkill
+                WHERE ServiceResource.RelatedRecordId = :testUser.Id
+            ],
+            'Expected 1 skills for NKS user'
+        );
     }
 
     @isTest
@@ -62,7 +223,6 @@ public class STO_GroupMemberSkillService_Test {
 
         System.assertEquals(2, [SELECT COUNT() FROM Application_Log__c]); //Two errors should be logged
     }
-
     @future
     private static void removeFromGroup(Id userId, String groupDevName) {
         delete [SELECT Id FROM GroupMember WHERE UserOrGroupId = :userId AND Group.DeveloperName = :groupDevName];
