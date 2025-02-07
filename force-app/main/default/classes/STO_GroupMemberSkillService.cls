@@ -227,7 +227,11 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
                 for (Database.Error err : saveRes.getErrors()) {
                     //Skip already assigned skill
                     if (!(err.getStatusCode() == StatusCode.DUPLICATE_VALUE)) {
-                        logger.error('Failed to create skill', null, CRM_ApplicationDomain.Domain.NKS);
+                        logger.error(
+                            'Failed to create skill',
+                            null,
+                            CRM_ApplicationDomain.Domain.valueOf(this.srDomain)
+                        );
                     }
                 }
             }
@@ -245,7 +249,11 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
         for (Database.DeleteResult delRes : deleteResList) {
             if (!delRes.isSuccess()) {
                 for (Database.Error err : delRes.getErrors()) {
-                    logger.error('Failed to create skill: ' + err.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
+                    logger.error(
+                        'Failed to create skill: ' + err.getMessage(),
+                        null,
+                        CRM_ApplicationDomain.Domain.valueOf(this.srDomain)
+                    );
                 }
             }
         }
