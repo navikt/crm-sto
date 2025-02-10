@@ -21,7 +21,7 @@ public class STO_GroupMemberSkillService_Test {
 
         //Adds the testuser as a member in both groups
         User usr1 = (User) STO_TestDataFactory.createRecord(new User(FirstName = 'SUPER', LastName = 'SKILLED'));
-        User usr2 = (User) STO_TestDataFactory.createRecord(new User(FirstName = 'VASILIJ', LastName = 'PUPKIN'));
+        User usr2 = (User) STO_TestDataFactory.createRecord(new User(FirstName = 'HOTST', LastName = 'HOTST'));
         List<GroupMember> memberList = new List<GroupMember>();
         memberList.add(new GroupMember(GroupId = fortroligGroup.Id, UserOrGroupId = usr1.Id));
         memberList.add(new GroupMember(GroupId = nksSkjermedeGroup.Id, UserOrGroupId = usr1.Id));
@@ -113,7 +113,7 @@ public class STO_GroupMemberSkillService_Test {
         );
         System.assertEquals(
             0,
-            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'PUPKIN'],
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'HOTST'],
             'Expected no serviceresource for HOT user'
         );
 
@@ -148,7 +148,7 @@ public class STO_GroupMemberSkillService_Test {
                 SELECT COUNT()
                 FROM GroupMember
                 WHERE
-                    UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'PUPKIN')
+                    UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'HOTST')
                     AND Group.DeveloperName IN (
                         'group_AD_Fortrolig_Adresse',
                         'NKS_Skjermede_Personer_AD',
@@ -162,7 +162,7 @@ public class STO_GroupMemberSkillService_Test {
 
         System.assertEquals(
             1,
-            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'PUPKIN'],
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'HOTST'],
             'Expected serviceresource for HOT user'
         );
         System.assertEquals(
@@ -174,7 +174,7 @@ public class STO_GroupMemberSkillService_Test {
         ServiceResource hotSR = [
             SELECT Id, RelatedRecordId, RelatedRecord.LastName, CRM_Domain__c
             FROM ServiceResource
-            WHERE RelatedRecord.LastName = 'PUPKIN'
+            WHERE RelatedRecord.LastName = 'HOTST'
             LIMIT 1
         ];
         System.assertEquals('HOT', hotSR.CRM_Domain__c, 'Expected HOT domain');
@@ -197,7 +197,7 @@ public class STO_GroupMemberSkillService_Test {
                 SELECT COUNT()
                 FROM GroupMember
                 WHERE
-                    UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'PUPKIN')
+                    UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'HOTST')
                     AND Group.DeveloperName IN (
                         'group_AD_Fortrolig_Adresse',
                         'NKS_Skjermede_Personer_AD',
@@ -225,7 +225,7 @@ public class STO_GroupMemberSkillService_Test {
 
         System.assertEquals(
             1,
-            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'PUPKIN'],
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'HOTST'],
             'Expected serviceresource for HOT user'
         );
         System.assertEquals(
@@ -237,7 +237,7 @@ public class STO_GroupMemberSkillService_Test {
         ServiceResource hotSR = [
             SELECT Id, RelatedRecordId, RelatedRecord.LastName, CRM_Domain__c
             FROM ServiceResource
-            WHERE RelatedRecord.LastName = 'PUPKIN'
+            WHERE RelatedRecord.LastName = 'HOTST'
             LIMIT 1
         ];
         System.assertEquals('HOT', hotSR.CRM_Domain__c, 'Expected HOT domain');
