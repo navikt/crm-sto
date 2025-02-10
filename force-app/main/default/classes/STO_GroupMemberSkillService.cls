@@ -168,7 +168,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
             }
         }
 
-        if (!skillsToCreate.isEmpty() /*&& !Test.isRunningTest()*/) {
+        if (!skillsToCreate.isEmpty()) {
             List<Database.SaveResult> saveResList = Database.insert(skillsToCreate, false);
             verifySkillinsert(saveResList);
         }
@@ -192,7 +192,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
                 AND ServiceResource.RelatedRecordId NOT IN :skjermedeMembers))
         ];
 
-        if (!skillsToDelete.isEmpty() /*&& !Test.isRunningTest()*/) {
+        if (!skillsToDelete.isEmpty()) {
             List<Database.DeleteResult> deleteResList = Database.delete(skillsToDelete, false);
             verifySkillRemoval(deleteResList);
         }
