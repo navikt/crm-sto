@@ -62,6 +62,27 @@ public class STO_GroupMemberSkillService_Test {
             PermissionSetGroupId = servicetjenestenPSG.Id
         );
         insert new List<PermissionSetAssignment>{ psa1, psa2 };
+
+        if (
+            [
+                    SELECT Id, DeveloperName
+                    FROM Skill
+                    WHERE DeveloperName = 'Fortrolig_addresse'
+                ]
+                .isEmpty()
+        ) {
+            Test.loadData(Skill.sObjectType, 'testFortroligSkill');
+        }
+        if (
+            [
+                    SELECT Id, DeveloperName
+                    FROM Skill
+                    WHERE DeveloperName = 'Skjermede_Personer'
+                ]
+                .isEmpty()
+        ) {
+            Test.loadData(Skill.sObjectType, 'testSkjermetSkill');
+        }
     }
 
     @IsTest
