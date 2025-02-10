@@ -135,12 +135,15 @@ public class STO_GroupMemberSkillService_Test {
     }
     @IsTest
     private static void hotServiceResourceWithSkillCreate() {
-        STO_GroupMemberSkillService service = new STO_GroupMemberSkillService(
-            'HOT',
-            'Servicetjenesten',
-            'HOT_Servicetjenesten_Group',
-            'group_AD_Fortrolig_Adresse',
-            'Skjermede_Personer_AD'
+        STO_GroupMemberSkillService service = new STO_GroupMemberSkillService();
+        service.setParams(
+            new Map<String, String>{
+                'domain' => 'HOT',
+                'subdomain' => 'Servicetjenesten',
+                'permsetgroup' => 'HOT_Servicetjenesten_Group',
+                'fortroliggroup' => 'group_AD_Fortrolig_Adresse',
+                'skjermedegroup' => 'Skjermede_Personer_AD'
+            }
         );
         System.assertEquals(
             2,

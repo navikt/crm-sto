@@ -21,72 +21,38 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
     private Set<Id> skjermedeMembers = new Set<Id>();
     private Set<Id> fortroligSkillUsers = new Set<Id>();
     private Set<Id> skjermedeSkillUsers = new Set<Id>();
+    @TestVisible
+    private Map<Id, User> userMap;
+    @TestVisible
+    private Map<String, Id> skillIdMap;
 
     @TestVisible
-    private Map<Id, User> userMap {
-        get {
-            if (userMap == null) {
-                List<User> userList = new List<User>();
-                for (PermissionSetAssignment psa : [
-                    SELECT Assignee.Id, Assignee.Name, PermissionSetGroup.DeveloperName
-                    FROM PermissionSetAssignment
-                    WHERE PermissionSetGroup.DeveloperName = :this.permsetGroupName
-                ]) {
-                    userList.add(psa.Assignee);
-                }
-                userMap = new Map<Id, User>(userList);
-            }
-            return userMap;
-        }
-        private set {
-            userMap = value;
-        }
+    private Map<Id, User> initUserMap() {
+        userMap = new Map<Id, User>(
+            [
+                SELECT Id, Name
+                FROM User
+                WHERE
+                    Id IN (
+                        SELECT AssigneeId
+                        FROM PermissionSetAssignment
+                        WHERE PermissionSetGroup.DeveloperName = :permsetGroupName
+                    )
+            ]
+        );
+        return userMap;
     }
     @TestVisible
-    private Map<String, Id> skillIdMap {
-        get {
-            if (skillIdMap == null) {
-                skillIdMap = new Map<String, Id>();
-                for (Skill skill : [
-                    SELECT Id, DeveloperName
-                    FROM Skill
-                    WHERE DeveloperName = :FORTOLIG_ADDRESSE_SKILL OR DeveloperName = :SKJERMEDE_PERSONER_SKILL
-                ]) {
-                    skillIdMap.put(skill.DeveloperName, skill.Id);
-                }
-            }
-            return skillIdMap;
+    private Map<String, Id> initSkillIdMap() {
+        skillIdMap = new Map<String, Id>();
+        for (Skill skill : [
+            SELECT Id, DeveloperName
+            FROM Skill
+            WHERE DeveloperName = :FORTOLIG_ADDRESSE_SKILL OR DeveloperName = :SKJERMEDE_PERSONER_SKILL
+        ]) {
+            skillIdMap.put(skill.DeveloperName, skill.Id);
         }
-        private set;
-    }
-    /**
-     * @description default constructor for the class
-     */
-    @SuppressWarnings('PMD.EmptyStatementBlock')
-    public STO_GroupMemberSkillService() {
-    }
-    /**
-     * @description Only for test purpouses
-     * @param domain
-     * @param subDomain
-     * @param permSetGroup
-     * @param fortroligGroup
-     * @param skjermedeGroup
-     */
-    @TestVisible
-    @SuppressWarnings('PMD.ExcessiveParameterList')
-    private STO_GroupMemberSkillService(
-        String domain,
-        String subDomain,
-        String permSetGroup,
-        String fortroligGroup,
-        String skjermedeGroup
-    ) {
-        this.srDomain = domain;
-        this.srSubDomain = subDomain;
-        this.permsetGroupName = permSetGroup;
-        this.fortroligGroupName = fortroligGroup;
-        this.skjermedeGroupName = skjermedeGroup;
+        return skillIdMap;
     }
 
     /**
@@ -99,14 +65,14 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
             SELECT UserOrGroupId, Group.DeveloperName
             FROM GroupMember
             WHERE
-                Group.DeveloperName IN (:this.fortroligGroupName, :this.skjermedeGroupName)
-                AND UserOrGroupId IN :this.userMap.keySet()
+                Group.DeveloperName IN (:fortroligGroupName, :skjermedeGroupName)
+                AND UserOrGroupId IN :userMap.keySet()
         ]) {
             String userOrGroupId = String.valueOf(GroupMember.UserOrGroupId);
-            if (groupMember.Group.DeveloperName == this.fortroligGroupName) {
-                this.fortroligMembers.add(groupMember.UserOrGroupId);
+            if (groupMember.Group.DeveloperName == fortroligGroupName) {
+                fortroligMembers.add(groupMember.UserOrGroupId);
             } else {
-                this.skjermedeMembers.add(groupMember.UserOrGroupId);
+                skjermedeMembers.add(groupMember.UserOrGroupId);
             }
         }
     }
@@ -123,12 +89,12 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
             WHERE
                 (Skill.DeveloperName = :FORTOLIG_ADDRESSE_SKILL
                 OR Skill.DeveloperName = :SKJERMEDE_PERSONER_SKILL)
-                AND ServiceResource.CRM_Domain__c = :this.srDomain
+                AND ServiceResource.CRM_Domain__c = :srDomain
         ]) {
             if (servSkill.Skill.DeveloperName == FORTOLIG_ADDRESSE_SKILL) {
-                this.fortroligSkillUsers.add(servSkill.ServiceResourceId);
+                fortroligSkillUsers.add(servSkill.ServiceResourceId);
             } else {
-                this.skjermedeSkillUsers.add(servSKill.ServiceResourceId);
+                skjermedeSkillUsers.add(servSKill.ServiceResourceId);
             }
         }
     }
@@ -136,11 +102,13 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
      * @description Handles syncronization of users having a groupmember to the skills they have
      */
     public void handleGroupAndSkillSync() {
-        this.getGroupMembers();
-        this.initSkillUserSets();
+        initUserMap();
+        initSkillIdMap();
+        getGroupMembers();
+        initSkillUserSets();
         //Ensures all NKS users have a related service resource created
-        this.handleSkillInsert();
-        this.handleSkillDeletion();
+        handleSkillInsert();
+        handleSkillDeletion();
     }
 
     /**
@@ -148,22 +116,20 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
      * @author Stian Ruud Schikora | 12-16-2021
      **/
     private void handleSkillInsert() {
-        Map<Id, ServiceResource> userResourceMap = this.handleServiceResourceCreation();
+        Map<Id, ServiceResource> userResourceMap = handleServiceResourceCreation();
         List<ServiceResourceSkill> skillsToCreate = new List<ServiceResourceSkill>();
-        for (Id memberId : this.fortroligMembers) {
+        for (Id memberId : fortroligMembers) {
             //If a userId in the fortrolig group is not contained in the fortroligSkillUser set, we need to ass the skill for that user
-            if (!this.fortroligSkillUsers.contains(memberId)) {
-                skillsToCreate.add(
-                    this.createSkill(this.skillIdMap.get(FORTOLIG_ADDRESSE_SKILL), userResourceMap.get(memberId))
-                );
+            if (!fortroligSkillUsers.contains(memberId)) {
+                skillsToCreate.add(createSkill(skillIdMap.get(FORTOLIG_ADDRESSE_SKILL), userResourceMap.get(memberId)));
             }
         }
 
-        for (Id memberId : this.skjermedeMembers) {
+        for (Id memberId : skjermedeMembers) {
             //If a userId in the fortrolig group is not contained in the skjermedeSkillUsers set, we need to ass the skill for that user
-            if (!this.skjermedeSkillUsers.contains(memberId)) {
+            if (!skjermedeSkillUsers.contains(memberId)) {
                 skillsToCreate.add(
-                    this.createSkill(this.skillIdMap.get(SKJERMEDE_PERSONER_SKILL), userResourceMap.get(memberId))
+                    createSkill(skillIdMap.get(SKJERMEDE_PERSONER_SKILL), userResourceMap.get(memberId))
                 );
             }
         }
@@ -185,7 +151,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
             SELECT Id, ServiceResourceId, Skill.DeveloperName
             FROM ServiceResourceSkill
             WHERE
-                ServiceResource.CRM_Domain__c = :this.srDomain
+                ServiceResource.CRM_Domain__c = :srDomain
                 AND ((Skill.DeveloperName = :FORTOLIG_ADDRESSE_SKILL
                 AND ServiceResource.RelatedRecordId NOT IN :fortroligMembers)
                 OR (Skill.DeveloperName = :SKJERMEDE_PERSONER_SKILL
@@ -226,11 +192,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
                 for (Database.Error err : saveRes.getErrors()) {
                     //Skip already assigned skill
                     if (!(err.getStatusCode() == StatusCode.DUPLICATE_VALUE)) {
-                        logger.error(
-                            'Failed to create skill',
-                            null,
-                            CRM_ApplicationDomain.Domain.valueOf(this.srDomain)
-                        );
+                        logger.error('Failed to create skill', null, CRM_ApplicationDomain.Domain.valueOf(srDomain));
                     }
                 }
             }
@@ -251,7 +213,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
                     logger.error(
                         'Failed to create skill: ' + err.getMessage(),
                         null,
-                        CRM_ApplicationDomain.Domain.valueOf(this.srDomain)
+                        CRM_ApplicationDomain.Domain.valueOf(srDomain)
                     );
                 }
             }
@@ -267,9 +229,9 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
      **/
     @SuppressWarnings('PMD.ApexCRUDViolation')
     private Map<Id, ServiceResource> handleServiceResourceCreation() {
-        Map<Id, ServiceResource> userResourceMap = this.getServiceResources();
+        Map<Id, ServiceResource> userResourceMap = getServiceResources();
         //If the resource map contains less keys than input userIds, we need to create serviceresources
-        Set<Id> usersWithoutSR = new Set<Id>(this.userMap.keySet());
+        Set<Id> usersWithoutSR = new Set<Id>(userMap.keySet());
         usersWithoutSR.removeAll(userResourceMap.keySet());
         List<ServiceResource> resourcesToCreate = new List<ServiceResource>();
         for (Id userId : usersWithoutSR) {
@@ -280,7 +242,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
                     RelatedRecordId = usr.Id,
                     Name = usr.Name,
                     IsActive = true,
-                    CRM_Domain__c = this.srDomain
+                    CRM_Domain__c = srDomain
                 )
             );
         }
@@ -305,10 +267,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
         for (ServiceResource servRes : [
             SELECT Id, RelatedRecordId, CRM_Domain__c
             FROM ServiceResource
-            WHERE
-                RelatedRecordId IN :this.userMap.keySet()
-                AND CRM_Domain__c = :this.srDomain
-                AND CRM_SubDomain__c = :this.srSubDomain
+            WHERE RelatedRecordId IN :userMap.keySet() AND CRM_Domain__c = :srDomain AND CRM_SubDomain__c = :srSubDomain
         ]) {
             userResourceMap.put(servRes.RelatedRecordId, servRes);
         }
@@ -326,7 +285,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
     public Object call(String action, Map<String, Object> args) {
         switch on action.toLowerCase() {
             when 'handlegroupandskillsync' {
-                this.setParams(args).handleGroupAndSkillSync();
+                setParams(args).handleGroupAndSkillSync();
                 return 0;
             }
             when else {
@@ -334,6 +293,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
             }
         }
     }
+    @TestVisible
     private STO_GroupMemberSkillService setParams(Map<String, Object> params) {
         for (String key : params.keySet()) {
             if (params.get(key) == null || !(params.get(key) instanceof String)) {
@@ -341,19 +301,19 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
             }
             switch on key.toLowerCase() {
                 when 'domain' {
-                    this.srDomain = (String) params.get(key);
+                    srDomain = (String) params.get(key);
                 }
                 when 'subdomain' {
-                    this.srSubDomain = (String) params.get(key);
+                    srSubDomain = (String) params.get(key);
                 }
                 when 'permsetgroup' {
-                    this.permsetGroupName = (String) params.get(key);
+                    permsetGroupName = (String) params.get(key);
                 }
                 when 'fortroliggroup' {
-                    this.fortroligGroupName = (String) params.get(key);
+                    fortroligGroupName = (String) params.get(key);
                 }
                 when 'skjermedegroup' {
-                    this.skjermedeGroupName = (String) params.get(key);
+                    skjermedeGroupName = (String) params.get(key);
                 }
             }
         }
