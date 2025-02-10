@@ -43,6 +43,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
         return userMap;
     }
     @TestVisible
+    @SuppressWarnings('PMD.ApexCRUDViolation')
     private Map<String, Id> initSkillIdMap() {
         skillIdMap = new Map<String, Id>();
         for (Skill skill : [
@@ -185,7 +186,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
      * @author Stian Ruud Schikora | 12-15-2021
      * @param saveResList
      **/
-    @testVisible
+    @TestVisible
     private void verifySkillinsert(List<Database.SaveResult> saveResList) {
         for (Database.SaveResult saveRes : saveResList) {
             if (!saveRes.isSuccess()) {
@@ -205,7 +206,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
      * @author Stian Ruud Schikora | 12-15-2021
      * @param deleteResList
      **/
-    @testVisible
+    @TestVisible
     private void verifySkillRemoval(List<Database.DeleteResult> deleteResList) {
         for (Database.DeleteResult delRes : deleteResList) {
             if (!delRes.isSuccess()) {

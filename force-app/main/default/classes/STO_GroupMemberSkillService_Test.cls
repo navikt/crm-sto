@@ -100,7 +100,8 @@ public class STO_GroupMemberSkillService_Test {
                         'NKS_Skjermede_Personer_AD',
                         'Skjermede_Personer_AD'
                     )
-            ]
+            ],
+            'Expected 2 groups for NKS user'
         );
         Test.startTest();
         service.handleGroupAndSkillSync();
@@ -157,7 +158,8 @@ public class STO_GroupMemberSkillService_Test {
                         'NKS_Skjermede_Personer_AD',
                         'Skjermede_Personer_AD'
                     )
-            ]
+            ],
+            'Expected 2 groups for HOT users'
         );
         Test.startTest();
         service.handleGroupAndSkillSync();
@@ -206,7 +208,8 @@ public class STO_GroupMemberSkillService_Test {
                         'NKS_Skjermede_Personer_AD',
                         'Skjermede_Personer_AD'
                     )
-            ]
+            ],
+            'Expected 2 groups for HOT users'
         );
         Test.startTest();
         try {
@@ -303,9 +306,9 @@ public class STO_GroupMemberSkillService_Test {
         service.verifySkillRemoval(deleteResList);
         Test.stopTest();
 
-        System.assertEquals(2, [SELECT COUNT() FROM Application_Log__c]); //Two errors should be logged
+        System.assertEquals(2, [SELECT COUNT() FROM Application_Log__c], 'Two errors should be logged');
     }
-    @future
+    @Future
     private static void removeFromGroup(Id userId, String groupDevName) {
         delete [SELECT Id FROM GroupMember WHERE UserOrGroupId = :userId AND Group.DeveloperName = :groupDevName];
     }
