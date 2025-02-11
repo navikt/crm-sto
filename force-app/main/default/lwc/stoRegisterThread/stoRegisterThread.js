@@ -8,8 +8,6 @@ import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 import welcomelabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
 import welcomelabelBTO from '@salesforce/label/c.Beskjed_til_oss_intro_text';
-import headline from '@salesforce/label/c.Skriv_til_oss_headline';
-import accepterrmessage from '@salesforce/label/c.Skriv_til_oss_headline';
 import acceptermtext from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
 import showtermstext from '@salesforce/label/c.Skriv_til_oss_Show_terms';
 import textareadescription from '@salesforce/label/c.Skriv_til_oss_text_area_description';
@@ -25,7 +23,14 @@ import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
-import { AnalyticsEvents, logNavigationEvent, logButtonEvent } from 'c/inboxAmplitude';
+import {
+    AnalyticsEvents,
+    logNavigationEvent,
+    logButtonEvent,
+    getComponentName,
+    logFilterEvent
+} from 'c/inboxAmplitude';
+import { getSelectedThemeUI, getKeyFromValue } from 'c/stoUtils';
 
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
@@ -51,8 +56,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     label = {
         welcomelabel,
         welcomelabelBTO,
-        headline,
-        accepterrmessage,
         acceptermtext,
         showtermstext,
         textareadescription,
@@ -71,8 +74,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         { text: 'Nei, jeg godtar ikke.', value: false, checked: false }
     ];
 
+    pleiepengerOptions = [
+        { text: 'Ja', value: 'true', checked: false },
+        { text: 'Nei', value: 'false', checked: false }
+    ];
+
     logopath = navlogos + '/email.svg';
     deletepath = navlogos + '/delete.svg';
+    wiredNews;
+    wireThreadData;
 
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
@@ -83,8 +93,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 });
                 this.acceptedcategories = categoryList;
             })
-            .catch(() => {
-                // Failed getting sto categories
+            .catch((error) => {
+                console.error('Error fetching categories: ', error);
             });
     }
 
@@ -118,22 +128,27 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      *  @author Lars Petter Johnsen
      */
     @wire(getNews, { category: '$selectedTheme', threadType: '$threadTypeToMake' })
-    wirenews(result) {
-        if (result.error) {
-            console.log(result.error);
-        } else if (result.data) {
+    wirednews(result) {
+        const { data, error } = result;
+        this.wiredNews = result;
+
+        if (data) {
             this.newsList = result.data;
+        } else if (error) {
+            console.error(error);
         }
     }
 
     @wire(getOpenThreads, { category: '$selectedTheme', threadType: '$threadTypeToMake' })
-    openThread(wireData) {
-        const { error, data } = wireData;
-        if (error) {
-            console.log(error);
+    openThread(result) {
+        const { error, data } = result;
+        this.wireThreadData = result;
+
+        if (data) {
+            this.openThreadList = data;
+        } else if (error) {
+            console.error(error);
         }
-        this._wireThreadData = wireData;
-        this.openThreadList = data;
     }
 
     /** Getters **/
@@ -199,13 +214,36 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.threadTypeToMake === 'BTO' ? this.label.welcomelabelBTO : this.label.welcomelabel;
     }
 
-    // Used for Amplitude logging
-    get contentType() {
-        return `${this.subpath.replace(/\//g, '')} / ${this.selectedTheme} `;
+    get selectedThemeUI() {
+        return getSelectedThemeUI(this.subpath, this.selectedTheme);
+    }
+
+    get showPleiepengerRadioButton() {
+        return (
+            this.subpath === '/skriv-til-oss/' && (this.selectedTheme === 'Helse' || this.selectedTheme === 'Familie')
+        );
     }
 
     setParametersBasedOnUrl() {
-        this.selectedTheme = this.urlStateParameters.category;
+        if (this.urlStateParameters?.category) {
+            let themeParameter = this.urlStateParameters.category.replace(/\+/g, ' ');
+            this.selectedTheme = getKeyFromValue(themeParameter);
+        }
+    }
+    updateUrlParam(param, value) {
+        let queryString = window.location.search;
+        let newParam = encodeURIComponent(param) + '=' + encodeURIComponent(value);
+        if (!queryString) {
+            window.history.replaceState({}, '', window.location.pathname + '?' + newParam);
+        } else {
+            if (queryString.includes(param)) {
+                const regex = new RegExp('([?&])' + encodeURIComponent(param) + '=[^&]*');
+                queryString = queryString.replace(regex, '$1' + newParam);
+            } else {
+                queryString = queryString + '&' + newParam;
+            }
+            window.history.replaceState({}, '', window.location.pathname + queryString);
+        }
     }
 
     togglechecked() {
@@ -257,7 +295,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitRequest() {
-        const medskriv = this.template.querySelector('c-ds-radio')?.getValue();
+        const medskriv = this.template.querySelector('.medskrive')?.getValue();
         if (
             this.acceptedTerms === true &&
             this.message &&
@@ -290,8 +328,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     logButtonEvent(
                         AnalyticsEvents.FORM_COMPLETED,
                         'Send',
-                        this.contentType,
-                        'stoRegisterThread',
+                        getComponentName(this.template),
                         this.title,
                         'ny samtale'
                     );
@@ -388,12 +425,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    handleRadioChange() {
-        logButtonEvent(
-            AnalyticsEvents.FORM_STEP_COMPLETED,
+    handleRadioChange(event) {
+        console.log('text: ', event.detail.text);
+        console.log('value: ', event.detail.value);
+        logFilterEvent(
             'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
-            this.contentType,
-            'stoRegisterThread',
+            event.detail.text,
+            getComponentName(this.template),
             this.title
         );
     }
@@ -404,15 +442,24 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
         if (match[1]) {
             const hrefValue = match[1];
-            logNavigationEvent(
-                this.contentType,
-                'stoRegisterThread',
-                'modal',
-                hrefValue,
-                'fortsette dine åpne samtaler'
-            );
+            logNavigationEvent(getComponentName(this.template), 'modal', hrefValue, 'fortsette dine åpne samtaler');
         } else {
             console.log('No href found in the openThreadText');
         }
+    }
+
+    handlePleiepengerChange(event) {
+        if (event.detail === 'true') {
+            this.selectedTheme = 'Pleiepenger';
+            this.updateUrlParam('category', 'Pleiepenger+for+sykt+barn');
+            // this.refreshApex(this.wiredNews);
+        }
+
+        logFilterEvent(
+            'Gjelder det pleiepenger for sykt barn?',
+            event.detail.text,
+            getComponentName(this.template),
+            this.title
+        );
     }
 }

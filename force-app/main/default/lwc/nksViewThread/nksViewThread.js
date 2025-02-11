@@ -1,11 +1,9 @@
 import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
-import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
-import THREAD_EXTERNAL_NAME from '@salesforce/schema/Thread__c.STO_ExternalName__c';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import getThread from '@salesforce/apex/stoHelperClass.getThread';
 import basepath from '@salesforce/community/basePath';
-import { getContentType } from 'c/stoUtils';
-import { AnalyticsEvents, logButtonEvent } from 'c/inboxAmplitude';
+import { AnalyticsEvents, logButtonEvent, setDecoratorParams, getComponentName } from 'c/inboxAmplitude';
+import { getPageType } from 'c/stoUtils';
 
 const urlMap = {
     STO: (recordId) => basepath + '/skriv-til-oss/' + recordId,
@@ -24,7 +22,15 @@ export default class NksViewThread extends LightningElement {
     @api maxLength;
 
     _recordId;
-    threadExternalName;
+    pageTheme;
+    pageType;
+    pageTitle;
+
+    renderedCallback() {
+        if (this.threadType) {
+            this.pageType = getPageType(this.threadType);
+        }
+    }
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -35,14 +41,19 @@ export default class NksViewThread extends LightningElement {
         }
     }
 
-    @wire(getRecord, { recordId: '$_recordId', fields: [THREAD_TYPE, THREAD_EXTERNAL_NAME] })
+    @wire(getThread, { recordId: '$_recordId' })
     wiredThread({ error, data }) {
         if (error) {
             console.log('Error:', error);
         } else if (data) {
-            this.threadExternalName = getFieldValue(data, THREAD_EXTERNAL_NAME);
-            const actualThreadType = getFieldValue(data, THREAD_TYPE);
+            this.pageTheme = data.STO_Category_Formula__c;
+            const actualThreadType = data.CRM_Thread_Type__c;
             if (!allowedThreadTypes[this.threadType].includes(actualThreadType)) this.redirect(actualThreadType);
+
+            if (this.pageType && this.pageTheme) {
+                setDecoratorParams(this.pageType, this.pageTheme);
+                this.pageTitle = this.pageType + ' - ' + this.pageTheme;
+            }
         }
     }
 
@@ -57,9 +68,8 @@ export default class NksViewThread extends LightningElement {
         logButtonEvent(
             AnalyticsEvents.FORM_COMPLETED,
             'Send',
-            getContentType(this.threadExternalName),
-            'nksViewThread',
-            this.threadExternalName,
+            getComponentName(this.template),
+            this.pageTitle,
             'ny melding'
         );
     }

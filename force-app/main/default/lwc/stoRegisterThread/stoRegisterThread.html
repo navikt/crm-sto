@@ -10,7 +10,7 @@
             >
                 <template if:true={validparameter}>
                     <img aria-hidden="true" src={logopath} class="logo" />
-                    <h2 class="navds-labels blokk-s" style="color: #0067c5">{selectedTheme}</h2>
+                    <h2 class="navds-labels blokk-s" style="color: #0067c5">{selectedThemeUI}</h2>
                     <c-community-error-summary
                         error-list={errorList}
                         onclickedevent={handleErrorClick}
@@ -30,7 +30,6 @@
                                         header={news.header}
                                         body={news.body}
                                         key={news.id}
-                                        content-type={contentType}
                                     ></c-community-expandable-panel>
                                 </template>
                             </div>
@@ -41,6 +40,21 @@
                                 </div>
                             </template>
                             <template if:true={showTextArea}>
+                                <!-- Pleiepenger Radio Button -->
+                                <template lwc:if={showPleiepengerRadioButton}>
+                                    <div class="slds-var-p-top_medium">
+                                        <c-ds-radio
+                                            style="text-align: left"
+                                            title="Gjelder det pleiepenger for sykt barn?"
+                                            options={pleiepengerOptions}
+                                            class="radioFocus pleiepenger"
+                                            onradiochange={handlePleiepengerChange}
+                                            ><div slot="legend" class="slds-grid">
+                                                <p>Gjelder det pleiepenger for sykt barn?</p>
+                                            </div></c-ds-radio
+                                        >
+                                    </div>
+                                </template>
                                 <!-- Textarea -->
                                 <div class="slds-var-m-top_xx-large">
                                     <c-community-textarea
@@ -50,12 +64,12 @@
                                     ></c-community-textarea>
                                 </div>
                                 <!-- Medskriv radiobutton -->
-                                <div class="">
+                                <div>
                                     <c-ds-radio
                                         style="text-align: left"
                                         title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
                                         options={medskrivOptions}
-                                        class="radioFocus"
+                                        class="radioFocus medskrive"
                                         onradiochange={handleRadioChange}
                                         ><div slot="legend" class="slds-grid">
                                             <p>

@@ -1,12 +1,11 @@
 import { LightningElement, api, wire } from 'lwc';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
-import { AnalyticsEvents, logButtonEvent, logModalEvent } from 'c/inboxAmplitude';
+import { AnalyticsEvents, logButtonEvent, logModalEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class StoInboxCloseItem extends LightningElement {
     @api thread;
     @api index;
-    @api contentType;
 
     modalOpen = false;
 
@@ -33,7 +32,7 @@ export default class StoInboxCloseItem extends LightningElement {
         this.modalOpen = true;
         this.modal.focusModal();
         publish(this.messageContext, globalModalOpen, { status: 'true' });
-        logModalEvent(true, 'Avslutt samtale', this.contentType, 'stoInboxCloseItem', 'Dine åpne samtaler');
+        logModalEvent(true, 'Avslutt samtale', getComponentName(this.template), 'Dine åpne samtaler');
     }
 
     closeModal() {
@@ -41,7 +40,7 @@ export default class StoInboxCloseItem extends LightningElement {
         const btn = this.template.querySelector('.endDialogBtn');
         btn.focus();
         publish(this.messageContext, globalModalOpen, { status: 'false' });
-        logModalEvent(false, 'Avslutt samtale', this.contentType, 'stoInboxCloseItem', 'Dine åpne samtaler');
+        logModalEvent(false, 'Avslutt samtale', getComponentName(this.template), 'Dine åpne samtaler');
     }
 
     closeThread() {
@@ -52,8 +51,7 @@ export default class StoInboxCloseItem extends LightningElement {
         logButtonEvent(
             AnalyticsEvents.FORM_COMPLETED,
             'Ja avslutt samtale',
-            this.contentType,
-            'stoInboxCloseItem',
+            getComponentName(this.template),
             'Dine åpne samtaler'
         );
     }
@@ -69,6 +67,6 @@ export default class StoInboxCloseItem extends LightningElement {
     }
 
     get threadName() {
-        return this.thread.name + (this.isExternal === true ? ': Du sendte en melding' : ': Nav sendte en melding');
+        return this.thread.name + (this.isExternal ? ': Du sendte en melding' : ': Nav sendte en melding');
     }
 }

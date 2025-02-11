@@ -3,7 +3,7 @@ import navlogos from '@salesforce/resourceUrl/homelogo';
 import navStyling from '@salesforce/resourceUrl/navStyling';
 import index from '@salesforce/resourceUrl/index';
 import { loadStyle } from 'lightning/platformResourceLoader';
-import { logNavigationEvent } from 'c/inboxAmplitude';
+import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class CommunityBreadCrumb extends LightningElement {
     @api firstLevel;
@@ -23,8 +23,7 @@ export default class CommunityBreadCrumb extends LightningElement {
 
     handleClick(event) {
         logNavigationEvent(
-            'brødsmuler',
-            'communityBreadCrumb',
+            getComponentName(this.template),
             'breadCrumb',
             event.currentTarget.href,
             event.currentTarget.textContent.trim()
