@@ -22,7 +22,8 @@
         "FieldService:5",
         "FieldServiceDispatcherUser:5",
         "FieldServiceMobileUser:5",
-        "FieldServiceSchedulingUser:5"
+        "FieldServiceSchedulingUser:5",
+        "LiveMessage"
     ],
     "country": "NO",
     "language": "en_US",
@@ -61,6 +62,9 @@
             "serviceAppointmentsDueDateOffsetOrgValue": 7,
             "workOrderLineItemSearchFields": "Subject",
             "workOrderSearchFields": "Subject"
+        },
+        "liveMessageSettings": {
+            "enableLiveMessage": true
         },
         "liveAgentSettings": {
             "enableLiveAgent": true
