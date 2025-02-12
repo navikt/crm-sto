@@ -1,13 +1,16 @@
 import { LightningElement, api } from 'lwc';
+import { logAccordionEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class CommunityExpandablePanel extends LightningElement {
-    showpanel = false;
     @api header;
     @api body;
+
+    showpanel = false;
 
     togglevisible() {
         this.showpanel = !this.showpanel;
         this.performAnimation();
+        logAccordionEvent(this.showpanel, this.header, getComponentName(this.template));
     }
 
     get accordianClass() {

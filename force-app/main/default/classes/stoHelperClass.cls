@@ -242,5 +242,10 @@ public with sharing class stoHelperClass {
     }
     
     public class maxThreadLimitReachedException extends Exception {
-    }    
+    }   
+    
+    @AuraEnabled(cacheable=true)
+    public static Thread__c getThread(String recordId) {
+        return [SELECT Id, CRM_Thread_Type__c, STO_Category_Formula__c, CRM_Is_Closed__c, CRM_Related_Object__c, STO_Medskriv__c FROM Thread__c WHERE Id = :recordId LIMIT 1];
+    }
 }

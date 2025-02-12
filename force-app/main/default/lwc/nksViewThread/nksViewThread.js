@@ -1,8 +1,9 @@
 import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
-import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import getThread from '@salesforce/apex/stoHelperClass.getThread';
 import basepath from '@salesforce/community/basePath';
+import { AnalyticsEvents, logButtonEvent, setDecoratorParams, getComponentName } from 'c/inboxAmplitude';
+import { getPageType } from 'c/stoUtils';
 
 const urlMap = {
     STO: (recordId) => basepath + '/skriv-til-oss/' + recordId,
@@ -19,7 +20,17 @@ export default class NksViewThread extends LightningElement {
     @api threadType;
     @api recordId;
     @api maxLength;
+
     _recordId;
+    pageTheme;
+    pageType;
+    pageTitle;
+
+    renderedCallback() {
+        if (this.threadType) {
+            this.pageType = getPageType(this.threadType);
+        }
+    }
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -30,14 +41,19 @@ export default class NksViewThread extends LightningElement {
         }
     }
 
-    getField;
-    @wire(getRecord, { recordId: '$_recordId', fields: [THREAD_TYPE] })
+    @wire(getThread, { recordId: '$_recordId' })
     wiredThread({ error, data }) {
         if (error) {
             console.log('Error:', error);
         } else if (data) {
-            const actualThreadType = getFieldValue(data, THREAD_TYPE);
+            this.pageTheme = data.STO_Category_Formula__c;
+            const actualThreadType = data.CRM_Thread_Type__c;
             if (!allowedThreadTypes[this.threadType].includes(actualThreadType)) this.redirect(actualThreadType);
+
+            if (this.pageType && this.pageTheme) {
+                setDecoratorParams(this.pageType, this.pageTheme);
+                this.pageTitle = this.pageType + ' - ' + this.pageTheme;
+            }
         }
     }
 
@@ -46,5 +62,15 @@ export default class NksViewThread extends LightningElement {
         const link = urlMap[actualThreadType](this._recordId);
         // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
         window.open(link, '_self');
+    }
+
+    logAmplitudeEvent() {
+        logButtonEvent(
+            AnalyticsEvents.FORM_COMPLETED,
+            'Send',
+            getComponentName(this.template),
+            this.pageTitle,
+            'ny melding'
+        );
     }
 }

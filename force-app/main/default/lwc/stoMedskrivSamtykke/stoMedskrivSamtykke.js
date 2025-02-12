@@ -1,8 +1,10 @@
-import { getFieldValue, getRecord, updateRecord } from 'lightning/uiRecordApi';
+import { updateRecord } from 'lightning/uiRecordApi';
 import { LightningElement, api, wire } from 'lwc';
 import MEDSKRIV_FIELD from '@salesforce/schema/Thread__c.STO_Medskriv__c';
 import ID_FIELD from '@salesforce/schema/Thread__c.Id';
 import LoggerUtility from 'c/loggerUtility';
+import { AnalyticsEvents, logButtonEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
+import getThread from '@salesforce/apex/stoHelperClass.getThread';
 
 const titlesConst = {
     false: 'Du har godkjent at denne samtalen kan brukes til opplæring av ansatte i Nav.',
@@ -16,7 +18,10 @@ const textConst = {
 
 export default class StoMedskrivSamtykke extends LightningElement {
     @api recordId;
+
     buttonPushed = false;
+    pageType;
+    stoPageTheme;
 
     revokeMedskriv() {
         const fields = {};
@@ -30,13 +35,30 @@ export default class StoMedskrivSamtykke extends LightningElement {
         updateRecord(recordInput).catch((error) => {
             LoggerUtility.logError('NKS', 'STO', error, 'Kunne ikke fjerne medskriv', this.recordId);
         });
+
+        logButtonEvent(
+            AnalyticsEvents.FORM_COMPLETED,
+            'Fjern min godkjenning',
+            getComponentName(this.template),
+            'medskriv'
+        );
     }
 
-    @wire(getRecord, { recordId: '$recordId', fields: MEDSKRIV_FIELD })
-    thread;
+    @wire(getThread, { recordId: '$recordId' })
+    wiredThread(result) {
+        const { data, error } = result;
 
-    get medskriv() {
-        return getFieldValue(this.thread.data, MEDSKRIV_FIELD);
+        if (data) {
+            this.medskriv = data.STO_Medskriv__c;
+            this.pageType = data.CRM_Thread_Type__c;
+            this.stoPageTheme = data.STO_Category_Formula__c;
+
+            if (this.pageType && this.stoPageTheme) {
+                setDecoratorParams(this.pageType, this.pageTheme);
+            }
+        } else if (error) {
+            console.error(error);
+        }
     }
 
     get showPanel() {
