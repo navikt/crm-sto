@@ -12,11 +12,13 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
     public static final String SKJERMEDE_GROUP_NAME = 'NKS_Skjermede_Personer_AD';
     public static final String PERMSET_GROUP_NAME = 'Kontaktsenter';
     public static final String SR_DOMAIN = 'NKS';
+    public static final String RESOURCE_TYPE = 'A';
     private String fortroligGroupName = FORTROLIG_GROUP_NAME;
     private String skjermedeGroupName = SKJERMEDE_GROUP_NAME;
     private String permsetGroupName = PERMSET_GROUP_NAME;
     private String srDomain = SR_DOMAIN;
     private String srSubDomain;
+    private String srType = RESOURCE_TYPE;
     private Set<Id> fortroligMembers = new Set<Id>();
     private Set<Id> skjermedeMembers = new Set<Id>();
     private Set<Id> fortroligSkillUsers = new Set<Id>();
@@ -239,11 +241,12 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
             User usr = userMap.get(userId);
             resourcesToCreate.add(
                 new ServiceResource(
-                    ResourceType = 'A',
+                    ResourceType = srType,
                     RelatedRecordId = usr.Id,
                     Name = usr.Name,
                     IsActive = true,
-                    CRM_Domain__c = srDomain
+                    CRM_Domain__c = srDomain,
+                    CRM_Subdomain__c = srSubDomain
                 )
             );
         }
@@ -268,7 +271,11 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
         for (ServiceResource servRes : [
             SELECT Id, RelatedRecordId, CRM_Domain__c
             FROM ServiceResource
-            WHERE RelatedRecordId IN :userMap.keySet() AND CRM_Domain__c = :srDomain AND CRM_SubDomain__c = :srSubDomain
+            WHERE
+                RelatedRecordId IN :userMap.keySet()
+                AND CRM_Domain__c = :srDomain
+                AND CRM_SubDomain__c = :srSubDomain
+                AND ResourceType = :srType
         ]) {
             userResourceMap.put(servRes.RelatedRecordId, servRes);
         }
@@ -315,6 +322,9 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
                 }
                 when 'skjermedegroup' {
                     skjermedeGroupName = (String) params.get(key);
+                }
+                when 'resourcetype' {
+                    srType = (String) params.get(key);
                 }
             }
         }
