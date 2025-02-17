@@ -37,7 +37,6 @@ const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
-    @api title;
     @api threadTypeToMake;
 
     showspinner = false;
@@ -53,6 +52,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     modalOpen = false;
     maxLength = 2000;
     openThreadList;
+    _title;
 
     label = {
         welcomelabel,
@@ -159,6 +159,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
+            this.getPageType();
         }
     }
 
@@ -188,6 +189,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         } else if (error) {
             console.error(error);
         }
+    }
+
+    get title() {
+        return this._title;
+    }
+
+    @api
+    set title(value) {
+        this._title = value;
     }
 
     /** Getters **/
@@ -262,10 +272,26 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         );
     }
 
+    getPageType() {
+        const category = this.urlStateParameters.category;
+        if (this.subpath === '/skriv-til-oss/') {
+            this._title = 'Skriv til oss';
+        } else if (this.subpath === '/beskjed-til-oss/' && category.includes('Endring')) {
+            this._title = 'Meld fra om endring';
+        } else if (this.subpath === '/beskjed-til-oss/' && category.includes('Trekk')) {
+            this._title = 'Trekk en søknad';
+        } else if (this.subpath === '/beskjed-til-oss/' && category.includes('Beskjed')) {
+            this._title = 'Gi beskjed';
+        }
+    }
+
     getSelectedThemeUI(subpath, selectedTheme) {
         if (subpath === '/skriv-til-oss/') {
             if (this.gjelderPleiepenger) {
                 return this.updateSelectedThemeUI(this.urlStateParameters.category);
+            } else if (this.urlStateParameters.category === 'Hjelpemidler') {
+                this.selectedTheme = 'Helse';
+                return 'Hjelpemidler';
             }
             return this.stoThemeMapping[selectedTheme];
         }
@@ -382,7 +408,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxType: this.title,
-                inboxTheme: this.selectedThemeUI
+                inboxTheme: this.gjelderPleiepenger ? 'Pleiepenger for sykt barn' : this.selectedThemeUI
             })
                 .then((thread) => {
                     this.showspinner = false;
