@@ -85,18 +85,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     deletepath = navlogos + '/delete.svg';
     wiredNews;
     wireThreadData;
-    pageMap = {
-        Beskjed_til_oss__c: '/beskjed-til-oss/',
-        Skriv_til_oss__c: '/skriv-til-oss/',
-        custom_trekk_en_soknad__c: '/trekk-en-soknad/',
-        Gi_beskjed__c: '/gi-beskjed/',
-        Meld_fra_om_endring__c: '/meld-fra-om-endring/'
-    };
 
     stoThemeMapping = {
         Arbeid: 'Arbeid',
         Familie: 'Familie og barn',
-        Helse: 'Hjelpemidler', // ['Helse og sykdom', 'Hjelpemidler']
+        Helse: 'Helse og sykdom',
         Hjelpemidler: 'Hjelpemidler og tilrettelegging',
         Internasjonal: 'Bor eller jobber i utlandet',
         Pensjon: 'Pensjon',
@@ -162,7 +155,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
-            this.subpath = this.pageMap[currentPageReference.attributes.name];
+            this.subpath =
+                currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
         }
@@ -229,25 +223,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get openThreadLink() {
-        let viewProperty = '';
-        if (this.threadTypeToMake === 'BTO') {
-            switch (this.subpath) {
-                case '/gi-beskjed/':
-                    viewProperty = 'gi-beskjed-visning?samtale=';
-                    break;
-                case '/meld-fra-om-endring/':
-                    viewProperty = 'meld-fra-om-endring-visning?samtale=';
-                    break;
-                case '/trekk-en-soknad/':
-                    viewProperty = 'trekk-en-soknad-visning?samtale=';
-                    break;
-                default:
-                    viewProperty = 'visning?samtale=';
-            }
-            return basepath + this.subpath + viewProperty + this.openThreadList[0].recordId;
-        }
-
-        return basepath + this.subpath + this.openThreadList[0].recordId;
+        return this.threadTypeToMake === 'BTO'
+            ? basepath + this.subpath + 'visning?samtale=' + this.openThreadList[0].recordId
+            : basepath + this.subpath + this.openThreadList[0].recordId;
     }
 
     get alertType() {
@@ -279,15 +257,28 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get showPleiepengerRadioButton() {
         return (
-            this.subpath === '/skriv-til-oss/' && (this.selectedTheme === 'Helse' || this.selectedTheme === 'Familie')
+            this.subpath === '/skriv-til-oss/' &&
+            (this.selectedThemeUI === 'Helse og sykdom' || this.selectedThemeUI === 'Familie og barn')
         );
     }
 
     getSelectedThemeUI(subpath, selectedTheme) {
         if (subpath === '/skriv-til-oss/') {
+            if (this.gjelderPleiepenger) {
+                return this.updateSelectedThemeUI(this.urlStateParameters.category);
+            }
             return this.stoThemeMapping[selectedTheme];
         }
         return selectedTheme;
+    }
+
+    updateSelectedThemeUI(category) {
+        if (category === 'Helse+og+sykdom') {
+            return 'Helse og sykdom';
+        } else if (category === 'Familie+og+barn') {
+            return 'Familie og barn';
+        }
+        return '';
     }
 
     getKeyFromValue(value) {
@@ -303,6 +294,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         setDecoratorParams(this.title, this.selectedThemeUI);
     }
 
+    /*
     updateUrlParam(param, value) {
         let queryString = window.location.search;
         let encodedParam = encodeURIComponent(param);
@@ -322,7 +314,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
             window.history.replaceState({}, '', window.location.pathname + queryString);
         }
-    }
+    }*/
 
     togglechecked() {
         this.acceptedTerms = !this.acceptedTerms;
@@ -357,25 +349,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * Handles terms modal end
      */
     navigateToBTO(thread) {
-        let pageName;
-        switch (this.subpath) {
-            case '/gi-beskjed/':
-                pageName = 'Gi_beskjed_visning__c';
-                break;
-            case '/meld-fra-om-endring/':
-                pageName = 'Meld_fra_om_endring_visning__c';
-                break;
-            case '/trekk-en-soknad/':
-                pageName = 'custom_trekk_en_soknad_visning__c';
-                break;
-            default:
-                pageName = 'Visning__c';
-        }
-
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
-                name: pageName
+                name: 'Visning__c'
             },
             state: {
                 samtale: thread.Id
@@ -541,10 +518,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
+    gjelderPleiepenger = false;
     handlePleiepengerChange(event) {
         if (event.detail.value === 'true') {
+            this.gjelderPleiepenger = true;
             this.selectedTheme = 'Pleiepenger';
-            this.updateUrlParam('category', 'Pleiepenger+for+sykt+barn');
+            // this.updateUrlParam('category', 'Pleiepenger+for+sykt+barn');
             //this.refreshApex(this.wiredNews);
         }
 

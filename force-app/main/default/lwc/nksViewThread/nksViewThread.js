@@ -5,18 +5,9 @@ import { AnalyticsEvents, logButtonEvent, setDecoratorParams, getComponentName }
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
 
 const urlMap = {
-    STO: (recordId) => `${basepath}/skriv-til-oss/${recordId}`,
-    STB: (recordId) => `${basepath}/skriv-til-oss/${recordId}`,
-    BTO: (recordId, pageType) => {
-        if (pageType === 'Trekk en søknad') {
-            return `${basepath}/beskjed-til-oss/trekk-en-soknad-visning?samtale=${recordId}`;
-        } else if (pageType === 'Meld fra om endring') {
-            return `${basepath}/beskjed-til-oss/meld-fra-om-endring-visning?samtale=${recordId}`;
-        } else if (pageType === 'Gi beskjed') {
-            return `${basepath}/beskjed-til-oss/gi-beskjed-visning?samtale=${recordId}`;
-        }
-        return `${basepath}/beskjed-til-oss/visning?samtale=${recordId}`;
-    }
+    STO: (recordId) => basepath + '/skriv-til-oss/' + recordId,
+    STB: (recordId) => basepath + '/skriv-til-oss/' + recordId,
+    BTO: (recordId) => basepath + '/beskjed-til-oss/visning?samtale=' + recordId
 };
 
 const allowedThreadTypes = {
@@ -62,14 +53,11 @@ export default class NksViewThread extends LightningElement {
 
     // Redirect for static user notifications links
     redirect(actualThreadType) {
-        const link =
-            actualThreadType === 'BTO'
-                ? urlMap.BTO(this._recordId, this.pageType)
-                : urlMap[actualThreadType](this._recordId);
-
+        const link = urlMap[actualThreadType](this._recordId);
         // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
         window.open(link, '_self');
     }
+
     logAmplitudeEvent() {
         logButtonEvent(
             AnalyticsEvents.FORM_COMPLETED,
