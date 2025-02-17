@@ -4,7 +4,7 @@
     <isAttributeBased>true</isAttributeBased>
     <label>BTO Familie</label>
     <routingModel>MOST_AVAILABLE</routingModel>
-    <routingPriority>5</routingPriority>
+    <routingPriority>4</routingPriority>
     <skills>
         <skill>BTO</skill>
     </skills>
