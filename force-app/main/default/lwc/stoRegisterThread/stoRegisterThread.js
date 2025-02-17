@@ -96,7 +96,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Pleiepenger: 'Pleiepenger for sykt barn',
         Ufør: 'Ufør'
     };
-    introLabelMap = {
+    ingressMap = {
         'Skriv til oss': {
             Arbeid: welcomelabel,
             'Bor eller jobber i utlandet': welcomelabel,
@@ -121,6 +121,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         'Trekk en søknad': {
             Arbeid: ''
         }
+    };
+
+    titleMap = {
+        'Endring': 'Meld fra om endring',
+        'Trekk': 'Trekk en søknad',
+        'Beskjed': 'Gi beskjed'
     };
 
     connectedCallback() {
@@ -159,7 +165,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
-            this.getPageType();
         }
     }
 
@@ -255,8 +260,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get introLabel() {
-        if (this.introLabelMap[this.title] && this.introLabelMap[this.title][this.selectedThemeUI]) {
-            return this.introLabelMap[this.title][this.selectedThemeUI];
+        if (this.ingressMap[this.title] && this.ingressMap[this.title][this.selectedThemeUI]) {
+            return this.ingressMap[this.title][this.selectedThemeUI];
         }
         return 'Default intro text for other pages or themes';
     }
@@ -270,19 +275,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.subpath === '/skriv-til-oss/' &&
             (this.selectedThemeUI === 'Helse og sykdom' || this.selectedThemeUI === 'Familie og barn')
         );
-    }
-
-    getPageType() {
-        const category = this.urlStateParameters.category;
-        if (this.subpath === '/skriv-til-oss/') {
-            this._title = 'Skriv til oss';
-        } else if (this.subpath === '/beskjed-til-oss/' && category.includes('Endring')) {
-            this._title = 'Meld fra om endring';
-        } else if (this.subpath === '/beskjed-til-oss/' && category.includes('Trekk')) {
-            this._title = 'Trekk en søknad';
-        } else if (this.subpath === '/beskjed-til-oss/' && category.includes('Beskjed')) {
-            this._title = 'Gi beskjed';
-        }
     }
 
     getSelectedThemeUI(subpath, selectedTheme) {
@@ -320,27 +312,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         setDecoratorParams(this.title, this.selectedThemeUI);
     }
 
-    /*
-    updateUrlParam(param, value) {
-        let queryString = window.location.search;
-        let encodedParam = encodeURIComponent(param);
-        let encodedValue = encodeURIComponent(value);
-
-        encodedValue = encodedValue.replace(/%20/g, '+').replace(/%2B/g, '+');
-        let newParam = encodedParam + '=' + encodedValue;
-
-        if (!queryString) {
-            window.history.replaceState({}, '', window.location.pathname + '?' + newParam);
-        } else {
-            if (queryString.includes(param)) {
-                const regex = new RegExp('([?&])' + encodedParam + '=[^&]*');
-                queryString = queryString.replace(regex, '$1' + newParam);
-            } else {
-                queryString = queryString + '&' + newParam;
-            }
-            window.history.replaceState({}, '', window.location.pathname + queryString);
-        }
-    }*/
+    getUrlParamsTypeAndTheme() {
+        if (!this.urlStateParameters?.category) return;
+        const categoryParts = this.urlStateParameters.category.split('=')[1].split('-');
+        const type = categoryParts.shift();
+        this.selectedTheme = categoryParts.join('-');
+        this._title = this.titleMap[type];
+    }
 
     togglechecked() {
         this.acceptedTerms = !this.acceptedTerms;
