@@ -32,7 +32,6 @@ public with sharing class stoHelperClass {
      */
     @AuraEnabled(cacheable=true)
     public static List<STO_Category__mdt> getThemes(String language) {
-        System.debug(language);
         String lang;
         if (language.equals('no')) {
             lang = 'Norwegian';
@@ -66,9 +65,23 @@ public with sharing class stoHelperClass {
         return thread;
     }
 
+    // TODO: Can be removed after deploy - for backwards compatibility
     @AuraEnabled
-    public static Thread__c createRequest(String theme, String msgText, Boolean medskriv) {
-        return createThreadWithCase(theme, msgText, medskriv, 'STO', null, null);
+    public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type) {
+        String relatedObjId;
+        Thread__c thread;
+
+        if (isMaxThreadCount(theme, type)) {
+            logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
+            logger.publish();
+            throw new maxThreadLimitReachedException();
+        }
+
+        User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
+        thread = createThread(null, theme, personUser, medskriv, type, null, null);
+        createMessage(thread, msgText, personUser.ContactId);
+
+        return thread;
     }
 
     private static Thread__c createThread(
