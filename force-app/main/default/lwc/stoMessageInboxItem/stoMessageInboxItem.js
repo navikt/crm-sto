@@ -62,23 +62,15 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get linkUrl() {
-        if (this.objectName === 'beskjed-til-oss') {
-            const pageType = this.thread.inboxType;
-            if (pageType === 'Meld fra om endring') {
-                return `${basepath}/meld-fra-om-endring/meld-fra-om-endring-visning?samtale=${this.thread.recordId}`;
-            } else if (pageType === 'Trekk en søknad') {
-                return `${basepath}/trekk-en-soknad/trekk-en-soknad-visning?samtale=${this.thread.recordId}`;
-            } else if (pageType === 'Gi beskjed') {
-                return `${basepath}/gi-beskjed/gi-beskjed-visning?samtale=${this.thread.recordId}`;
-            }
-
-            return `${basepath}/beskjed-til-oss/visning?samtale=${this.thread.recordId}`;
-        }
-
-        return `${basepath}/${this.objectName}/${this.thread.recordId}/${this.thread.recordName.replace(
-            /[ -]+/g,
-            '-'
-        )}`;
+        return this.objectName === 'beskjed-til-oss'
+            ? basepath + '/' + this.objectName + '/visning?samtale=' + this.thread.recordId
+            : basepath +
+                  '/' +
+                  this.objectName +
+                  '/' +
+                  this.thread.recordId +
+                  '/' +
+                  this.thread.recordName.replace(/[ -]+/g, '-');
     }
 
     handleNavigation(event) {
