@@ -135,6 +135,98 @@ public class STO_GroupMemberSkillService_Test {
         );
     }
     @IsTest
+    private static void nksServiceResourceWithSkillCreate2() {
+        STO_GroupMemberSkillService service = new STO_GroupMemberSkillService();
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM GroupMember
+                WHERE
+                    UserOrGroupId IN (SELECT Id FROM User WHERE LastName = 'SKILLED')
+                    AND Group.DeveloperName IN (
+                        'group_AD_Fortrolig_Adresse',
+                        'NKS_Skjermede_Personer_AD',
+                        'Skjermede_Personer_AD'
+                    )
+            ],
+            'Expected 2 groups for NKS user'
+        );
+        service.handleGroupAndSkillSync();
+
+        System.assertEquals(
+            1,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'SKILLED'],
+            'Expected serviceresource for NKS user'
+        );
+        System.assertEquals(
+            0,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'HOTST'],
+            'Expected no serviceresource for HOT user'
+        );
+
+        ServiceResource nksSR = [
+            SELECT Id, RelatedRecordId, CRM_Domain__c
+            FROM ServiceResource
+            WHERE RelatedRecord.LastName = 'SKILLED'
+            LIMIT 1
+        ];
+        System.assertEquals(
+            2,
+            [
+                SELECT COUNT()
+                FROM ServiceResourceSkill
+                WHERE ServiceResourceId = :nksSR.Id
+            ],
+            'Expected 2 skills for NKS user'
+        );
+        User testUser = [SELECT Id, Name FROM User WHERE LastName = 'HOTST'];
+        PermissionSetGroup psg = [
+            SELECT Id, DeveloperName
+            FROM PermissionSetGroup
+            WHERE DeveloperName IN ('Kontaktsenter')
+            LIMIT 1
+        ];
+        PermissionSetAssignment psa = new PermissionSetAssignment(
+            AssigneeId = testUser.ID,
+            PermissionSetGroupId = psg.Id
+        );
+        User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        System.runAs(thisUser) {
+            insert new List<PermissionSetAssignment>{ psa };
+        }
+        Test.startTest();
+        service.handleGroupAndSkillSync();
+        Test.stopTest();
+
+        System.assertEquals(
+            1,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'SKILLED'],
+            'Expected serviceresource for NKS user'
+        );
+        System.assertEquals(
+            1,
+            [SELECT COUNT() FROM ServiceResource WHERE RelatedRecord.LastName = 'HOTST'],
+            'Expected serviceresource for HOT user'
+        );
+
+        ServiceResource hotSR = [
+            SELECT Id, RelatedRecordId, CRM_Domain__c
+            FROM ServiceResource
+            WHERE RelatedRecord.LastName = 'HOTST'
+            LIMIT 1
+        ];
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM ServiceResourceSkill
+                WHERE ServiceResourceId = :hotSR.Id
+            ],
+            'Expected 1 skill for HOT user'
+        );
+    }
+    @IsTest
     private static void hotServiceResourceWithSkillCreate() {
         STO_GroupMemberSkillService service = new STO_GroupMemberSkillService();
         service.setParams(
@@ -143,7 +235,8 @@ public class STO_GroupMemberSkillService_Test {
                 'subdomain' => 'Servicetjenesten',
                 'permsetgroup' => 'HOT_Servicetjenesten_Group',
                 'fortroliggroup' => 'group_AD_Fortrolig_Adresse',
-                'skjermedegroup' => 'Skjermede_Personer_AD'
+                'skjermedegroup' => 'Skjermede_Personer_AD',
+                'resuorcetype' => 'T'
             }
         );
         System.assertEquals(
@@ -221,7 +314,8 @@ public class STO_GroupMemberSkillService_Test {
                     'subdomain' => 'Servicetjenesten',
                     'permsetgroup' => 'HOT_Servicetjenesten_Group',
                     'fortroliggroup' => 'group_AD_Fortrolig_Adresse',
-                    'skjermedegroup' => 'Skjermede_Personer_AD'
+                    'skjermedegroup' => 'Skjermede_Personer_AD',
+                    'resourcetype' => 'T'
                 }
             );
         } catch (Exception e) {
