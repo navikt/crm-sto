@@ -1,0 +1,168 @@
+{
+    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+    "componentName": "community_layout:sldsFlexibleLayout",
+    "dataProviders": [],
+    "id": "4d8271f0-cf17-4515-a963-abf4c01e7839",
+    "label": "Meld fra om endring",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "componentSpacerSize": "",
+                        "layoutDirectionDesktop": "row",
+                        "layoutDirectionMobile": "column",
+                        "layoutDirectionTablet": "column",
+                        "maxContentWidth": "",
+                        "sectionColumnGutterWidth": "",
+                        "sectionConfig": "{\"UUID\":\"d345a857-cc4a-4fd3-8951-3f569db1ca5f\",\"columns\":[{\"UUID\":\"06e3339e-5167-404a-a47f-3b22b5c77e6d\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+                        "sectionMinHeight": "",
+                        "sectionVerticalAlign": "flex-start"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "d345a857-cc4a-4fd3-8951-3f569db1ca5f",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "eaa23e30-96d8-4571-bf85-5278637bcca7",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "firstLevel": "Privatperson",
+                                        "firstLevelLink": "https://nav.no",
+                                        "leafnode": "Meld fra om endring",
+                                        "secondLevel": "Min side",
+                                        "secondLevelLink": "https://www.nav.no/minside/",
+                                        "thirdLevel": "Innboks",
+                                        "thirdLevelLink": "https://innboks.nav.no"
+                                    },
+                                    "componentName": "c:communityBreadCrumb",
+                                    "id": "0f43497e-9a68-4c90-8021-40585b1e644b",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "06e3339e-5167-404a-a47f-3b22b5c77e6d",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "componentSpacerSize": "",
+                        "layoutDirectionDesktop": "row",
+                        "layoutDirectionMobile": "column",
+                        "layoutDirectionTablet": "column",
+                        "maxContentWidth": "",
+                        "sectionColumnGutterWidth": "",
+                        "sectionConfig": "{\"UUID\":\"8933eb11-869b-4b6d-8038-c582903f6af4\",\"columns\":[{\"UUID\":\"9d8fba75-ed70-423d-b4e9-c9fd1358ac2a\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"21a9a665-0c10-4570-a021-35d27dfc9b24\",\"columnName\":\"Column 2\",\"columnKey\":\"0d405\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"a022b1e3-d6e5-47db-b3f0-da0e64378f46\",\"columnName\":\"Column 3\",\"columnKey\":\"2e85d\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}",
+                        "sectionMinHeight": "",
+                        "sectionVerticalAlign": "flex-start"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "8933eb11-869b-4b6d-8038-c582903f6af4",
+                    "regions": [
+                        {
+                            "id": "9d8fba75-ed70-423d-b4e9-c9fd1358ac2a",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "d5d3b5dd-ca5f-451f-bd09-382725e4c483",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "threadTypeToMake": "BTO",
+                                        "title": "Meld fra om endring"
+                                    },
+                                    "componentName": "c:stoRegisterThread",
+                                    "id": "035a2dbd-7ace-4627-bdc6-29330b01b1ed",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:refreshCookie",
+                                    "id": "f8d05d89-0a0a-40e2-a95a-cbacbaec92eb",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "21a9a665-0c10-4570-a021-35d27dfc9b24",
+                            "regionLabel": "Column 2",
+                            "regionName": "0d405",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "id": "a022b1e3-d6e5-47db-b3f0-da0e64378f46",
+                            "regionLabel": "Column 3",
+                            "regionName": "2e85d",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                }
+            ],
+            "id": "6d5fe37a-3207-4449-be19-10068f4e0399",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "pageTitle": "Meld fra om endring",
+                        "recordId": "{!recordId}"
+                    },
+                    "componentName": "community_builder:seoAssistant",
+                    "id": "696a7888-4b0b-44c6-8400-b60b5d38de66",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "cc4aa7d2-5adc-4750-8d4d-afa8b31f8d39",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-meld-fra-om-endring"
+}

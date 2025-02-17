@@ -1,0 +1,168 @@
+{
+    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+    "componentName": "community_layout:sldsFlexibleLayout",
+    "dataProviders": [],
+    "id": "91c29937-8437-4aaa-bed1-2835fb4d1551",
+    "label": "Trekk en søknad",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "componentSpacerSize": "",
+                        "layoutDirectionDesktop": "row",
+                        "layoutDirectionMobile": "column",
+                        "layoutDirectionTablet": "column",
+                        "maxContentWidth": "",
+                        "sectionColumnGutterWidth": "",
+                        "sectionConfig": "{\"UUID\":\"d1973160-0351-4e83-81d4-d802b97ec103\",\"columns\":[{\"UUID\":\"2fd475ca-c2df-4806-8ac8-0012d7598d31\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+                        "sectionMinHeight": "",
+                        "sectionVerticalAlign": "flex-start"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "d1973160-0351-4e83-81d4-d802b97ec103",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "f0c03f08-1f91-4c7f-8951-8af6b2857fed",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "firstLevel": "Privatperson",
+                                        "firstLevelLink": "https://nav.no",
+                                        "leafnode": "Trekk en søknad",
+                                        "secondLevel": "Min side",
+                                        "secondLevelLink": "https://www.nav.no/minside/",
+                                        "thirdLevel": "Innboks",
+                                        "thirdLevelLink": "https://innboks.nav.no"
+                                    },
+                                    "componentName": "c:communityBreadCrumb",
+                                    "id": "b0ab722d-1e7c-4fc9-a90c-812aec7bb231",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "2fd475ca-c2df-4806-8ac8-0012d7598d31",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "componentSpacerSize": "",
+                        "layoutDirectionDesktop": "row",
+                        "layoutDirectionMobile": "column",
+                        "layoutDirectionTablet": "column",
+                        "maxContentWidth": "",
+                        "sectionColumnGutterWidth": "",
+                        "sectionConfig": "{\"UUID\":\"55ac95ad-a34b-4212-a122-a77fd44f60db\",\"columns\":[{\"UUID\":\"c48a6300-901a-4e77-98f9-14ddc5204eb5\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"4f896149-ebe0-42d6-9b61-d1fb343d9aea\",\"columnName\":\"Column 2\",\"columnKey\":\"024b6\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"cdd049bc-60af-4caa-94e7-8c23bfd72bf4\",\"columnName\":\"Column 3\",\"columnKey\":\"90d0b\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}",
+                        "sectionMinHeight": "",
+                        "sectionVerticalAlign": "flex-start"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "55ac95ad-a34b-4212-a122-a77fd44f60db",
+                    "regions": [
+                        {
+                            "id": "c48a6300-901a-4e77-98f9-14ddc5204eb5",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "8e93a695-abf6-45ec-94d7-60fcff3a1488",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "threadTypeToMake": "BTO",
+                                        "title": "Trekk en søknad"
+                                    },
+                                    "componentName": "c:stoRegisterThread",
+                                    "id": "63b9516e-a8bd-47c1-8579-ff8b3b8720bc",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:refreshCookie",
+                                    "id": "94a10b85-2e15-4a7e-966b-2b11fd4f1755",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "4f896149-ebe0-42d6-9b61-d1fb343d9aea",
+                            "regionLabel": "Column 2",
+                            "regionName": "024b6",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "id": "cdd049bc-60af-4caa-94e7-8c23bfd72bf4",
+                            "regionLabel": "Column 3",
+                            "regionName": "90d0b",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                }
+            ],
+            "id": "8718a77b-b5bc-469d-a88e-03f6788566e7",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "pageTitle": "Trekk en søknad",
+                        "recordId": "{!recordId}"
+                    },
+                    "componentName": "community_builder:seoAssistant",
+                    "id": "6b18b53e-c1a4-4983-a10f-237a318491d3",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "45adf26b-9902-4d6e-936b-158054b60c4e",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-trekk-en-soknad"
+}

@@ -27,7 +27,11 @@ export default class DsRadio extends LightningElement {
     }
 
     getText() {
-        return this.getSelectedButton?.text;
+        const selectedButton = this.getSelectedButton();
+        if (!selectedButton) return null;
+
+        const label = this.template.querySelector(`label[for="${selectedButton.id}"]`);
+        return label ? label.textContent : null;
     }
 
     checkForError() {

@@ -49,7 +49,7 @@ public with sharing class stoHelperClass {
      * @date 08.06.21
      */
     @AuraEnabled
-    public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type) {
+    public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type, String inboxType, String inboxTheme) {
         String relatedObjId;
         Thread__c thread;
 
@@ -60,7 +60,7 @@ public with sharing class stoHelperClass {
         }
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        thread = createThread(null, theme, personUser, medskriv, type);
+        thread = createThread(null, theme, personUser, medskriv, type, inboxType, inboxTheme);
         createMessage(thread, msgText, personUser.ContactId);
 
         return thread;
@@ -68,7 +68,7 @@ public with sharing class stoHelperClass {
 
     @AuraEnabled
     public static Thread__c createRequest(String theme, String msgText, Boolean medskriv) {
-        return createThreadWithCase(theme, msgText, medskriv, 'STO');
+        return createThreadWithCase(theme, msgText, medskriv, 'STO', null, null);
     }
 
     private static Thread__c createThread(
@@ -76,9 +76,11 @@ public with sharing class stoHelperClass {
         String theme,
         User personUser,
         Boolean medskriv,
-        String type
+        String type,
+        String inboxType,
+        String inboxTheme
     ) {
-        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId, medskriv, type);
+        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId, medskriv, type, inboxType, inboxTheme);
     }
 
     /**
@@ -93,7 +95,9 @@ public with sharing class stoHelperClass {
         String accountId,
         String contactId,
         Boolean medskriv,
-        String type
+        String type,
+        String inboxType,
+        String inboxTheme
     ) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = relatedObjId;
@@ -103,6 +107,8 @@ public with sharing class stoHelperClass {
         thread.CRM_Thread_Type__c = allowedThreadTypes.contains(type) ? type : 'STO';
         thread.STO_Category__c = theme;
         thread.STO_Medskriv__c = medskriv;
+        thread.NKS_Inbox_Type__c = inboxType;
+        thread.NKS_Inbox_Theme__c = inboxTheme;
         List<RecordType> recordType = [SELECT Id FROM RecordType WHERE SObjectType = 'Thread__c' AND Name = 'NKS Thread' LIMIT 1];
         if (!recordType.isEmpty()) {
             thread.recordTypeId = recordType[0].Id;
@@ -116,6 +122,7 @@ public with sharing class stoHelperClass {
         }
         return thread;
     }
+
     @TestVisible
     private static void createMessage(Thread__c thread, String msgText, String contactId) {
         Message__c msg = new Message__c();
@@ -136,20 +143,19 @@ public with sharing class stoHelperClass {
      * Method for accessing news regarding a STO Category
      * Returns a list of STO_News__C or BTO_News__c
      */
-
     @AuraEnabled(cacheable=true)
     public static List<News> getCategoryNews(String category) {
-        return getCategoryNews(category, 'STO');
+        return getCategoryNews('Skriv til oss', category);
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<News> getCategoryNews(String category, String threadType) {
+    public static List<News> getCategoryNews(String pageType, String pageTheme) {
         List<News> news = new List<News>();
 
         for (CRM_FAQ__c rec : [
             SELECT Id, CRM_Content__c, CRM_Title__c
             FROM CRM_FAQ__c
-            WHERE CRM_Category__c = :category AND CRM_Shown__c INCLUDES (:threadType)
+            WHERE CRM_Category__c = :pageTheme AND CRM_Shown__c =:pageType
             ORDER BY CRM_Ordering__c ASC
         ]) {
             news.add(new News(rec.CRM_Title__c, rec.CRM_Content__c, rec.Id));
@@ -159,7 +165,7 @@ public with sharing class stoHelperClass {
             news.add(new News('header test', 'body test', '123'));
         }
         return news;
-    }
+    } 
 
     public class News {
         @AuraEnabled
@@ -198,6 +204,8 @@ public with sharing class stoHelperClass {
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
                 Name,
+                NKS_Inbox_Type__c,
+                NKS_Inbox_Theme__c,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -242,10 +250,10 @@ public with sharing class stoHelperClass {
     }
     
     public class maxThreadLimitReachedException extends Exception {
-    }   
+    } 
     
     @AuraEnabled(cacheable=true)
     public static Thread__c getThread(String recordId) {
-        return [SELECT Id, CRM_Thread_Type__c, STO_Category_Formula__c, CRM_Is_Closed__c, CRM_Related_Object__c, STO_Medskriv__c FROM Thread__c WHERE Id = :recordId LIMIT 1];
+        return [SELECT Id, CRM_Thread_Type__c, STO_ExternalName__c, NKS_Inbox_Type__c, NKS_Inbox_Theme__c FROM Thread__c WHERE Id = :recordId LIMIT 1];
     }
 }

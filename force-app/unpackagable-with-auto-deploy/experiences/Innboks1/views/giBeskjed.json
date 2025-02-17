@@ -1,0 +1,168 @@
+{
+    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+    "componentName": "community_layout:sldsFlexibleLayout",
+    "dataProviders": [],
+    "id": "3686d091-4783-45e9-b7b8-0b41c9490db9",
+    "label": "Gi beskjed",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "componentSpacerSize": "",
+                        "layoutDirectionDesktop": "row",
+                        "layoutDirectionMobile": "column",
+                        "layoutDirectionTablet": "column",
+                        "maxContentWidth": "",
+                        "sectionColumnGutterWidth": "",
+                        "sectionConfig": "{\"UUID\":\"6f16dcb0-fbd4-49de-9624-6c5211f0bd0a\",\"columns\":[{\"UUID\":\"8ffc1f84-f37a-4df3-a898-c3cec30f1b98\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+                        "sectionMinHeight": "",
+                        "sectionVerticalAlign": "flex-start"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "6f16dcb0-fbd4-49de-9624-6c5211f0bd0a",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "e369a244-ec8e-48c5-8df1-e8aa4a307e39",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "firstLevel": "Privatperson",
+                                        "firstLevelLink": "https://nav.no",
+                                        "leafnode": "Gi beskjed",
+                                        "secondLevel": "Min side",
+                                        "secondLevelLink": "https://www.nav.no/minside/",
+                                        "thirdLevel": "Innboks",
+                                        "thirdLevelLink": "https://innboks.nav.no"
+                                    },
+                                    "componentName": "c:communityBreadCrumb",
+                                    "id": "514f274c-0d81-4dbc-8c25-2347a02c7478",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "8ffc1f84-f37a-4df3-a898-c3cec30f1b98",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "backgroundImageConfig": "",
+                        "backgroundImageOverlay": "rgba(0,0,0,0)",
+                        "componentSpacerSize": "",
+                        "layoutDirectionDesktop": "row",
+                        "layoutDirectionMobile": "column",
+                        "layoutDirectionTablet": "column",
+                        "maxContentWidth": "",
+                        "sectionColumnGutterWidth": "",
+                        "sectionConfig": "{\"UUID\":\"c12f1745-0a6c-47c7-b24b-c46857d64dc6\",\"columns\":[{\"UUID\":\"7da49694-0be4-4dae-9268-c0a30af06807\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"b9a3c53d-5fc6-4795-8015-f312ec35efcd\",\"columnName\":\"Column 2\",\"columnKey\":\"cf35f\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"66af0d19-5d15-4ad1-a2ad-fe0a4165e5e1\",\"columnName\":\"Column 3\",\"columnKey\":\"7ec5c\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}",
+                        "sectionMinHeight": "",
+                        "sectionVerticalAlign": "flex-start"
+                    },
+                    "componentName": "community_layout:section",
+                    "id": "c12f1745-0a6c-47c7-b24b-c46857d64dc6",
+                    "regions": [
+                        {
+                            "id": "7da49694-0be4-4dae-9268-c0a30af06807",
+                            "regionLabel": "Column 1",
+                            "regionName": "col1",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:mainContent",
+                                    "id": "08ec33f5-868b-48d9-a344-942e98f00384",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "threadTypeToMake": "BTO",
+                                        "title": "Gi beskjed"
+                                    },
+                                    "componentName": "c:stoRegisterThread",
+                                    "id": "c637c1bd-18e6-4287-bea2-f13e2f6cae36",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:refreshCookie",
+                                    "id": "e68bf10e-be3b-46e6-8570-d3a5c1086e13",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "b9a3c53d-5fc6-4795-8015-f312ec35efcd",
+                            "regionLabel": "Column 2",
+                            "regionName": "cf35f",
+                            "renditionMap": {},
+                            "type": "region"
+                        },
+                        {
+                            "id": "66af0d19-5d15-4ad1-a2ad-fe0a4165e5e1",
+                            "regionLabel": "Column 3",
+                            "regionName": "7ec5c",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "scopedBrandingSetId": null,
+                    "type": "component"
+                }
+            ],
+            "id": "8cf5b544-c6a2-435a-806b-0cc4c4d96ff9",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "pageTitle": "Gi beskjed",
+                        "recordId": "{!recordId}"
+                    },
+                    "componentName": "community_builder:seoAssistant",
+                    "id": "dd54ba9b-4e05-4596-b91c-fd05c2d90eb7",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "548f6ef9-de4b-49b2-b2b9-9dbbae7b91e1",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-gi-beskjed"
+}

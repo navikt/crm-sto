@@ -20,7 +20,9 @@
                     </c-community-error-summary>
 
                     <div class="descholder slds-var-m-bottom_xx-large">
-                        <p class="navds-body-short navds-body-short--small blokk-xs description">{introLabel}</p>
+                        <p class="navds-body-short navds-body-short--small blokk-xs description">
+                            <lightning-formatted-rich-text value={introLabel}></lightning-formatted-rich-text>
+                        </p>
                     </div>
                     <div class="inputarea">
                         <template if:false={showspinner}>

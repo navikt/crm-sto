@@ -1,9 +1,12 @@
 import { LightningElement, api, wire } from 'lwc';
-import getThread from '@salesforce/apex/stoHelperClass.getThread';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import THREAD_IS_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
+import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
+import THREAD_RELATED_OBJECT_FIELD from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
 import getSurvey from '@salesforce/apex/STO_SurveyHelper.getSurveyLink';
 import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
-import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
+import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class StoInboxInformation extends LightningElement {
     @api recordId;
@@ -14,22 +17,17 @@ export default class StoInboxInformation extends LightningElement {
     url;
     surveyLink;
     completed = false;
-    stoPageTheme;
 
-    @wire(getThread, {
-        recordId: '$recordId'
+    @wire(getRecord, {
+        recordId: '$recordId',
+        fields: [THREAD_IS_CLOSED_FIELD, THREAD_TYPE_FIELD, THREAD_RELATED_OBJECT_FIELD]
     })
     wiredThread(result) {
         const { data, error } = result;
         if (data) {
-            this.type = data.CRM_Thread_Type__c;
-            this.closed = data.CRM_Is_Closed__c;
-            this.caseId = data.CRM_Related_Object__c;
-            this.stoPageTheme = data.STO_Category_Formula__c;
-
-            if (this.type && this.stoPageTheme) {
-                setDecoratorParams(this.type, this.stoPageTheme);
-            }
+            this.type = getFieldValue(data, THREAD_TYPE_FIELD);
+            this.closed = getFieldValue(data, THREAD_IS_CLOSED_FIELD);
+            this.caseId = getFieldValue(data, THREAD_RELATED_OBJECT_FIELD);
         } else if (error) {
             console.log('Problem getting thread: ' + error);
         }

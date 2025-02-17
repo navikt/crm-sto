@@ -7,7 +7,84 @@
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
+        <controllingField>CRM_Shown__c</controllingField>
         <restricted>true</restricted>
-        <valueSetName>STO_Category</valueSetName>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Arbeid</fullName>
+                <default>false</default>
+                <label>Arbeid</label>
+            </value>
+            <value>
+                <fullName>Bor eller jobber i utlandet</fullName>
+                <default>false</default>
+                <label>Bor eller jobber i utlandet</label>
+            </value>
+            <value>
+                <fullName>Familie og barn</fullName>
+                <default>false</default>
+                <label>Familie og barn</label>
+            </value>
+            <value>
+                <fullName>Helse og sykdom</fullName>
+                <default>false</default>
+                <label>Helse og sykdom</label>
+            </value>
+            <value>
+                <fullName>Hjelpemidler og tilrettelegging</fullName>
+                <default>false</default>
+                <label>Hjelpemidler og tilrettelegging</label>
+            </value>
+            <value>
+                <fullName>Pensjon</fullName>
+                <default>false</default>
+                <label>Pensjon</label>
+            </value>
+            <value>
+                <fullName>Pleiepenger for sykt barn</fullName>
+                <default>false</default>
+                <label>Pleiepenger for sykt barn</label>
+            </value>
+            <value>
+                <fullName>Ufør</fullName>
+                <default>false</default>
+                <label>Ufør</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Meld fra om endring</controllingFieldValue>
+            <valueName>Arbeid</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <valueName>Bor eller jobber i utlandet</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <valueName>Familie og barn</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <valueName>Helse og sykdom</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <valueName>Hjelpemidler og tilrettelegging</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Meld fra om endring</controllingFieldValue>
+            <valueName>Pensjon</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <valueName>Pleiepenger for sykt barn</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <valueName>Ufør</valueName>
+        </valueSettings>
     </valueSet>
 </CustomField>
