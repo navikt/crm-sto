@@ -40,7 +40,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @api threadTypeToMake;
 
     showspinner = false;
-    selectedTheme;
+    category;
+    themeToShow;
     acceptedcategories = new Set();
     currentPageReference = null;
     urlStateParameters;
@@ -97,38 +98,39 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Ufør: 'Ufør'
     };
 
-    btoCategoryMap = {};
+    // TODO: Fill out rest
+    btoThemeMapping = {
+        'grunn-og-hjelpestonad': 'Grunnstønad eller hjelpestønad'
+    };
+
+    // TODO: Fill out rest
+    // No category map needed for STO as it is equal to the url category param
+    btoCategoryMap = {
+        'dagpenger': 'Arbeid'
+        'Endring-grunn-og-hjelpestonad': 'Helse'
+    };
 
     ingressMap = {
         'Skriv til oss': {
-            Arbeid: welcomelabel,
-            'Bor eller jobber i utlandet': welcomelabel,
-            'Familie og barn': welcomelabel,
-            'Helse og sykdom': welcomelabel,
-            'Hjelpemidler og tilrettelegging': welcomelabel,
-            Pensjon: welcomelabel,
-            'Pleiepenger for sykt barn': welcomelabel,
-            Ufør: welcomelabel,
+            default: welcomelabel,
             Hjelpemidler: STO_HJELPEMIDLER_LABEL
         },
         'Gi beskjed': {
-            Pleiepenger: '',
-            Familie: '',
-            Helse: '',
-            Pensjon: '',
-            Ufør: ''
+            default: '', // TODO: Label with Send oss opplysninger som ...
+            'Internasjonal': '' // TODO: Label with Send oss opplysninger som ... + Er du over 65 år ...
         },
         'Meld fra om endring': {
-            Arbeid: 'Test'
+            default: '', // TODO: Label with Send oss opplysninger som ...
+            'Pensjon': '' // TODO: Du får en kvittering på at vi har mottatt beskjeden din
         },
         'Trekk en søknad': {
-            Arbeid: ''
+            default: '' // TODO: label with Hvilken søknad ønsker du å trekke?
         }
     };
 
     titleMap = {
         Endring: 'Meld fra om endring',
-        Trekk: 'Trekk en søknad',
+        'Trekke-soknad': 'Trekke en søknad',
         Beskjed: 'Gi beskjed'
     };
 
@@ -136,6 +138,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
                 let categoryList = new Set();
+                // TODO: Add all the potential categories here
                 categoryResults.forEach((stoCategory) => {
                     categoryList.add(stoCategory.STO_Category__c);
                 });
@@ -156,27 +159,23 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @wire(MessageContext)
     messageContext;
 
-    /**
-     * Sets the Selectedtheme based on the URL parameter.
-     * @param {} currentPageReference
-     * @author Lars Petter Johnsen
-     */
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
             this.subpath =
                 currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
-            this.setTitleAndTheme();
-            setDecoratorParams(this.title, this.selectedThemeUI);
+
+            const categoryParts = this.urlStateParameters.category.split('=')[1].split('-');
+            const type = categoryParts.shift();
+            const splitCategory = categoryParts.join('-');
+            this.setTitleAndCategory(type, splitCategory);
+            this.setThemeToShow(splitCategory);
+            setDecoratorParams(this.title, this.themeToShow);
         }
     }
 
-    /**
-     * Finds if there are any news based on the selected theme.
-     *  @author Lars Petter Johnsen
-     */
-    @wire(getNews, { pageType: '$title', pageTheme: '$selectedThemeUI' })
+    @wire(getNews, { pageType: '$title', pageTheme: '$category' })
     wirednews(result) {
         const { data, error } = result;
         this.wiredNews = result;
@@ -188,7 +187,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    @wire(getOpenThreads, { category: '$selectedTheme', threadType: '$threadTypeToMake' })
+    @wire(getOpenThreads, { category: '$category', threadType: '$threadTypeToMake' })
     openThread(result) {
         const { error, data } = result;
         this.wireThreadData = result;
@@ -209,10 +208,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this._title = value;
     }
 
-    /** Getters **/
+    // TODO: Remove comment once acceptedCategories is valid
     get validparameter() {
         /*
-        let valid = this.acceptedcategories.has(this.selectedTheme);
+        let valid = this.acceptedcategories.has(this.category);
         return valid;
         */
         return true;
@@ -232,13 +231,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get openThreadText() {
         if (this.openThreadList.length < maxThreadCount) {
-            return `Du har allerede åpne samtaler om ${this.selectedTheme.toLowerCase()}. Hvis du lurer på noe mer, kan du <a href="${
+            return `Du har allerede åpne samtaler om ${this.category.toLowerCase()}. Hvis du lurer på noe mer, kan du <a href="${
                 this.openThreadLink
             }">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.`;
         }
         return `Du har ${
             this.openThreadList.length
-        } åpne samtaler om ${this.selectedTheme.toLowerCase()}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
+        } åpne samtaler om ${this.category.toLowerCase()}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
     }
 
     get openThreadLink() {
@@ -253,8 +252,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get showTextArea() {
         return (
-            this.openThreadList === null ||
-            this.openThreadList === undefined ||
+            this.openThreadList == null ||
             this.openThreadList.length < maxThreadCount
         );
     }
@@ -263,57 +261,58 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.hideDeleteModal ? 'slds-hide' : 'backdrop';
     }
 
-    get introLabel() {
-        if (this.ingressMap[this.title] && this.ingressMap[this.title][this.selectedThemeUI]) {
-            return this.ingressMap[this.title][this.selectedThemeUI];
+    ingressMap = {
+        'Skriv til oss': {
+            default: welcomelabel,
+            Hjelpemidler: STO_HJELPEMIDLER_LABEL
+        },
+        'Gi beskjed': {
+            default: '', // TODO: Label with Send oss opplysninger som ...
+            'Internasjonal': '' // TODO: Label with Send oss opplysninger som ... + Er du over 65 år ...
+        },
+        'Meld fra om endring': {
+            default: '', // TODO: Label with Send oss opplysninger som ...
+            'Pensjon': '' // TODO: Du får en kvittering på at vi har mottatt beskjeden din
+        },
+        'Trekk en søknad': {
+            default: '' // TODO: label with Hvilken søknad ønsker du å trekke?
         }
-        return 'Default intro text for other pages or themes';
-    }
+    };
 
-    get selectedThemeUI() {
-        return this.getSelectedThemeUI(this.subpath, this.selectedTheme);
+    get ingressLabel() {
+        return this.ingressMap[this.title]?.[this.category] ?? this.ingressMap[this.title].['default'];
     }
 
     get showPleiepengerRadioButton() {
         return (
-            this.subpath === '/skriv-til-oss/' &&
-            (this.selectedThemeUI === 'Helse og sykdom' || this.selectedThemeUI === 'Familie og barn')
+            this.threadTypeToMake === 'STO' &&
+            (this.themeToShow === 'Helse og sykdom' || this.themeToShow === 'Familie og barn')
         );
     }
 
-    getSelectedThemeUI(subpath, selectedTheme) {
-        if (subpath === '/skriv-til-oss/') {
-            if (this.gjelderPleiepenger) {
-                return this.updateSelectedThemeUI(this.urlStateParameters.category);
-            } else if (this.urlStateParameters.category === 'Hjelpemidler') {
-                this.selectedTheme = 'Helse';
-                return 'Hjelpemidler';
-            }
-            return this.stoThemeMapping[selectedTheme];
-        }
-        return selectedTheme;
+    setThemeToShow(splitUrlCategory) {
+        this.themeToShow = this.threadTypeToMake === 'STO' ? this.stoThemeMapping[splitUrlCategory] : this.btoThemeMapping[splitUrlCategory];
     }
 
-    updateSelectedThemeUI(category) {
-        if (category === 'Helse') {
+    getOriginalUrlCategoryBasedOnPleiepengerRadioButton() {
+        if (this.urlStateParameters.category === 'Helse') {
             return 'Helse og sykdom';
-        } else if (category === 'Familie') {
+        } else if (this.urlStateParameters.category === 'Familie') {
             return 'Familie og barn';
         }
-        return '';
+        return 'Pleiepenger for sykt barn';
     }
 
-    setTitleAndTheme() {
+    setTitleAndCategory(type, splitUrlCategory) {
         if (!this.urlStateParameters?.category) return;
-        const categoryParts = this.urlStateParameters.category.split('=')[1].split('-');
-        const type = categoryParts.shift();
-        const theme = categoryParts.join('-');
         this._title = this.titleMap[type];
-        if (this.urlStateParameters.category === 'Helse-hjelpemidler') {
-            this.selectedTheme = 'Helse';
+        // Special case since hjelpemidler url category is already taken for HOT inquiries
+        if (this.urlStateParameters.category === 'Helse-hjelpemidler') { // TODO: Not decided what URL will be yet
+            this.category = 'Helse';
             return;
         }
-        this.selectedTheme = this.threadTypeToMake === 'STO' this.urlStateParameters.category : this.btoCategoryMap[theme];
+        // For STO the url category will be the same as the queue name
+        this.category = this.threadTypeToMake === 'STO' this.urlStateParameters.category : this.btoCategoryMap[splitUrlCategory];
     }
 
     togglechecked() {
@@ -377,12 +376,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.spinnerText = spinnerReasonTextMap.send;
 
             createThreadWithCase({
-                theme: this.selectedTheme,
+                theme: this.category,
                 msgText: this.message,
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxType: this.title,
-                inboxTheme: this.gjelderPleiepenger ? 'Pleiepenger for sykt barn' : this.selectedThemeUI
+                inboxTheme: this.pleiePengerSelected ? getOriginalUrlCategoryBasedOnPleiepengerRadioButton() : this.themeToShow
             })
                 .then((thread) => {
                     this.showspinner = false;
@@ -518,11 +517,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    gjelderPleiepenger = false;
+    pleiePengerSelected = false;
     handlePleiepengerChange(event) {
         if (event.detail.value === 'true') {
-            this.gjelderPleiepenger = true;
-            this.selectedTheme = 'Pleiepenger';
+            this.pleiePengerSelected = true;
+            this.category = 'Pleiepenger';
         }
 
         logFilterEvent(

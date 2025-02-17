@@ -10,7 +10,7 @@
             >
                 <template if:true={validparameter}>
                     <img aria-hidden="true" src={logopath} class="logo" />
-                    <h2 class="navds-labels blokk-s" style="color: #0067c5">{selectedThemeUI}</h2>
+                    <h2 class="navds-labels blokk-s" style="color: #0067c5">{themeToShow}</h2>
                     <c-community-error-summary
                         error-list={errorList}
                         onclickedevent={handleErrorClick}
@@ -21,7 +21,7 @@
 
                     <div class="descholder slds-var-m-bottom_xx-large">
                         <p class="navds-body-short navds-body-short--small blokk-xs description">
-                            <lightning-formatted-rich-text value={introLabel}></lightning-formatted-rich-text>
+                            <lightning-formatted-rich-text value={ingressLabel}></lightning-formatted-rich-text>
                         </p>
                     </div>
                     <div class="inputarea">
@@ -112,7 +112,7 @@
                             </template>
                             <template if:false={showTextArea}>
                                 <h2 class="navds-heading navds-heading--medium leftAlign topBigGap">
-                                    Dine åpne samtaler om {selectedTheme}
+                                    Dine åpne samtaler om {category}
                                 </h2>
                                 <div class="nav-wrapper">
                                     <template for:each={openThreadList} for:item="thread" for:index="index">
