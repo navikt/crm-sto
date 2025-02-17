@@ -167,7 +167,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.subpath =
                 currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
-            this.setParametersBasedOnUrl();
+            this.setTitleAndTheme();
             setDecoratorParams(this.title, this.selectedThemeUI);
         }
     }
@@ -301,13 +301,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             return 'Familie og barn';
         }
         return '';
-    }
-
-    setParametersBasedOnUrl() {
-        if (this.urlStateParameters.category === 'Helse-hjelpemidler') {
-            this.selectedTheme = 'Helse';
-        }
-        this.selectedTheme = this.urlStateParameters.category;
     }
 
     setTitleAndTheme() {
