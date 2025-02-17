@@ -124,9 +124,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     };
 
     titleMap = {
-        'Endring': 'Meld fra om endring',
-        'Trekk': 'Trekk en søknad',
-        'Beskjed': 'Gi beskjed'
+        Endring: 'Meld fra om endring',
+        Trekk: 'Trekk en søknad',
+        Beskjed: 'Gi beskjed'
     };
 
     connectedCallback() {
@@ -165,6 +165,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
             this.setParametersBasedOnUrl();
+            setDecoratorParams(this.title, this.selectedThemeUI);
         }
     }
 
@@ -304,12 +305,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     setParametersBasedOnUrl() {
-        if (!this.urlStateParameters?.category) return;
-
-        const themeParameter = this.urlStateParameters.category.replace(/\+/g, ' ');
-        this.selectedTheme =
-            this.threadTypeToMake === 'STO' ? this.getKeyFromValue(themeParameter) : this.urlStateParameters.category;
-        setDecoratorParams(this.title, this.selectedThemeUI);
+        if (this.urlStateParameters.category === 'Helse-hjelpemidler') {
+            this.selectedTheme = 'Helse';
+        }
+        this.selectedTheme = this.urlStateParameters.category;
     }
 
     getUrlParamsTypeAndTheme() {
