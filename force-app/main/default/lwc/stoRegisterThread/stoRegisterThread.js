@@ -96,6 +96,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Pleiepenger: 'Pleiepenger for sykt barn',
         Ufør: 'Ufør'
     };
+
+    btoCategoryMap = {};
+
     ingressMap = {
         'Skriv til oss': {
             Arbeid: welcomelabel,
@@ -292,16 +295,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     updateSelectedThemeUI(category) {
-        if (category === 'Helse+og+sykdom') {
+        if (category === 'Helse') {
             return 'Helse og sykdom';
-        } else if (category === 'Familie+og+barn') {
+        } else if (category === 'Familie') {
             return 'Familie og barn';
         }
         return '';
-    }
-
-    getKeyFromValue(value) {
-        return Object.keys(this.stoThemeMapping).find((key) => this.stoThemeMapping[key] === value) || null;
     }
 
     setParametersBasedOnUrl() {
@@ -311,12 +310,17 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.selectedTheme = this.urlStateParameters.category;
     }
 
-    getUrlParamsTypeAndTheme() {
+    setTitleAndTheme() {
         if (!this.urlStateParameters?.category) return;
         const categoryParts = this.urlStateParameters.category.split('=')[1].split('-');
         const type = categoryParts.shift();
-        this.selectedTheme = categoryParts.join('-');
+        const theme = categoryParts.join('-');
         this._title = this.titleMap[type];
+        if (this.urlStateParameters.category === 'Helse-hjelpemidler') {
+            this.selectedTheme = 'Helse';
+            return;
+        }
+        this.selectedTheme = this.threadTypeToMake === 'STO' this.urlStateParameters.category : this.btoCategoryMap[theme];
     }
 
     togglechecked() {
@@ -526,8 +530,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (event.detail.value === 'true') {
             this.gjelderPleiepenger = true;
             this.selectedTheme = 'Pleiepenger';
-            // this.updateUrlParam('category', 'Pleiepenger+for+sykt+barn');
-            //this.refreshApex(this.wiredNews);
         }
 
         logFilterEvent(
