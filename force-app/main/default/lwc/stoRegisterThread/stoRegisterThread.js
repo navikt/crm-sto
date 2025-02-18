@@ -292,6 +292,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get ingressLabel() {
+        if (this.urlStateParameters.category === 'Helse-hjelpemidler') {
+            return this.ingressMap[this.title]?.['Hjelpemidler'];
+        }
         return this.ingressMap[this.title]?.[this.category] ?? this.ingressMap[this.title]?.['default'];
     }
 
