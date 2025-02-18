@@ -218,10 +218,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.setTitleAndCategory(this.urlStateParameters.category);
             this.setThemeToShow(this.urlStateParameters.category);
             setDecoratorParams(this.title, this.themeToShow);
+            let tabName = `${this.title} - ${this.themeToShow}`;
+            setTimeout(function () {
+                document.title = tabName;
+            }, 1000);
         }
     }
 
-    @wire(getNews, { pageType: '$title', pageTheme: '$category' })
+    @wire(getNews, { pageType: '$title', pageTheme: '$themeToShow' })
     wirednews(result) {
         const { data, error } = result;
         this.wiredNews = result;
@@ -562,7 +566,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         );
     }
 
-    handleAlterBoxClick() {
+    handleAlertBoxClick() {
         const regex = /href="([^"]*)"/;
         const match = regex.exec(this.openThreadText);
 
@@ -574,9 +578,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    previousCategory;
+    previousCategory = null;
     handlePleiepengerChange(event) {
-        if (event.detail.value) {
+        if (event.detail.value === 'true') {
             this.previousCategory = this.category;
             this.category = 'Pleiepenger';
         } else {

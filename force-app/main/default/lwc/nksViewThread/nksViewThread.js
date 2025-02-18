@@ -23,7 +23,6 @@ export default class NksViewThread extends LightningElement {
     _recordId;
     pageTheme;
     pageType;
-    pageTitle;
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -46,7 +45,10 @@ export default class NksViewThread extends LightningElement {
 
             if (this.pageType && this.pageTheme) {
                 setDecoratorParams(this.pageType, this.pageTheme);
-                this.pageTitle = this.pageType + ' - ' + this.pageTheme;
+                let tabName = `${this.pageType} - ${this.pageTheme}`;
+                setTimeout(function () {
+                    document.title = tabName;
+                }, 1000);
             }
         }
     }
@@ -63,7 +65,7 @@ export default class NksViewThread extends LightningElement {
             AnalyticsEvents.FORM_COMPLETED,
             'Send',
             getComponentName(this.template),
-            this.pageTitle,
+            `${this.title} - ${this.themeToShow}`,
             'ny melding'
         );
     }
