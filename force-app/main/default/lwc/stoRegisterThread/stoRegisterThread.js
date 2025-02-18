@@ -216,6 +216,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.setTitleAndCategory(this.urlStateParameters.category);
             this.setThemeToShow(this.urlStateParameters.category);
             setDecoratorParams(this.title, this.themeToShow);
+            let tabName = `${this.title} - ${this.themeToShow}`;
+            setTimeout(function () {
+                document.title = tabName;
+            }, 1000);
         }
     }
 
