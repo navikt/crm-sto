@@ -188,8 +188,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     categoryList.add(stoCategory.STO_Category__c);
                 });
                 this.acceptedSTOCategories = categoryList;
-                this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(([parentKey, childObj]) =>
-                    Object.keys(childObj).map(childKey => `${parentKey}-${childKey}`)
+                this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(
+                    ([parentKey, childObj]) => Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`)
                 );
             })
             .catch((error) => {
@@ -199,7 +199,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     renderedCallback() {
         if (this.showspinner) {
-           this.template.querySelector('.spinner')?.focus();
+            this.template.querySelector('.spinner')?.focus();
         }
     }
 
@@ -267,7 +267,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get isValidBTOCategory() {
-        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.has(this.urlStateParameters?.category)
+        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.has(this.urlStateParameters?.category);
     }
 
     get termsModal() {
@@ -285,11 +285,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     get openThreadText() {
         if (!this.openThreadList) return '';
         const openThreads = this.openThreadList.length;
-        return openThreads < maxThreadCount ? `Du har allerede åpne samtaler om ${this.category?.toLowerCase()}. Hvis du lurer på noe mer, kan du <a href="${
-                this.openThreadLink
-            }">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.` : `Du har ${
-            openThreads
-        } åpne samtaler om ${this.category?.toLowerCase()}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
+        return openThreads < maxThreadCount
+            ? `Du har allerede åpne samtaler om ${this.category?.toLowerCase()}. Hvis du lurer på noe mer, kan du <a href="${
+                  this.openThreadLink
+              }">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.`
+            : `Du har ${
+                  openThreads
+              } åpne samtaler om ${this.category?.toLowerCase()}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
     }
 
     get openThreadLink() {
@@ -329,15 +331,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.themeToShow = 'Hjelpemidler';
             return;
         }
-    
+
         let [type, ...categoryParts] = urlCategory.split('-');
-    
+
         if (type === 'Trekke' && categoryParts[0] === 'soknad') {
             type = 'Trekke-soknad';
             categoryParts.shift();
         }
-    
-        this.themeToShow = this.btoCategoryAndThemeMap[type]?.[categoryParts.join('-')]?.theme || this.stoThemeMapping[urlCategory];
+
+        this.themeToShow =
+            this.btoCategoryAndThemeMap[type]?.[categoryParts.join('-')]?.theme || this.stoThemeMapping[urlCategory];
     }
 
     setTitleAndCategory(urlCategory) {
@@ -347,16 +350,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.category = 'Helse';
             return;
         }
-    
+
         const splitUrlCategory = urlCategory.split('-');
         const hasMultipleParts = splitUrlCategory.length > 1;
         let type = splitUrlCategory[0];
         let categoryString = urlCategory;
-    
+
         // New BTO category e.g. "Endring-arbeidsevne"
         if (hasMultipleParts) {
             const firstTwoWords = splitUrlCategory.slice(0, 2).join('-');
-    
+
             if (firstTwoWords === 'Trekke-soknad') {
                 // Special handling for "Trekke-soknad" case
                 type = 'Trekke-soknad';
@@ -371,7 +374,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             // Single-word category (valid for STO)
             this.category = categoryString;
         }
-    
+
         // Set title (fallback to "Skriv til oss" if type is not found)
         this._title = this.titleMap[type] ?? 'Skriv til oss';
     }
