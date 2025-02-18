@@ -101,29 +101,38 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     // No category map needed for STO as it is equal to the url category param
     btoCategoryAndThemeMap = {
         // Melde fra om endring
-        'Endring': {
-            dagpenger: { category: 'Arbeid', theme: 'Dagpenger'},
+        Endring: {
+            dagpenger: { category: 'Arbeid', theme: 'Dagpenger' },
             tiltakspenger: { category: 'Arbeid', theme: 'Tiltakspenger' },
             ventelonn: { category: 'Arbeid', theme: 'Ventelønn' },
             'grunn-og-hjelpestonad': { category: 'Helse', theme: 'Grunnstønad eller hjelpestønad' },
             yrkesskadetrygd: { category: 'Helse', theme: 'Frivillig yrkesskadetrygd' },
             'omsorg-fosterhjem': { category: 'Familie', theme: 'Omsorgsstønad eller fosterhjemsgodtgjørelse' },
             arbeidsevne: { category: 'Arbeid', theme: 'Vurdering av arbeidsevne' },
-            enslig: { category: 'Familie', theme: 'Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far' },
+            enslig: {
+                category: 'Familie',
+                theme: 'Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far'
+            },
             barnetrygd: { category: 'Familie', theme: 'Barnetrygd og utvidet barnetrygd' },
-            kontantstotte: {category: 'Familie', theme: 'Kontantstøtte' },
+            kontantstotte: { category: 'Familie', theme: 'Kontantstøtte' },
             bidrag: { category: 'Familie', theme: 'Bidragsforskudd eller ektefellebidrag' },
             uforetrygd: { category: 'Ufør', theme: 'Uføretrygd' },
-            tilleggsstonader: { 'Arbeid', theme: 'Tilleggsstønader' },
-            aap: { category: 'Arbeid', theme: 'Arbeidsavklaringspenger (AAP)'},
+            tilleggsstonader: { category: 'Arbeid', theme: 'Tilleggsstønader' },
+            aap: { category: 'Arbeid', theme: 'Arbeidsavklaringspenger (AAP)' },
             foreldre: { category: 'Familie', theme: 'Foreldrepenger, svangerskapspenger eller engangsstønad' },
             'sykdom-familien': { category: 'Familie', theme: 'Pleiepenger, omsorgspenger eller opplæringspenger' },
             'AFP-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
-            'supplerende-stonad-flyktninger': { category: 'Ufør', theme: 'Supplerende stønad for uføre flyktninger under 67 år' },
-            'supplerende-stonad-over-67': { category: 'Pensjon', theme: 'Supplerende stønad for personer over 67 år med kort botid i Norge' },
+            'supplerende-stonad-flyktninger': {
+                category: 'Ufør',
+                theme: 'Supplerende stønad for uføre flyktninger under 67 år'
+            },
+            'supplerende-stonad-over-67': {
+                category: 'Pensjon',
+                theme: 'Supplerende stønad for personer over 67 år med kort botid i Norge'
+            },
             alderspensjon: { category: 'Pensjon', theme: 'Alderspensjon' },
             gjenlevende: { category: 'Pensjon', theme: 'Støtte til gjenlevende' },
-            sykepenger: { category: 'Helse', theme: 'Sykepenger eller reisetilskudd' },
+            sykepenger: { category: 'Helse', theme: 'Sykepenger eller reisetilskudd' }
         },
         // Trekke en søknad
         'Trekke-soknad': {
@@ -133,15 +142,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             familie: { category: 'Familie', theme: 'Familie og barn' },
             pensjon: { category: 'Pensjon', theme: 'Pensjon' },
             hjelpemidler: { category: 'Hjelpemidler', theme: 'Hjelpemidler og tilrettelegging' },
-            ufor: { category: 'Ufør', theme: 'Ufør' },
-        }
+            ufor: { category: 'Ufør', theme: 'Ufør' }
+        },
         // Gi beskjed
-        'Beskjed': {
+        Beskjed: {
             trygdeavgift: { category: 'Internasjonal', theme: 'Be om bekreftelse på trygdeavgift' },
             sykepenger: { category: 'Helse', theme: 'Sykepenger' },
             menerstatning: { category: 'Helse', theme: 'Menerstatning' },
             'AFP-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
-            'AFP-privat': { category: 'Pensjon', theme: 'AFP i privat sektor' },
+            'AFP-privat': { category: 'Pensjon', theme: 'AFP i privat sektor' }
         }
     };
 
@@ -315,7 +324,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         let type;
         if (splitUrlCategory.length > 1) {
             // Trekke-soknad case
-            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') { 
+            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') {
                 type = 'Trekke-soknad'; // Get type
                 categoryString = categoryString.slice(2);
             } else {
@@ -338,8 +347,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     setTitleAndCategory(urlCategory) {
-         // Special case since hjelpemidler url category is already taken for HOT inquiries
-         if (urlCategory === 'Andre-hjelpemidler') {
+        // Special case since hjelpemidler url category is already taken for HOT inquiries
+        if (urlCategory === 'Andre-hjelpemidler') {
             this._title = this.titleMap['Andre-hjelpemidler'];
             this.category = 'Helse';
             return;
@@ -349,7 +358,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         // Fallback
         let categoryString = splitUrlCategory.join('-');
         let type = splitUrlCategory[0];
-       
+
         // Only one category e.g. "Helse" - valid for both BTO & STO
         if (splitUrlCategory.length === 1) {
             this.category = categoryString;
@@ -357,7 +366,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         // New BTO category e.g. "Endring-arbeidsevne"
         if (splitUrlCategory.length > 1) {
             // Trekke-soknad case
-            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') { 
+            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') {
                 type = 'Trekke-soknad'; // Get type
                 categoryString = categoryString.slice(2);
             } else {
