@@ -126,7 +126,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         'supplerende-stonad-over-67': 'Pensjon',
         alderspensjon: 'Pensjon',
         gjenlevende: 'Pensjon',
-        sykepenger: 'Helse'
+        sykepenger: 'Helse',
         arbeid: 'Arbeid',
         helse: 'Helse',
         utland: 'Internasjonal',
