@@ -176,8 +176,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     titleMap = {
         Endring: 'Meld fra om endring',
         'Trekke-soknad': 'Trekke en søknad',
-        Beskjed: 'Gi beskjed',
-        'Andre-hjelpemidler': 'Skriv til oss'
+        Beskjed: 'Gi beskjed'
     };
 
     connectedCallback() {
@@ -266,8 +265,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.threadTypeToMake === 'STO' && this.acceptedSTOCategories.has(this.urlStateParameters?.category);
     }
 
+    // TODO: Remove this.acceptedSTOCategories.has(this.urlStateParameters?.category) when team PB is done adding new links for BTO so that we do not support the old BTO links anymore
     get isValidBTOCategory() {
-        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.has(this.urlStateParameters?.category);
+        return this.threadTypeToMake === 'BTO' && (this.acceptedBTOCategories.has(this.urlStateParameters?.category) || this.acceptedSTOCategories.has(this.urlStateParameters?.category));
     }
 
     get termsModal() {
@@ -346,7 +346,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     setTitleAndCategory(urlCategory) {
         // Special case: "Andre-hjelpemidler" maps directly to "Helse" category.
         if (urlCategory === 'Andre-hjelpemidler') {
-            this._title = this.titleMap[urlCategory];
+            this._title = 'Skriv til oss';
             this.category = 'Helse';
             return;
         }
@@ -371,12 +371,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
             this.category = this.btoCategoryAndThemeMap[type]?.[categoryString]?.category;
         } else {
-            // Single-word category (valid for STO)
+            // Single-word category (valid for STO & BTO)
             this.category = categoryString;
         }
 
-        // Set title (fallback to "Skriv til oss" if type is not found)
-        this._title = this.titleMap[type] ?? 'Skriv til oss';
+        // Set title
+        this._title = this.titleMap[type] ?? this.threadTypeToMake === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
     }
 
     togglechecked() {
