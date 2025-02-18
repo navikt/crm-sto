@@ -323,7 +323,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         let type;
         if (splitUrlCategory.length > 1) {
             // Trekke-soknad case
-            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') { 
+            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') {
                 type = 'Trekke-soknad'; // Get type
                 categoryString = splitUrlCategory.slice(2);
             } else {
@@ -589,9 +589,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     pleiePengerSelected = false;
-    previousCategory;
+    previousCategory = null;
     handlePleiepengerChange(event) {
-        if (event.detail.value) {
+        if (event.detail.value === 'true') {
             this.previousCategory = this.category;
             this.pleiePengerSelected = true;
             this.category = 'Pleiepenger';
