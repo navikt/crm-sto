@@ -131,18 +131,23 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     titleMap = {
         Endring: 'Meld fra om endring',
         'Trekke-soknad': 'Trekke en søknad',
-        Beskjed: 'Gi beskjed'
+        Beskjed: 'Gi beskjed',
+        Helse: '',
+        Arbeid: '',
     };
 
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
                 let categoryList = new Set();
-                // TODO: Add all the potential categories here
                 categoryResults.forEach((stoCategory) => {
                     categoryList.add(stoCategory.STO_Category__c);
                 });
                 this.acceptedcategories = categoryList;
+                if (this.threadTypeToMake === 'BTO') {
+                // TODO: Add all the new potential BTO categories here
+                
+                }
             })
             .catch((error) => {
                 console.error('Error fetching categories: ', error);
@@ -166,11 +171,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
 
-            const categoryParts = this.urlStateParameters.category.split('=')[1].split('-');
-            const type = categoryParts.shift();
-            const splitCategory = categoryParts.join('-');
-            this.setTitleAndCategory(type, splitCategory);
-            this.setThemeToShow(splitCategory);
+            const categoryParts = this.urlStateParameters?.category.split('-');
+            this.setTitleAndCategory(categoryParts);
+            this.setThemeToShow(categoryParts);
             setDecoratorParams(this.title, this.themeToShow);
         }
     }
@@ -291,7 +294,21 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     setThemeToShow(splitUrlCategory) {
-        this.themeToShow = this.threadTypeToMake === 'STO' ? this.stoThemeMapping[splitUrlCategory] : this.btoThemeMapping[splitUrlCategory];
+        if (!splitUrlCategory) return;
+
+        let categoryString;
+        if (splitUrlCategory.length > 1) {
+            splitUrlCategory.shift(); // Remove type
+            categoryString = splitUrlCategory.join('-');
+        } else {
+            categoryString = splitUrlCategory.join('-');
+        }
+
+        if (this.urlStateParameters.category === 'Helse-hjelpemidler') { // TODO: Not decided what URL will be yet
+            this.themeToShow = 'Hjelpemidler';
+        }
+    
+        this.themeToShow = this.threadTypeToMake === 'STO' ? this.stoThemeMapping[categoryString] : this.btoThemeMapping[categoryString];
     }
 
     getOriginalUrlCategoryBasedOnPleiepengerRadioButton() {
@@ -303,16 +320,28 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return 'Pleiepenger for sykt barn';
     }
 
-    setTitleAndCategory(type, splitUrlCategory) {
-        if (!this.urlStateParameters?.category) return;
-        this._title = this.titleMap[type];
+    setTitleAndCategory(splitUrlCategory) {
+        if (!splitUrlCategory) return;
+        let categoryString = splitUrlCategory.join('-');
+        let type = splitUrlCategory[0];
+
         // Special case since hjelpemidler url category is already taken for HOT inquiries
         if (this.urlStateParameters.category === 'Helse-hjelpemidler') { // TODO: Not decided what URL will be yet
+            this._title = this.titleMap['Helse-hjelpemidler'];
             this.category = 'Helse';
             return;
         }
-        // For STO the url category will be the same as the queue name
-        this.category = this.threadTypeToMake === 'STO' this.urlStateParameters.category : this.btoCategoryMap[splitUrlCategory];
+        // Only one category e.g. "Helse" - valid for both BTO & STO
+        if (splitUrlCategory.length === 1) {
+            this.category = categoryString;
+        }
+        // New BTO category e.g. "Endring-arbeidsevne"
+        if (splitUrlCategory.length > 1) { 
+            type = splitUrlCategory.shift();
+            categoryString = splitUrlCategory.join('-');
+            this.category = this.btoCategoryMap[categoryString];
+        }
+        this._title = this.titleMap[type];
     }
 
     togglechecked() {
