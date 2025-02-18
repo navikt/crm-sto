@@ -580,7 +580,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         );
     }
 
-    handleAlterBoxClick() {
+    handleAlertBoxClick() {
         const regex = /href="([^"]*)"/;
         const match = regex.exec(this.openThreadText);
 
