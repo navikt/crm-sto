@@ -161,7 +161,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Endring: 'Meld fra om endring',
         'Trekke-soknad': 'Trekke en søknad',
         Beskjed: 'Gi beskjed',
-        'Helse-hjelpemidler': 'Skriv til oss' // TODO: Key not final
+        'Andre-hjelpemidler': 'Skriv til oss'
     };
 
     connectedCallback() {
@@ -291,7 +291,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get ingressLabel() {
-        if (this.urlStateParameters.category === 'Helse-hjelpemidler') {
+        if (this.urlStateParameters.category === 'Andre-hjelpemidler') {
             return this.ingressMap[this.title]?.['Hjelpemidler'];
         }
         return this.ingressMap[this.title]?.[this.category] ?? this.ingressMap[this.title]?.['default'];
@@ -315,7 +315,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             categoryString = splitUrlCategory.join('-');
         }
 
-        if (this.urlStateParameters.category === 'Helse-hjelpemidler') { // TODO: Not decided what URL will be yet
+        if (this.urlStateParameters.category === 'Andre-hjelpemidler') {
             this.themeToShow = 'Hjelpemidler';
             return;
         }
@@ -329,8 +329,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         let type = splitUrlCategory[0];
 
         // Special case since hjelpemidler url category is already taken for HOT inquiries
-        if (this.urlStateParameters.category === 'Helse-hjelpemidler') { // TODO: Not decided what URL will be yet
-            this._title = this.titleMap['Helse-hjelpemidler'];
+        if (this.urlStateParameters.category === 'Andre-hjelpemidler') {
+            this._title = this.titleMap['Andre-hjelpemidler'];
             this.category = 'Helse';
             return;
         }
