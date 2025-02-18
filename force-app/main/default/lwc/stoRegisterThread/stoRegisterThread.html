@@ -8,7 +8,7 @@
                 class="text-center"
                 style="background-color: #fff; display: block; padding: 1rem 1rem 1rem 1rem; border-radius: 4px"
             >
-                <template if:true={validQueryParameter}>
+                <template lwc:if={validQueryParameter}>
                     <img aria-hidden="true" src={logopath} class="logo" />
                     <h2 class="navds-labels blokk-s" style="color: #0067c5">{themeToShow}</h2>
                     <c-community-error-summary

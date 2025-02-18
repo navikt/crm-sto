@@ -6,7 +6,6 @@ import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
-import welcomelabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
 import acceptermtext from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
 import showtermstext from '@salesforce/label/c.Skriv_til_oss_Show_terms';
 import textareadescription from '@salesforce/label/c.Skriv_til_oss_text_area_description';
@@ -30,6 +29,7 @@ import {
     logFilterEvent,
     setDecoratorParams
 } from 'c/inboxAmplitude';
+import STO_DEFAULT_INGRESS from '@salesforce/label/c.Skriv_til_oss_Default_ingress';
 import STO_HJELPEMIDLER_INGRESS from '@salesforce/label/c.Skriv_til_oss_Hjelpemidler_ingress';
 import ENDRING_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring_Default_ingress';
 import ENDRING_PENSJON_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring_Pensjon_ingress';
@@ -157,11 +157,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     ingressMap = {
         'Skriv til oss': {
-            default: welcomelabel,
+            default: STO_DEFAULT_INGRESS,
             Hjelpemidler: STO_HJELPEMIDLER_INGRESS
         },
         'Beskjed til oss': {
-            default: BESKJED_DEFAULT_INGRESS,
+            default: BESKJED_DEFAULT_INGRESS
         },
         'Gi beskjed': {
             default: BESKJED_DEFAULT_INGRESS,
@@ -270,7 +270,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     // TODO: Remove this.acceptedSTOCategories.has(this.urlStateParameters?.category) when team PB is done adding new links for BTO so that we do not support the old BTO links anymore
     get isValidBTOCategory() {
-        return this.threadTypeToMake === 'BTO' && (this.acceptedBTOCategories.has(this.urlStateParameters?.category) || this.acceptedSTOCategories.has(this.urlStateParameters?.category));
+        return (
+            this.threadTypeToMake === 'BTO' &&
+            (this.acceptedBTOCategories.has(this.urlStateParameters?.category) ||
+                this.acceptedSTOCategories.has(this.urlStateParameters?.category))
+        );
     }
 
     get termsModal() {
@@ -292,9 +296,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             ? `Du har allerede åpne samtaler om ${this.category?.toLowerCase()}. Hvis du lurer på noe mer, kan du <a href="${
                   this.openThreadLink
               }">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.`
-            : `Du har ${
-                  openThreads
-              } åpne samtaler om ${this.category?.toLowerCase()}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
+            : `Du har ${openThreads} åpne samtaler om ${this.category?.toLowerCase()}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
     }
 
     get openThreadLink() {

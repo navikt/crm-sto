@@ -74,7 +74,6 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     handleNavigation(event) {
-        console.log('url: ', this.linkUrl);
         logNavigationEvent(getComponentName(this.template), 'valgt henvendelse', event.target.href, this.itemTitle);
     }
 }

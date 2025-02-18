@@ -208,13 +208,14 @@
         <value>Write to us</value>
     </labels>
     <labels>
-        <fullName>Skriv_til_oss_intro_text</fullName>
-        <categories>Skriv til oss</categories>
+        <fullName>Skriv_til_oss_Default_ingress</fullName>
+        <categories>Skriv til oss, Ingress</categories>
         <language>en_US</language>
         <protected>false</protected>
-        <shortDescription>Skriv til oss intro text</shortDescription>
-        <value>Send only messages that can be relevant for your case. Remember to include all
-            relevant information. You can write a maximum of 2000 characters.</value>
+        <shortDescription>Skriv til oss - Default ingress</shortDescription>
+        <value>Skriv bare spørsmål eller opplysninger som gjelder deg selv. Du kan ikke skrive for
+            andre. Hvis du vil kontakte oss på vegne av andre, må du ringe oss og ha muntlig eller
+            skriftlig fullmakt.</value>
     </labels>
     <labels>
         <fullName>Skriv_til_oss_text_area_description</fullName>
