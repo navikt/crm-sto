@@ -103,11 +103,41 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         'grunn-og-hjelpestonad': 'Grunnstønad eller hjelpestønad'
     };
 
-    // TODO: Fill out rest
     // No category map needed for STO as it is equal to the url category param
     btoCategoryMap = {
-        'dagpenger': 'Arbeid'
-        'Endring-grunn-og-hjelpestonad': 'Helse'
+        dagpenger: 'Arbeid',
+        tiltakspenger: 'Arbeid',
+        ventelonn: 'Arbeid',
+        'grunn-og-hjelpestonad': 'Helse',
+        yrkesskadetrygd: 'Helse',
+        'omsorg-fosterhjem': 'Familie',
+        arbeidsevne: 'Arbeid',
+        enslig: 'Familie',
+        barnetrygd: 'Familie',
+        kontantstotte: 'Familie',
+        bidrag: 'Familie',
+        uforetrygd: 'Ufør',
+        tilleggsstonader: 'Arbeid',
+        aap: 'Arbeid',
+        foreldre: 'Familie',
+        'sykdom-familien': 'Familie',
+        'AFP-offentlig': 'Pensjon',
+        'supplerende-stonad-flyktninger': 'Ufør',
+        'supplerende-stonad-over-67': 'Pensjon',
+        alderspensjon: 'Pensjon',
+        gjenlevende: 'Pensjon',
+        sykepenger: 'Helse'
+        arbeid: 'Arbeid',
+        helse: 'Helse',
+        utland: 'Internasjonal',
+        familie: 'Familie',
+        pensjon: 'Pensjon',
+        hjelpemidler: 'Hjelpemidler',
+        ufor: 'Ufør',
+        trygdeavgift: 'Internasjonal',
+        menerstatning: 'Helse',
+        'AFP-offentlig': 'Pensjon',
+        'AFP-privat': 'Pensjon'
     };
 
     ingressMap = {
@@ -132,8 +162,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Endring: 'Meld fra om endring',
         'Trekke-soknad': 'Trekke en søknad',
         Beskjed: 'Gi beskjed',
-        Helse: '',
-        Arbeid: '',
+        'Helse-hjelpemidler': 'Test' // TODO: Key not final
     };
 
     connectedCallback() {
@@ -144,10 +173,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     categoryList.add(stoCategory.STO_Category__c);
                 });
                 this.acceptedcategories = categoryList;
-                if (this.threadTypeToMake === 'BTO') {
-                // TODO: Add all the new potential BTO categories here
-                
-                }
+                // TODO: Add url categories for BTO
             })
             .catch((error) => {
                 console.error('Error fetching categories: ', error);
@@ -212,9 +238,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     // TODO: Remove comment once acceptedCategories is valid
+    // TODO: Add another check for BTO url categories 
     get validparameter() {
         /*
-        let valid = this.acceptedcategories.has(this.category);
+        let valid = this.acceptedcategories.has(this.category); // Valid for STO
         return valid;
         */
         return true;
@@ -264,24 +291,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.hideDeleteModal ? 'slds-hide' : 'backdrop';
     }
 
-    ingressMap = {
-        'Skriv til oss': {
-            default: welcomelabel,
-            Hjelpemidler: STO_HJELPEMIDLER_LABEL
-        },
-        'Gi beskjed': {
-            default: '', // TODO: Label with Send oss opplysninger som ...
-            'Internasjonal': '' // TODO: Label with Send oss opplysninger som ... + Er du over 65 år ...
-        },
-        'Meld fra om endring': {
-            default: '', // TODO: Label with Send oss opplysninger som ...
-            'Pensjon': '' // TODO: Du får en kvittering på at vi har mottatt beskjeden din
-        },
-        'Trekk en søknad': {
-            default: '' // TODO: label with Hvilken søknad ønsker du å trekke?
-        }
-    };
-
     get ingressLabel() {
         return this.ingressMap[this.title]?.[this.category] ?? this.ingressMap[this.title].['default'];
     }
@@ -311,15 +320,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.themeToShow = this.threadTypeToMake === 'STO' ? this.stoThemeMapping[categoryString] : this.btoThemeMapping[categoryString];
     }
 
-    getOriginalUrlCategoryBasedOnPleiepengerRadioButton() {
-        if (this.urlStateParameters.category === 'Helse') {
-            return 'Helse og sykdom';
-        } else if (this.urlStateParameters.category === 'Familie') {
-            return 'Familie og barn';
-        }
-        return 'Pleiepenger for sykt barn';
-    }
-
     setTitleAndCategory(splitUrlCategory) {
         if (!splitUrlCategory) return;
         let categoryString = splitUrlCategory.join('-');
@@ -341,7 +341,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             categoryString = splitUrlCategory.join('-');
             this.category = this.btoCategoryMap[categoryString];
         }
-        this._title = this.titleMap[type];
+        this._title = this.titleMap[type] ?? 'Skriv til oss'; // If title not found -> it is STO
     }
 
     togglechecked() {
