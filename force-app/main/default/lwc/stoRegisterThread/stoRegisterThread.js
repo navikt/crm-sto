@@ -317,22 +317,19 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         );
     }
 
-    setThemeToShow(splitUrlCategory) {
-        if (!splitUrlCategory) return;
-
-        let categoryString;
+    setThemeToShow(urlCategory) {
+        let splitUrlCategory = urlCategory.split('-');
+        let categoryString = urlCategory;
         let type;
         if (splitUrlCategory.length > 1) {
             // Trekke-soknad case
-            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') {
+            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') { 
                 type = 'Trekke-soknad'; // Get type
-                categoryString = categoryString.slice(2);
+                categoryString = splitUrlCategory.slice(2);
             } else {
                 type = splitUrlCategory.shift(); // Remove type
                 categoryString = splitUrlCategory.join('-');
             }
-        } else {
-            categoryString = splitUrlCategory.join('-');
         }
 
         if (this.urlStateParameters.category === 'Andre-hjelpemidler') {
