@@ -160,6 +160,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             default: welcomelabel,
             Hjelpemidler: STO_HJELPEMIDLER_INGRESS
         },
+        'Beskjed til oss': {
+            default: BESKJED_DEFAULT_INGRESS,
+        },
         'Gi beskjed': {
             default: BESKJED_DEFAULT_INGRESS,
             Internasjonal: BESKJED_INTERNASJONAL_INGRESS
