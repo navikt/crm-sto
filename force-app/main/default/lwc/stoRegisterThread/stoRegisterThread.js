@@ -98,47 +98,51 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Ufør: 'Ufør'
     };
 
-    // TODO: Fill out rest
-    btoThemeMapping = {
-        ventelonn: 'Ventelønn',
-        'grunn-og-hjelpestonad': 'Grunnstønad eller hjelpestønad',
-        yrkesskadetrygd: 'Frivillig yrkesskadetrygd'
-    };
-
     // No category map needed for STO as it is equal to the url category param
-    btoCategoryMap = {
-        dagpenger: 'Arbeid',
-        tiltakspenger: 'Arbeid',
-        ventelonn: 'Arbeid',
-        'grunn-og-hjelpestonad': 'Helse',
-        yrkesskadetrygd: 'Helse',
-        'omsorg-fosterhjem': 'Familie',
-        arbeidsevne: 'Arbeid',
-        enslig: 'Familie',
-        barnetrygd: 'Familie',
-        kontantstotte: 'Familie',
-        bidrag: 'Familie',
-        uforetrygd: 'Ufør',
-        tilleggsstonader: 'Arbeid',
-        aap: 'Arbeid',
-        foreldre: 'Familie',
-        'sykdom-familien': 'Familie',
-        'AFP-offentlig': 'Pensjon',
-        'supplerende-stonad-flyktninger': 'Ufør',
-        'supplerende-stonad-over-67': 'Pensjon',
-        alderspensjon: 'Pensjon',
-        gjenlevende: 'Pensjon',
-        sykepenger: 'Helse',
-        arbeid: 'Arbeid',
-        helse: 'Helse',
-        utland: 'Internasjonal',
-        familie: 'Familie',
-        pensjon: 'Pensjon',
-        hjelpemidler: 'Hjelpemidler',
-        ufor: 'Ufør',
-        trygdeavgift: 'Internasjonal',
-        menerstatning: 'Helse',
-        'AFP-privat': 'Pensjon'
+    btoCategoryAndThemeMap = {
+        // Melde fra om endring
+        'Endring': {
+            dagpenger: { category: 'Arbeid', theme: 'Dagpenger'},
+            tiltakspenger: { category: 'Arbeid', theme: 'Tiltakspenger' },
+            ventelonn: { category: 'Arbeid', theme: 'Ventelønn' },
+            'grunn-og-hjelpestonad': { category: 'Helse', theme: 'Grunnstønad eller hjelpestønad' },
+            yrkesskadetrygd: { category: 'Helse', theme: 'Frivillig yrkesskadetrygd' },
+            'omsorg-fosterhjem': { category: 'Familie', theme: 'Omsorgsstønad eller fosterhjemsgodtgjørelse' },
+            arbeidsevne: { category: 'Arbeid', theme: 'Vurdering av arbeidsevne' },
+            enslig: { category: 'Familie', theme: 'Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far' },
+            barnetrygd: { category: 'Familie', theme: 'Barnetrygd og utvidet barnetrygd' },
+            kontantstotte: {category: 'Familie', theme: 'Kontantstøtte' },
+            bidrag: { category: 'Familie', theme: 'Bidragsforskudd eller ektefellebidrag' },
+            uforetrygd: { category: 'Ufør', theme: 'Uføretrygd' },
+            tilleggsstonader: { 'Arbeid', theme: 'Tilleggsstønader' },
+            aap: { category: 'Arbeid', theme: 'Arbeidsavklaringspenger (AAP)'},
+            foreldre: { category: 'Familie', theme: 'Foreldrepenger, svangerskapspenger eller engangsstønad' },
+            'sykdom-familien': { category: 'Familie', theme: 'Pleiepenger, omsorgspenger eller opplæringspenger' },
+            'AFP-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
+            'supplerende-stonad-flyktninger': { category: 'Ufør', theme: 'Supplerende stønad for uføre flyktninger under 67 år' },
+            'supplerende-stonad-over-67': { category: 'Pensjon', theme: 'Supplerende stønad for personer over 67 år med kort botid i Norge' },
+            alderspensjon: { category: 'Pensjon', theme: 'Alderspensjon' },
+            gjenlevende: { category: 'Pensjon', theme: 'Støtte til gjenlevende' },
+            sykepenger: { category: 'Helse', theme: 'Sykepenger eller reisetilskudd' },
+        },
+        // Trekke en søknad
+        'Trekke-soknad': {
+            arbeid: { category: 'Arbeid', theme: 'Arbeid' },
+            helse: { category: 'Helse', theme: 'Helse og sykdom' },
+            utland: { category: 'Internasjonal', theme: 'Bor eller jobber i utlandet' },
+            familie: { category: 'Familie', theme: 'Familie og barn' },
+            pensjon: { category: 'Pensjon', theme: 'Pensjon' },
+            hjelpemidler: { category: 'Hjelpemidler', theme: 'Hjelpemidler og tilrettelegging' },
+            ufor: { category: 'Ufør', theme: 'Ufør' },
+        }
+        // Gi beskjed
+        'Beskjed': {
+            trygdeavgift: { category: 'Internasjonal', theme: 'Be om bekreftelse på trygdeavgift' },
+            sykepenger: { category: 'Helse', theme: 'Sykepenger' },
+            menerstatning: { category: 'Helse', theme: 'Menerstatning' },
+            'AFP-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
+            'AFP-privat': { category: 'Pensjon', theme: 'AFP i privat sektor' },
+        }
     };
 
     ingressMap = {
@@ -197,10 +201,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.subpath =
                 currentPageReference.attributes.name === 'Beskjed_til_oss__c' ? '/beskjed-til-oss/' : '/skriv-til-oss/';
             this.urlStateParameters = currentPageReference.state;
-
-            const categoryParts = this.urlStateParameters?.category.split('-');
-            this.setTitleAndCategory(categoryParts);
-            this.setThemeToShow(categoryParts);
+            if (this.urlStateParameters?.category == null) {
+                return;
+            }
+            this.setTitleAndCategory(this.urlStateParameters.category);
+            this.setThemeToShow(this.urlStateParameters.category);
             setDecoratorParams(this.title, this.themeToShow);
         }
     }
@@ -307,9 +312,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (!splitUrlCategory) return;
 
         let categoryString;
+        let type;
         if (splitUrlCategory.length > 1) {
-            splitUrlCategory.shift(); // Remove type
-            categoryString = splitUrlCategory.join('-');
+            // Trekke-soknad case
+            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') { 
+                type = 'Trekke-soknad'; // Get type
+                categoryString = categoryString.slice(2);
+            } else {
+                type = splitUrlCategory.shift(); // Remove type
+                categoryString = splitUrlCategory.join('-');
+            }
         } else {
             categoryString = splitUrlCategory.join('-');
         }
@@ -322,29 +334,37 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.themeToShow =
             this.threadTypeToMake === 'STO'
                 ? this.stoThemeMapping[categoryString]
-                : this.btoThemeMapping[categoryString];
+                : this.btoCategoryAndThemeMap[type][categoryString].theme;
     }
 
-    setTitleAndCategory(splitUrlCategory) {
-        if (!splitUrlCategory) return;
-        let categoryString = splitUrlCategory.join('-');
-        let type = splitUrlCategory[0];
-
-        // Special case since hjelpemidler url category is already taken for HOT inquiries
-        if (this.urlStateParameters.category === 'Andre-hjelpemidler') {
+    setTitleAndCategory(urlCategory) {
+         // Special case since hjelpemidler url category is already taken for HOT inquiries
+         if (urlCategory === 'Andre-hjelpemidler') {
             this._title = this.titleMap['Andre-hjelpemidler'];
             this.category = 'Helse';
             return;
         }
+
+        const splitUrlCategory = urlCategory.split('-');
+        // Fallback
+        let categoryString = splitUrlCategory.join('-');
+        let type = splitUrlCategory[0];
+       
         // Only one category e.g. "Helse" - valid for both BTO & STO
         if (splitUrlCategory.length === 1) {
             this.category = categoryString;
         }
         // New BTO category e.g. "Endring-arbeidsevne"
         if (splitUrlCategory.length > 1) {
-            type = splitUrlCategory.shift();
-            categoryString = splitUrlCategory.join('-');
-            this.category = this.btoCategoryMap[categoryString];
+            // Trekke-soknad case
+            if (splitUrlCategory.slice(0, 2).join('-') === 'Trekke-soknad') { 
+                type = 'Trekke-soknad'; // Get type
+                categoryString = categoryString.slice(2);
+            } else {
+                type = splitUrlCategory.shift();
+                categoryString = splitUrlCategory.join('-');
+            }
+            this.category = this.btoCategoryAndThemeMap[type][categoryString].category;
         }
         this._title = this.titleMap[type] ?? 'Skriv til oss'; // If title not found -> it is STO
     }
