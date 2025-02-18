@@ -316,7 +316,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (this.urlStateParameters?.category === 'Andre-hjelpemidler') {
             return this.ingressMap[this.title]?.['Hjelpemidler'];
         }
-        return this.ingressMap[this.title]?.[this.category] ?? this.ingressMap[this.title]?.['default'];
+        return this.ingressMap[this.title]?.[this.category] || this.ingressMap[this.title]?.['default'];
     }
 
     get showPleiepengerRadioButton() {
