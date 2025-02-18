@@ -18,11 +18,11 @@
                         style="text-align: left"
                     >
                     </c-community-error-summary>
-
-                    <div class="descholder slds-var-m-bottom_xx-large">
-                        <p class="navds-body-short navds-body-short--small blokk-xs description">
-                            <lightning-formatted-rich-text value={ingressLabel}></lightning-formatted-rich-text>
-                        </p>
+                    <div class="descholder slds-var-m-bottom_xx-large ingress">
+                        <lightning-formatted-rich-text
+                            class="navds-body-short navds-body-short--small blokk-xs description"
+                            value={ingressLabel}
+                        ></lightning-formatted-rich-text>
                     </div>
                     <div class="inputarea">
                         <template if:false={showspinner}>
