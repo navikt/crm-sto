@@ -100,7 +100,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     // TODO: Fill out rest
     btoThemeMapping = {
-        'grunn-og-hjelpestonad': 'Grunnstønad eller hjelpestønad'
+        'ventelonn': 'Ventelønn',
+        'grunn-og-hjelpestonad': 'Grunnstønad eller hjelpestønad',
+        'yrkesskadetrygd': 'Frivillig yrkesskadetrygd',
     };
 
     // No category map needed for STO as it is equal to the url category param
@@ -559,10 +561,18 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     pleiePengerSelected = false;
+    previousCategory = null;
     handlePleiepengerChange(event) {
-        if (event.detail.value === 'true') {
+        if (event.detail.value) {
+            if (!this.pleiePengerSelected) { 
+                this.previousCategory = this.category; // Store the current category
+            }
             this.pleiePengerSelected = true;
             this.category = 'Pleiepenger';
+        } else {
+            this.pleiePengerSelected = false;
+            this.category = this.previousCategory;
+            this.previousCategory = null; // Reset to prevent incorrect reuse
         }
 
         logFilterEvent(
