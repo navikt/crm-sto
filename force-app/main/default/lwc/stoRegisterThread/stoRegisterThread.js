@@ -223,7 +223,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    @wire(getNews, { pageType: '$title', pageTheme: '$category' })
+    @wire(getNews, { pageType: '$title', pageTheme: '$themeToShow' })
     wirednews(result) {
         const { data, error } = result;
         this.wiredNews = result;
