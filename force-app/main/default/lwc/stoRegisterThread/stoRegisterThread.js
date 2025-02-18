@@ -344,6 +344,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this._title = this.titleMap[type] ?? 'Skriv til oss'; // If title not found -> it is STO
     }
 
+    getOriginalUrlCategoryBasedOnPleiepengerRadioButton() {
+        if (this.urlStateParameters.category === 'Helse') {
+            return 'Helse og sykdom';
+        } else if (this.urlStateParameters.category === 'Familie') {
+            return 'Familie og barn';
+        }
+        return 'Pleiepenger for sykt barn';
+    }
+
     togglechecked() {
         this.acceptedTerms = !this.acceptedTerms;
     }
@@ -410,7 +419,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxType: this.title,
-                inboxTheme: this.pleiePengerSelected ? getOriginalUrlCategoryBasedOnPleiepengerRadioButton() : this.themeToShow
+                inboxTheme: this.pleiePengerSelected ? this.getOriginalUrlCategoryBasedOnPleiepengerRadioButton() : this.themeToShow
             })
                 .then((thread) => {
                     this.showspinner = false;
