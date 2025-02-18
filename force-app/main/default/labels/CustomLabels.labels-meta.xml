@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
+        <fullName>Beskjed_til_oss_Beskjed_Default_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss - Beskjed - Default ingress</shortDescription>
+        <value>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har
+            mottatt beskjeden din.</value>
+    </labels>
+    <labels>
+        <fullName>Beskjed_til_oss_Beskjed_Internasjonal_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss - Beskjed - Internasjonal ingress</shortDescription>
+        <value>Du får en kvittering på at vi har mottatt beskjeden din.</value>
+    </labels>
+    <labels>
+        <fullName>Beskjed_til_oss_Endring_Default_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss - Endring - Default ingress</shortDescription>
+        <value>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har
+            mottatt beskjeden din.</value>
+    </labels>
+    <labels>
+        <fullName>Beskjed_til_oss_Endring_Pensjon_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss - Endring - Pensjon ingress</shortDescription>
+        <value>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har
+            mottatt beskjeden din.
+            &lt;br/&gt;&lt;br/&gt;
+            Er du over 65 år og har AFP fra SPK, KLP eller en annen tjeneste-pensjonsordning? Da
+            skal du melde endringer rett til tjeneste-pensjonsordningen, og ikke til Nav.</value>
+    </labels>
+    <labels>
+        <fullName>Beskjed_til_oss_Trekk_soknad_Default_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss - Trekk soknad - Default ingress</shortDescription>
+        <value>Hvilken søknad ønsker du å trekke?</value>
+    </labels>
+    <labels>
         <fullName>Community_Language_Selector_English</fullName>
         <categories>Community Language Selector</categories>
         <language>en_US</language>
@@ -115,6 +161,27 @@
         <protected>false</protected>
         <shortDescription>Accept terms text</shortDescription>
         <value>I accept the terms for using this service.</value>
+    </labels>
+    <labels>
+        <fullName>Skriv_til_oss_Hjelpemidler_ingress</fullName>
+        <categories>Skriv til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Skriv til oss - Hjelpemidler ingress</shortDescription>
+        <value>Skriv til oss om
+            &lt;lo&gt;
+            &lt;li&gt;høreapparat&lt;/li&gt;
+            &lt;li&gt;tinnitusmaskerer&lt;/li&gt;
+            &lt;li&gt;parykk&lt;/li&gt;
+            &lt;li&gt; proteser&lt;/li&gt;
+            &lt;li&gt;ortopediske sko&lt;/li&gt;
+            &lt;li/&gt;ortoser&lt;l/li&gt;
+            &lt;li&gt;støtte til folkehøgskoleopphold&lt;/li&gt;
+            &lt;li&gt;tilpasningskurs&lt;/li&gt;
+            &lt;li&gt;grunnmønster og spesialsøm av klær&lt;/li&gt;&lt;/lo&gt;
+            &lt;br/&gt;Skriv bare spørsmål eller opplysninger som gjelder deg selv. Du kan ikke
+            skrive for andre. Hvis du vil kontakte oss på vegne av andre, må du ringe oss og ha
+            muntlig eller skriftlig fullmakt.</value>
     </labels>
     <labels>
         <fullName>Skriv_til_oss_Show_terms</fullName>

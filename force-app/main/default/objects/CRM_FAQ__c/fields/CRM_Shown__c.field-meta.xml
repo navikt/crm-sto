@@ -16,11 +16,6 @@
                 <label>Skriv til oss</label>
             </value>
             <value>
-                <fullName>Beskjed til oss</fullName>
-                <default>false</default>
-                <label>Beskjed til oss</label>
-            </value>
-            <value>
                 <fullName>Meld fra om endring</fullName>
                 <default>false</default>
                 <label>Meld fra om endring</label>

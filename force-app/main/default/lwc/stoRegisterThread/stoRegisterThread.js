@@ -7,7 +7,6 @@ import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
 import welcomelabel from '@salesforce/label/c.Skriv_til_oss_intro_text';
-import welcomelabelBTO from '@salesforce/label/c.Beskjed_til_oss_intro_text';
 import acceptermtext from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
 import showtermstext from '@salesforce/label/c.Skriv_til_oss_Show_terms';
 import textareadescription from '@salesforce/label/c.Skriv_til_oss_text_area_description';
@@ -31,8 +30,12 @@ import {
     logFilterEvent,
     setDecoratorParams
 } from 'c/inboxAmplitude';
-import STO_HJELPEMIDLER_LABEL from '@salesforce/label/c.Skriv_til_oss_hjelpemidler_intro_text';
-
+import STO_HJELPEMIDLER_INGRESS from '@salesforce/label/c.Skriv_til_oss_Hjelpemidler_ingress';
+import ENDRING_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring_Default_ingress';
+import ENDRING_PENSJON_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring_Pensjon_ingress';
+import TREKK_SOKNAD_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Trekk_soknad_Default_ingress';
+import BESKJED_INTERNASJONAL_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Internasjonal_ingress';
+import BESKJED_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Default_ingress';
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
 
@@ -56,8 +59,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     _title;
 
     label = {
-        welcomelabel,
-        welcomelabelBTO,
         acceptermtext,
         showtermstext,
         textareadescription,
@@ -68,8 +69,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         ACCEPT_TERMS_ERROR,
         DENY_TERMS_BUTTON,
         EMPTY_TEXT_FIELD_ERROR,
-        INCORRECT_CATEGORY,
-        STO_HJELPEMIDLER_LABEL
+        INCORRECT_CATEGORY
     };
 
     medskrivOptions = [
@@ -100,9 +100,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     // TODO: Fill out rest
     btoThemeMapping = {
-        'ventelonn': 'Ventelønn',
+        ventelonn: 'Ventelønn',
         'grunn-og-hjelpestonad': 'Grunnstønad eller hjelpestønad',
-        'yrkesskadetrygd': 'Frivillig yrkesskadetrygd',
+        yrkesskadetrygd: 'Frivillig yrkesskadetrygd'
     };
 
     // No category map needed for STO as it is equal to the url category param
@@ -144,18 +144,18 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     ingressMap = {
         'Skriv til oss': {
             default: welcomelabel,
-            Hjelpemidler: STO_HJELPEMIDLER_LABEL
+            Hjelpemidler: STO_HJELPEMIDLER_INGRESS
         },
         'Gi beskjed': {
-            default: '', // TODO: Label with Send oss opplysninger som ...
-            'Internasjonal': '' // TODO: Label with Send oss opplysninger som ... + Er du over 65 år ...
+            default: BESKJED_DEFAULT_INGRESS,
+            Internasjonal: BESKJED_INTERNASJONAL_INGRESS
         },
         'Meld fra om endring': {
-            default: '', // TODO: Label with Send oss opplysninger som ...
-            'Pensjon': '' // TODO: Du får en kvittering på at vi har mottatt beskjeden din
+            default: ENDRING_DEFAULT_INGRESS,
+            Pensjon: ENDRING_PENSJON_INGRESS
         },
         'Trekk en søknad': {
-            default: '' // TODO: label with Hvilken søknad ønsker du å trekke?
+            default: TREKK_SOKNAD_DEFAULT_INGRESS
         }
     };
 
@@ -239,7 +239,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     // TODO: Remove comment once acceptedCategories is valid
-    // TODO: Add another check for BTO url categories 
+    // TODO: Add another check for BTO url categories
     get validparameter() {
         /*
         let valid = this.acceptedcategories.has(this.category); // Valid for STO
@@ -282,10 +282,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get showTextArea() {
-        return (
-            this.openThreadList == null ||
-            this.openThreadList.length < maxThreadCount
-        );
+        return this.openThreadList == null || this.openThreadList.length < maxThreadCount;
     }
 
     get backdropClass() {
@@ -321,8 +318,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.themeToShow = 'Hjelpemidler';
             return;
         }
-    
-        this.themeToShow = this.threadTypeToMake === 'STO' ? this.stoThemeMapping[categoryString] : this.btoThemeMapping[categoryString];
+
+        this.themeToShow =
+            this.threadTypeToMake === 'STO'
+                ? this.stoThemeMapping[categoryString]
+                : this.btoThemeMapping[categoryString];
     }
 
     setTitleAndCategory(splitUrlCategory) {
@@ -341,7 +341,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.category = categoryString;
         }
         // New BTO category e.g. "Endring-arbeidsevne"
-        if (splitUrlCategory.length > 1) { 
+        if (splitUrlCategory.length > 1) {
             type = splitUrlCategory.shift();
             categoryString = splitUrlCategory.join('-');
             this.category = this.btoCategoryMap[categoryString];
@@ -424,7 +424,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxType: this.title,
-                inboxTheme: this.pleiePengerSelected ? this.getOriginalUrlCategoryBasedOnPleiepengerRadioButton() : this.themeToShow
+                inboxTheme: this.pleiePengerSelected
+                    ? this.getOriginalUrlCategoryBasedOnPleiepengerRadioButton()
+                    : this.themeToShow
             })
                 .then((thread) => {
                     this.showspinner = false;
@@ -564,7 +566,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     previousCategory = null;
     handlePleiepengerChange(event) {
         if (event.detail.value) {
-            if (!this.pleiePengerSelected) { 
+            if (!this.pleiePengerSelected) {
                 this.previousCategory = this.category; // Store the current category
             }
             this.pleiePengerSelected = true;
