@@ -136,7 +136,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         ufor: 'Ufør',
         trygdeavgift: 'Internasjonal',
         menerstatning: 'Helse',
-        'AFP-offentlig': 'Pensjon',
         'AFP-privat': 'Pensjon'
     };
 
