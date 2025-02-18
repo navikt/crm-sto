@@ -162,7 +162,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Endring: 'Meld fra om endring',
         'Trekke-soknad': 'Trekke en søknad',
         Beskjed: 'Gi beskjed',
-        'Helse-hjelpemidler': 'Test' // TODO: Key not final
+        'Helse-hjelpemidler': 'Skriv til oss' // TODO: Key not final
     };
 
     connectedCallback() {
@@ -292,7 +292,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get ingressLabel() {
-        return this.ingressMap[this.title]?.[this.category] ?? this.ingressMap[this.title]['default'];
+        return this.ingressMap[this.title]?.[this.category] ?? this.ingressMap[this.title]?.['default'];
     }
 
     get showPleiepengerRadioButton() {
@@ -315,6 +315,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
         if (this.urlStateParameters.category === 'Helse-hjelpemidler') { // TODO: Not decided what URL will be yet
             this.themeToShow = 'Hjelpemidler';
+            return;
         }
     
         this.themeToShow = this.threadTypeToMake === 'STO' ? this.stoThemeMapping[categoryString] : this.btoThemeMapping[categoryString];
@@ -345,9 +346,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     getOriginalUrlCategoryBasedOnPleiepengerRadioButton() {
-        if (this.urlStateParameters.category === 'Helse') {
+        if (this.category === 'Helse') {
             return 'Helse og sykdom';
-        } else if (this.urlStateParameters.category === 'Familie') {
+        } else if (this.category === 'Familie') {
             return 'Familie og barn';
         }
         return 'Pleiepenger for sykt barn';
