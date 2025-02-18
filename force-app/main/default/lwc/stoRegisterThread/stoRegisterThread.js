@@ -260,13 +260,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get openThreadText() {
         if (this.openThreadList.length < maxThreadCount) {
-            return `Du har allerede åpne samtaler om ${this.category.toLowerCase()}. Hvis du lurer på noe mer, kan du <a href="${
+            return `Du har allerede åpne samtaler om ${this.category?.toLowerCase()}. Hvis du lurer på noe mer, kan du <a href="${
                 this.openThreadLink
             }">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.`;
         }
         return `Du har ${
             this.openThreadList.length
-        } åpne samtaler om ${this.category.toLowerCase()}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
+        } åpne samtaler om ${this.category?.toLowerCase()}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
     }
 
     get openThreadLink() {
