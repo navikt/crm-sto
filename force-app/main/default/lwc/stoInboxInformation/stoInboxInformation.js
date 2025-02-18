@@ -1,4 +1,4 @@
-import { LightningElement, api, wire, track } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import THREAD_IS_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
@@ -6,22 +6,24 @@ import THREAD_RELATED_OBJECT_FIELD from '@salesforce/schema/Thread__c.CRM_Relate
 import getSurvey from '@salesforce/apex/STO_SurveyHelper.getSurveyLink';
 import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
+import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class StoInboxInformation extends LightningElement {
+    @api recordId;
+
     type;
     closed = false;
     caseId;
     url;
     surveyLink;
-
-    @api recordId;
-    @track completed = false;
+    completed = false;
 
     @wire(getRecord, {
         recordId: '$recordId',
         fields: [THREAD_IS_CLOSED_FIELD, THREAD_TYPE_FIELD, THREAD_RELATED_OBJECT_FIELD]
     })
-    wiredThread({ data, error }) {
+    wiredThread(result) {
+        const { data, error } = result;
         if (data) {
             this.type = getFieldValue(data, THREAD_TYPE_FIELD);
             this.closed = getFieldValue(data, THREAD_IS_CLOSED_FIELD);
@@ -67,6 +69,13 @@ export default class StoInboxInformation extends LightningElement {
                     window.open(this.surveyLink);
                 }
             });
+
+        logNavigationEvent(
+            getComponentName(this.template),
+            'undersøkelse',
+            this.completed ? this.url : this.surveyLink,
+            'Klikk her for å svare'
+        );
     }
 
     get isClosedSTOorBTO() {

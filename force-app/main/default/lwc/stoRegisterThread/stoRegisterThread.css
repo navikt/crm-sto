@@ -150,3 +150,7 @@
 .testClass:focus {
     background: initial;
 }
+
+.ingress {
+    text-align: left;
+}

@@ -16,6 +16,8 @@ public with sharing class stoInboxHelper {
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
                 Name,
+                NKS_Inbox_Type__c,
+                NKS_Inbox_Theme__c,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -66,6 +68,8 @@ public with sharing class stoInboxHelper {
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
                 Name,
+                NKS_Inbox_Type__c,
+                NKS_Inbox_Theme__c,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -123,6 +127,8 @@ public with sharing class stoInboxHelper {
                 .replaceAll('(\\r|\\n)+', ' ');
             message.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
             thread.latestmessage = message;
+            thread.inboxType = t.NKS_Inbox_Type__c;
+            thread.inboxTheme = t.NKS_Inbox_Theme__c;
             return thread;
         }
         return null;
@@ -167,6 +173,10 @@ public with sharing class stoInboxHelper {
         public message latestmessage;
         @AuraEnabled
         public String recordName;
+        @AuraEnabled 
+        public String inboxType;
+        @AuraEnabled 
+        public String inboxTheme;
     }
 
     public class Message {
