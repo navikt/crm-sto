@@ -46,6 +46,7 @@
                                 <template lwc:if={showPleiepengerRadioButton}>
                                     <div class="slds-var-p-top_medium">
                                         <c-ds-radio
+                                            lwc:ref="pleiepengerRadiobutton"
                                             style="text-align: left"
                                             title="Gjelder det pleiepenger for sykt barn?"
                                             options={pleiepengerOptions}
@@ -68,6 +69,7 @@
                                 <!-- Medskriv radiobutton -->
                                 <div>
                                     <c-ds-radio
+                                        lwc:ref="medskrivRadiobuttons"
                                         style="text-align: left"
                                         title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
                                         options={medskrivOptions}

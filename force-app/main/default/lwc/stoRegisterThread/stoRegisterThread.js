@@ -172,7 +172,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             default: ENDRING_DEFAULT_INGRESS,
             Pensjon: ENDRING_PENSJON_INGRESS
         },
-        'Trekk en søknad': {
+        'Trekke en søknad': {
             default: TREKK_SOKNAD_DEFAULT_INGRESS
         }
     };
@@ -224,7 +224,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.setTitleAndCategory(this.urlStateParameters.category);
             this.setThemeToShow(this.urlStateParameters.category);
             setDecoratorParams(this.title, this.themeToShow);
-            let tabName = `${this.title} - ${this.themeToShow}`;
+            let tabName = `${this.title}${!!!this.themeToShow ? '' : ' - ' + this.themeToShow}`;
             setTimeout(function () {
                 document.title = tabName;
             }, 1000);
@@ -386,7 +386,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.previousCategory = this.category; // For pleiepenger radiobutton case
 
         // Set title
-        this._title = this.titleMap[type] ?? this.threadTypeToMake === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
+        console.log('type: ', type);
+        console.log('this.titleMap[type]: ', this.titleMap[type]);
+        this._title = this.titleMap[type] ?? (this.threadTypeToMake === 'STO' ? 'Skriv til oss' : 'Beskjed til oss');
     }
 
     togglechecked() {
@@ -438,7 +440,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitRequest() {
-        const medskriv = this.template.querySelector('.medskrive')?.getValue();
+        const medskriv = this.refs.medskrivRadiobuttons?.getValue();
+        const pleiepenger = this.refs.pleiepengerRadiobutton?.getValue();
         if (
             this.acceptedTerms &&
             this.message &&
@@ -446,6 +449,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.message.length <= this.maxLength &&
             medskriv != null
         ) {
+            this.errorList = null;
             this.showspinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
@@ -498,18 +502,25 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     Text: 'Det er for mange tegn i tekstboksen.'
                 });
             }
-            if (!this.acceptedTerms) {
+            if (this.refs.pleiepengerRadiobutton != null && pleiepenger == null) {
                 this.errorList.errors.push({
                     Id: 3,
-                    EventItem: '.checkboxContainer',
-                    Text: 'Du må godta vilkårene.'
+                    EventItem: '.pleiepenger',
+                    Text: 'Du må velge et av alternativene.'
                 });
             }
             if (medskriv == null) {
                 this.errorList.errors.push({
                     Id: 4,
-                    EventItem: '.radioFocus',
+                    EventItem: '.medskrive',
                     Text: 'Du må velge et av alternativene.'
+                });
+            }
+            if (!this.acceptedTerms) {
+                this.errorList.errors.push({
+                    Id: 5,
+                    EventItem: '.checkboxContainer',
+                    Text: 'Du må godta vilkårene.'
                 });
             }
             let errorSummary = this.template.querySelector('.errorSummary');
@@ -592,7 +603,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     previousCategory;
-    pleiepengerSelected = false;
+    pleiepengerSelected;
     handlePleiepengerChange(event) {
         if (event.detail.value === 'true') {
             this.pleiepengerSelected = true;
