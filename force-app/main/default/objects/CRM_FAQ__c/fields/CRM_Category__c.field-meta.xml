@@ -112,12 +112,6 @@
                 <label>Omsorgsstønad eller fosterhjemsgodtgjørelse</label>
             </value>
             <value>
-                <fullName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</label>
-            </value>
-            <value>
                 <fullName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og
                     tilleggsstønader til enslig mor eller far</fullName>
                 <default>false</default>
