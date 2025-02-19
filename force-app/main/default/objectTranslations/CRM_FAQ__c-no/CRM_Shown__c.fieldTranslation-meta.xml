@@ -3,11 +3,23 @@
     <label>Vises på</label>
     <name>CRM_Shown__c</name>
     <picklistValues>
-        <masterLabel>BTO</masterLabel>
-        <translation></translation>
+        <masterLabel>Beskjed til oss</masterLabel>
+        <translation><!-- Beskjed til oss --></translation>
     </picklistValues>
     <picklistValues>
-        <masterLabel>STO</masterLabel>
-        <translation></translation>
+        <masterLabel>Gi beskjed</masterLabel>
+        <translation><!-- Gi beskjed --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Meld fra om endring</masterLabel>
+        <translation><!-- Meld fra om endring --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Skriv til oss</masterLabel>
+        <translation><!-- Skriv til oss --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Trekk en søknad</masterLabel>
+        <translation><!-- Trekk en søknad --></translation>
     </picklistValues>
 </CustomFieldTranslation>
