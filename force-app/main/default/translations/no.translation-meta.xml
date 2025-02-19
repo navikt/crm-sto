@@ -185,10 +185,10 @@
         <name>Skriv_til_oss_headline</name>
     </customLabels>
     <customLabels>
-        <label>Send bare spørsmål eller opplysninger som gjelder din sak. Husk å få med alle
-            opplysninger som kan være relevant for saken. Du kan skrive maksimalt 2000 tegn. Det er
-            cirka en A4-side.</label>
-        <name>Skriv_til_oss_intro_text</name>
+        <label>Skriv bare spørsmål eller opplysninger som gjelder deg selv. Du kan ikke skrive for
+            andre. Hvis du vil kontakte oss på vegne av andre, må du ringe oss og ha muntlig eller
+            skriftlig fullmakt.</label>
+        <name>Skriv_til_oss_Default_ingress</name>
     </customLabels>
     <customLabels>
         <label>Send kun saksrelevant informasjon</label>
