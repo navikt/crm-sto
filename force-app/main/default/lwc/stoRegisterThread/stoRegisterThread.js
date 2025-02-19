@@ -191,6 +191,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     categoryList.add(stoCategory.STO_Category__c);
                 });
                 this.acceptedSTOCategories = categoryList;
+                this.acceptedSTOCategories.add('Andre-hjelpemidler'); // Special case
                 this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(
                     ([parentKey, childObj]) => Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`)
                 );
