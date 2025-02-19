@@ -196,7 +196,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(
                     ([parentKey, childObj]) => Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`)
                 );
-                this.wrongLinkMsg = 'Ops, denne linken fungerte ikke.'; // Set text after getters have recalculated to avoid showing it before page is finished loading
+                this.wrongLinkMsg = 'Ops, denne lenken fungerte ikke.'; // Set text after getters have recalculated to avoid showing it before page is finished loading
             })
             .catch((error) => {
                 console.error('Error fetching categories: ', error);
@@ -383,6 +383,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             // Single-word category (valid for STO & BTO)
             this.category = categoryString;
         }
+        this.previousCategory = this.category; // For pleiepenger radiobutton case
 
         // Set title
         this._title = this.titleMap[type] ?? this.threadTypeToMake === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
@@ -454,7 +455,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxType: this.title,
-                inboxTheme: this.themeToShow
+                inboxTheme: this.pleiepengerSelected ? this.urlStateParameters?.category + '-Pleiepenger for sykt barn' : this.themeToShow
             })
                 .then((thread) => {
                     this.showspinner = false;
@@ -582,7 +583,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         const regex = /href="([^"]*)"/;
         const match = regex.exec(this.openThreadText);
 
-        if (match[1]) {
+        if (match && match[1]) {
             const hrefValue = match[1];
             logNavigationEvent(getComponentName(this.template), 'modal', hrefValue, 'fortsette dine åpne samtaler');
         } else {
@@ -590,13 +591,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    previousCategory = null;
+    previousCategory;
+    pleiepengerSelected = false;
     handlePleiepengerChange(event) {
         if (event.detail.value === 'true') {
+            this.pleiepengerSelected = true;
             this.previousCategory = this.category;
             this.category = 'Pleiepenger';
         } else {
             this.category = this.previousCategory;
+            this.pleiepengerSelected = false;
         }
 
         logFilterEvent(
