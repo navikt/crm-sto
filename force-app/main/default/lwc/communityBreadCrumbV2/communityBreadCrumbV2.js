@@ -29,7 +29,6 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
         } else {
             this.setCategoryBreadcrumbs(category);
         }
-        this._updateBreadcrumbs();
     }
 
     async fetchThread(recordId) {
@@ -57,7 +56,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
         this.leafnode = Object.keys(this.typeMap).find((key) => category?.includes(key)) 
             ? this.typeMap[category] 
             : 'Skriv til oss';
-        this.updateBreadcrumbs();
+        this._updateBreadcrumbs();
     }
 
     _updateBreadcrumbs() {
