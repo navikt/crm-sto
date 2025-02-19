@@ -10,7 +10,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
 
     typeMap = {
         Endring: 'Meld fra om endring',
-        'Trekk-soknad': 'Trekk en søknad',
+        'Trekke-soknad': 'Trekke en søknad',
         Beskjed: 'Gi beskjed'
     };
 
@@ -38,7 +38,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
                 updateBreadcrumbs(this.breadcrumbs);
                 console.log('breadcrumbs: ', JSON.stringify(this.breadcrumbs));
                 return;
-            } else if (category && ['Endring', 'Beskjed', 'Trekk-soknad'].some((item) => category.includes(item))) {
+            } else if (category && ['Endring', 'Beskjed', 'Trekke-soknad'].some((item) => category.includes(item))) {
                 Object.keys(this.typeMap).forEach((key) => {
                     if (category.includes(key)) {
                         this.leafnode = this.typeMap[key];
