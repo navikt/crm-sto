@@ -173,9 +173,9 @@ public with sharing class stoInboxHelper {
         public message latestmessage;
         @AuraEnabled
         public String recordName;
-        @AuraEnabled 
+        @AuraEnabled
         public String inboxType;
-        @AuraEnabled 
+        @AuraEnabled
         public String inboxTheme;
     }
 

@@ -48,7 +48,14 @@ public with sharing class stoHelperClass {
      * @date 08.06.21
      */
     @AuraEnabled
-    public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type, String inboxType, String inboxTheme) {
+    public static Thread__c createThreadWithCase(
+        String theme,
+        String msgText,
+        Boolean medskriv,
+        String type,
+        String inboxType,
+        String inboxTheme
+    ) {
         String relatedObjId;
         Thread__c thread;
 
@@ -93,7 +100,16 @@ public with sharing class stoHelperClass {
         String inboxType,
         String inboxTheme
     ) {
-        return createThread(relatedObjId, theme, personUser.AccountId, personUser.ContactId, medskriv, type, inboxType, inboxTheme);
+        return createThread(
+            relatedObjId,
+            theme,
+            personUser.AccountId,
+            personUser.ContactId,
+            medskriv,
+            type,
+            inboxType,
+            inboxTheme
+        );
     }
 
     /**
@@ -122,7 +138,12 @@ public with sharing class stoHelperClass {
         thread.STO_Medskriv__c = medskriv;
         thread.NKS_Inbox_Type__c = inboxType;
         thread.NKS_Inbox_Theme__c = inboxTheme;
-        List<RecordType> recordType = [SELECT Id FROM RecordType WHERE SObjectType = 'Thread__c' AND Name = 'NKS Thread' LIMIT 1];
+        List<RecordType> recordType = [
+            SELECT Id
+            FROM RecordType
+            WHERE SObjectType = 'Thread__c' AND Name = 'NKS Thread'
+            LIMIT 1
+        ];
         if (!recordType.isEmpty()) {
             thread.recordTypeId = recordType[0].Id;
         }
@@ -168,7 +189,7 @@ public with sharing class stoHelperClass {
         for (CRM_FAQ__c rec : [
             SELECT Id, CRM_Content__c, CRM_Title__c
             FROM CRM_FAQ__c
-            WHERE CRM_Category__c = :pageTheme AND CRM_Shown__c =:pageType
+            WHERE CRM_Category__c = :pageTheme AND CRM_Shown__c = :pageType
             ORDER BY CRM_Ordering__c ASC
         ]) {
             news.add(new News(rec.CRM_Title__c, rec.CRM_Content__c, rec.Id));
@@ -178,7 +199,7 @@ public with sharing class stoHelperClass {
             news.add(new News('header test', 'body test', '123'));
         }
         return news;
-    } 
+    }
 
     public class News {
         @AuraEnabled
@@ -256,17 +277,26 @@ public with sharing class stoHelperClass {
     }
 
     private static Boolean isMaxThreadCount(String theme, String threadType) {
-        return [SELECT COUNT() FROM Thread__c WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c = :threadType] >= maxThreadCount;
+        return [
+                SELECT COUNT()
+                FROM Thread__c
+                WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c = :threadType
+            ] >= maxThreadCount;
     }
 
     public class threadOrMessageException extends Exception {
     }
-    
+
     public class maxThreadLimitReachedException extends Exception {
-    } 
-    
+    }
+
     @AuraEnabled(cacheable=true)
     public static Thread__c getThread(String recordId) {
-        return [SELECT Id, CRM_Thread_Type__c, STO_ExternalName__c, NKS_Inbox_Type__c, NKS_Inbox_Theme__c FROM Thread__c WHERE Id = :recordId LIMIT 1];
+        return [
+            SELECT Id, CRM_Thread_Type__c, STO_ExternalName__c, NKS_Inbox_Type__c, NKS_Inbox_Theme__c
+            FROM Thread__c
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
     }
 }
