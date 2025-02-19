@@ -47,7 +47,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     category;
     themeToShow;
     acceptedSTOCategories = new Set();
-    acceptedBTOCategories = new Set();
+    acceptedBTOCategories = [];
     currentPageReference = null;
     urlStateParameters;
     subpath;
@@ -159,7 +159,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     ingressMap = {
         'Skriv til oss': {
             default: STO_DEFAULT_INGRESS,
-            Hjelpemidler: STO_HJELPEMIDLER_INGRESS
+            'Andre-hjelpemidler': STO_HJELPEMIDLER_INGRESS
         },
         'Beskjed til oss': {
             default: BTO_DEFAULT_INGRESS
@@ -183,6 +183,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Beskjed: 'Gi beskjed'
     };
 
+    wrongLinkMsg = '';
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
@@ -195,6 +196,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(
                     ([parentKey, childObj]) => Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`)
                 );
+                this.wrongLinkMsg = 'Ops, denne linken fungerte ikke.'; // Set text after getters have recalculated to avoid showing it before page is finished loading
             })
             .catch((error) => {
                 console.error('Error fetching categories: ', error);
@@ -274,7 +276,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     get isValidBTOCategory() {
         return (
             this.threadTypeToMake === 'BTO' &&
-            (this.acceptedBTOCategories.has(this.urlStateParameters?.category) ||
+            (this.acceptedBTOCategories.includes(this.urlStateParameters?.category) ||
                 this.acceptedSTOCategories.has(this.urlStateParameters?.category))
         );
     }
@@ -321,7 +323,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get ingressLabel() {
         if (this.urlStateParameters?.category === 'Andre-hjelpemidler') {
-            return this.ingressMap[this.title]?.['Hjelpemidler'];
+            return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
         }
         return this.ingressMap[this.title]?.[this.category] || this.ingressMap[this.title]?.['default'];
     }
