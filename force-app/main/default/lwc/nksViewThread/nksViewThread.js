@@ -46,6 +46,7 @@ export default class NksViewThread extends LightningElement {
             if (this.pageType && this.pageTheme) {
                 setDecoratorParams(this.pageType, this.pageTheme);
                 let tabName = `${this.pageType}${!!!this.pageTheme ? '' : ' - ' + this.pageTheme}`;
+                // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
                 setTimeout(function () {
                     document.title = tabName;
                 }, 1000);

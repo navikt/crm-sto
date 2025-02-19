@@ -193,6 +193,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 });
                 this.acceptedSTOCategories = categoryList;
                 this.acceptedSTOCategories.add('Andre-hjelpemidler'); // Special case
+                // eslint-disable-next-line
                 this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(
                     ([parentKey, childObj]) => Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`)
                 );
@@ -225,6 +226,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.setThemeToShow(this.urlStateParameters.category);
             setDecoratorParams(this.title, this.themeToShow);
             let tabName = `${this.title}${!!!this.themeToShow ? '' : ' - ' + this.themeToShow}`;
+            // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
             setTimeout(function () {
                 document.title = tabName;
             }, 1000);
