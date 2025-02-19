@@ -459,7 +459,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxType: this.title,
-                inboxTheme: this.pleiepengerSelected ? this.urlStateParameters?.category + '-Pleiepenger for sykt barn' : this.themeToShow
+                inboxTheme: this.pleiepengerSelected
+                    ? this.urlStateParameters?.category + '-Pleiepenger for sykt barn'
+                    : this.themeToShow
             })
                 .then((thread) => {
                     this.showspinner = false;

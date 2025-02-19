@@ -53,8 +53,8 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
     }
 
     setCategoryBreadcrumbs(category) {
-        this.leafnode = Object.keys(this.typeMap).find((key) => category?.includes(key)) 
-            ? this.typeMap[category] 
+        this.leafnode = Object.keys(this.typeMap).find((key) => category?.includes(key))
+            ? this.typeMap[category]
             : 'Skriv til oss';
         this._updateBreadcrumbs();
     }
