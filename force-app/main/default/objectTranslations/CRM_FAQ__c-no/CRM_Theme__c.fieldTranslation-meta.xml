@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Tema</label>
+    <name>CRM_Theme__c</name>
+    <picklistValues>
+        <masterLabel>AFP i offentlig sektor</masterLabel>
+        <translation><!-- AFP i offentlig sektor --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>AFP i privat sektor</masterLabel>
+        <translation><!-- AFP i privat sektor --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Alderspensjon</masterLabel>
+        <translation><!-- Alderspensjon --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Arbeid</masterLabel>
+        <translation><!-- Arbeid --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Arbeidsavklaringspenger (AAP)</masterLabel>
+        <translation><!-- Arbeidsavklaringspenger (AAP) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Barnetrygd og utvidet barnetrygd</masterLabel>
+        <translation><!-- Barnetrygd og utvidet barnetrygd --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Be om bekreftelse på trygdeavgift</masterLabel>
+        <translation><!-- Be om bekreftelse på trygdeavgift --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Bidragsforskudd eller ektefellebidrag</masterLabel>
+        <translation><!-- Bidragsforskudd eller ektefellebidrag --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Bor eller jobber i utlandet</masterLabel>
+        <translation><!-- Bor eller jobber i utlandet --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Dagpenger</masterLabel>
+        <translation><!-- Dagpenger --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Familie og barn</masterLabel>
+        <translation><!-- Familie og barn --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Foreldrepenger, svangerskapspenger eller engangsstønad</masterLabel>
+        <translation><!-- Foreldrepenger, svangerskapspenger eller engangsstønad --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Frivillig yrkesskadetrygd</masterLabel>
+        <translation><!-- Frivillig yrkesskadetrygd --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Grunnstønad eller hjelpestønad</masterLabel>
+        <translation><!-- Grunnstønad eller hjelpestønad --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Helse og sykdom</masterLabel>
+        <translation><!-- Helse og sykdom --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hjelpemidler</masterLabel>
+        <translation><!-- Hjelpemidler --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hjelpemidler og tilrettelegging</masterLabel>
+        <translation><!-- Hjelpemidler og tilrettelegging --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Kontantstøtte</masterLabel>
+        <translation><!-- Kontantstøtte --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Menerstatning</masterLabel>
+        <translation><!-- Menerstatning --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Omsorgsstønad eller fosterhjemsgodtgjørelse</masterLabel>
+        <translation><!-- Omsorgsstønad eller fosterhjemsgodtgjørelse --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og
+                    tilleggsstønader til enslig mor eller far</masterLabel>
+        <translation>
+            <!-- Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og
+                    tilleggsstønader til enslig mor eller far -->
+        </translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pensjon</masterLabel>
+        <translation><!-- Pensjon --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pleiepenger for sykt barn</masterLabel>
+        <translation><!-- Pleiepenger for sykt barn --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pleiepenger, omsorgspenger eller opplæringspenger</masterLabel>
+        <translation><!-- Pleiepenger, omsorgspenger eller opplæringspenger --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Støtte til gjenlevende</masterLabel>
+        <translation><!-- Støtte til gjenlevende --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Supplerende stønad for personer over 67 år med kort botid i Norge</masterLabel>
+        <translation><!-- Supplerende stønad for personer over 67 år med kort botid i Norge --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Supplerende stønad for uføre flyktninger under 67 år</masterLabel>
+        <translation><!-- Supplerende stønad for uføre flyktninger under 67 år --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sykepenger</masterLabel>
+        <translation><!-- Sykepenger --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sykepenger eller reisetilskudd</masterLabel>
+        <translation><!-- Sykepenger eller reisetilskudd --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Tilleggsstønader</masterLabel>
+        <translation><!-- Tilleggsstønader --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Tiltakspenger</masterLabel>
+        <translation><!-- Tiltakspenger --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Ufør</masterLabel>
+        <translation><!-- Ufør --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Uføretrygd</masterLabel>
+        <translation><!-- Uføretrygd --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Ventelønn</masterLabel>
+        <translation><!-- Ventelønn --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Vurdering av arbeidsevne</masterLabel>
+        <translation><!-- Vurdering av arbeidsevne --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -4,27 +4,22 @@
     <name>CRM_Shown__c</name>
     <picklistValues>
         <masterLabel>Beskjed til oss</masterLabel>
-        <translation><!-- Beskjed til oss -->
-        </translation>
+        <translation><!-- Beskjed til oss --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Gi beskjed</masterLabel>
-        <translation><!-- Gi beskjed -->
-        </translation>
+        <translation><!-- Gi beskjed --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Meld fra om endring</masterLabel>
-        <translation><!-- Meld fra om endring -->
-        </translation>
+        <translation><!-- Meld fra om endring --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Skriv til oss</masterLabel>
-        <translation><!-- Skriv til oss -->
-        </translation>
+        <translation><!-- Skriv til oss --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Trekke en søknad</masterLabel>
-        <translation><!-- Trekke en søknad -->
-        </translation>
+        <translation><!-- Trekke en søknad --></translation>
     </picklistValues>
 </CustomFieldTranslation>
