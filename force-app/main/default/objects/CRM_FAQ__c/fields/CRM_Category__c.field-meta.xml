@@ -112,6 +112,12 @@
                 <label>Omsorgsstønad eller fosterhjemsgodtgjørelse</label>
             </value>
             <value>
+                <fullName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</label>
+            </value>
+            <value>
                 <fullName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og
                     tilleggsstønader til enslig mor eller far</fullName>
                 <default>false</default>
@@ -191,26 +197,26 @@
         </valueSetDefinition>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Arbeid</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Bor eller jobber i utlandet</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Familie og barn</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Helse og sykdom</valueName>
         </valueSettings>
         <valueSettings>
@@ -219,14 +225,14 @@
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Hjelpemidler og tilrettelegging</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Pensjon</valueName>
         </valueSettings>
         <valueSettings>
@@ -236,8 +242,8 @@
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Ufør</valueName>
         </valueSettings>
         <valueSettings>
@@ -284,11 +290,6 @@
         <valueSettings>
             <controllingFieldValue>Meld fra om endring</controllingFieldValue>
             <valueName>Omsorgsstønad eller fosterhjemsgodtgjørelse</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Meld fra om endring</controllingFieldValue>
-            <valueName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og
-                tilleggsstønader til enslig mor eller far</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Meld fra om endring</controllingFieldValue>
