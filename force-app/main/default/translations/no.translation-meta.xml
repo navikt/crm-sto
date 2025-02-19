@@ -40,7 +40,7 @@
     <customLabels>
         <label>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har
             mottatt beskjeden din.</label>
-        <name>Beskjed_til_oss_intro_text</name>
+        <name>Beskjed_til_oss_Default_ingress</name>
     </customLabels>
     <customLabels>
         <label>

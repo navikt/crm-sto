@@ -9,11 +9,16 @@
     <valueSet>
         <restricted>true</restricted>
         <valueSetDefinition>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
             <value>
-                <fullName>Skriv til oss</fullName>
+                <fullName>Beskjed til oss</fullName>
                 <default>false</default>
-                <label>Skriv til oss</label>
+                <label>Beskjed til oss</label>
+            </value>
+            <value>
+                <fullName>Gi beskjed</fullName>
+                <default>false</default>
+                <label>Gi beskjed</label>
             </value>
             <value>
                 <fullName>Meld fra om endring</fullName>
@@ -21,14 +26,14 @@
                 <label>Meld fra om endring</label>
             </value>
             <value>
+                <fullName>Skriv til oss</fullName>
+                <default>false</default>
+                <label>Skriv til oss</label>
+            </value>
+            <value>
                 <fullName>Trekk en søknad</fullName>
                 <default>false</default>
                 <label>Trekk en søknad</label>
-            </value>
-            <value>
-                <fullName>Gi beskjed</fullName>
-                <default>false</default>
-                <label>Gi beskjed</label>
             </value>
         </valueSetDefinition>
     </valueSet>

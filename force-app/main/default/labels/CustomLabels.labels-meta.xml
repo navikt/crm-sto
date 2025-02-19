@@ -476,11 +476,11 @@
         <value>Users</value>
     </labels>
     <labels>
-        <fullName>Beskjed_til_oss_intro_text</fullName>
-        <categories>Skriv til oss</categories>
+        <fullName>Beskjed_til_oss_Default_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
         <language>en_US</language>
         <protected>false</protected>
-        <shortDescription>Beskjed til oss intro text</shortDescription>
+        <shortDescription>Beskjed til oss - Default ingress</shortDescription>
         <value>Here you can send us information relevant to your case. You will receive a
             confirmation that we have received your message.</value>
     </labels>

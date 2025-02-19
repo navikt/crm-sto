@@ -190,21 +190,25 @@
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekk en søknad</controllingFieldValue>
+            <controllingFieldValue>Beskjed til oss</controllingFieldValue>
             <valueName>Arbeid</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekk en søknad</controllingFieldValue>
+            <controllingFieldValue>Beskjed til oss</controllingFieldValue>
             <valueName>Bor eller jobber i utlandet</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekk en søknad</controllingFieldValue>
+            <controllingFieldValue>Beskjed til oss</controllingFieldValue>
             <valueName>Familie og barn</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekk en søknad</controllingFieldValue>
+            <controllingFieldValue>Beskjed til oss</controllingFieldValue>
             <valueName>Helse og sykdom</valueName>
         </valueSettings>
         <valueSettings>
@@ -214,20 +218,24 @@
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekk en søknad</controllingFieldValue>
+            <controllingFieldValue>Beskjed til oss</controllingFieldValue>
             <valueName>Hjelpemidler og tilrettelegging</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekk en søknad</controllingFieldValue>
+            <controllingFieldValue>Beskjed til oss</controllingFieldValue>
             <valueName>Pensjon</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Beskjed til oss</controllingFieldValue>
             <valueName>Pleiepenger for sykt barn</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekk en søknad</controllingFieldValue>
+            <controllingFieldValue>Beskjed til oss</controllingFieldValue>
             <valueName>Ufør</valueName>
         </valueSettings>
         <valueSettings>
