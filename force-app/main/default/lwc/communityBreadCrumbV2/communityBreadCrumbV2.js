@@ -16,57 +16,51 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
-        if (currentPageReference) {
-            const state = currentPageReference?.state;
-            const name = currentPageReference.attributes.name;
-            const category = state?.category;
-            const samtale = state?.samtale;
+        if (!currentPageReference) return;
+        const state = currentPageReference?.state;
+        const name = currentPageReference?.attributes?.name;
+        const category = state?.category;
+        const samtale = state?.samtale;
 
-            if (name === 'Visning__c' && samtale) {
-                this.recordId = samtale;
-                if (this.recordId) {
-                    this.fetchThread(this.recordId);
-                } else {
-                    console.warn('fetchThread not called: recordId is undefined or null');
-                }
-            } else if (name === 'Home') {
-                this.breadcrumbs = [
-                    { url: 'https://nav.no', title: 'Privatperson' },
-                    { url: 'https://www.nav.no/minside/', title: 'Min side' },
-                    { url: '', title: 'Innboks' }
-                ];
-                updateBreadcrumbs(this.breadcrumbs);
-                console.log('breadcrumbs: ', JSON.stringify(this.breadcrumbs));
-                return;
-            } else if (category && ['Endring', 'Beskjed', 'Trekke-soknad'].some((item) => category.includes(item))) {
-                Object.keys(this.typeMap).forEach((key) => {
-                    if (category.includes(key)) {
-                        this.leafnode = this.typeMap[key];
-                    }
-                });
-            } else {
-                this.leafnode = 'Skriv til oss';
-            }
-            this.updateBreadcrumbs();
+        if (name === 'Visning__c' && samtale) {
+            this.fetchThread(samtale);
+        } else if (name === 'Home') {
+            this.setHomeBreadcrumbs();
+        } else {
+            this.setCategoryBreadcrumbs(category);
         }
+        this._updateBreadcrumbs();
     }
 
     async fetchThread(recordId) {
+        this.recordId = recordId;
         try {
             const data = await getThread({ recordId });
-            if (data) {
-                this.leafnode = data.NKS_Inbox_Type__c;
-            } else {
-                console.warn('No data returned from getThread');
-            }
+            this.leafnode = data?.NKS_Inbox_Type__c ?? 'Beskjed til oss';
         } catch (error) {
             console.error('Problem getting thread:', error);
             this.leafnode = 'Beskjed til oss';
         }
+        this._updateBreadcrumbs();
+    }
+
+    setHomeBreadcrumbs() {
+        this.breadcrumbs = [
+            { url: 'https://nav.no', title: 'Privatperson' },
+            { url: 'https://www.nav.no/minside/', title: 'Min side' },
+            { url: '', title: 'Innboks' }
+        ];
+        updateBreadcrumbs(this.breadcrumbs);
+    }
+
+    setCategoryBreadcrumbs(category) {
+        this.leafnode = Object.keys(this.typeMap).find((key) => category?.includes(key)) 
+            ? this.typeMap[category] 
+            : 'Skriv til oss';
         this.updateBreadcrumbs();
     }
 
-    updateBreadcrumbs() {
+    _updateBreadcrumbs() {
         this.breadcrumbs = [
             { url: 'https://nav.no', title: 'Privatperson' },
             { url: 'https://www.nav.no/minside/', title: 'Min side' },
