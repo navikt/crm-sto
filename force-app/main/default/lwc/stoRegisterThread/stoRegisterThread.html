@@ -59,13 +59,19 @@
                                     </div>
                                 </template>
                                 <!-- Textarea -->
-                                <div class="slds-var-m-top_xx-large">
-                                    <c-community-textarea
-                                        max-length={maxLength}
-                                        class="inputTextbox"
-                                        ontextchanged={handleTextChange}
-                                    ></c-community-textarea>
-                                </div>
+                                <template lwc:if={showInputTextArea}>
+                                    <div class="slds-var-m-top_xx-large">
+                                        <c-community-textarea
+                                            max-length={maxLength}
+                                            class="inputTextbox"
+                                            ontextchanged={handleTextChange}
+                                        ></c-community-textarea>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="slds-var-m-top_medium"></div>
+                                </template>
+
                                 <!-- Medskriv radiobutton -->
                                 <div>
                                     <c-ds-radio

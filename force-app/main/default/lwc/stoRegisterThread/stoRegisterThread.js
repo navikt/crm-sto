@@ -340,6 +340,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         );
     }
 
+    get showInputTextArea() {
+        return !this.showPleiepengerRadioButton || this.pleiepengerSelected != null;
+    }
+
     setThemeToShow(urlCategory) {
         if (urlCategory === 'Andre-hjelpemidler') {
             this.themeToShow = 'Hjelpemidler';
@@ -450,8 +454,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (
             this.acceptedTerms &&
             this.message &&
-            this.message.length != null &&
-            this.message.length <= this.maxLength &&
+            this.message?.length != null &&
+            this.message?.length <= this.maxLength &&
             medskriv != null &&
             (!pleiepengerExists || pleiepenger != null)
         ) {
@@ -497,13 +501,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 });
         } else {
             this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
-            if (!this.message || this.message.length == null) {
+            if ((!this.message || this.message?.length == null) && this.showInputTextArea) {
                 this.errorList.errors.push({
                     Id: 1,
                     EventItem: '.inputTextbox',
                     Text: 'Tekstboksen kan ikke være tom.'
                 });
-            } else if (this.message.length >= this.maxLength) {
+            } else if (this.message?.length >= this.maxLength && this.showInputTextArea) {
                 this.errorList.errors.push({
                     Id: 2,
                     EventItem: '.inputTextbox',
