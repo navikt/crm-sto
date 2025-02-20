@@ -15,7 +15,7 @@ export default class StoInboxInformation extends LightningElement {
     surveyLink;
     completed = false;
     pageTheme;
-    pageType;
+    pageTitle;
 
     @wire(getThread, { recordId: '$recordId' })
     wiredThread({ error, data }) {
@@ -26,7 +26,7 @@ export default class StoInboxInformation extends LightningElement {
             this.closed = data.CRM_Is_Closed__c;
             this.caseId = data.CRM_Related_Object__c;
             let pageTheme = data.NKS_Inbox_Theme__c;
-            this.pageType = data.NKS_Inbox_Type__c;
+            this.pageTitle = data.NKS_Inbox_Title__c;
 
             // Remove "Helse-" or "Familie-" from the beginning of pageTheme for Pleiepenger case
             if (pageTheme?.startsWith('Helse-')) {
@@ -36,8 +36,8 @@ export default class StoInboxInformation extends LightningElement {
             }
             this.pagetheme = pageTheme;
 
-            if (this.pageType && this.pageTheme) {
-                setDecoratorParams(this.pageType, this.pageTheme);
+            if (this.pageTitle && this.pageTheme) {
+                setDecoratorParams(this.pageTitle, this.pageTheme);
                 document.title = this.tabName;
             }
         }
@@ -89,7 +89,7 @@ export default class StoInboxInformation extends LightningElement {
     }
 
     get tabName() {
-        return `${this.pageType}${this.pageTheme ? ' - ' + this.pageTheme : ''}`;
+        return `${this.pageTitle}${this.pageTheme ? ' - ' + this.pageTheme : ''}`;
     }
 
     get isClosedSTOorBTO() {

@@ -35,7 +35,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
         this.recordId = recordId;
         try {
             const data = await getThread({ recordId });
-            this.leafnode = data?.NKS_Inbox_Type__c ?? 'Beskjed til oss';
+            this.leafnode = data?.NKS_Inbox_Title__c ?? 'Beskjed til oss';
         } catch (error) {
             console.error('Problem getting thread:', error);
             this.leafnode = 'Beskjed til oss';

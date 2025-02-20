@@ -53,7 +53,7 @@ public with sharing class stoHelperClass {
         String msgText,
         Boolean medskriv,
         String type,
-        String inboxType,
+        String inboxTitle,
         String inboxTheme
     ) {
         String relatedObjId;
@@ -66,7 +66,7 @@ public with sharing class stoHelperClass {
         }
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        thread = createThread(null, theme, personUser, medskriv, type, inboxType, inboxTheme);
+        thread = createThread(null, theme, personUser, medskriv, type, inboxTitle, inboxTheme);
         createMessage(thread, msgText, personUser.ContactId);
 
         return thread;
@@ -97,7 +97,7 @@ public with sharing class stoHelperClass {
         User personUser,
         Boolean medskriv,
         String type,
-        String inboxType,
+        String inboxTitle,
         String inboxTheme
     ) {
         return createThread(
@@ -107,7 +107,7 @@ public with sharing class stoHelperClass {
             personUser.ContactId,
             medskriv,
             type,
-            inboxType,
+            inboxTitle,
             inboxTheme
         );
     }
@@ -125,7 +125,7 @@ public with sharing class stoHelperClass {
         String contactId,
         Boolean medskriv,
         String type,
-        String inboxType,
+        String inboxTitle,
         String inboxTheme
     ) {
         Thread__c thread = new Thread__c();
@@ -136,7 +136,7 @@ public with sharing class stoHelperClass {
         thread.CRM_Thread_Type__c = allowedThreadTypes.contains(type) ? type : 'STO';
         thread.STO_Category__c = theme;
         thread.STO_Medskriv__c = medskriv;
-        thread.NKS_Inbox_Type__c = inboxType;
+        thread.NKS_Inbox_Title__c = inboxTitle;
         thread.NKS_Inbox_Theme__c = inboxTheme;
         List<RecordType> recordType = [
             SELECT Id
@@ -238,7 +238,7 @@ public with sharing class stoHelperClass {
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
                 Name,
-                NKS_Inbox_Type__c,
+                NKS_Inbox_Title__c,
                 NKS_Inbox_Theme__c,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
@@ -297,7 +297,7 @@ public with sharing class stoHelperClass {
                 Id,
                 CRM_Thread_Type__c,
                 STO_ExternalName__c,
-                NKS_Inbox_Type__c,
+                NKS_Inbox_Title__c,
                 NKS_Inbox_Theme__c,
                 CRM_Is_Closed__c,
                 CRM_Related_Object__c

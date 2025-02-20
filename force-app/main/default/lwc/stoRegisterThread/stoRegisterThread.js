@@ -229,7 +229,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    @wire(getNews, { pageType: '$title', pageTheme: '$themeToShow' })
+    @wire(getNews, { pageTitle: '$title', pageTheme: '$themeToShow' })
     wirednews(result) {
         const { data, error } = result;
         this.wiredNews = result;
@@ -464,7 +464,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 msgText: this.message,
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
-                inboxType: this.title,
+                inboxTitle: this.title,
                 inboxTheme: this.pleiepengerSelected
                     ? this.urlStateParameters?.category + '-Pleiepenger for sykt barn'
                     : this.themeToShow
