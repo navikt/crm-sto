@@ -89,7 +89,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     wiredNews;
     wireThreadData;
 
-    stoThemeMapping = {
+    stoAndBtoThemeMapping = {
         Arbeid: 'Arbeid',
         Familie: 'Familie og barn',
         Helse: 'Helse og sykdom',
@@ -360,7 +360,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
 
         this.themeToShow =
-            this.btoCategoryAndThemeMap[type]?.[categoryParts.join('-')]?.theme || this.stoThemeMapping[urlCategory];
+            this.btoCategoryAndThemeMap[type]?.[categoryParts.join('-')]?.theme ||
+            this.stoAndBtoThemeMapping[urlCategory];
     }
 
     setTitleAndCategory(urlCategory) {
