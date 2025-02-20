@@ -182,9 +182,9 @@
                 <label>Vurdering av arbeidsevne</label>
             </value>
             <value>
-                <fullName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</fullName>
+                <fullName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og                    tilleggsstønader til enslig mor eller far</fullName>
                 <default>false</default>
-                <label>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</label>
+                <label>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og                    tilleggsstønader til enslig mor eller far</label>
             </value>
         </valueSetDefinition>
         <valueSettings>
@@ -322,6 +322,10 @@
         <valueSettings>
             <controllingFieldValue>Meld fra om endring</controllingFieldValue>
             <valueName>Vurdering av arbeidsevne</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Meld fra om endring</controllingFieldValue>
+            <valueName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og                    tilleggsstønader til enslig mor eller far</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Gi beskjed</controllingFieldValue>
