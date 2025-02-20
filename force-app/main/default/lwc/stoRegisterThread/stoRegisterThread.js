@@ -166,11 +166,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         },
         'Gi beskjed': {
             default: BESKJED_DEFAULT_INGRESS,
-            Internasjonal: BESKJED_INTERNASJONAL_INGRESS
+            'Be om bekreftelse på trygdeavgift': BESKJED_INTERNASJONAL_INGRESS
         },
         'Meld fra om endring': {
             default: ENDRING_DEFAULT_INGRESS,
-            Pensjon: ENDRING_PENSJON_INGRESS
+            'AFP i offentlig sektor': ENDRING_PENSJON_INGRESS
         },
         'Trekke en søknad': {
             default: TREKK_SOKNAD_DEFAULT_INGRESS
@@ -330,7 +330,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (this.urlStateParameters?.category === 'Andre-hjelpemidler') {
             return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
         }
-        return this.ingressMap[this.title]?.[this.category] || this.ingressMap[this.title]?.default;
+        return this.ingressMap[this.title]?.[this.themeToShow] || this.ingressMap[this.title]?.default;
     }
 
     get showPleiepengerRadioButton() {
