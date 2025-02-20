@@ -328,6 +328,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (this.urlStateParameters?.category === 'Andre-hjelpemidler') {
             return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
         }
+        // eslint-disable-next-line dot-notation
         return this.ingressMap[this.title]?.[this.category] || this.ingressMap[this.title]?.['default'];
     }
 

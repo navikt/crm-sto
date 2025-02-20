@@ -293,7 +293,14 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static Thread__c getThread(String recordId) {
         return [
-            SELECT Id, CRM_Thread_Type__c, STO_ExternalName__c, NKS_Inbox_Type__c, NKS_Inbox_Theme__c
+            SELECT
+                Id,
+                CRM_Thread_Type__c,
+                STO_ExternalName__c,
+                NKS_Inbox_Type__c,
+                NKS_Inbox_Theme__c,
+                CRM_Is_Closed__c,
+                CRM_Related_Object__c
             FROM Thread__c
             WHERE Id = :recordId
             LIMIT 1
