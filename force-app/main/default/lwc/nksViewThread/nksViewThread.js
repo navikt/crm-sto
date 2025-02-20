@@ -45,6 +45,7 @@ export default class NksViewThread extends LightningElement {
 
             if (this.pageType && this.pageTheme) {
                 setDecoratorParams(this.pageType, this.pageTheme);
+                // eslint-disable-next-line no-extra-boolean-cast
                 let tabName = `${this.pageType}${!!!this.pageTheme ? '' : ' - ' + this.pageTheme}`;
                 // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
                 setTimeout(function () {
@@ -66,7 +67,7 @@ export default class NksViewThread extends LightningElement {
             AnalyticsEvents.FORM_COMPLETED,
             'Send',
             getComponentName(this.template),
-            `${this.title} - ${this.themeToShow}`,
+            `${this.pageType} - ${this.pageTheme}`,
             'ny melding'
         );
     }

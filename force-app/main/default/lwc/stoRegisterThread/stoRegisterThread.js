@@ -225,6 +225,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.setTitleAndCategory(this.urlStateParameters.category);
             this.setThemeToShow(this.urlStateParameters.category);
             setDecoratorParams(this.title, this.themeToShow);
+            // eslint-disable-next-line no-extra-boolean-cast
             let tabName = `${this.title}${!!!this.themeToShow ? '' : ' - ' + this.themeToShow}`;
             // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
             setTimeout(function () {
