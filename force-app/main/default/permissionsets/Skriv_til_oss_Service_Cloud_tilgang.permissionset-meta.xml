@@ -166,7 +166,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Thread__c.NKS_Inbox_Type__c</field>
+        <field>Thread__c.NKS_Inbox_Title__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

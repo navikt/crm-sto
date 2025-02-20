@@ -24,10 +24,10 @@ export default class StoInboxInformation extends LightningElement {
             this.closed = data.CRM_Is_Closed__c;
             this.caseId = data.CRM_Related_Object__c;
             const pageTheme = data.NKS_Inbox_Theme__c;
-            const pageType = data.NKS_Inbox_Type__c;
+            const pageTitle = data.NKS_Inbox_Title__c;
 
-            if (pageType && pageTheme) {
-                setDecoratorParams(pageType, pageTheme);
+            if (pageTitle && pageTheme) {
+                setDecoratorParams(pageTitle, pageTheme);
             }
         }
     }

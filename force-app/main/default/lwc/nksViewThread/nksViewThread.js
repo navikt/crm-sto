@@ -21,7 +21,7 @@ export default class NksViewThread extends LightningElement {
     @api maxLength;
     _recordId;
     pageTheme;
-    pageType;
+    pageTitle;
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -39,7 +39,7 @@ export default class NksViewThread extends LightningElement {
         } else if (data) {
             const actualThreadType = data.CRM_Thread_Type__c;
             let pageTheme = data.NKS_Inbox_Theme__c;
-            this.pageType = data.NKS_Inbox_Type__c;
+            this.pageTitle = data.NKS_Inbox_Title__c;
 
             if (!allowedThreadTypes[this.threadType].includes(actualThreadType)) {
                 this.redirect(actualThreadType);
@@ -53,9 +53,10 @@ export default class NksViewThread extends LightningElement {
             }
             this.pageTheme = pageTheme;
 
-            if (this.pageType && this.pageTheme) {
+            if (this.pageTitle && this.pageTheme) {
+                // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
                 setTimeout(() => {
-                    setDecoratorParams(this.pageType, this.pageTheme);
+                    setDecoratorParams(this.pageTitle, this.pageTheme);
                     document.title = this.tabName;
                 }, '500');
             }
@@ -63,7 +64,7 @@ export default class NksViewThread extends LightningElement {
     }
 
     get tabName() {
-        return `${this.pageType}${this.pageTheme ? ' - ' + this.pageTheme : ''}`;
+        return `${this.pageTitle}${this.pageTheme ? ' - ' + this.pageTheme : ''}`;
     }
 
     // Redirect for static user notifications links
@@ -78,7 +79,7 @@ export default class NksViewThread extends LightningElement {
             AnalyticsEvents.FORM_COMPLETED,
             'Send',
             getComponentName(this.template),
-            `${this.pageType} - ${this.pageTheme}`,
+            `${this.pageTitle} - ${this.pageTheme}`,
             'ny melding'
         );
     }
