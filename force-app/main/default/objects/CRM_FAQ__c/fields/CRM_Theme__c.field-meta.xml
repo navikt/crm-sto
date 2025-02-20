@@ -112,6 +112,11 @@
                 <label>Omsorgsstønad eller fosterhjemsgodtgjørelse</label>
             </value>
             <value>
+                <fullName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</fullName>
+                <default>false</default>
+                <label>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</label>
+            </value>
+            <value>
                 <fullName>Pensjon</fullName>
                 <default>false</default>
                 <label>Pensjon</label>
@@ -180,11 +185,6 @@
                 <fullName>Vurdering av arbeidsevne</fullName>
                 <default>false</default>
                 <label>Vurdering av arbeidsevne</label>
-            </value>
-            <value>
-                <fullName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</fullName>
-                <default>false</default>
-                <label>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</label>
             </value>
         </valueSetDefinition>
         <valueSettings>
@@ -285,6 +285,10 @@
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Meld fra om endring</controllingFieldValue>
+            <valueName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Meld fra om endring</controllingFieldValue>
             <valueName>Pleiepenger, omsorgspenger eller opplæringspenger</valueName>
         </valueSettings>
         <valueSettings>
@@ -322,10 +326,6 @@
         <valueSettings>
             <controllingFieldValue>Meld fra om endring</controllingFieldValue>
             <valueName>Vurdering av arbeidsevne</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Meld fra om endring</controllingFieldValue>
-            <valueName>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Gi beskjed</controllingFieldValue>
