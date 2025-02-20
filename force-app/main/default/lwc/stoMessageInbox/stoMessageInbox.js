@@ -13,7 +13,7 @@ export default class StoMessageInbox extends LightningElement {
     showthreads = false;
     showrecentthreads = false;
 
-    connectedCallback() {
+    renderedCallback() {
         setDecoratorParams('Innboks', 'Innboks', '');
     }
 

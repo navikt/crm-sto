@@ -211,6 +211,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.template.querySelector('.spinner')?.focus();
         }
         document.title = this.tabName;
+        setDecoratorParams(this.threadTypeToMake, this.title, this.themeToShow);
     }
 
     @wire(MessageContext)
@@ -227,7 +228,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
             this.setTitleAndCategory(this.urlStateParameters.category);
             this.setThemeToShow(this.urlStateParameters.category);
-            setDecoratorParams(this.threadTypeToMake, this.title, this.themeToShow);
         }
     }
 
