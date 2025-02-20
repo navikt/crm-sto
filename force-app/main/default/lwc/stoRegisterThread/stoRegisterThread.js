@@ -100,7 +100,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Ufør: 'Ufør'
     };
 
-    // No category map needed for STO as it is equal to the url category param
+    // Uses type (prefix of category url) as key
     btoCategoryAndThemeMap = {
         // Melde fra om endring
         Endring: {
@@ -156,6 +156,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     };
 
+    // Uses title as key
     ingressMap = {
         'Skriv til oss': {
             default: STO_DEFAULT_INGRESS,
@@ -177,6 +178,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     };
 
+    // Uses type (prefix of category url) as key
     titleMap = {
         Endring: 'Meld fra om endring',
         'Trekke-soknad': 'Trekke en søknad',
@@ -389,7 +391,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
             this.category = this.btoCategoryAndThemeMap[type]?.[categoryString]?.category;
         } else {
-            // Single-word category (valid for STO & BTO)
+            // No category map needed for old STO and BTO as STO_Category__c is equal to the one word url category param
             this.category = categoryString;
         }
         this.previousCategory = this.category; // For pleiepenger radiobutton case
