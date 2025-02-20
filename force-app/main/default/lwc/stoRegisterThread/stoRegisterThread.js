@@ -253,8 +253,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
         if (data) {
             this.openThreadList = data;
-        } else if (error) {
-            console.error(error);
+        } else {
+            this.openThreadList = null; // Set to null when no data for pleiepenger radiobutton
+            if (error) {
+                console.error(error);
+            }
         }
     }
 
@@ -328,7 +331,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (this.urlStateParameters?.category === 'Andre-hjelpemidler') {
             return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
         }
-        return this.ingressMap[this.title]?.[this.category] || this.ingressMap[this.title]?.['default'];
+        return this.ingressMap[this.title]?.[this.category] || this.ingressMap[this.title]?.default;
     }
 
     get showPleiepengerRadioButton() {
@@ -445,12 +448,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     submitRequest() {
         const medskriv = this.refs.medskrivRadiobuttons?.getValue();
         const pleiepenger = this.refs.pleiepengerRadiobutton?.getValue();
+        const pleiepengerExists = this.refs.pleiepengerRadiobutton != null;
+
         if (
             this.acceptedTerms &&
             this.message &&
             this.message.length != null &&
             this.message.length <= this.maxLength &&
-            medskriv != null
+            medskriv != null &&
+            (!pleiepengerExists || pleiepenger != null)
         ) {
             this.errorList = null;
             this.showspinner = true;
@@ -507,7 +513,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     Text: 'Det er for mange tegn i tekstboksen.'
                 });
             }
-            if (this.refs.pleiepengerRadiobutton != null && pleiepenger == null) {
+            if (pleiepengerExists && pleiepenger == null) {
                 this.errorList.errors.push({
                     Id: 3,
                     EventItem: '.pleiepenger',
