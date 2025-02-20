@@ -194,15 +194,24 @@ public with sharing class stoHelperClass {
     }
 
     // TODO: Can be removed after deploy - for backwards compatibility
+    public static final Map<String, String> stoThemes = new Map<String, String>{
+        'Arbeid' => 'Arbeid',
+        'Familie' => 'Familie og barn',
+        'Helse' => 'Helse og sykdom',
+        'Hjelpemidler' => 'Hjelpemidler og tilrettelegging',
+        'Internasjonal' => 'Bor eller jobber i utlandet',
+        'Pensjon' => 'Pensjon',
+        'Pleiepenger' => 'Pleiepenger for sykt barn',
+        'Ufør' => 'Ufør'
+    };
+    // TODO: Can be removed after deploy - for backwards compatibility
     @AuraEnabled(cacheable=true)
     public static List<News> getCategoryNews(String category, String threadType) {
         String pagetitle = 'Skriv til oss';
-        if (threadType.equals('STO')) {
-            pagetitle = 'Skriv til oss';
-        } else if (threadType.equals('BTO')) {
-            pagetitle = 'Beskjed til oss';
+        if (threadType == 'BTO') {
+            pageTitle = 'Beskjed til oss';
         }
-        return getNewsBasedOnTheme(pageTitle, category);
+        return getNewsBasedOnTheme(pageTitle, stoThemes.get(category));
     }
 
     public class News {
