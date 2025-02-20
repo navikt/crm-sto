@@ -20,6 +20,8 @@ export default class NksViewThread extends LightningElement {
     @api recordId;
     @api maxLength;
     _recordId;
+    pageTheme;
+    pageType;
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -37,7 +39,7 @@ export default class NksViewThread extends LightningElement {
         } else if (data) {
             const actualThreadType = data.CRM_Thread_Type__c;
             let pageTheme = data.NKS_Inbox_Theme__c;
-            const pageType = data.NKS_Inbox_Type__c;
+            this.pageType = data.NKS_Inbox_Type__c;
 
             if (!allowedThreadTypes[this.threadType].includes(actualThreadType)) {
                 this.redirect(actualThreadType);
@@ -49,17 +51,17 @@ export default class NksViewThread extends LightningElement {
             } else if (pageTheme?.startsWith('Familie-')) {
                 pageTheme = pageTheme.substring(8);
             }
+            this.pageTheme = pageTheme;
 
-            if (pageType && pageTheme) {
-                setDecoratorParams(pageType, pageTheme);
-                // eslint-disable-next-line no-extra-boolean-cast
-                let tabName = `${pageType}${!!!pageTheme ? '' : ' - ' + pageTheme}`;
-                // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
-                setTimeout(function () {
-                    document.title = tabName;
-                }, 1000);
+            if (this.pageType && this.pageTheme) {
+                setDecoratorParams(this.pageType, this.pageTheme);
+                document.title = this.tabName;
             }
         }
+    }
+
+    get tabName() {
+        return `${this.pageType}${this.pageTheme ? ' - ' + this.pageTheme : ''}`;
     }
 
     // Redirect for static user notifications links

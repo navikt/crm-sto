@@ -208,6 +208,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (this.showspinner) {
             this.template.querySelector('.spinner')?.focus();
         }
+        document.title = this.tabName;
     }
 
     @wire(MessageContext)
@@ -225,12 +226,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.setTitleAndCategory(this.urlStateParameters.category);
             this.setThemeToShow(this.urlStateParameters.category);
             setDecoratorParams(this.title, this.themeToShow);
-            // eslint-disable-next-line no-extra-boolean-cast
-            let tabName = `${this.title}${!!!this.themeToShow ? '' : ' - ' + this.themeToShow}`;
-            // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
-            setTimeout(function () {
-                document.title = tabName;
-            }, 1000);
         }
     }
 
@@ -259,6 +254,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 console.error(error);
             }
         }
+    }
+
+    get tabName() {
+        return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
     }
 
     get title() {
@@ -392,8 +391,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.previousCategory = this.category; // For pleiepenger radiobutton case
 
         // Set title
-        console.log('type: ', type);
-        console.log('this.titleMap[type]: ', this.titleMap[type]);
         this._title = this.titleMap[type] ?? (this.threadTypeToMake === 'STO' ? 'Skriv til oss' : 'Beskjed til oss');
     }
 
@@ -549,11 +546,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                         this.showspinner = false;
                     })
                     .catch((err) => {
-                        console.log(err);
+                        console.error(err);
                     });
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
     }
 
@@ -609,7 +606,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             const hrefValue = match[1];
             logNavigationEvent(getComponentName(this.template), 'modal', hrefValue, 'fortsette dine åpne samtaler');
         } else {
-            console.log('No href found in the openThreadText');
+            console.error('No href found in the openThreadText');
         }
     }
 
