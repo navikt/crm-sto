@@ -173,17 +173,9 @@ public with sharing class stoHelperClass {
             throw new threadOrMessageException();
         }
     }
-    /**
-     * Method for accessing news regarding a STO Category
-     * Returns a list of STO_News__C or BTO_News__c
-     */
-    @AuraEnabled(cacheable=true)
-    public static List<News> getCategoryNews(String category) {
-        return getCategoryNews('Skriv til oss', category);
-    }
 
     @AuraEnabled(cacheable=true)
-    public static List<News> getCategoryNews(String pageTitle, String pageTheme) {
+    public static List<News> getNewsBasedOnTheme(String pageTitle, String pageTheme) {
         List<News> news = new List<News>();
 
         for (CRM_FAQ__c rec : [
@@ -199,6 +191,18 @@ public with sharing class stoHelperClass {
             news.add(new News('header test', 'body test', '123'));
         }
         return news;
+    }
+
+    // TODO: Can be removed after deploy - for backwards compatibility
+    @AuraEnabled(cacheable=true)
+    public static List<News> getCategoryNews(String category, String threadType) {
+        String pagetitle = 'Skriv til oss';
+        if (threadType.equals('STO')) {
+            pagetitle = 'Skriv til oss';
+        } else if (threadType.equals('BTO')) {
+            pagetitle = 'Beskjed til oss';
+        }
+        return getNewsBasedOnTheme(pageTitle, category);
     }
 
     public class News {

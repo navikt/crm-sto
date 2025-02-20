@@ -2,7 +2,7 @@ import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import createThreadWithCase from '@salesforce/apex/stoHelperClass.createThreadWithCase';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
-import getNews from '@salesforce/apex/stoHelperClass.getCategoryNews';
+import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';

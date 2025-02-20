@@ -130,9 +130,25 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
+    static void getNewsBasedOnThemeSTOTest() {
+        Test.startTest();
+        List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Skriv til oss', 'Pensjon');
+        System.assertEquals(newsList.isEmpty(), false);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void getNewsBasedOnThemeBTOTest() {
+        Test.startTest();
+        List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Beskjed til oss', 'Pensjon');
+        System.assertEquals(newsList.isEmpty(), false);
+        Test.stopTest();
+    }
+
+    @isTest
     static void getSTONewsTest() {
         Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Skriv til oss', 'Pensjon');
+        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'STO');
         System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
     }
@@ -140,7 +156,7 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void getBTONewsTest() {
         Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Beskjed til oss', 'Pensjon');
+        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'BTO');
         System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
     }
