@@ -23,8 +23,15 @@ export default class StoInboxInformation extends LightningElement {
             this.type = data.CRM_Thread_Type__c;
             this.closed = data.CRM_Is_Closed__c;
             this.caseId = data.CRM_Related_Object__c;
-            const pageTheme = data.NKS_Inbox_Theme__c;
+            let pageTheme = data.NKS_Inbox_Theme__c;
             const pageType = data.NKS_Inbox_Type__c;
+
+            // Remove "Helse-" or "Familie-" from the beginning of pageTheme for Pleiepenger case
+            if (pageTheme?.startsWith('Helse-')) {
+                pageTheme = pageTheme.substring(6);
+            } else if (pageTheme?.startsWith('Familie-')) {
+                pageTheme = pageTheme.substring(8);
+            }
 
             if (pageType && pageTheme) {
                 setDecoratorParams(pageType, pageTheme);

@@ -19,10 +19,7 @@ export default class NksViewThread extends LightningElement {
     @api threadType;
     @api recordId;
     @api maxLength;
-
     _recordId;
-    pageTheme;
-    pageType;
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -39,14 +36,24 @@ export default class NksViewThread extends LightningElement {
             console.error('Problem getting thread:', error);
         } else if (data) {
             const actualThreadType = data.CRM_Thread_Type__c;
-            this.pageTheme = data.NKS_Inbox_Theme__c;
-            this.pageType = data.NKS_Inbox_Type__c;
-            if (!allowedThreadTypes[this.threadType].includes(actualThreadType)) this.redirect(actualThreadType);
+            let pageTheme = data.NKS_Inbox_Theme__c;
+            const pageType = data.NKS_Inbox_Type__c;
 
-            if (this.pageType && this.pageTheme) {
-                setDecoratorParams(this.pageType, this.pageTheme);
+            if (!allowedThreadTypes[this.threadType].includes(actualThreadType)) {
+                this.redirect(actualThreadType);
+            }
+
+            // Remove "Helse-" or "Familie-" from the beginning of pageTheme for Pleiepenger case
+            if (pageTheme?.startsWith('Helse-')) {
+                pageTheme = pageTheme.substring(6);
+            } else if (pageTheme?.startsWith('Familie-')) {
+                pageTheme = pageTheme.substring(8);
+            }
+
+            if (pageType && pageTheme) {
+                setDecoratorParams(pageType, pageTheme);
                 // eslint-disable-next-line no-extra-boolean-cast
-                let tabName = `${this.pageType}${!!!this.pageTheme ? '' : ' - ' + this.pageTheme}`;
+                let tabName = `${pageType}${!!!pageTheme ? '' : ' - ' + pageTheme}`;
                 // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
                 setTimeout(function () {
                     document.title = tabName;
