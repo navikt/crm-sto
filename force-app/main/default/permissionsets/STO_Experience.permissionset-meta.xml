@@ -58,17 +58,17 @@
     </customMetadataTypeAccesses>
     <fieldPermissions>
         <editable>false</editable>
-        <field>CRM_FAQ__c.CRM_Category__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>CRM_FAQ__c.CRM_Content__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>CRM_FAQ__c.CRM_Shown__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>CRM_FAQ__c.CRM_Theme__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
