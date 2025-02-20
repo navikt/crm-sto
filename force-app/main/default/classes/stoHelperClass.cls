@@ -183,13 +183,13 @@ public with sharing class stoHelperClass {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<News> getCategoryNews(String pageType, String pageTheme) {
+    public static List<News> getCategoryNews(String pageTitle, String pageTheme) {
         List<News> news = new List<News>();
 
         for (CRM_FAQ__c rec : [
             SELECT Id, CRM_Content__c, CRM_Title__c
             FROM CRM_FAQ__c
-            WHERE CRM_Theme__c = :pageTheme AND CRM_Shown__c = :pageType
+            WHERE CRM_Theme__c = :pageTheme AND CRM_Shown__c = :pageTitle
             ORDER BY CRM_Ordering__c ASC
         ]) {
             news.add(new News(rec.CRM_Title__c, rec.CRM_Content__c, rec.Id));
