@@ -56,7 +56,7 @@ export default class NksViewThread extends LightningElement {
             if (this.pageTitle && this.pageTheme) {
                 // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
                 setTimeout(() => {
-                    setDecoratorParams(this.pageTitle, this.pageTheme);
+                    setDecoratorParams(actualThreadType, this.pageTitle, this.pageTheme);
                     document.title = this.tabName;
                 }, '500');
             }

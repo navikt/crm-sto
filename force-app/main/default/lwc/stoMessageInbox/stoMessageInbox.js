@@ -1,7 +1,7 @@
 import { LightningElement, wire, api } from 'lwc';
 import getThreads from '@salesforce/apex/stoInboxHelper.getThreads';
 import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads';
-import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
+import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
 
 export default class StoMessageInbox extends LightningElement {
     @api title;
@@ -12,6 +12,10 @@ export default class StoMessageInbox extends LightningElement {
     wrthreads;
     showthreads = false;
     showrecentthreads = false;
+
+    connectedCallback() {
+        setDecoratorParams('Innboks', 'Innboks', '');
+    }
 
     @wire(getThreads, {})
     wirethreads(result) {
