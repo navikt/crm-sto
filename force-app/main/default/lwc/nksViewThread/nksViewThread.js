@@ -25,6 +25,11 @@ export default class NksViewThread extends LightningElement {
     pageTitle;
     actualThreadType;
 
+    renderedCallback() {
+        // Set decorator params first when rendered
+        setDecoratorParams(this.threadType, this.threadType === 'STO' ? 'Skriv til oss' : '', '');
+    }
+
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference?.state?.samtale) {

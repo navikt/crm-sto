@@ -52,6 +52,10 @@
         <apexClass>stoInboxHelper</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>NKS_DialogueViewController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <customMetadataTypeAccesses>
         <enabled>true</enabled>
         <name>STO_Category__mdt</name>
