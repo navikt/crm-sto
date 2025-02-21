@@ -215,7 +215,7 @@
                 <leftValueReference>Get_Nav_Unit_status.unit.status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue>AKTIV</stringValue>
+                    <stringValue>Aktiv</stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -250,7 +250,8 @@
         </rules>
     </decisions>
     <decisions>
-        <description>Verify if a follow up task should be sent or not. If there is new external messages in this thread no follow up task is needed.</description>
+        <description>Verify if a follow up task should be sent or not. If there is new external
+            messages in this thread no follow up task is needed.</description>
         <name>Follow_up_Task_Check</name>
         <label>Follow up Task Check</label>
         <locationX>550</locationX>
@@ -279,9 +280,11 @@
             <label>Send Follow Up Task</label>
         </rules>
     </decisions>
-    <description>Record triggered flow to determine if a message has not been responded after 4 days and should generate a task to the one &quot;owning&quot; the conversation.</description>
+    <description>Record triggered flow to determine if a message has not been responded after 4 days
+        and should generate a task to the one &quot;owning&quot; the conversation.</description>
     <environments>Default</environments>
-    <interviewLabel>Message - After Insert - Message From NAV - Create Follow Up Task {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>Message - After Insert - Message From NAV - Create Follow Up Task
+        {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Message - After Insert - Message From NAV - Create Follow Up Task</label>
     <processMetadataValues>
         <name>BuilderType</name>

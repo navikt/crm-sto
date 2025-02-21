@@ -327,7 +327,7 @@
                 <leftValueReference>Get_Nav_Unit_status.unit.status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue>AKTIV</stringValue>
+                    <stringValue>Aktiv</stringValue>
                 </rightValue>
             </conditions>
             <connector>
