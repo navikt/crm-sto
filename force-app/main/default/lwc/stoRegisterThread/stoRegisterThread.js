@@ -194,7 +194,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     categoryList.add(stoCategory.STO_Category__c);
                 });
                 this.acceptedSTOCategories = categoryList;
-                this.acceptedSTOCategories.add('Andre-hjelpemidler'); // Special case
                 // eslint-disable-next-line
                 this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(
                     ([parentKey, childObj]) => Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`)
@@ -276,7 +275,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get isValidSTOCategory() {
-        return this.threadTypeToMake === 'STO' && this.acceptedSTOCategories.has(this.urlStateParameters?.category);
+        return (
+            this.threadTypeToMake === 'STO' &&
+            (this.acceptedSTOCategories.has(this.urlStateParameters?.category) ||
+                this.urlStateParameters?.category === 'Andre-hjelpemidler') // TODO: Remove Andre-hjelpemidler check here and add to acceptedSTOCategories when we stop supporting old BTO links
+        );
     }
 
     // TODO: Remove this.acceptedSTOCategories.has(this.urlStateParameters?.category) when team PB is done adding new links for BTO so that we do not support the old BTO links anymore
