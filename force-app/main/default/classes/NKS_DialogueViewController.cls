@@ -32,13 +32,7 @@ public with sharing class NKS_DialogueViewController {
                 CRM_Theme__r.Name,
                 CRM_Journal_Status_Formula__c,
                 CRM_Read_Date__c,
-                CreatedById,
-                Name,
-                CRM_Registered_Datetime_Formula__c,
-                CRM_Henvendelse_BehandlingskjedeId__c,
-                CRM_Henvendelse_BehandlingsId__c,
-                CRM_API_Reference__c,
-                CRM_Theme_Group_Name__c
+                CreatedById
             FROM Conversation_Note__c
             WHERE Id = :convNoteId
         ];

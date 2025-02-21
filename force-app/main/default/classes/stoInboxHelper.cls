@@ -1,6 +1,4 @@
 public with sharing class stoInboxHelper {
-    //TODO: Use custom labels
-
     @AuraEnabled(cacheable=true)
     public static List<thread> getThreads() {
         List<thread> inboxlist = new List<thread>();
