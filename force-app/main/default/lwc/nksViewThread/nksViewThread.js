@@ -31,26 +31,11 @@ export default class NksViewThread extends LightningElement {
     }
 
     @wire(CurrentPageReference)
-    getStateParameters(currentPageReference) {
-        if (currentPageReference?.state?.samtale) {
-            this._recordId = currentPageReference.state.samtale;
-        } else {
-            this._recordId = this.recordId;
-        }
-
-        if (this._recordId) {
-            this.fetchThreadData();
-        } else {
-            console.warn('No recordId available, skipping API call.');
-        }
-    }
-
-    @wire(getThread, { recordId: '$_recordId' })
-    wiredThread({ error, data }) {
-        if (error) {
-            console.error('Error fetching thread data:', error);
-        } else if (data) {
-            this.processThreadData(data);
+    async getStateParameters(currentPageReference) {
+        const newRecordId = currentPageReference?.state?.samtale || this.recordId;
+        if (newRecordId && newRecordId !== this._recordId) {
+            this._recordId = newRecordId;
+            await this.fetchThreadData();
         }
     }
 
@@ -84,6 +69,7 @@ export default class NksViewThread extends LightningElement {
             setDecoratorParams(this.actualThreadType, this.pageTitle, this.pageTheme);
             // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
             setTimeout(() => {
+                // Extra SetTimeout needed for STO to work
                 document.title = this.tabName;
             }, '500');
         }
