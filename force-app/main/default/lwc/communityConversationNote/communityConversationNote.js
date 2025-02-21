@@ -47,7 +47,7 @@ export default class CommunityConversationNote extends LightningElement {
             this.note = getFieldValue(data, NOTE_FIELD);
             this.date = getFieldValue(data, DATE_FIELD);
             this.themeGroup = getFieldValue(data, THEMEGROUPNAME_FIELD);
-            console.log('this.themeGroup: ', this.themeGroup);
+
             const behandlingskjede = getFieldValue(data, BEHANDLINGSKJEDE_FIELD);
             const behandlingsId = getFieldValue(data, BEHANDLINGSID_FIELD);
             const apiRef = getFieldValue(data, APIREFERENCE_FIELD);
