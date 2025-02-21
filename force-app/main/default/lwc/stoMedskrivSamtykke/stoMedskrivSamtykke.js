@@ -3,6 +3,7 @@ import { LightningElement, api, wire } from 'lwc';
 import MEDSKRIV_FIELD from '@salesforce/schema/Thread__c.STO_Medskriv__c';
 import ID_FIELD from '@salesforce/schema/Thread__c.Id';
 import LoggerUtility from 'c/loggerUtility';
+import { AnalyticsEvents, logButtonEvent, getComponentName } from 'c/inboxAmplitude';
 
 const titlesConst = {
     false: 'Du har godkjent at denne samtalen kan brukes til opplæring av ansatte i Nav.',
@@ -16,6 +17,7 @@ const textConst = {
 
 export default class StoMedskrivSamtykke extends LightningElement {
     @api recordId;
+
     buttonPushed = false;
 
     revokeMedskriv() {
@@ -30,6 +32,13 @@ export default class StoMedskrivSamtykke extends LightningElement {
         updateRecord(recordInput).catch((error) => {
             LoggerUtility.logError('NKS', 'STO', error, 'Kunne ikke fjerne medskriv', this.recordId);
         });
+
+        logButtonEvent(
+            AnalyticsEvents.FORM_COMPLETED,
+            'Fjern min godkjenning',
+            getComponentName(this.template),
+            'medskriv'
+        );
     }
 
     @wire(getRecord, { recordId: '$recordId', fields: MEDSKRIV_FIELD })
