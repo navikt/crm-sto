@@ -70,13 +70,9 @@ export default class NksViewThread extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
             setTimeout(() => {
                 // Extra SetTimeout needed for STO to work
-                document.title = this.tabName;
+                document.title = `${this.pageTitle} - ${this.pageTheme}`;
             }, '500');
         }
-    }
-
-    get tabName() {
-        return `${this.pageTitle}${this.pageTheme ? ' - ' + this.pageTheme : ''}`;
     }
 
     // Redirect for static user notifications links
