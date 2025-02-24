@@ -6,6 +6,12 @@ import { CurrentPageReference } from 'lightning/navigation';
 import { updateBreadcrumbs } from 'c/inboxAmplitude';
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
 
+const NAV_URLS = {
+    home: 'https://nav.no',
+    minSide: 'https://www.nav.no/minside/',
+    inbox: 'https://innboks.nav.no'
+};
+
 export default class CommunityBreadCrumbV2 extends LightningElement {
     recordId;
     leafnode;
@@ -25,19 +31,23 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (!currentPageReference) return;
-        const state = currentPageReference?.state;
-        const name = currentPageReference?.attributes?.name;
-        const objectApiName = currentPageReference?.attributes?.objectApiName;
-        const samtale = state?.samtale;
 
-        if (name === 'Visning__c' && samtale) {
-            this.fetchThread(samtale);
-        } else if (name === 'Home') {
-            this.setHomeBreadcrumbs();
-        } else if (name === 'Fedrekvotesaken') {
-            this.setFedrekvoteBreadcrumbs();
-        } else {
-            this.setObjectBreadcrumbs(objectApiName);
+        const { attributes, state } = currentPageReference;
+        const { name, objectApiName } = attributes || {};
+        const { samtale } = state || {};
+
+        switch (name) {
+            case 'Visning__c':
+                if (samtale) this.fetchThread(samtale);
+                break;
+            case 'Home':
+                this.setHomeBreadcrumbs();
+                break;
+            case 'Fedrekvotesaken':
+                this.setFedrekvoteBreadcrumbs();
+                break;
+            default:
+                this.setObjectBreadcrumbs(objectApiName);
         }
     }
 
@@ -50,35 +60,31 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
             console.error('Problem getting thread:', error);
             this.leafnode = 'Beskjed til oss';
         }
-        this._updateBreadcrumbs();
+        this.updateBreadcrumbs();
     }
 
     setHomeBreadcrumbs() {
-        this.breadcrumbs = [
-            { url: 'https://nav.no', title: 'Privatperson' },
-            { url: 'https://www.nav.no/minside/', title: 'Min side' },
+        this.updateBreadcrumbs([
+            { url: NAV_URLS.home, title: 'Privatperson' },
+            { url: NAV_URLS.minSide, title: 'Min side' },
             { url: '', title: 'Innboks' }
-        ];
-        updateBreadcrumbs(this.breadcrumbs);
+        ]);
     }
 
     setObjectBreadcrumbs(objectApiName) {
-        this.leafnode = Object.keys(this.objectMap).find((key) => objectApiName?.includes(key))
-            ? this.objectMap[objectApiName]
-            : '';
-        this._updateBreadcrumbs();
+        this.leafnode = this.objectMap[objectApiName] || '';
+        this.updateBreadcrumbs();
     }
 
     setFedrekvoteBreadcrumbs() {
-        this.breadcrumbs = [{ url: '', title: 'Fedrekvotesaken' }];
-        updateBreadcrumbs(this.breadcrumbs);
+        this.updateBreadcrumbs([{ url: '', title: 'Fedrekvotesaken' }]);
     }
 
-    _updateBreadcrumbs() {
-        this.breadcrumbs = [
-            { url: 'https://nav.no', title: 'Privatperson' },
-            { url: 'https://www.nav.no/minside/', title: 'Min side' },
-            { url: 'https://innboks.nav.no', title: 'Innboks' },
+    updateBreadcrumbs(customBreadcrumbs = null) {
+        this.breadcrumbs = customBreadcrumbs || [
+            { url: NAV_URLS.home, title: 'Privatperson' },
+            { url: NAV_URLS.minSide, title: 'Min side' },
+            { url: NAV_URLS.inbox, title: 'Innboks' },
             { url: '', title: this.leafnode }
         ];
         updateBreadcrumbs(this.breadcrumbs);
