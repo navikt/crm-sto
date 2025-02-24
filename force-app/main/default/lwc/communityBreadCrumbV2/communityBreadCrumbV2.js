@@ -1,4 +1,7 @@
 import { LightningElement, wire } from 'lwc';
+import navStyling from '@salesforce/resourceUrl/navStyling';
+import index from '@salesforce/resourceUrl/index';
+import { loadStyle } from 'lightning/platformResourceLoader';
 import { CurrentPageReference } from 'lightning/navigation';
 import { updateBreadcrumbs } from 'c/inboxAmplitude';
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
@@ -8,26 +11,33 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
     leafnode;
     breadcrumbs = [];
 
-    typeMap = {
-        Endring: 'Meld fra om endring',
-        'Trekke-soknad': 'Trekke en søknad',
-        Beskjed: 'Gi beskjed'
+    objectMap = {
+        Conversation_Note__c: 'Samtalereferat',
+        LiveChatTranscript: 'Chat',
+        Thread__c: 'Skriv til oss'
     };
+
+    renderedCallback() {
+        loadStyle(this, index);
+        loadStyle(this, navStyling);
+    }
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (!currentPageReference) return;
         const state = currentPageReference?.state;
         const name = currentPageReference?.attributes?.name;
-        const category = state?.category;
+        const objectApiName = currentPageReference?.attributes?.objectApiName;
         const samtale = state?.samtale;
 
         if (name === 'Visning__c' && samtale) {
             this.fetchThread(samtale);
         } else if (name === 'Home') {
             this.setHomeBreadcrumbs();
+        } else if (name === 'Fedrekvotesaken') {
+            this.setFedrekvoteBreadcrumbs();
         } else {
-            this.setCategoryBreadcrumbs(category);
+            this.setObjectBreadcrumbs(objectApiName);
         }
     }
 
@@ -52,11 +62,16 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
         updateBreadcrumbs(this.breadcrumbs);
     }
 
-    setCategoryBreadcrumbs(category) {
-        this.leafnode = Object.keys(this.typeMap).find((key) => category?.includes(key))
-            ? this.typeMap[category]
-            : 'Skriv til oss';
+    setObjectBreadcrumbs(objectApiName) {
+        this.leafnode = Object.keys(this.objectMap).find((key) => objectApiName?.includes(key))
+            ? this.objectMap[objectApiName]
+            : '';
         this._updateBreadcrumbs();
+    }
+
+    setFedrekvoteBreadcrumbs() {
+        this.breadcrumbs = [{ url: '', title: 'Fedrekvotesaken' }];
+        updateBreadcrumbs(this.breadcrumbs);
     }
 
     _updateBreadcrumbs() {
