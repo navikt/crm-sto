@@ -10,7 +10,7 @@
         <controllingField>CRM_Shown__c</controllingField>
         <restricted>true</restricted>
         <valueSetDefinition>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
             <value>
                 <fullName>AFP i offentlig sektor</fullName>
                 <default>false</default>
@@ -35,6 +35,11 @@
                 <fullName>Arbeidsavklaringspenger (AAP)</fullName>
                 <default>false</default>
                 <label>Arbeidsavklaringspenger (AAP)</label>
+            </value>
+            <value>
+                <fullName>Avtale eller endre time på Nav-kontor</fullName>
+                <default>false</default>
+                <label>Avtale eller endre time på Nav-kontor</label>
             </value>
             <value>
                 <fullName>Barnetrygd og utvidet barnetrygd</fullName>
@@ -330,6 +335,10 @@
         <valueSettings>
             <controllingFieldValue>Gi beskjed</controllingFieldValue>
             <valueName>AFP i privat sektor</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>Avtale eller endre time på Nav-kontor</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Gi beskjed</controllingFieldValue>

@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
+        <fullName>Beskjed_til_oss_Beskjed_Arbeid_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss - Beskjed - Arbeid ingress</shortDescription>
+        <value>&lt;strong&gt;Avtale time&lt;/strong&gt;
+            &lt;br/&gt;Nav kontaktsenter kan hjelpe deg med det meste. Det er ikke sikkert du
+            trenger en timeavtale på Nav-kontoret ditt. Skriv hva du trenger hjelp til, så vil vi
+            vurdere om du trenger en timeavtale.
+            &lt;br/&gt;&lt;br/&gt;
+            &lt;strong&gt;Endre time&lt;/strong&gt;
+            &lt;br/&gt;Hvis du ikke kan møte til avtalt tid, kan du be om et nytt tidspunkt.
+            &lt;br/&gt;&lt;br/&gt;
+            Gjelder det økonomisk sosialhjelp eller sosiale tjenester, må du kontakte oss på telefon
+            55 55 33 33 (tastevalg 1).</value>
+    </labels>
+    <labels>
         <fullName>Beskjed_til_oss_Beskjed_Default_ingress</fullName>
         <categories>Beskjed til oss, Ingress</categories>
         <language>en_US</language>

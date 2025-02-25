@@ -67,7 +67,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
         this.updateBreadcrumbs([
             { url: NAV_URLS.home, title: 'Privatperson' },
             { url: NAV_URLS.minSide, title: 'Min side' },
-            { url: '', title: 'Innboks' }
+            { url: '/', title: 'Innboks' }
         ]);
     }
 
@@ -77,7 +77,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
     }
 
     setFedrekvoteBreadcrumbs() {
-        this.updateBreadcrumbs([{ url: '', title: 'Fedrekvotesaken' }]);
+        this.updateBreadcrumbs([{ url: '/', title: 'Fedrekvotesaken' }]);
     }
 
     updateBreadcrumbs(customBreadcrumbs = null) {
@@ -85,7 +85,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
             { url: NAV_URLS.home, title: 'Privatperson' },
             { url: NAV_URLS.minSide, title: 'Min side' },
             { url: NAV_URLS.inbox, title: 'Innboks' },
-            { url: '', title: this.leafnode }
+            { url: '/', title: this.leafnode }
         ];
         updateBreadcrumbs(this.breadcrumbs);
     }
