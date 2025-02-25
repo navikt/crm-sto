@@ -59,6 +59,10 @@
         <translation><!-- Frivillig yrkesskadetrygd --></translation>
     </picklistValues>
     <picklistValues>
+        <masterLabel>Gi fullmakt til lege</masterLabel>
+        <translation><!-- Gi fullmakt til lege --></translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Grunnstønad eller hjelpestønad</masterLabel>
         <translation><!-- Grunnstønad eller hjelpestønad --></translation>
     </picklistValues>
