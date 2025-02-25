@@ -8,9 +8,9 @@
                 class="text-center"
                 style="background-color: #fff; display: block; padding: 1rem 1rem 1rem 1rem; border-radius: 4px"
             >
-                <template if:true={validparameter}>
+                <template lwc:if={validQueryParameter}>
                     <img aria-hidden="true" src={logopath} class="logo" />
-                    <h2 class="navds-labels blokk-s" style="color: #0067c5">{selectedTheme}</h2>
+                    <h2 class="navds-labels blokk-s" style="color: #0067c5">{themeToShow}</h2>
                     <c-community-error-summary
                         error-list={errorList}
                         onclickedevent={handleErrorClick}
@@ -18,9 +18,11 @@
                         style="text-align: left"
                     >
                     </c-community-error-summary>
-
-                    <div class="descholder slds-var-m-bottom_xx-large">
-                        <p class="navds-body-short navds-body-short--small blokk-xs description">{introLabel}</p>
+                    <div class="descholder slds-var-m-bottom_xx-large ingress">
+                        <lightning-formatted-rich-text
+                            class="navds-body-short navds-body-short--small blokk-xs description"
+                            value={ingressLabel}
+                        ></lightning-formatted-rich-text>
                     </div>
                     <div class="inputarea">
                         <template if:false={showspinner}>
@@ -34,27 +36,51 @@
                                 </template>
                             </div>
                             <template if:true={showOpenThreadWarning}>
-                                <div class="slds-var-m-top_xx-large slds-text-align_left">
+                                <div class="slds-var-m-top_xx-large slds-text-align_left" onclick={handleAlertBoxClick}>
                                     <c-crm-community-alert-stripe type={alertType} alerttext={openThreadText}>
                                     </c-crm-community-alert-stripe>
                                 </div>
                             </template>
                             <template if:true={showTextArea}>
+                                <!-- Pleiepenger Radio Button -->
+                                <template lwc:if={showPleiepengerRadioButton}>
+                                    <div class="slds-var-p-top_medium">
+                                        <c-ds-radio
+                                            lwc:ref="pleiepengerRadiobutton"
+                                            style="text-align: left"
+                                            title="Gjelder det pleiepenger for sykt barn?"
+                                            options={pleiepengerOptions}
+                                            class="radioFocus pleiepenger"
+                                            onradiochange={handlePleiepengerChange}
+                                            ><div slot="legend" class="slds-grid">
+                                                <p>Gjelder det pleiepenger for sykt barn?</p>
+                                            </div></c-ds-radio
+                                        >
+                                    </div>
+                                </template>
                                 <!-- Textarea -->
-                                <div class="slds-var-m-top_xx-large">
-                                    <c-community-textarea
-                                        max-length={maxLength}
-                                        class="inputTextbox"
-                                        ontextchanged={handleTextChange}
-                                    ></c-community-textarea>
-                                </div>
+                                <template lwc:if={showInputTextArea}>
+                                    <div class="slds-var-m-top_xx-large">
+                                        <c-community-textarea
+                                            max-length={maxLength}
+                                            class="inputTextbox"
+                                            ontextchanged={handleTextChange}
+                                        ></c-community-textarea>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div class="slds-var-m-top_medium"></div>
+                                </template>
+
                                 <!-- Medskriv radiobutton -->
-                                <div class="">
+                                <div>
                                     <c-ds-radio
+                                        lwc:ref="medskrivRadiobuttons"
                                         style="text-align: left"
                                         title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
                                         options={medskrivOptions}
-                                        class="radioFocus"
+                                        class="radioFocus medskrive"
+                                        onradiochange={handleRadioChange}
                                         ><div slot="legend" class="slds-grid">
                                             <p>
                                                 Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?
@@ -87,7 +113,6 @@
                                     type="submit"
                                     style="padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px) 2.5rem"
                                     aria-disabled="false"
-                                    label="Send"
                                     onclick={submitRequest}
                                 >
                                     Send
@@ -95,12 +120,13 @@
                             </template>
                             <template if:false={showTextArea}>
                                 <h2 class="navds-heading navds-heading--medium leftAlign topBigGap">
-                                    Dine åpne samtaler om {selectedTheme}
+                                    Dine åpne samtaler om {category}
                                 </h2>
                                 <div class="nav-wrapper">
                                     <template for:each={openThreadList} for:item="thread" for:index="index">
                                         <c-sto-inbox-close-item
                                             thread={thread}
+                                            content-type={contentType}
                                             key={thread.recordId}
                                             index={index}
                                             onclosethread={handleCloseThread}
@@ -138,6 +164,12 @@
                             </svg>
                         </template>
                     </div>
+                </template>
+                <template lwc:else>
+                    <lightning-formatted-rich-text
+                        class="navds-body-short navds-body-short--small blokk-xs description"
+                        value={wrongLinkMsg}
+                    ></lightning-formatted-rich-text>
                 </template>
             </div>
         </div>
