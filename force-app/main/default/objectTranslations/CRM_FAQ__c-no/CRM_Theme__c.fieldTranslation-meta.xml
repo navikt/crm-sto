@@ -23,6 +23,10 @@
         <translation><!-- Arbeidsavklaringspenger (AAP) --></translation>
     </picklistValues>
     <picklistValues>
+        <masterLabel>Avtale eller endre time på Nav-kontor</masterLabel>
+        <translation><!-- Avtale eller endre time på Nav-kontor --></translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Barnetrygd og utvidet barnetrygd</masterLabel>
         <translation><!-- Barnetrygd og utvidet barnetrygd --></translation>
     </picklistValues>
@@ -84,9 +88,7 @@
     </picklistValues>
     <picklistValues>
         <masterLabel>Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far</masterLabel>
-        <translation>
-            <!-- Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far -->
-        </translation>
+        <translation><!-- Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Pensjon</masterLabel>
