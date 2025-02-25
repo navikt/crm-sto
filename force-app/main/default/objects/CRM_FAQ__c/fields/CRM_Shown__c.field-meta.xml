@@ -16,6 +16,12 @@
                 <label>Beskjed til oss</label>
             </value>
             <value>
+                <fullName>BTO</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>BTO</label>
+            </value>
+            <value>
                 <fullName>Gi beskjed</fullName>
                 <default>false</default>
                 <label>Gi beskjed</label>
@@ -29,6 +35,12 @@
                 <fullName>Skriv til oss</fullName>
                 <default>false</default>
                 <label>Skriv til oss</label>
+            </value>
+            <value>
+                <fullName>STO</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>STO</label>
             </value>
             <value>
                 <fullName>Trekke en søknad</fullName>

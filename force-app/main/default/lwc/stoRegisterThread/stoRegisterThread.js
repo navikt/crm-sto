@@ -37,6 +37,7 @@ import ENDRING_PENSJON_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring
 import TREKK_SOKNAD_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Trekk_soknad_Default_ingress';
 import BESKJED_INTERNASJONAL_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Internasjonal_ingress';
 import BESKJED_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Default_ingress';
+import BESKJED_ARBEID_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Arbeid_ingress';
 const maxThreadCount = 3;
 const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
 
@@ -152,7 +153,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             sykepenger: { category: 'Helse', theme: 'Sykepenger' },
             menerstatning: { category: 'Helse', theme: 'Menerstatning' },
             'AFP-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
-            'AFP-privat': { category: 'Pensjon', theme: 'AFP i privat sektor' }
+            'AFP-privat': { category: 'Pensjon', theme: 'AFP i privat sektor' },
+            kontor: { category: 'Arbeid', theme: 'Avtale eller endre time på Nav-kontor' }
         }
     };
 
@@ -167,7 +169,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         },
         'Gi beskjed': {
             default: BESKJED_DEFAULT_INGRESS,
-            'Be om bekreftelse på trygdeavgift': BESKJED_INTERNASJONAL_INGRESS
+            'Be om bekreftelse på trygdeavgift': BESKJED_INTERNASJONAL_INGRESS,
+            'Avtale eller endre time på Nav-kontor': BESKJED_ARBEID_INGRESS
         },
         'Meld fra om endring': {
             default: ENDRING_DEFAULT_INGRESS,
