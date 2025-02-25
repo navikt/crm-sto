@@ -341,13 +341,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
         }
 
-        // denne kan fjernes når vi har fått ingress for 'Gi fullmakt til lege'
-        const specificIngress = this.ingressMap[this.title]?.[this.themeToShow];
-        if (specificIngress !== undefined) {
-            return specificIngress;
-        }
-
-        return this.ingressMap[this.title]?.default;
+        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
     }
 
     get showPleiepengerRadioButton() {
