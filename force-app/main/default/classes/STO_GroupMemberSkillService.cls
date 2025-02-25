@@ -275,7 +275,7 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
             WHERE RelatedRecordId IN :userMap.keySet() AND ResourceType = :srType
         ]) {
             userResourceMap.put(servRes.RelatedRecordId, servRes);
-            if (servRes.CRM_Domain__c != srDomain && servRes.CRM_SubDomain__c != srSubDomain) {
+            if (servRes.CRM_Domain__c != srDomain || servRes.CRM_SubDomain__c != srSubDomain) {
                 serviceResuorcesOtherDomain.add(servRes);
             }
         }
