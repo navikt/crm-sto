@@ -72,25 +72,6 @@ public with sharing class stoHelperClass {
         return thread;
     }
 
-    // TODO: Can be removed after deploy - for backwards compatibility
-    @AuraEnabled
-    public static Thread__c createThreadWithCase(String theme, String msgText, Boolean medskriv, String type) {
-        String relatedObjId;
-        Thread__c thread;
-
-        if (isMaxThreadCount(theme, type)) {
-            logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
-            logger.publish();
-            throw new maxThreadLimitReachedException();
-        }
-
-        User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        thread = createThread(null, theme, personUser, medskriv, type, null, null);
-        createMessage(thread, msgText, personUser.ContactId);
-
-        return thread;
-    }
-
     private static Thread__c createThread(
         String relatedObjId,
         String theme,
@@ -191,27 +172,6 @@ public with sharing class stoHelperClass {
             news.add(new News('header test', 'body test', '123'));
         }
         return news;
-    }
-
-    // TODO: Can be removed after deploy - for backwards compatibility
-    public static final Map<String, String> stoThemes = new Map<String, String>{
-        'Arbeid' => 'Arbeid',
-        'Familie' => 'Familie og barn',
-        'Helse' => 'Helse og sykdom',
-        'Hjelpemidler' => 'Hjelpemidler og tilrettelegging',
-        'Internasjonal' => 'Bor eller jobber i utlandet',
-        'Pensjon' => 'Pensjon',
-        'Pleiepenger' => 'Pleiepenger for sykt barn',
-        'Ufør' => 'Ufør'
-    };
-    // TODO: Can be removed after deploy - for backwards compatibility
-    @AuraEnabled(cacheable=true)
-    public static List<News> getCategoryNews(String category, String threadType) {
-        String pagetitle = 'Skriv til oss';
-        if (threadType == 'BTO') {
-            pageTitle = 'Beskjed til oss';
-        }
-        return getNewsBasedOnTheme(pageTitle, stoThemes.get(category));
     }
 
     public class News {

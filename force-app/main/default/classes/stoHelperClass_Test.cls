@@ -146,22 +146,6 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void getSTONewsTest() {
-        Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'STO');
-        System.assertEquals(newsList.isEmpty(), false);
-        Test.stopTest();
-    }
-
-    @isTest
-    static void getBTONewsTest() {
-        Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'BTO');
-        System.assertEquals(newsList.isEmpty(), false);
-        Test.stopTest();
-    }
-
-    @isTest
     static void closeThreadTest() {
         Contact personContact = [
             SELECT Id, AccountId
