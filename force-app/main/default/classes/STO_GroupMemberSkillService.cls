@@ -261,23 +261,34 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
     }
 
     /**
-     * @description Returns a map of userIds to a ServiceResource record
+     * @description Returns a map of userIds to a ServiceResource record of same type
      * @author Stian Ruud Schikora | 12-14-2021
      * @return Map<Id, ServiceResource>
      **/
     @SuppressWarnings('PMD.ApexCRUDViolation')
     private Map<Id, ServiceResource> getServiceResources() {
         Map<Id, ServiceResource> userResourceMap = new Map<Id, ServiceResource>();
+        List<ServiceResource> serviceResuorcesOtherDomain = new List<ServiceResource>();
         for (ServiceResource servRes : [
-            SELECT Id, RelatedRecordId, CRM_Domain__c
+            SELECT Id, RelatedRecordId, CRM_Domain__c, CRM_SubDomain__c
             FROM ServiceResource
-            WHERE
-                RelatedRecordId IN :userMap.keySet()
-                AND CRM_Domain__c = :srDomain
-                AND CRM_SubDomain__c = :srSubDomain
-                AND ResourceType = :srType
+            WHERE RelatedRecordId IN :userMap.keySet() AND ResourceType = :srType
         ]) {
             userResourceMap.put(servRes.RelatedRecordId, servRes);
+            if (servRes.CRM_Domain__c != srDomain || servRes.CRM_SubDomain__c != srSubDomain) {
+                serviceResuorcesOtherDomain.add(servRes);
+            }
+        }
+        if (serviceResuorcesOtherDomain.size() > 0) {
+            // it is not allouwed to have several ServiceResource of same Type for one User
+            // logging if users have related ServiceResources but in Other Domain
+            logger.info(
+                'Already existing ServiceResources of same Type in other (Sub)Domain: ' +
+                JSON.serializePretty(serviceResuorcesOtherDomain),
+                null,
+                CRM_ApplicationDomain.Domain.valueOf(srDomain)
+            );
+            logger.publish();
         }
 
         return userResourceMap;

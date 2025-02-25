@@ -164,7 +164,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             menerstatning: { category: 'Helse', theme: 'Menerstatning' },
             'AFP-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
             'AFP-privat': { category: 'Pensjon', theme: 'AFP i privat sektor' },
-            kontor: { category: 'Arbeid', theme: 'Avtale eller endre time på Nav-kontor' }
+            kontor: { category: 'Arbeid', theme: 'Avtale eller endre time på Nav-kontor' },
+            'fullmakt-lege': { category: 'Helse', theme: 'Gi fullmakt til lege' }
         }
     };
 
@@ -180,7 +181,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         'Gi beskjed': {
             default: BESKJED_DEFAULT_INGRESS,
             'Be om bekreftelse på trygdeavgift': BESKJED_INTERNASJONAL_INGRESS,
-            'Avtale eller endre time på Nav-kontor': BESKJED_ARBEID_INGRESS
+            'Avtale eller endre time på Nav-kontor': BESKJED_ARBEID_INGRESS,
+            'Gi fullmakt til lege': '' // kommer, settes i første omgang uten ingress
         },
         'Meld fra om endring': {
             default: ENDRING_DEFAULT_INGRESS,
@@ -348,7 +350,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (this.urlStateParameters?.category === 'Andre-hjelpemidler') {
             return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
         }
-        return this.ingressMap[this.title]?.[this.themeToShow] || this.ingressMap[this.title]?.default;
+
+        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
     }
 
     get showPleiepengerRadioButton() {
