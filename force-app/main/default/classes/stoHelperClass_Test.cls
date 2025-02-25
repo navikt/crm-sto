@@ -28,7 +28,9 @@ public with sharing class stoHelperClass_Test {
             personContact.AccountId,
             personContact.Id,
             true,
-            'STO'
+            'STO',
+            null,
+            null
         );
         Test.startTest();
         System.assertNotEquals(null, stoHelperClass.getOpenThreads('Arbeid'), 'Expected to get a thread');
@@ -60,7 +62,9 @@ public with sharing class stoHelperClass_Test {
             personContact.AccountId,
             personContact.Id,
             true,
-            'STO'
+            'STO',
+            null,
+            null
         );
         Test.stopTest();
         System.assertNotEquals(null, t.Id);
@@ -80,7 +84,9 @@ public with sharing class stoHelperClass_Test {
             personContact.AccountId,
             personContact.Id,
             true,
-            'STO'
+            'STO',
+            null,
+            null
         );
         Test.startTest();
         stoHelperClass.createMessage(t, 'this is a test message', personContact.Id);
@@ -92,7 +98,14 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void createThreadWithCaseTest() {
         Test.startTest();
-        Thread__c thread = stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+        Thread__c thread = stoHelperClass.createThreadWithCase(
+            'Arbeid',
+            'This is the message',
+            true,
+            'STO',
+            null,
+            null
+        );
         Test.stopTest();
         List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
         System.assertEquals(1, msgList.size());
@@ -100,14 +113,14 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void createThreadWithCaseMoreThanThreeThreadsErrorTest() {
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
         Exception ex;
 
         Test.startTest();
         try {
-            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
         } catch (Exception e) {
             ex = e;
         }
@@ -117,17 +130,17 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void getSTONewsTest() {
+    static void getNewsBasedOnThemeSTOTest() {
         Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'STO');
+        List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Skriv til oss', 'Pensjon');
         System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
     }
 
     @isTest
-    static void getBTONewsTest() {
+    static void getNewsBasedOnThemeBTOTest() {
         Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'BTO');
+        List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Beskjed til oss', 'Pensjon');
         System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
     }
@@ -147,7 +160,9 @@ public with sharing class stoHelperClass_Test {
             personContact.AccountId,
             personContact.Id,
             true,
-            'STO'
+            'STO',
+            null,
+            null
         );
 
         Test.startTest();
