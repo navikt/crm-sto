@@ -275,8 +275,8 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Check_if_thread_older_than_3_months</name>
-        <label>Check if thread older than 3 months</label>
+        <name>Check_if_thread_older_than_2_months</name>
+        <label>Check if thread older than 2 months</label>
         <locationX>611</locationX>
         <locationY>816</locationY>
         <defaultConnector>
@@ -359,10 +359,10 @@
         and should generate a task to the one &quot;owning&quot; the conversation.</description>
     <environments>Default</environments>
     <formulas>
-        <description>Checks if the thread is older than 3 months, to determine if it needs to validate the unit/assignee assignment</description>
+        <description>Checks if the thread is older than 2 months, to determine if it needs to validate the unit/assignee assignment</description>
         <name>Old_thread</name>
         <dataType>Boolean</dataType>
-        <expression>{!Get_Thread.CRM_Date_Time_Registered__c} &lt;= NOW() - 90</expression>
+        <expression>{!Get_Thread.CRM_Date_Time_Registered__c} &lt;= NOW() - 60</expression>
     </formulas>
     <interviewLabel>Message - After Insert - Message From NAV - Create Follow Up Task
         {!$Flow.CurrentDateTime}</interviewLabel>
@@ -484,7 +484,7 @@
         <locationY>708</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_if_thread_older_than_3_months</targetReference>
+            <targetReference>Check_if_thread_older_than_2_months</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
