@@ -82,6 +82,11 @@
                 <label>Frivillig yrkesskadetrygd</label>
             </value>
             <value>
+                <fullName>Gi fullmakt til lege</fullName>
+                <default>false</default>
+                <label>Gi fullmakt til lege</label>
+            </value>
+            <value>
                 <fullName>Grunnstønad eller hjelpestønad</fullName>
                 <default>false</default>
                 <label>Grunnstønad eller hjelpestønad</label>
@@ -343,6 +348,10 @@
         <valueSettings>
             <controllingFieldValue>Gi beskjed</controllingFieldValue>
             <valueName>Be om bekreftelse på trygdeavgift</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>Gi fullmakt til lege</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Gi beskjed</controllingFieldValue>
