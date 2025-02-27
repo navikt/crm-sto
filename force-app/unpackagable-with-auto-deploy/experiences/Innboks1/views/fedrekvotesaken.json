@@ -22,10 +22,8 @@
                         {
                             "components": [
                                 {
-                                    "componentAttributes": {
-                                        "leafnode": "Fedrekvotesaken"
-                                    },
-                                    "componentName": "c:communityBreadCrumb",
+                                    "componentAttributes": {},
+                                    "componentName": "c:communityBreadCrumbV2",
                                     "id": "3f22e45a-e528-4d9d-b8c0-b69fc0edc3a3",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
