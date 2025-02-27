@@ -1,11 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Get_active_Nav_unit_of_Ident</name>
+        <label>Get active Nav unit of Ident</label>
+        <locationX>182</locationX>
+        <locationY>1248</locationY>
+        <actionName>NKS_NOMController</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Check_if_Assignee_still_working_for_Unit</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>navIdent</name>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>unitNumber</name>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <actionCalls>
+        <name>Get_Nav_Unit_status</name>
+        <label>Get Nav Unit status</label>
+        <locationX>380</locationX>
+        <locationY>924</locationY>
+        <actionName>NKS_NavUnitSingleController</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Check_if_Nav_Unit_is_Active</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>navUnitNumber</name>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
     <apiVersion>53.0</apiVersion>
+    <assignments>
+        <name>Assign_Ident</name>
+        <label>Assign Ident</label>
+        <locationX>50</locationX>
+        <locationY>1464</locationY>
+        <assignmentItems>
+            <assignToReference>NAV_TASK_TO_CREATE.NKS_Assignee__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_Thread_Theme</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_no_Ident</name>
+        <label>Assign no Ident</label>
+        <locationX>314</locationX>
+        <locationY>1464</locationY>
+        <assignmentItems>
+            <assignToReference>NAV_TASK_TO_CREATE.NKS_Assignee__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_Thread_Theme</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_no_nav_unit</name>
+        <label>Assign no nav unit</label>
+        <locationX>578</locationX>
+        <locationY>1140</locationY>
+        <assignmentItems>
+            <assignToReference>NAV_TASK_TO_CREATE.CRM_NavUnit__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <connector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Assign_no_Ident</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_old_Nav_Unit</name>
+        <label>Assign old Nav Unit</label>
+        <locationX>182</locationX>
+        <locationY>1140</locationY>
+        <assignmentItems>
+            <assignToReference>NAV_TASK_TO_CREATE.CRM_NavUnit__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_NAV_Unit_Record.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_active_Nav_unit_of_Ident</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_unit_and_ident_from_thread</name>
+        <label>Assign unit and ident from thread</label>
+        <locationX>842</locationX>
+        <locationY>924</locationY>
+        <assignmentItems>
+            <assignToReference>NAV_TASK_TO_CREATE.CRM_NavUnit__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_NAV_Unit_Record.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NAV_TASK_TO_CREATE.NKS_Assignee__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_Thread_Theme</targetReference>
+        </connector>
+    </assignments>
     <assignments>
         <name>Inherit_Thread_Theme</name>
         <label>Inherit Thread Theme</label>
-        <locationX>143</locationX>
-        <locationY>1008</locationY>
+        <locationX>479</locationX>
+        <locationY>1932</locationY>
         <assignmentItems>
             <assignToReference>NAV_TASK_TO_CREATE.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -20,8 +146,8 @@
     <assignments>
         <name>Set_KNA</name>
         <label>Set KNA</label>
-        <locationX>407</locationX>
-        <locationY>1128</locationY>
+        <locationX>743</locationX>
+        <locationY>2040</locationY>
         <assignmentItems>
             <assignToReference>NAV_TASK_TO_CREATE.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -36,8 +162,8 @@
     <assignments>
         <name>Set_NAV_Task_Values</name>
         <label>Set NAV Task Values</label>
-        <locationX>275</locationX>
-        <locationY>1344</locationY>
+        <locationX>611</locationX>
+        <locationY>2232</locationY>
         <assignmentItems>
             <assignToReference>NAV_TASK_TO_CREATE.CRM_Account__c</assignToReference>
             <operator>Assign</operator>
@@ -53,24 +179,10 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_Assignee__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
             <assignToReference>NAV_TASK_TO_CREATE.NKS_TaskType__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>Get_Ikke_Svar_Task_Type.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.CRM_NavUnit__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_NAV_Unit_Record.Id</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -106,10 +218,92 @@
         </connector>
     </assignments>
     <decisions>
+        <name>Check_if_Assignee_still_working_for_Unit</name>
+        <label>Check if Assignee still working for Unit</label>
+        <locationX>182</locationX>
+        <locationY>1356</locationY>
+        <defaultConnector>
+            <targetReference>Assign_no_Ident</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Assignee_still_active</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_active_Nav_unit_of_Ident</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Ident</targetReference>
+            </connector>
+            <label>Assignee still active</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_if_Nav_Unit_is_Active</name>
+        <label>Check if Nav Unit is Active</label>
+        <locationX>380</locationX>
+        <locationY>1032</locationY>
+        <defaultConnector>
+            <targetReference>Assign_no_nav_unit</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Unit no longer exists</defaultConnectorLabel>
+        <rules>
+            <name>Unit_is_active</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Nav_Unit_status.unit</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Nav_Unit_status.unit.status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Aktiv</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_old_Nav_Unit</targetReference>
+            </connector>
+            <label>Unit is active</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_if_thread_older_than_2_months</name>
+        <label>Check if thread older than 2 months</label>
+        <locationX>611</locationX>
+        <locationY>816</locationY>
+        <defaultConnector>
+            <targetReference>Assign_unit_and_ident_from_thread</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Use assignment</defaultConnectorLabel>
+        <rules>
+            <name>Check_assignment</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Old_thread</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Nav_Unit_status</targetReference>
+            </connector>
+            <label>Check assignment</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Check_Thread_Theme</name>
         <label>Check Thread Theme</label>
-        <locationX>275</locationX>
-        <locationY>888</locationY>
+        <locationX>611</locationX>
+        <locationY>1824</locationY>
         <defaultConnector>
             <targetReference>Get_KNA_Theme</targetReference>
         </defaultConnector>
@@ -131,11 +325,12 @@
         </rules>
     </decisions>
     <decisions>
-        <description>Verify if a follow up task should be sent or not. If there is new external messages in this thread no follow up task is needed.</description>
+        <description>Verify if a follow up task should be sent or not. If there is new external
+            messages in this thread no follow up task is needed.</description>
         <name>Follow_up_Task_Check</name>
         <label>Follow up Task Check</label>
-        <locationX>473</locationX>
-        <locationY>528</locationY>
+        <locationX>858</locationX>
+        <locationY>492</locationY>
         <defaultConnectorLabel>Do Nothing</defaultConnectorLabel>
         <rules>
             <name>Send_Follow_Up_Task</name>
@@ -160,8 +355,17 @@
             <label>Send Follow Up Task</label>
         </rules>
     </decisions>
-    <description>Record triggered flow to determine if a message has not been responded after 4 days and should generate a task to the one &quot;owning&quot; the conversation.</description>
-    <interviewLabel>Message - After Insert - Message From NAV - Create Follow Up Task {!$Flow.CurrentDateTime}</interviewLabel>
+    <description>Record triggered flow to determine if a message has not been responded after 4 days
+        and should generate a task to the one &quot;owning&quot; the conversation.</description>
+    <environments>Default</environments>
+    <formulas>
+        <description>Checks if the thread is older than 2 months, to determine if it needs to validate the unit/assignee assignment</description>
+        <name>Old_thread</name>
+        <dataType>Boolean</dataType>
+        <expression>{!Get_Thread.CRM_Date_Time_Registered__c} &lt;= NOW() - 60</expression>
+    </formulas>
+    <interviewLabel>Message - After Insert - Message From NAV - Create Follow Up Task
+        {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Message - After Insert - Message From NAV - Create Follow Up Task</label>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -185,8 +389,8 @@
     <recordLookups>
         <name>Get_Ikke_Svar_Task_Type</name>
         <label>Get Ikke Svar Task Type</label>
-        <locationX>275</locationX>
-        <locationY>648</locationY>
+        <locationX>611</locationX>
+        <locationY>600</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_NAV_Unit_Record</targetReference>
@@ -214,8 +418,8 @@
     <recordLookups>
         <name>Get_KNA_Theme</name>
         <label>Get KNA Theme</label>
-        <locationX>407</locationX>
-        <locationY>1008</locationY>
+        <locationX>743</locationX>
+        <locationY>1932</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_KNA</targetReference>
@@ -243,8 +447,8 @@
     <recordLookups>
         <name>Get_Last_Message</name>
         <label>Get Last Message</label>
-        <locationX>473</locationX>
-        <locationY>288</locationY>
+        <locationX>858</locationX>
+        <locationY>276</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -276,11 +480,11 @@
         <description>Get the thread assigned NAV unit</description>
         <name>Get_NAV_Unit_Record</name>
         <label>Get NAV Unit Record</label>
-        <locationX>275</locationX>
-        <locationY>768</locationY>
+        <locationX>611</locationX>
+        <locationY>708</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_Thread_Theme</targetReference>
+            <targetReference>Check_if_thread_older_than_2_months</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -298,8 +502,8 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>473</locationX>
-        <locationY>408</locationY>
+        <locationX>858</locationX>
+        <locationY>384</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Follow_up_Task_Check</targetReference>
@@ -325,7 +529,7 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
-        <locationX>50</locationX>
+        <locationX>196</locationX>
         <locationY>0</locationY>
         <filterLogic>and</filterLogic>
         <filters>
@@ -377,8 +581,8 @@
         <description>Performs the outbound callout to store the NAV task for conversation follow up.</description>
         <name>Send_NAV_Task</name>
         <label>Send NAV Task</label>
-        <locationX>275</locationX>
-        <locationY>1464</locationY>
+        <locationX>611</locationX>
+        <locationY>2340</locationY>
         <flowName>CRM_Send_NAV_Task_Auto</flowName>
         <inputAssignments>
             <name>Created_By_Unit_Number</name>
