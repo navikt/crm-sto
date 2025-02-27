@@ -12,20 +12,28 @@ const NAV_URLS = {
     inbox: 'https://innboks.nav.no'
 };
 
+const OBJECT_MAP = {
+    Conversation_Note__c: 'Samtalereferat',
+    LiveChatTranscript: 'Chat',
+    Thread__c: 'Skriv til oss'
+};
+
+const TYPE_MAP = {
+    Endring: 'Meld fra om endring',
+    'Trekke-soknad': 'Trekke en søknad',
+    Beskjed: 'Gi beskjed'
+};
+
 export default class CommunityBreadCrumbV2 extends LightningElement {
     recordId;
     leafnode;
     breadcrumbs = [];
-
-    objectMap = {
-        Conversation_Note__c: 'Samtalereferat',
-        LiveChatTranscript: 'Chat',
-        Thread__c: 'Skriv til oss'
-    };
+    name;
 
     renderedCallback() {
-        loadStyle(this, index);
-        loadStyle(this, navStyling);
+        Promise.all([loadStyle(this, index), loadStyle(this, navStyling)]).catch((error) =>
+            console.error('Styles failed to load:', error)
+        );
     }
 
     @wire(CurrentPageReference)
@@ -33,22 +41,43 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
         if (!currentPageReference) return;
 
         const { attributes, state } = currentPageReference;
-        const { name, objectApiName } = attributes || {};
-        const { samtale } = state || {};
+        this.name = attributes?.name || '';
 
-        switch (name) {
-            case 'Visning__c':
-                if (samtale) this.fetchThread(samtale);
-                break;
-            case 'Home':
-                this.setHomeBreadcrumbs();
-                break;
-            case 'Fedrekvotesaken':
-                this.setFedrekvoteBreadcrumbs();
-                break;
-            default:
-                this.setObjectBreadcrumbs(objectApiName);
+        const { samtale, category } = state || {};
+
+        if (this.name === 'Visning__c' && samtale) {
+            this.fetchThread(samtale);
+        } else if (this.name === 'Home') {
+            this.leafnode = 'Innboks';
+            this.breadcrumbs = [
+                { url: NAV_URLS.home, title: 'Privatperson' },
+                { url: NAV_URLS.minSide, title: 'Min side' },
+                { url: '/', title: this.leafnode }
+            ];
+            this.retryBreadcrumbUpdate();
+        } else if (this.name === 'Fedrekvotesaken__c') {
+            this.leafnode = 'Fedrekvotesaken';
+            this.breadcrumbs = [{ url: '/', title: this.leafnode }];
+            this.retryBreadcrumbUpdate();
+        } else {
+            this.leafnode = category ? this.getCategoryTitle(category) : OBJECT_MAP[attributes?.objectApiName] || '';
+            this.setBreadcrumbs();
         }
+    }
+
+    getCategoryTitle(category) {
+        if (!category) return this.leafnodeName;
+        const matchedKey = Object.keys(TYPE_MAP).find((key) => category.includes(key));
+        return matchedKey ? TYPE_MAP[matchedKey] : this.leafnodeName;
+    }
+
+    get leafnodeName() {
+        return (
+            {
+                Beskjed_til_oss__c: 'Beskjed til oss',
+                Skriv_til_oss__c: 'Skriv til oss'
+            }[this.name] || ''
+        );
     }
 
     async fetchThread(recordId) {
@@ -60,33 +89,45 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
             console.error('Problem getting thread:', error);
             this.leafnode = 'Beskjed til oss';
         }
-        this.updateBreadcrumbs();
+        this.setBreadcrumbs();
     }
 
-    setHomeBreadcrumbs() {
-        this.updateBreadcrumbs([
-            { url: NAV_URLS.home, title: 'Privatperson' },
-            { url: NAV_URLS.minSide, title: 'Min side' },
-            { url: '/', title: 'Innboks' }
-        ]);
-    }
-
-    setObjectBreadcrumbs(objectApiName) {
-        this.leafnode = this.objectMap[objectApiName] || '';
-        this.updateBreadcrumbs();
-    }
-
-    setFedrekvoteBreadcrumbs() {
-        this.updateBreadcrumbs([{ url: '/', title: 'Fedrekvotesaken' }]);
-    }
-
-    updateBreadcrumbs(customBreadcrumbs = null) {
-        this.breadcrumbs = customBreadcrumbs || [
+    setBreadcrumbs() {
+        this.breadcrumbs = [
             { url: NAV_URLS.home, title: 'Privatperson' },
             { url: NAV_URLS.minSide, title: 'Min side' },
             { url: NAV_URLS.inbox, title: 'Innboks' },
             { url: '/', title: this.leafnode }
         ];
-        updateBreadcrumbs(this.breadcrumbs);
+        this.retryBreadcrumbUpdate();
+    }
+
+    // Retry logic for updating breadcrumbs in case of failure
+    retryBreadcrumbUpdate(attempt = 1, maxAttempts = 5, delay = 500) {
+        if (attempt > maxAttempts) {
+            console.error('Failed to update breadcrumbs after maximum attempts.');
+            return;
+        }
+
+        // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
+        setTimeout(() => {
+            updateBreadcrumbs(this.breadcrumbs);
+
+            if (!this.areBreadcrumbsSet()) {
+                console.log(`Retrying breadcrumb update. Attempt ${attempt}`);
+                this.retryBreadcrumbUpdate(attempt + 1, maxAttempts, delay * 2);
+            } else {
+                console.log('Breadcrumbs set successfully.');
+            }
+        }, delay);
+    }
+
+    areBreadcrumbsSet() {
+        // eslint-disable-next-line @lwc/lwc/no-document-query
+        const breadcrumbElement = document.querySelector('d-breadcrumbs nav ol');
+        if (!breadcrumbElement) return false;
+
+        const lastBreadcrumb = breadcrumbElement.querySelector('li:last-child')?.textContent?.trim();
+        return lastBreadcrumb === this.leafnode;
     }
 }
