@@ -29,6 +29,8 @@ import {
     logFilterEvent,
     setDecoratorParams
 } from 'c/inboxAmplitude';
+import registerThreadTemplate from './registerThreadTemplate.html';
+import badUrlTemplate from './badUrlTemplate.html';
 import STO_DEFAULT_INGRESS from '@salesforce/label/c.Skriv_til_oss_Default_ingress';
 import STO_HJELPEMIDLER_INGRESS from '@salesforce/label/c.Skriv_til_oss_Hjelpemidler_ingress';
 import BTO_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Default_ingress';
@@ -44,6 +46,14 @@ const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: '
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api threadTypeToMake;
 
+    render() {
+        if (this.isLoading) {
+            return null; // Show nothing until data is loaded
+        }
+        return this.validQueryParameter ? registerThreadTemplate : badUrlTemplate;
+    }
+
+    isLoading = true;
     showspinner = false;
     category;
     themeToShow;
@@ -190,7 +200,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         Beskjed: 'Gi beskjed'
     };
 
-    wrongLinkMsg = '';
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
@@ -203,9 +212,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(
                     ([parentKey, childObj]) => Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`)
                 );
-                this.wrongLinkMsg = 'Ops, denne lenken fungerte ikke.'; // Set text after getters have recalculated to avoid showing it before page is finished loading
+                this.isLoading = false;
             })
             .catch((error) => {
+                this.isLoading = false;
                 console.error('Error fetching categories: ', error);
             });
     }
