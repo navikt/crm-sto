@@ -4,7 +4,7 @@
     <isAttributeBased>true</isAttributeBased>
     <label>STO Pleiepenger</label>
     <routingModel>MOST_AVAILABLE</routingModel>
-    <routingPriority>3</routingPriority>
+    <routingPriority>4</routingPriority>
     <skills>
         <skill>Pleiepenger</skill>
     </skills>
