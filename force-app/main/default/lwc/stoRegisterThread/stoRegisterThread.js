@@ -61,6 +61,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     acceptedBTOCategories = [];
     currentPageReference = null;
     urlStateParameters;
+    lowerCaseUrlCategory = '';
     subpath;
     acceptedTerms = false;
     newsList;
@@ -101,20 +102,20 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     wireThreadData;
 
     stoAndBtoThemeMapping = {
-        Arbeid: 'Arbeid',
-        Familie: 'Familie og barn',
-        Helse: 'Helse og sykdom',
-        Hjelpemidler: 'Hjelpemidler og tilrettelegging',
-        Internasjonal: 'Bor eller jobber i utlandet',
-        Pensjon: 'Pensjon',
-        Pleiepenger: 'Pleiepenger for sykt barn',
-        Ufør: 'Ufør'
+        arbeid: 'Arbeid',
+        familie: 'Familie og barn',
+        helse: 'Helse og sykdom',
+        hjelpemidler: 'Hjelpemidler og tilrettelegging',
+        internasjonal: 'Bor eller jobber i utlandet',
+        pensjon: 'Pensjon',
+        pleiepenger: 'Pleiepenger for sykt barn',
+        ufør: 'Ufør'
     };
 
     // Uses type (prefix of category url) as key
     btoCategoryAndThemeMap = {
         // Melde fra om endring
-        Endring: {
+        endring: {
             dagpenger: { category: 'Arbeid', theme: 'Dagpenger' },
             tiltakspenger: { category: 'Arbeid', theme: 'Tiltakspenger' },
             ventelonn: { category: 'Arbeid', theme: 'Ventelønn' },
@@ -134,7 +135,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             aap: { category: 'Arbeid', theme: 'Arbeidsavklaringspenger (AAP)' },
             foreldre: { category: 'Familie', theme: 'Foreldrepenger, svangerskapspenger eller engangsstønad' },
             'sykdom-familien': { category: 'Familie', theme: 'Pleiepenger, omsorgspenger eller opplæringspenger' },
-            'AFP-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
+            'afp-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
             'supplerende-stonad-flyktninger': {
                 category: 'Ufør',
                 theme: 'Supplerende stønad for uføre flyktninger under 67 år'
@@ -148,7 +149,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             sykepenger: { category: 'Helse', theme: 'Sykepenger eller reisetilskudd' }
         },
         // Trekke en søknad
-        'Trekke-soknad': {
+        'trekke-soknad': {
             arbeid: { category: 'Arbeid', theme: 'Arbeid' },
             helse: { category: 'Helse', theme: 'Helse og sykdom' },
             utland: { category: 'Internasjonal', theme: 'Bor eller jobber i utlandet' },
@@ -158,12 +159,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             ufor: { category: 'Ufør', theme: 'Ufør' }
         },
         // Gi beskjed
-        Beskjed: {
+        beskjed: {
             trygdeavgift: { category: 'Internasjonal', theme: 'Be om bekreftelse på trygdeavgift' },
             sykepenger: { category: 'Helse', theme: 'Sykepenger' },
             menerstatning: { category: 'Helse', theme: 'Menerstatning' },
-            'AFP-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
-            'AFP-privat': { category: 'Pensjon', theme: 'AFP i privat sektor' },
+            'afp-offentlig': { category: 'Pensjon', theme: 'AFP i offentlig sektor' },
+            'afp-privat': { category: 'Pensjon', theme: 'AFP i privat sektor' },
             kontor: { category: 'Arbeid', theme: 'Avtale eller endre time på Nav-kontor' },
             'fullmakt-lege': { category: 'Helse', theme: 'Gi fullmakt til lege' }
         }
@@ -205,12 +206,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             .then((categoryResults) => {
                 let categoryList = new Set();
                 categoryResults.forEach((stoCategory) => {
-                    categoryList.add(stoCategory.STO_Category__c);
+                    categoryList.add(stoCategory.STO_Category__c.toLowerCase());
                 });
                 this.acceptedSTOCategories = categoryList;
                 // eslint-disable-next-line
                 this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(
-                    ([parentKey, childObj]) => Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`)
+                    ([parentKey, childObj]) =>
+                        Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`.toLowerCase())
                 );
                 this.isLoading = false;
             })
@@ -240,8 +242,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             if (this.urlStateParameters?.category == null) {
                 return;
             }
-            this.setTitleAndCategory(this.urlStateParameters.category);
-            this.setThemeToShow(this.urlStateParameters.category);
+            this.lowerCaseUrlCategory = this.urlStateParameters.category.toLowerCase();
+            this.setTitleAndCategory();
+            this.setThemeToShow();
         }
     }
 
@@ -292,17 +295,17 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     get isValidSTOCategory() {
         return (
             this.threadTypeToMake === 'STO' &&
-            (this.acceptedSTOCategories.has(this.urlStateParameters?.category) ||
-                this.urlStateParameters?.category === 'Andre-hjelpemidler') // TODO: Remove Andre-hjelpemidler check here and add to acceptedSTOCategories when we stop supporting old BTO links
+            (this.acceptedSTOCategories.has(this.lowerCaseUrlCategory) ||
+                this.lowerCaseUrlCategory === 'andre-hjelpemidler') // TODO: Remove Andre-hjelpemidler check here and add to acceptedSTOCategories when we stop supporting old BTO links
         );
     }
 
-    // TODO: Remove this.acceptedSTOCategories.has(this.urlStateParameters?.category) when team PB is done adding new links for BTO so that we do not support the old BTO links anymore
+    // TODO: Remove this.acceptedSTOCategories.has(this.lowerCaseUrlCategory) when team PB is done adding new links for BTO so that we do not support the old BTO links anymore
     get isValidBTOCategory() {
         return (
             this.threadTypeToMake === 'BTO' &&
-            (this.acceptedBTOCategories.includes(this.urlStateParameters?.category) ||
-                this.acceptedSTOCategories.has(this.urlStateParameters?.category))
+            (this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory) ||
+                this.acceptedSTOCategories.has(this.lowerCaseUrlCategory))
         );
     }
 
@@ -322,10 +325,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (!this.openThreadList) return '';
         const openThreads = this.openThreadList.length;
         return openThreads < maxThreadCount
-            ? `Du har allerede åpne samtaler om ${this.category?.toLowerCase()}. Hvis du lurer på noe mer, kan du <a href="${
+            ? `Du har allerede åpne samtaler om ${this.capitalizeFirstLetter(this.category)}. Hvis du lurer på noe mer, kan du <a href="${
                   this.openThreadLink
               }">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.`
-            : `Du har ${openThreads} åpne samtaler om ${this.category?.toLowerCase()}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
+            : `Du har ${openThreads} åpne samtaler om ${this.capitalizeFirstLetter(this.category)}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
     }
 
     get openThreadLink() {
@@ -347,7 +350,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get ingressLabel() {
-        if (this.urlStateParameters?.category === 'Andre-hjelpemidler') {
+        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
             return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
         }
 
@@ -365,44 +368,44 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return !this.showPleiepengerRadioButton || this.pleiepengerSelected != null;
     }
 
-    setThemeToShow(urlCategory) {
-        if (urlCategory === 'Andre-hjelpemidler') {
+    setThemeToShow() {
+        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
             this.themeToShow = 'Hjelpemidler';
             return;
         }
 
-        let [type, ...categoryParts] = urlCategory.split('-');
+        let [type, ...categoryParts] = this.lowerCaseUrlCategory.split('-');
 
-        if (type === 'Trekke' && categoryParts[0] === 'soknad') {
-            type = 'Trekke-soknad';
+        if (type === 'trekke' && categoryParts[0] === 'soknad') {
+            type = 'trekke-soknad';
             categoryParts.shift();
         }
 
         this.themeToShow =
             this.btoCategoryAndThemeMap[type]?.[categoryParts.join('-')]?.theme ||
-            this.stoAndBtoThemeMapping[urlCategory];
+            this.stoAndBtoThemeMapping[this.lowerCaseUrlCategory];
     }
 
-    setTitleAndCategory(urlCategory) {
+    setTitleAndCategory() {
         // Special case: "Andre-hjelpemidler" maps directly to "Helse" category.
-        if (urlCategory === 'Andre-hjelpemidler') {
+        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
             this._title = 'Skriv til oss';
-            this.category = 'Helse';
+            this.category = 'helse';
             return;
         }
 
-        const splitUrlCategory = urlCategory.split('-');
+        const splitUrlCategory = this.lowerCaseUrlCategory.split('-');
         const hasMultipleParts = splitUrlCategory.length > 1;
         let type = splitUrlCategory[0];
-        let categoryString = urlCategory;
+        let categoryString = this.lowerCaseUrlCategory;
 
         // New BTO category e.g. "Endring-arbeidsevne"
         if (hasMultipleParts) {
             const firstTwoWords = splitUrlCategory.slice(0, 2).join('-');
 
-            if (firstTwoWords === 'Trekke-soknad') {
+            if (firstTwoWords === 'trekke-soknad') {
                 // Special handling for "Trekke-soknad" case
-                type = 'Trekke-soknad';
+                type = 'trekke-soknad';
                 categoryString = splitUrlCategory.slice(2).join('-');
             } else {
                 // Default case: Extract type and category separately
@@ -492,7 +495,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 type: this.threadTypeToMake,
                 inboxTitle: this.title,
                 inboxTheme: this.pleiepengerSelected
-                    ? this.urlStateParameters?.category + '-Pleiepenger for sykt barn'
+                    ? this.capitalizeFirstLetter(this.lowerCaseUrlCategory) + '-Pleiepenger for sykt barn'
                     : this.themeToShow
             })
                 .then((thread) => {
@@ -580,6 +583,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             });
     }
 
+    capitalizeFirstLetter(val) {
+        return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+    }
+
     handleErrorClick(event) {
         let item = this.template.querySelector(event.detail);
         item.focus();
@@ -642,7 +649,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (event.detail.value === 'true') {
             this.pleiepengerSelected = true;
             this.previousCategory = this.category;
-            this.category = 'Pleiepenger';
+            this.category = 'pleiepenger';
         } else {
             this.category = this.previousCategory;
             this.pleiepengerSelected = false;
