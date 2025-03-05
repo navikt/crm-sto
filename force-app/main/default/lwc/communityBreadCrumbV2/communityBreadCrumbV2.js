@@ -117,10 +117,10 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
         // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
         await new Promise((resolve) => setTimeout(resolve, delay));
 
-        return this.retryWithDelay(fn, condition, maxAttempts, delay, attempt + 1);
+        return this.retryWithDelay(fn, condition, attempt + 1, maxAttempts, delay);
     }
 
-    async validateDecoratorReadyFunction() {
+    async validateDecoratorReady() {
         return this.retryWithDelay(
             () => Promise.resolve(typeof window.dekoratorenIsReady === 'function'),
             (ready) => ready
@@ -128,7 +128,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
     }
 
     async retryBreadcrumbUpdate() {
-        this.validateDecoratorReadyFunction().then((isReady) => {
+        this.validateDecoratorReady().then((isReady) => {
             if (!isReady) {
                 console.error('Decorator is not ready after max retries.');
                 return;
