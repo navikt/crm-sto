@@ -103,31 +103,44 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
     }
 
     // Retry logic for updating breadcrumbs in case of failure
-    retryBreadcrumbUpdate(attempt = 1, maxAttempts = 5, delay = 500) {
-        if (attempt > maxAttempts) {
-            console.error('Failed to update breadcrumbs after maximum attempts.');
-            return;
+    async retryWithDelay(fn, condition, attempt = 1, maxAttempts = 5, delay = 500) {
+        const result = await fn();
+        if (condition(result)) {
+            return result;
+        }
+
+        if (attempt >= maxAttempts) {
+            console.error('Max retry attempts reached.');
+            return null;
         }
 
         // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
-        setTimeout(() => {
-            updateBreadcrumbs(this.breadcrumbs);
+        await new Promise((resolve) => setTimeout(resolve, delay));
 
-            if (!this.areBreadcrumbsSet()) {
-                console.log(`Retrying breadcrumb update. Attempt ${attempt}`);
-                this.retryBreadcrumbUpdate(attempt + 1, maxAttempts, delay * 2);
-            } else {
-                console.log('Breadcrumbs set successfully.');
-            }
-        }, delay);
+        return this.retryWithDelay(fn, condition, maxAttempts, delay, attempt + 1);
     }
 
-    areBreadcrumbsSet() {
-        // eslint-disable-next-line @lwc/lwc/no-document-query
-        const breadcrumbElement = document.querySelector('d-breadcrumbs nav ol');
-        if (!breadcrumbElement) return false;
+    async validateDecoratorReadyFunction() {
+        return this.retryWithDelay(
+            () => Promise.resolve(typeof window.dekoratorenIsReady === 'function'),
+            (ready) => ready
+        );
+    }
 
-        const lastBreadcrumb = breadcrumbElement.querySelector('li:last-child')?.textContent?.trim();
-        return lastBreadcrumb === this.leafnode;
+    async retryBreadcrumbUpdate() {
+        this.validateDecoratorReadyFunction().then((isReady) => {
+            if (!isReady) {
+                console.error('Decorator is not ready after max retries.');
+                return;
+            }
+
+            this.retryWithDelay(
+                () => {
+                    updateBreadcrumbs(this.breadcrumbs);
+                    return window.__DECORATOR_DATA__?.params?.breadcrumbs ?? false;
+                },
+                (breadcrumbsSet) => breadcrumbsSet
+            );
+        });
     }
 }
