@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.192.0.NEXT",
+            "versionNumber": "1.193.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
