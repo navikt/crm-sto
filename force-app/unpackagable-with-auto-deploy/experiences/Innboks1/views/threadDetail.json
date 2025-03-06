@@ -19,16 +19,8 @@
                         {
                             "components": [
                                 {
-                                    "componentAttributes": {
-                                        "firstLevel": "Privatperson",
-                                        "firstLevelLink": "https://nav.no",
-                                        "leafnode": "Skriv til oss",
-                                        "secondLevel": "Min side",
-                                        "secondLevelLink": "https://www.nav.no/minside/",
-                                        "thirdLevel": "Innboks",
-                                        "thirdLevelLink": "https://innboks.nav.no"
-                                    },
-                                    "componentName": "c:communityBreadCrumb",
+                                    "componentAttributes": {},
+                                    "componentName": "c:communityBreadCrumbV2",
                                     "id": "668b41ad-0b46-4501-9640-446f8fd654a7",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},

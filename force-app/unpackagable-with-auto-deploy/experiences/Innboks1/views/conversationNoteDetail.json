@@ -18,16 +18,8 @@
                         {
                             "components": [
                                 {
-                                    "componentAttributes": {
-                                        "firstLevel": "Privatperson",
-                                        "firstLevelLink": "https://nav.no",
-                                        "leafnode": "Samtalereferat",
-                                        "secondLevel": "Min side",
-                                        "secondLevelLink": "https://www.nav.no/minside/",
-                                        "thirdLevel": "Innboks",
-                                        "thirdLevelLink": "https://innboks.nav.no"
-                                    },
-                                    "componentName": "c:communityBreadCrumb",
+                                    "componentAttributes": {},
+                                    "componentName": "c:communityBreadCrumbV2",
                                     "id": "6470db25-5622-43d3-ab06-a3041f18c000",
                                     "renderPriority": "NEUTRAL",
                                     "renditionMap": {},
