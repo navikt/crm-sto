@@ -196,9 +196,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     // Uses type (prefix of category url) as key
     titleMap = {
-        Endring: 'Meld fra om endring',
-        'Trekke-soknad': 'Trekke en søknad',
-        Beskjed: 'Gi beskjed'
+        endring: 'Meld fra om endring',
+        'trekke-soknad': 'Trekke en søknad',
+        beskjed: 'Gi beskjed'
     };
 
     connectedCallback() {
