@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>CRM_Theme__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <label>Theme</label>
     <required>false</required>
@@ -77,6 +78,11 @@
                 <label>Foreldrepenger, svangerskapspenger eller engangsstønad</label>
             </value>
             <value>
+                <fullName>Frita Nav fra taushetsplikten</fullName>
+                <default>false</default>
+                <label>Frita Nav fra taushetsplikten</label>
+            </value>
+            <value>
                 <fullName>Frivillig yrkesskadetrygd</fullName>
                 <default>false</default>
                 <label>Frivillig yrkesskadetrygd</label>
@@ -105,6 +111,11 @@
                 <fullName>Hjelpemidler og tilrettelegging</fullName>
                 <default>false</default>
                 <label>Hjelpemidler og tilrettelegging</label>
+            </value>
+            <value>
+                <fullName>Klage etter klagefrist</fullName>
+                <default>false</default>
+                <label>Klage etter klagefrist</label>
             </value>
             <value>
                 <fullName>Kontantstøtte</fullName>
@@ -198,60 +209,88 @@
             </value>
         </valueSetDefinition>
         <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Arbeid</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Bor eller jobber i utlandet</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Familie og barn</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Helse og sykdom</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <valueName>Hjelpemidler</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Hjelpemidler og tilrettelegging</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Pensjon</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <valueName>Pleiepenger for sykt barn</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Beskjed til oss</controllingFieldValue>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <controllingFieldValue>Trekke en søknad</controllingFieldValue>
             <valueName>Ufør</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Meld fra om endring</controllingFieldValue>
             <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <controllingFieldValue>Meld fra om endring</controllingFieldValue>
             <valueName>AFP i offentlig sektor</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>AFP i privat sektor</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>Avtale eller endre time på Nav-kontor</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>Be om bekreftelse på trygdeavgift</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>Frita Nav fra taushetsplikten</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>Gi fullmakt til lege</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>Klage etter klagefrist</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>Menerstatning</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Gi beskjed</controllingFieldValue>
+            <valueName>Sykepenger</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Meld fra om endring</controllingFieldValue>
@@ -338,28 +377,8 @@
             <valueName>Vurdering av arbeidsevne</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Gi beskjed</controllingFieldValue>
-            <valueName>AFP i privat sektor</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Gi beskjed</controllingFieldValue>
-            <valueName>Avtale eller endre time på Nav-kontor</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Gi beskjed</controllingFieldValue>
-            <valueName>Be om bekreftelse på trygdeavgift</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Gi beskjed</controllingFieldValue>
-            <valueName>Gi fullmakt til lege</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Gi beskjed</controllingFieldValue>
-            <valueName>Menerstatning</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Gi beskjed</controllingFieldValue>
-            <valueName>Sykepenger</valueName>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <valueName>Hjelpemidler</valueName>
         </valueSettings>
     </valueSet>
 </CustomField>
