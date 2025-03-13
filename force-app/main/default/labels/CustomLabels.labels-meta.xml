@@ -41,17 +41,17 @@
         <protected>false</protected>
         <shortDescription>Beskjed til oss - Beskjed - Frita ingress</shortDescription>
         <value>Kopier og lim inn denne teksten i skrivefeltet. Husk å fylle ut parentesene:
-
+            &lt;br/&gt;&lt;br/&gt;
             &quot;Jeg bekrefter at jeg fritar Nav for taushetsplikten i forbindelse med omtale av
             Nav-saken min. Det betyr at Nav kan gi kommentarer og informasjon om saken min til
             (skriv inn navn på media, redaksjon og journalisten; for eksempel: redaksjonen i NRK
             Troms og Finnmark og journalist Navn Navnesen)
-
+            &lt;br/&gt;&lt;br/&gt;
             Fritaket gjelder fram til (skriv inn dato).
-
+            &lt;br/&gt;&lt;br/&gt;
             Nav kan ikke kommentere eller gi informasjon om disse delene av saken min: (skriv inn
             hva det gjelder).
-
+            &lt;br/&gt;&lt;br/&gt;
             Jeg bor i (skriv inn kommune).&quot;</value>
     </labels>
     <labels>
@@ -215,7 +215,7 @@
         <protected>false</protected>
         <shortDescription>Skriv til oss - Hjelpemidler ingress</shortDescription>
         <value>Skriv til oss om
-            &lt;lo&gt;
+            &lt;ol&gt;
             &lt;li&gt;høreapparat&lt;/li&gt;
             &lt;li&gt;tinnitusmaskerer&lt;/li&gt;
             &lt;li&gt;parykk&lt;/li&gt;
@@ -224,7 +224,7 @@
             &lt;li/&gt;ortoser&lt;l/li&gt;
             &lt;li&gt;støtte til folkehøgskoleopphold&lt;/li&gt;
             &lt;li&gt;tilpasningskurs&lt;/li&gt;
-            &lt;li&gt;grunnmønster og spesialsøm av klær&lt;/li&gt;&lt;/lo&gt;
+            &lt;li&gt;grunnmønster og spesialsøm av klær&lt;/li&gt;&lt;/ol&gt;
             &lt;br/&gt;Skriv bare spørsmål eller opplysninger som gjelder deg selv. Du kan ikke
             skrive for andre. Hvis du vil kontakte oss på vegne av andre, må du ringe oss og ha
             muntlig eller skriftlig fullmakt.</value>
