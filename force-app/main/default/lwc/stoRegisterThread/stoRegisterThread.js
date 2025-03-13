@@ -94,7 +94,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         { text: 'Nei, jeg godtar ikke.', value: false, checked: false }
     ];
 
-    pleiepengerOptions = [
+    radioButtonOptions = [
         { text: 'Ja', value: 'true', checked: false },
         { text: 'Nei', value: 'false', checked: false }
     ];
@@ -170,8 +170,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             'afp-privat': { category: 'Pensjon', theme: 'AFP i privat sektor' },
             kontor: { category: 'Arbeid', theme: 'Avtale eller endre time på Nav-kontor' },
             'fullmakt-lege': { category: 'Helse', theme: 'Gi fullmakt til lege' },
-            klage: { category: 'TBD', theme: 'Klage etter klagefrist' }, // TODO: Set category
-            taushetsplikt: { category: 'TBD', theme: 'Frita Nav fra taushetsplikten' } // TODO: Set category
+            klage: { category: 'Arbeid', theme: 'Klage etter klagefrist' },
+            taushetsplikt: { category: 'Arbeid', theme: 'Frita Nav fra taushetsplikten' }
         }
     };
 
@@ -206,6 +206,33 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         endring: 'Meld fra om endring',
         'trekke-soknad': 'Trekke en søknad',
         beskjed: 'Gi beskjed'
+    };
+
+    // TODO: Set ingressLabel to center when loading - looks weird when left-aligned on loading
+    // Use title as primary key and themetoshow as secondary
+    radioButtonMap = {
+        'Skriv til oss': {
+            'Helse og sykdom': {
+                initialCategory: 'Helse',
+                category: 'Pleiepenger',
+                text: 'Gjelder det pleiepenger for sykt barn?',
+                inboxTheme: 'Pleiepenger for sykt barn'
+            },
+            'Familie og barn': {
+                initialCategory: 'Familie',
+                category: 'Pleiepenger',
+                text: 'Gjelder det pleiepenger for sykt barn?',
+                inboxTheme: 'Pleiepenger for sykt barn'
+            }
+        },
+        'Meld fra om endring': {
+            'Pleiepenger, omsorgspenger eller opplæringspenger': {
+                initialCategory: 'Familie',
+                category: 'Pensjon',
+                text: 'Gjelder det pleiepenger i livets sluttfase?',
+                inboxTheme: 'Pleiepenger, omsorgspenger eller opplæringspenger'
+            }
+        }
     };
 
     connectedCallback() {
@@ -275,7 +302,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (data) {
             this.openThreadList = data;
         } else {
-            this.openThreadList = null; // Set to null when no data for pleiepenger radiobutton
+            this.openThreadList = null; // Set to null when no data for radiobutton case
             if (error) {
                 console.error(error);
             }
@@ -364,15 +391,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
     }
 
-    get showPleiepengerRadioButton() {
-        return (
-            this.threadTypeToMake === 'STO' &&
-            (this.themeToShow === 'Helse og sykdom' || this.themeToShow === 'Familie og barn')
-        );
+    get showThemeRadioButton() {
+        return this.radioButtonMap[this.title]?.[this.themeToShow] ?? false;
+    }
+
+    get themeRadioButtonText() {
+        return this.radioButtonMap[this.title]?.[this.themeToShow]?.text;
     }
 
     get showInputTextArea() {
-        return !this.showPleiepengerRadioButton || this.pleiepengerSelected != null;
+        return !this.showThemeRadioButton || this.themeRadioButtonSelected != null;
     }
 
     setThemeToShow() {
@@ -424,7 +452,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             // No category map needed for old STO and BTO as STO_Category__c is equal to the one word url category param
             this.category = categoryString;
         }
-        this.previousCategory = this.category; // For pleiepenger radiobutton case
+        this.previousCategory = this.category; // For radiobutton cases
 
         // Set title
         this._title = this.titleMap[type] ?? (this.threadTypeToMake === 'STO' ? 'Skriv til oss' : 'Beskjed til oss');
@@ -480,8 +508,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      */
     submitRequest() {
         const medskriv = this.refs.medskrivRadiobuttons?.getValue();
-        const pleiepenger = this.refs.pleiepengerRadiobutton?.getValue();
-        const pleiepengerExists = this.refs.pleiepengerRadiobutton != null;
+        const radioButtonValue = this.refs.themeRadioButton?.getValue();
+        const radioButtonExists = this.refs.themeRadioButton != null;
 
         if (
             this.acceptedTerms &&
@@ -489,7 +517,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.message?.length != null &&
             this.message?.length <= this.maxLength &&
             medskriv != null &&
-            (!pleiepengerExists || pleiepenger != null)
+            (!radioButtonExists || radioButtonValue != null)
         ) {
             this.errorList = null;
             this.showspinner = true;
@@ -501,8 +529,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxTitle: this.title,
-                inboxTheme: this.pleiepengerSelected
-                    ? this.capitalizeFirstLetter(this.lowerCaseUrlCategory) + '-Pleiepenger for sykt barn'
+                inboxTheme: this.themeRadioButtonSelected
+                    ? this.capitalizeFirstLetter(this.radioButtonMap[this.title]?.[this.themeToShow]?.initialCategory) +
+                      '-' +
+                      this.radioButtonMap[this.title]?.[this.themeToShow]?.inboxTheme
                     : this.themeToShow
             })
                 .then((thread) => {
@@ -546,10 +576,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     Text: 'Det er for mange tegn i tekstboksen.'
                 });
             }
-            if (pleiepengerExists && pleiepenger == null) {
+            if (radioButtonExists && radioButtonValue == null) {
                 this.errorList.errors.push({
                     Id: 3,
-                    EventItem: '.pleiepenger',
+                    EventItem: '.themeRadioButton',
                     Text: 'Du må velge et av alternativene.'
                 });
             }
@@ -651,19 +681,19 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     previousCategory;
-    pleiepengerSelected;
-    handlePleiepengerChange(event) {
+    themeRadioButtonSelected;
+    handleThemeRadioButtonChange(event) {
         if (event.detail.value === 'true') {
-            this.pleiepengerSelected = true;
+            this.themeRadioButtonSelected = true;
             this.previousCategory = this.category;
-            this.category = 'pleiepenger';
+            this.category = this.radioButtonMap[this.title]?.[this.themeToShow]?.category;
         } else {
             this.category = this.previousCategory;
-            this.pleiepengerSelected = false;
+            this.themeRadioButtonSelected = false;
         }
 
         logFilterEvent(
-            'Gjelder det pleiepenger for sykt barn?',
+            this.radioButtonMap[this.title]?.[this.themeToShow]?.text,
             event.detail.text,
             getComponentName(this.template),
             this.title
