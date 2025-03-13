@@ -215,7 +215,7 @@
         <protected>false</protected>
         <shortDescription>Skriv til oss - Hjelpemidler ingress</shortDescription>
         <value>Skriv til oss om
-            &lt;ol&gt;
+            &lt;lo&gt;
             &lt;li&gt;høreapparat&lt;/li&gt;
             &lt;li&gt;tinnitusmaskerer&lt;/li&gt;
             &lt;li&gt;parykk&lt;/li&gt;
@@ -224,7 +224,7 @@
             &lt;li/&gt;ortoser&lt;l/li&gt;
             &lt;li&gt;støtte til folkehøgskoleopphold&lt;/li&gt;
             &lt;li&gt;tilpasningskurs&lt;/li&gt;
-            &lt;li&gt;grunnmønster og spesialsøm av klær&lt;/li&gt;&lt;/ol&gt;
+            &lt;li&gt;grunnmønster og spesialsøm av klær&lt;/li&gt;&lt;/lo&gt;
             &lt;br/&gt;Skriv bare spørsmål eller opplysninger som gjelder deg selv. Du kan ikke
             skrive for andre. Hvis du vil kontakte oss på vegne av andre, må du ringe oss og ha
             muntlig eller skriftlig fullmakt.</value>
