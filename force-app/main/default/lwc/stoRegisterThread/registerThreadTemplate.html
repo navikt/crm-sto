@@ -37,17 +37,17 @@
                             </div>
                         </template>
                         <template if:true={showTextArea}>
-                            <!-- Pleiepenger Radio Button -->
-                            <template lwc:if={showPleiepengerRadioButton}>
+                            <!-- Theme Choice Radio Button -->
+                            <template lwc:if={showThemeRadioButton}>
                                 <div class="slds-var-p-top_medium">
                                     <c-ds-radio
-                                        lwc:ref="pleiepengerRadiobutton"
-                                        title="Gjelder det pleiepenger for sykt barn?"
-                                        options={pleiepengerOptions}
-                                        class="radioFocus pleiepenger"
-                                        onradiochange={handlePleiepengerChange}
+                                        lwc:ref="themeRadioButton"
+                                        title={themeRadioButtonText}
+                                        options={radioButtonOptions}
+                                        class="radioFocus themeRadioButton"
+                                        onradiochange={handleThemeRadioButtonChange}
                                         ><div slot="legend" class="slds-grid">
-                                            <p>Gjelder det pleiepenger for sykt barn?</p>
+                                            <p>{themeRadioButtonText}</p>
                                         </div></c-ds-radio
                                     >
                                 </div>

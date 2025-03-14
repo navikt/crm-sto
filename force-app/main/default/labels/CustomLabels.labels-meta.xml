@@ -35,6 +35,35 @@
         <value>Du får en kvittering på at vi har mottatt beskjeden din.</value>
     </labels>
     <labels>
+        <fullName>Beskjed_til_oss_Beskjed_Frita_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss - Beskjed - Frita ingress</shortDescription>
+        <value>Kopier og lim inn denne teksten i skrivefeltet. Husk å fylle ut parentesene:
+            &lt;br/&gt;&lt;br/&gt;
+            &quot;Jeg bekrefter at jeg fritar Nav for taushetsplikten i forbindelse med omtale av
+            Nav-saken min. Det betyr at Nav kan gi kommentarer og informasjon om saken min til
+            (skriv inn navn på media, redaksjon og journalisten; for eksempel: redaksjonen i NRK
+            Troms og Finnmark og journalist Navn Navnesen)
+            &lt;br/&gt;&lt;br/&gt;
+            Fritaket gjelder fram til (skriv inn dato).
+            &lt;br/&gt;&lt;br/&gt;
+            Nav kan ikke kommentere eller gi informasjon om disse delene av saken min: (skriv inn
+            hva det gjelder).
+            &lt;br/&gt;&lt;br/&gt;
+            Jeg bor i (skriv inn kommune).&quot;</value>
+    </labels>
+    <labels>
+        <fullName>Beskjed_til_oss_Beskjed_Klage_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss - Beskjed - Klage ingress</shortDescription>
+        <value>Klagen må inneholde dokumentasjon og en forklaring på hvorfor du mener at Nav skal
+            behandle klagen din etter at klagefristen er utløpt.</value>
+    </labels>
+    <labels>
         <fullName>Beskjed_til_oss_Endring_Default_ingress</fullName>
         <categories>Beskjed til oss, Ingress</categories>
         <language>en_US</language>
