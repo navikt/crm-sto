@@ -208,7 +208,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         beskjed: 'Gi beskjed'
     };
 
-    // TODO: Set ingressLabel to center when loading - looks weird when left-aligned on loading
     // Use title as primary key and themetoshow as secondary
     radioButtonMap = {
         'Skriv til oss': {
