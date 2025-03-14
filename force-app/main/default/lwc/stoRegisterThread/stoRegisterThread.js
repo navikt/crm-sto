@@ -229,7 +229,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 initialCategory: 'Familie',
                 category: 'Pensjon',
                 text: 'Gjelder det pleiepenger i livets sluttfase?',
-                inboxTheme: 'Pleiepenger, omsorgspenger eller opplæringspenger'
+                inboxTheme: 'Pleiepenger i livets sluttfase'
             }
         }
     };
