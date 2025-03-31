@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>CRM_Shown__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <label>Shown</label>
     <required>false</required>
@@ -13,6 +14,7 @@
             <value>
                 <fullName>Beskjed til oss</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Beskjed til oss</label>
             </value>
             <value>
