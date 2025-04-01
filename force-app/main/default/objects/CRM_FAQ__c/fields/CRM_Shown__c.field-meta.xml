@@ -11,6 +11,12 @@
         <valueSetDefinition>
             <sorted>true</sorted>
             <value>
+                <fullName>Beskjed til oss</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Beskjed til oss</label>
+            </value>
+            <value>
                 <fullName>Gi beskjed</fullName>
                 <default>false</default>
                 <label>Gi beskjed</label>
