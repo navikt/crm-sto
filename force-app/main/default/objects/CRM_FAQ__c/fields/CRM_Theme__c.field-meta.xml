@@ -203,6 +203,12 @@
                 <label>Ventelønn</label>
             </value>
             <value>
+                <fullName>Vurdering av arbeidsevne</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Vurdering av arbeidsevne</label>
+            </value>
+            <value>
                 <fullName>Vurdering av behov for oppfølging</fullName>
                 <default>false</default>
                 <label>Vurdering av behov for oppfølging</label>
