@@ -125,7 +125,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             'grunn-og-hjelpestonad': { category: 'Helse', theme: 'Grunnstønad eller hjelpestønad' },
             yrkesskadetrygd: { category: 'Helse', theme: 'Frivillig yrkesskadetrygd' },
             'omsorg-fosterhjem': { category: 'Familie', theme: 'Omsorgsstønad eller fosterhjemsgodtgjørelse' },
-            arbeidsevne: { category: 'Arbeid', theme: 'Vurdering av arbeidsevne' },
+            arbeidsevne: { category: 'Arbeid', theme: 'Vurdering av behov for oppfølging' },
             enslig: {
                 category: 'Familie',
                 theme: 'Overgangsstønad, stønad til barnetilsyn, stønad til skolepenger og tilleggsstønader til enslig mor eller far'

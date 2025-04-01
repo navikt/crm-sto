@@ -203,9 +203,9 @@
                 <label>Ventelønn</label>
             </value>
             <value>
-                <fullName>Vurdering av arbeidsevne</fullName>
+                <fullName>Vurdering av behov for oppfølging</fullName>
                 <default>false</default>
-                <label>Vurdering av arbeidsevne</label>
+                <label>Vurdering av behov for oppfølging</label>
             </value>
         </valueSetDefinition>
         <valueSettings>
@@ -366,7 +366,7 @@
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Meld fra om endring</controllingFieldValue>
-            <valueName>Vurdering av arbeidsevne</valueName>
+            <valueName>Vurdering av behov for oppfølging</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
