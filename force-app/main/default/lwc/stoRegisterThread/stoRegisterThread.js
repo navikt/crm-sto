@@ -242,6 +242,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     categoryList.add(stoCategory.STO_Category__c.toLowerCase());
                 });
                 this.acceptedSTOCategories = categoryList;
+                this.acceptedSTOCategories.add('andre-hjelpemidler');
                 // eslint-disable-next-line
                 this.acceptedBTOCategories = Object.entries(this.btoCategoryAndThemeMap).flatMap(
                     ([parentKey, childObj]) =>
@@ -326,20 +327,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get isValidSTOCategory() {
-        return (
-            this.threadTypeToMake === 'STO' &&
-            (this.acceptedSTOCategories.has(this.lowerCaseUrlCategory) ||
-                this.lowerCaseUrlCategory === 'andre-hjelpemidler') // TODO: Remove Andre-hjelpemidler check here and add to acceptedSTOCategories when we stop supporting old BTO links
-        );
+        return this.threadTypeToMake === 'STO' && this.acceptedSTOCategories.has(this.lowerCaseUrlCategory);
     }
 
-    // TODO: Remove this.acceptedSTOCategories.has(this.lowerCaseUrlCategory) when team PB is done adding new links for BTO so that we do not support the old BTO links anymore
     get isValidBTOCategory() {
-        return (
-            this.threadTypeToMake === 'BTO' &&
-            (this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory) ||
-                this.acceptedSTOCategories.has(this.lowerCaseUrlCategory))
-        );
+        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory);
     }
 
     get termsModal() {
