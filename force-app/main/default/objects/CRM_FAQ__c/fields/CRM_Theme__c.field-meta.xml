@@ -203,50 +203,17 @@
                 <label>Ventelønn</label>
             </value>
             <value>
+                <fullName>Vurdering av arbeidsevne</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Vurdering av arbeidsevne</label>
+            </value>
+            <value>
                 <fullName>Vurdering av behov for oppfølging</fullName>
                 <default>false</default>
                 <label>Vurdering av behov for oppfølging</label>
             </value>
         </valueSetDefinition>
-        <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
-            <valueName>Arbeid</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
-            <valueName>Bor eller jobber i utlandet</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
-            <valueName>Familie og barn</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
-            <valueName>Helse og sykdom</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
-            <valueName>Hjelpemidler og tilrettelegging</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
-            <valueName>Pensjon</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <valueName>Pleiepenger for sykt barn</valueName>
-        </valueSettings>
-        <valueSettings>
-            <controllingFieldValue>Skriv til oss</controllingFieldValue>
-            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
-            <valueName>Ufør</valueName>
-        </valueSettings>
         <valueSettings>
             <controllingFieldValue>Gi beskjed</controllingFieldValue>
             <controllingFieldValue>Meld fra om endring</controllingFieldValue>
@@ -370,7 +337,46 @@
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
+            <valueName>Arbeid</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
+            <valueName>Bor eller jobber i utlandet</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
+            <valueName>Familie og barn</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
+            <valueName>Helse og sykdom</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
             <valueName>Hjelpemidler</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
+            <valueName>Hjelpemidler og tilrettelegging</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
+            <valueName>Pensjon</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <valueName>Pleiepenger for sykt barn</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Skriv til oss</controllingFieldValue>
+            <controllingFieldValue>Trekke en søknad</controllingFieldValue>
+            <valueName>Ufør</valueName>
         </valueSettings>
     </valueSet>
 </CustomField>
