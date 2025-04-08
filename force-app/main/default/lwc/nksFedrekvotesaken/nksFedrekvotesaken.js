@@ -21,11 +21,15 @@ export default class NksFedrekvotesaken extends LightningElement {
 
     loading = true;
     hasNavTask = false;
+    title = 'Er du berørt av feilen Nav har gjort?';
 
     connectedCallback() {
         hasExistingNavTasks()
             .then((res) => {
                 this.hasNavTask = res;
+                if (this.hasNavTask) {
+                    this.title = 'Berørt av feilen?';
+                }
             })
             .finally(() => {
                 this.loading = false;
@@ -70,6 +74,7 @@ export default class NksFedrekvotesaken extends LightningElement {
         createNavTask({ jsonData: JSON.stringify(fedrekvoteData) })
             .then(() => {
                 this.hasNavTask = true;
+                this.title = 'Foreldrepenger: Kvittering';
             })
             .catch((e) => {
                 LoggerUtility.logError(
