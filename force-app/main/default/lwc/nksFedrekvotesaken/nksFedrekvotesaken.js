@@ -29,6 +29,10 @@ export default class NksFedrekvotesaken extends LightningElement {
                 this.hasNavTask = res;
                 this.title = this.hasNavTask ? 'Berørt av feilen?' : 'Er du berørt av feilen Nav har gjort?';
             })
+            .catch((err) => {
+                console.error('Failed to fetch nav tasks', err);
+                this.title = 'Er du berørt av feilen Nav har gjort?';
+            })
             .finally(() => {
                 this.loading = false;
             });
