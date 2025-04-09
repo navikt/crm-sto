@@ -21,15 +21,13 @@ export default class NksFedrekvotesaken extends LightningElement {
 
     loading = true;
     hasNavTask = false;
-    title = 'Er du berørt av feilen Nav har gjort?';
+    title = '';
 
     connectedCallback() {
         hasExistingNavTasks()
             .then((res) => {
                 this.hasNavTask = res;
-                if (this.hasNavTask) {
-                    this.title = 'Berørt av feilen?';
-                }
+                this.title = this.hasNavTask ? 'Berørt av feilen?' : 'Er du berørt av feilen Nav har gjort?';
             })
             .finally(() => {
                 this.loading = false;
