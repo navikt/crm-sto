@@ -102,7 +102,7 @@
                     "componentAttributes": {
                         "customHeadTags": "",
                         "description": "",
-                        "pageTitle": "Fedrekvotesaken",
+                        "pageTitle": "Foreldrepenger",
                         "recordId": "{!recordId}"
                     },
                     "componentName": "community_builder:seoAssistant",
