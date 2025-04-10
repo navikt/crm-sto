@@ -33,7 +33,9 @@ public with sharing class stoInboxHelperTest {
             personContact.AccountId,
             personContact.Id,
             true,
-            'STO'
+            'STO',
+            'Skriv til oss',
+            'Arbeid'
         );
         stoHelperClass.createMessage(t, 'Dette er en test melding', personContact.Id);
         t.CRM_Closed_Date__c = date.today().addDays(-1);
@@ -66,7 +68,9 @@ public with sharing class stoInboxHelperTest {
             personContact.AccountId,
             personContact.Id,
             true,
-            'STO'
+            'STO',
+            'Skriv til oss',
+            'Arbeid'
         );
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;

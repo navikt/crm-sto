@@ -21,11 +21,17 @@ export default class NksFedrekvotesaken extends LightningElement {
 
     loading = true;
     hasNavTask = false;
+    title = '';
 
     connectedCallback() {
         hasExistingNavTasks()
             .then((res) => {
                 this.hasNavTask = res;
+                this.title = this.hasNavTask ? 'Berørt av feilen?' : 'Er du berørt av feilen Nav har gjort?';
+            })
+            .catch((err) => {
+                console.error('Failed to fetch nav tasks', err);
+                this.title = 'Er du berørt av feilen Nav har gjort?';
             })
             .finally(() => {
                 this.loading = false;
@@ -70,6 +76,7 @@ export default class NksFedrekvotesaken extends LightningElement {
         createNavTask({ jsonData: JSON.stringify(fedrekvoteData) })
             .then(() => {
                 this.hasNavTask = true;
+                this.title = 'Foreldrepenger: Kvittering';
             })
             .catch((e) => {
                 LoggerUtility.logError(

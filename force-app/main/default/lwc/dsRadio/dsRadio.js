@@ -26,6 +26,14 @@ export default class DsRadio extends LightningElement {
         test?.focus();
     }
 
+    getText() {
+        const selectedButton = this.getSelectedButton();
+        if (!selectedButton) return null;
+
+        const label = this.template.querySelector(`label[for="${selectedButton.id}"]`);
+        return label ? label.textContent : null;
+    }
+
     checkForError() {
         this.updateErrorText();
     }
@@ -35,7 +43,7 @@ export default class DsRadio extends LightningElement {
         this._options.forEach((option) => (option.checked = option.id === dataId));
         this.updateErrorText();
         const changeEvent = new CustomEvent('radiochange', {
-            detail: this.getValue()
+            detail: { text: this.getText(), value: this.getValue() }
         });
         this.dispatchEvent(changeEvent);
     }

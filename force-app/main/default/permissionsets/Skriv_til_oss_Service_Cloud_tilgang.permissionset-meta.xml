@@ -40,6 +40,16 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Message__c.CRM_Event_Type__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Message__c.CRM_From_First_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>STO_Internal_Comment__c.Case__c</field>
         <readable>true</readable>
@@ -151,6 +161,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Thread__c.NKS_Inbox_Theme__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.NKS_Inbox_Title__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Thread__c.STO_Medskriv__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -196,4 +216,8 @@
         <apexPage>CRM_Thread_PDF</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
+    <recordTypeVisibilities>
+        <recordType>Thread__c.NKS_Thread</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
 </PermissionSet>

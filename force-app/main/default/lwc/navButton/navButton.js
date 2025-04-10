@@ -2,9 +2,11 @@ import { LightningElement, api } from 'lwc';
 export default class NavButton extends LightningElement {
     @api title;
     @api url;
+    @api logAmplitudeEvent = false;
 
-    gotourl() {
-        console.log(this.url);
-        window.location.href = this.url + '&output=embed';
+    handleClick() {
+        if (this.logAmplitudeEvent) {
+            this.dispatchEvent(new CustomEvent('logevent'));
+        }
     }
 }

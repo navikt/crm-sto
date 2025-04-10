@@ -521,6 +521,12 @@ IF(ISBLANK({!Task_Type_Selector.selectedTaskType}), {!Task_Type_Selector_1.selec
                     <elementReference>NavTask.CRM_Subtype__c</elementReference>
                 </value>
             </inputParameters>
+            <inputParameters>
+                <name>checkIfGjelderIsRequired</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <outputParameters>

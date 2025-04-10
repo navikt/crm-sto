@@ -4,16 +4,16 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.176.0.NEXT",
+            "versionNumber": "1.201.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.226.0.LATEST"
+                    "versionNumber": "0.258.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
-                    "versionNumber": "0.38.0.LATEST"
+                    "versionNumber": "0.40.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -21,15 +21,15 @@
                 },
                 {
                     "package": "crm-henvendelse-base",
-                    "versionNumber": "0.25.0.LATEST"
+                    "versionNumber": "0.28.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.123.0.LATEST"
+                    "versionNumber": "0.150.0.LATEST"
                 },
                 {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.37.0.LATEST"
+                    "versionNumber": "0.41.0.LATEST"
                 },
                 {
                     "package": "crm-platform-oppgave",
@@ -49,7 +49,7 @@
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.149.0.LATEST"
+                    "versionNumber": "0.160.0.LATEST"
                 },
                 {
                     "package": "crm-sf-saf",
@@ -57,15 +57,15 @@
                 },
                 {
                     "package": "crm-thread-view",
-                    "versionNumber": "0.2.0.LATEST"
+                    "versionNumber": "0.3.0.LATEST"
                 },
                 {
                     "package": "crm-nks-integration",
-                    "versionNumber": "0.70.0.LATEST"
+                    "versionNumber": "0.82.0.LATEST"
                 },
                 {
                     "package": "crm-nks-base-components",
-                    "versionNumber": "0.65.0.LATEST"
+                    "versionNumber": "0.92.0.LATEST"
                 },
                 {
                     "package": "crm-nks-survey",

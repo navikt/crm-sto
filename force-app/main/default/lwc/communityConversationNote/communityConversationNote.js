@@ -10,8 +10,18 @@ import DATE_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_Registered_D
 import BEHANDLINGSKJEDE_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_Henvendelse_BehandlingskjedeId__c';
 import BEHANDLINGSID_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_Henvendelse_BehandlingsId__c';
 import APIREFERENCE_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_API_Reference__c';
+import THEMEGROUPNAME_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_Theme_Group_Name__c';
+import { setDecoratorParams } from 'c/inboxAmplitude';
 
-const fields = [NAME_FIELD, NOTE_FIELD, DATE_FIELD, BEHANDLINGSKJEDE_FIELD, BEHANDLINGSID_FIELD, APIREFERENCE_FIELD]; //Extract the name of the thread record
+const fields = [
+    NAME_FIELD,
+    NOTE_FIELD,
+    DATE_FIELD,
+    BEHANDLINGSKJEDE_FIELD,
+    BEHANDLINGSID_FIELD,
+    APIREFERENCE_FIELD,
+    THEMEGROUPNAME_FIELD
+]; //Extract the name of the thread record
 
 export default class CommunityConversationNote extends LightningElement {
     @api recordId;
@@ -20,6 +30,7 @@ export default class CommunityConversationNote extends LightningElement {
     note;
     date;
     relatedNotes;
+    themeGroup;
 
     get navIcon() {
         return veiledericon;
@@ -35,9 +46,12 @@ export default class CommunityConversationNote extends LightningElement {
             this.name = getFieldValue(data, NAME_FIELD);
             this.note = getFieldValue(data, NOTE_FIELD);
             this.date = getFieldValue(data, DATE_FIELD);
+            this.themeGroup = getFieldValue(data, THEMEGROUPNAME_FIELD);
+
             const behandlingskjede = getFieldValue(data, BEHANDLINGSKJEDE_FIELD);
             const behandlingsId = getFieldValue(data, BEHANDLINGSID_FIELD);
             const apiRef = getFieldValue(data, APIREFERENCE_FIELD);
+            setDecoratorParams('Samtalereferat', 'Samtalereferat', this.themeGroup);
             getRelatedConversations({
                 behandlingskjede: behandlingskjede,
                 behandlingsId: behandlingsId,

@@ -3,7 +3,7 @@
     <fullName>STO_External_Name__c</fullName>
     <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>CRM_Theme_Group__r.Name + &quot; - Samtalereferat&quot;</formula>
+    <formula>&quot;Samtalereferat - &quot; + CRM_Theme_Group__r.Name</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>STO - External Name</label>
     <required>false</required>
