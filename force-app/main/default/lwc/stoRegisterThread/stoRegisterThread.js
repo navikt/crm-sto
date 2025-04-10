@@ -99,7 +99,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         { text: 'Nei', value: 'false', checked: false }
     ];
 
-    logopath = navlogos + '/email.svg';
     deletepath = navlogos + '/delete.svg';
     wiredNews;
     wireThreadData;

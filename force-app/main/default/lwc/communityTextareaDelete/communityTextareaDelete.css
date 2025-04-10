@@ -1,0 +1,23 @@
+.tekstboks {
+    overflow-y: hidden;
+}
+
+.minRow {
+    min-height: 2rem;
+}
+
+.textarea-container {
+    margin-bottom: 1.5rem;
+}
+
+.error-message-color {
+    color: #c30300;
+}
+
+.icon-padding {
+    padding-top: 0.2rem;
+}
+
+.text-bold {
+    font-weight: bold;
+}

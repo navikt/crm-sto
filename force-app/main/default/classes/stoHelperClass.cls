@@ -168,9 +168,24 @@ public with sharing class stoHelperClass {
             news.add(new News(rec.CRM_Title__c, rec.CRM_Content__c, rec.Id));
         }
 
-        if (news.size() == 0 && Test.isRunningTest()) {
-            news.add(new News('header test', 'body test', '123'));
-        }
+        news.add(
+            new News(
+                'Har du jobbet og fått lønn i stede for å delta på tiltaket?',
+                'Gi beskjed om:\nDatoen du reiser\nDatoen du kommer hjem igjen',
+                '123'
+            )
+        );
+        news.add(
+            new News('Skal du til utlandet?', 'Gi beskjed om:\nDatoen du reiser\nDatoen du kommer hjem igjen', '123')
+        );
+        news.add(
+            new News(
+                'Har du fått barnetillegg for et barn som skal til utlandet?',
+                'Gi beskjed om:\nDatoen du reiser\nDatoen du kommer hjem igjen',
+                '123'
+            )
+        );
+
         return news;
     }
 

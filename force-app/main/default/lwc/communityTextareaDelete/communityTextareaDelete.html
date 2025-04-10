@@ -1,0 +1,39 @@
+<template>
+    <div class={wrapperClass}>
+        <div class={textAreaContainer}>
+            <label for="textareaInput" class="sr-only">{labelText}</label>
+            <p class="slds-text-heading_small slds-p-bottom_x-small text-bold">Din Beskjed</p>
+            <lightning-textarea
+                aria-invalid={errorState}
+                name="textbox"
+                onchange={handleChange}
+                oninput={handleMessage}
+                onfocusout={checkError}
+                id="textareaInput"
+                variant="label-hidden"
+            >
+                {message}
+            </lightning-textarea>
+            <div aria-hidden="true" class="minRow" tabindex="-1"></div>
+            <template if:true={limitCharacters}>
+                <p aria-live="off" class={remainingCharacterClass}>{remainingCharacterText}</p>
+            </template>
+        </div>
+        <div aria-relevant="additions removals" aria-live="polite">
+            <template lwc:if={errorState}>
+                <div class="slds-grid slds-grid_align-spread">
+                    <lightning-icon
+                        icon-name="utility:warning"
+                        title="Warning"
+                        variant="error"
+                        size="x-small"
+                        class="icon-padding"
+                    ></lightning-icon>
+                    <div class="navds-label error-message-color slds-p-bottom_large slds-p-left_x-small">
+                        {errorMessage}
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

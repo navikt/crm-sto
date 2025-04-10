@@ -1,10 +1,10 @@
 .header {
-    text-align: center;
+    text-align: left;
     width: 100%;
     margin-bottom: 1em;
 }
-.text-center {
-    text-align: center;
+.text-left {
+    text-align: left;
     background-color: #fff;
     display: block;
     padding: 1rem 1rem 1rem 1rem;
@@ -34,9 +34,6 @@
     margin-top: 1em;
     justify-content: center;
     padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px) 2.5rem;
-}
-.logo {
-    margin: 1em;
 }
 .typo-undertittel_farge {
     color: #0067c5;
@@ -75,8 +72,8 @@
 
 .checkbox {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    justify-items: center;
+    grid-template-columns: auto auto 1fr;
+    justify-items: left;
 }
 
 .checkbox c-community-checkbox {

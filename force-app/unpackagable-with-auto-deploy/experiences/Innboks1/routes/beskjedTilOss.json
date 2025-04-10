@@ -1,10 +1,10 @@
 {
-    "activeViewId": "20acd9b5-86ea-4220-9084-b71e0f2b6279",
-    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
-    "configurationTags": [],
-    "id": "aee9b0a2-3da3-4d39-ad4f-9fc80db49f57",
-    "label": "Beskjed til oss",
-    "routeType": "custom-beskjed-til-oss",
-    "type": "route",
-    "urlPrefix": "beskjed-til-oss"
+  "activeViewId" : "20acd9b5-86ea-4220-9084-b71e0f2b6279",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "id" : "aee9b0a2-3da3-4d39-ad4f-9fc80db49f57",
+  "label" : "Beskjed til oss",
+  "routeType" : "custom-beskjed-til-oss",
+  "type" : "route",
+  "urlPrefix" : "beskjed-til-oss"
 }

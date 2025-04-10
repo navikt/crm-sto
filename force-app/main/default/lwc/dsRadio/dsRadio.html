@@ -32,8 +32,19 @@
                 aria-live="polite"
                 class="navds-fieldset__error"
             >
-                <template if:true={showErrorText}>
-                    <p class="navds-error-message navds-label">Du må velge et av alternativene</p>
+                <template lwc:if={showErrorText}>
+                    <div class="slds-grid slds-p-left_xx-small">
+                        <lightning-icon
+                            icon-name="utility:warning"
+                            title="Warning"
+                            variant="error"
+                            size="x-small"
+                            class="icon-padding"
+                        ></lightning-icon>
+                        <div class="error-message-color navds-error-message--medium navds-label slds-p-left_x-small">
+                            Du må velge et av alternativene
+                        </div>
+                    </div>
                 </template>
             </div>
         </fieldset>
