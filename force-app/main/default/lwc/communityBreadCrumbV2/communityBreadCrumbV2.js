@@ -56,7 +56,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
             ];
             this.retryBreadcrumbUpdate();
         } else if (this.name === 'Fedrekvotesaken__c') {
-            this.leafnode = 'Fedrekvotesaken';
+            this.leafnode = 'Foreldrepenger';
             this.breadcrumbs = [{ url: '/', title: this.leafnode }];
             this.retryBreadcrumbUpdate();
         } else {

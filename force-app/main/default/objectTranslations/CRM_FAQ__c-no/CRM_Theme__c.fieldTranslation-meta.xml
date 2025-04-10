@@ -147,7 +147,7 @@
         <translation><!-- Ventelønn --></translation>
     </picklistValues>
     <picklistValues>
-        <masterLabel>Vurdering av arbeidsevne</masterLabel>
-        <translation><!-- Vurdering av arbeidsevne --></translation>
+        <masterLabel>Vurdering av behov for oppfølging</masterLabel>
+        <translation><!-- Vurdering av behov for oppfølging --></translation>
     </picklistValues>
 </CustomFieldTranslation>
