@@ -260,12 +260,6 @@
         </label>
         <name>fflib_security_error_object_not_updateable</name>
     </customLabels>
-    <customTabs>
-        <label>
-            <!-- API Transactions -->
-        </label>
-        <name>API_Transactions</name>
-    </customTabs>
     <flowDefinitions>
         <flows />
         <fullName>CRM_Create_Thread_Event</fullName>
