@@ -32,6 +32,11 @@
         <field>Thread__c.NKS_Experience_Site_Source__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.STO_Category__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>STO - Config</label>
 </PermissionSet>
