@@ -45,6 +45,7 @@ export default class CrmStoMessaging extends LightningElement {
     @api newDesign = false;
     @api submitButtonLabel;
     @api isThread;
+    @api isCaseReserved;
 
     wireField;
     accountId;
@@ -66,7 +67,6 @@ export default class CrmStoMessaging extends LightningElement {
     resetTemplate = false;
     closeLanguageModal = false;
     isThreadIdNull = false;
-
 
     labels = {
         MEDSKRIV_TEXT,
@@ -225,6 +225,9 @@ export default class CrmStoMessaging extends LightningElement {
 
     handleMedskrivClick() {
         this.acceptedMedskriv = true;
+        if (this.isCaseReserved) {
+            this.dispatchEvent(new CustomEvent('setcasetoinprogress'));
+        }
         const child = this.template.querySelector('c-crm-messaging-message-component');
         child.checkSlotChange('messages');
         child.focus();
@@ -295,8 +298,8 @@ export default class CrmStoMessaging extends LightningElement {
         return this.isThread && this.threadType === 'CHAT'
             ? 'standard:live_chat'
             : this.threadType === 'BTO'
-            ? 'standard:contact_request'
-            : 'standard:messaging_user';
+              ? 'standard:contact_request'
+              : 'standard:messaging_user';
     }
 
     get showMedskrivBlocker() {
@@ -427,6 +430,10 @@ export default class CrmStoMessaging extends LightningElement {
         this.userInput = event.detail.userInput;
         this.resetTemplate = event.detail.resetTemplate;
         this.closeLanguageModal = event.detail.closeLanguageModal;
+    }
+
+    handleSetCaseToInProgress() {
+        this.dispatchEvent(new CustomEvent('setcasetoinprogress'));
     }
 
     getEnglishCompanyName() {

@@ -1,8 +1,9 @@
 import { LightningElement, api, wire, track } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue, updateRecord } from 'lightning/uiRecordApi';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import { refreshApex } from '@salesforce/apex';
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
+import ID_FIELD from '@salesforce/schema/Case.Id';
 import IN_QUEUE_FIELD from '@salesforce/schema/Case.CRM_In_Queue__c';
 import PUT_BACK_LABEL from '@salesforce/label/c.STO_Put_Back';
 import RESERVE_LABEL from '@salesforce/label/c.STO_Reserve_For_Me';
@@ -48,6 +49,7 @@ export default class StoMessagingContainer extends LightningElement {
     showRedactButton = false;
     showJournalButton = false;
     showCreateNavTaskButton = false;
+    isCaseReserved = false;
 
     labels = {
         RESERVE_LABEL,
@@ -69,6 +71,7 @@ export default class StoMessagingContainer extends LightningElement {
         const { data, error } = result;
         if (data) {
             this.status = getFieldValue(data, STATUS_FIELD);
+            this.isCaseReserved = this.status === CONSTANTS.RESERVED;
             this.inQueue = getFieldValue(data, IN_QUEUE_FIELD);
         } else if (error) {
             console.error(error.body.message);
@@ -258,6 +261,22 @@ export default class StoMessagingContainer extends LightningElement {
             this.showComplete = !this.showComplete;
         }
         this.template.querySelector('c-crm-sto-messaging').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    handleSetCaseToInProgress() {
+        const fields = {};
+        fields[ID_FIELD.fieldApiName] = this.caseId;
+        fields[STATUS_FIELD.fieldApiName] = CONSTANTS.IN_PROGRESS;
+
+        const recordInput = { fields };
+
+        updateRecord(recordInput)
+            .then(() => {
+                return refreshApex(this.wiredCase);
+            })
+            .catch((error) => {
+                console.error('Error updating case status:', error);
+            });
     }
 
     handleSubmitStatusChange(event) {
