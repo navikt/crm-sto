@@ -218,11 +218,6 @@ export default class CrmStoMessaging extends LightningElement {
         }
     }
 
-    // Event Handlers
-    handleEnglishEventTwo(event) {
-        this.englishTextTemplate = event.detail;
-    }
-
     handleMedskrivClick() {
         this.acceptedMedskriv = true;
         if (this.isCaseReserved) {
