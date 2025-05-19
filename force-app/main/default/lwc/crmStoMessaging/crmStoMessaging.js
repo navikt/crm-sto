@@ -427,10 +427,6 @@ export default class CrmStoMessaging extends LightningElement {
         this.closeLanguageModal = event.detail.closeLanguageModal;
     }
 
-    handleSetCaseToInProgress() {
-        this.dispatchEvent(new CustomEvent('setcasetoinprogress'));
-    }
-
     getEnglishCompanyName() {
         try {
             const normalizedCompanyName = this.norwegianCompanyName.trim();
