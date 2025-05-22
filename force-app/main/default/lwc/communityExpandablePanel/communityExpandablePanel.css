@@ -1,41 +1,93 @@
-.link-header {
-    width: 100%;
-    display: block;
-}
-.lenkepanel__heading {
-    text-align: left;
-    font-size: var(--navds-font-size-medium, 1.125rem);
-    padding-bottom: 0px;
-}
-.expandable-body {
-    width: 100%;
-    display: block;
-    margin-top: 2em;
-}
-.hoved-panel {
-    display: block !important;
-}
-.chevronboks {
-    margin-top: 0.6em;
-    padding-left: 10px;
-    margin: 0;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    right: 0;
-}
-.typo-normal {
-    text-align: left;
-}
-.full-width {
-    width: 100%;
-    justify-content: space-between;
-    position: relative;
+.panel-header-simple,
+.panel-header {
     display: flex;
-    gap: 1em;
+    align-items: center;
+    font-weight: 400;
+    font-size: 14px;
 }
 
-.expand-animation {
-    transition: height 250ms ease 0ms;
-    overflow: hidden;
+.title {
+    font-weight: 400;
+    font-size: 16px;
+    color: #0056b4;
+    padding-top: 0.17rem;
+}
+
+.panel-header-padding-small {
+    padding: 0.8em 1.25rem 0.8rem 0.4rem;
+}
+
+.panel-background {
+    background-color: #ffffff;
+}
+
+.panel-background-bottom-border {
+    border-bottom: 1px solid #a9a9a9;
+}
+
+.custom-icon-background,
+.panel-simple:hover,
+.panel-header:hover {
+    background-color: #e9f0ff;
+}
+
+.panel-body {
+    padding-left: 1.5rem;
+    padding-right: 1rem;
+    background-color: #ffffff;
+}
+
+.panel-body-small {
+    padding-left: 1.5rem;
+}
+
+.panel-body-x_small {
+    padding-left: 1rem;
+}
+
+.panel-body-left-simple {
+    border-left: 2px solid #c1c4cb;
+    margin: 0.5rem 0 1rem 0.7rem;
+}
+
+.panel-body-left {
+    border-left: 2px solid #c1c4cb;
+    margin: 0.5rem 0 1rem 1rem;
+}
+
+.custom-icon-chevron,
+.panel-header:hover .custom-icon-background,
+.custom-icon-background {
+    fill: #00459c;
+}
+
+.custom-icon-background,
+.panel-header:hover .custom-icon-chevron,
+.custom-icon-chevron {
+    fill: #e9f0ff;
+}
+
+.custom-icon-chevron {
+    fill: #00459c;
+}
+
+.custom-icon-chevron-simple {
+    fill: #00459c;
+}
+
+.rotate-chevron {
+    transform: rotate(-180deg);
+}
+
+.rotate-chevron,
+.custom-chevron {
+    transition: transform 0.2s ease;
+}
+
+.panel-divider {
+    border-bottom: 1px solid #cccccc;
+}
+
+.panel-header-expandable {
+    cursor: pointer;
 }
