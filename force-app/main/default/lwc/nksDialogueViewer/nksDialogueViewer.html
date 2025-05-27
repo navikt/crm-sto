@@ -3,12 +3,14 @@
         <lightning-spinner size="medium" variant="brand"></lightning-spinner>
     </div>
     <c-crm-sto-messaging
-        if:true={threadId}
+        lwc:if={threadId}
         record-id={threadId}
         object-api-name="Thread__c"
         single-thread="true"
         card-title="Samtale"
-        show-close="true"
+        show-close
+        new-design={newDesign}
+        submit-button-label={submitLabel}
     ></c-crm-sto-messaging>
     <c-nks-conv-note-viewer if:true={convNoteId} record-id={convNoteId}></c-nks-conv-note-viewer>
 </template>
