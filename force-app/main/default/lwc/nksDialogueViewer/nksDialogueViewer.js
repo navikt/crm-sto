@@ -2,6 +2,7 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getDialogByRef from '@salesforce/apex/NKS_DialogueViewController.getDialogueByApiReference';
 import NAV_TASK_API_REF_FIELD from '@salesforce/schema/NavTask__c.NKS_Henvendelse_BehandlingsId__c';
+import SHARE_WITH_USER_LABEL from '@salesforce/label/c.STO_Share_With_User';
 
 const THREAD_TYPE = 'Thread__c';
 const CONV_NOTE_TYPE = 'Conversation_Note__c';
@@ -9,12 +10,14 @@ const CONV_NOTE_TYPE = 'Conversation_Note__c';
 export default class NksDialogueViewer extends LightningElement {
     @api recordId;
     @api objectApiName;
+    @api newDesign = false;
 
     threadId;
     convNoteId;
     navTaskId;
     apiReference;
     error = false;
+    submitLabel = SHARE_WITH_USER_LABEL;
 
     get isLoading() {
         return !this.threadId && !this.convNoteId && !this.navTaskId && this.error === false;
