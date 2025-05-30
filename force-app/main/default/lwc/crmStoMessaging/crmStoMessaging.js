@@ -281,7 +281,7 @@ export default class CrmStoMessaging extends LightningElement {
 
     get actualCardTitle() {
         if (['BTO', 'STO'].includes(this.threadType))
-            return this.threadType === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
+            return this.threadType === 'STO' ? 'Skriv til oss' : 'Meld i fra om endring';
         else if (this.isThread && this.threadType === 'CHAT') {
             return 'Chat';
         }
