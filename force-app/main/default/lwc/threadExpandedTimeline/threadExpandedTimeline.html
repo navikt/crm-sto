@@ -8,6 +8,16 @@
         </template>
     </section>
     <div class="button-padding">
-        <c-nks-button button-label="Behandle henvendelse" onclick={openRecord} is-link standard-length></c-nks-button>
+        <div>
+            <a
+                class="slds-button slds-button_brand button-spacing"
+                type="submit"
+                title="Behandle henvendelse"
+                onclick={openRecord}
+                tabindex="0"
+            >
+                Behandle henvendelse
+            </a>
+        </div>
     </div>
 </template>
