@@ -5,3 +5,8 @@
 .conv-note-details {
     min-height: 30em;
 }
+
+.img-reset {
+    --lwc-spacingSmall: 0px;
+    --slds-g-spacing-3: 0.3rem;
+}
