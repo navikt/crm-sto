@@ -28,6 +28,10 @@
                     "versionNumber": "0.150.0.LATEST"
                 },
                 {
+                    "package": "crm-thread-view",
+                    "versionNumber": "0.7.0.LATEST"
+                },
+                {
                     "package": "crm-journal-utilities",
                     "versionNumber": "0.45.0.LATEST"
                 },
@@ -54,10 +58,6 @@
                 {
                     "package": "crm-sf-saf",
                     "versionNumber": "0.23.0.LATEST"
-                },
-                {
-                    "package": "crm-thread-view",
-                    "versionNumber": "0.7.0.LATEST"
                 },
                 {
                     "package": "crm-nks-integration",
