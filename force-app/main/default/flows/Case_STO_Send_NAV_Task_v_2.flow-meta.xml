@@ -530,7 +530,7 @@ IF(ISBLANK({!Task_Type_Selector.selectedTaskType}), {!Task_Type_Selector_1.selec
             <inputParameters>
                 <name>useNewDesign</name>
                 <value>
-                    <booleanValue>true</booleanValue>
+                    <booleanValue>false</booleanValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
