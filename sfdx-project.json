@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.207.0.NEXT",
+            "versionNumber": "1.209.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
@@ -28,8 +28,12 @@
                     "versionNumber": "0.150.0.LATEST"
                 },
                 {
+                    "package": "crm-thread-view",
+                    "versionNumber": "0.7.0.LATEST"
+                },
+                {
                     "package": "crm-journal-utilities",
-                    "versionNumber": "0.41.0.LATEST"
+                    "versionNumber": "0.45.0.LATEST"
                 },
                 {
                     "package": "crm-platform-oppgave",
@@ -54,10 +58,6 @@
                 {
                     "package": "crm-sf-saf",
                     "versionNumber": "0.23.0.LATEST"
-                },
-                {
-                    "package": "crm-thread-view",
-                    "versionNumber": "0.3.0.LATEST"
                 },
                 {
                     "package": "crm-nks-integration",
