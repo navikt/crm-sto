@@ -57,4 +57,22 @@ export default class ThreadExpandedTimeline extends NavigationMixin(LightningEle
             publishToAmplitude('Timeline', { type: 'Navigate to record' });
         }
     }
+
+    handlePrint(event) {
+        event.preventDefault();
+
+        if (!this.recordId) {
+            console.error('No record ID found!');
+            return;
+        }
+
+        const vfPageUrl = `/apex/NKS_RecordPrintWrapper?id=${this.recordId}`;
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: vfPageUrl
+            }
+        });
+    }
 }
