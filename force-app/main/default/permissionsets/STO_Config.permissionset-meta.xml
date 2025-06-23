@@ -19,6 +19,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Thread__c.CRM_Additional_Information__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Thread__c.CRM_Case__c</field>
         <readable>true</readable>
     </fieldPermissions>
