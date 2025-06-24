@@ -59,13 +59,13 @@ public with sharing class stoHelperClass {
         String relatedObjId;
         Thread__c thread;
 
+        User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
         if (isMaxThreadCount(theme, type)) {
-            logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
+            logger.error('Max thread limit reached in the same category on Account: ' + personUser?.AccountId, null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
             throw new maxThreadLimitReachedException();
         }
 
-        User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
         thread = createThread(null, theme, personUser, medskriv, type, inboxTitle, inboxTheme);
         createMessage(thread, msgText, personUser.ContactId);
 
