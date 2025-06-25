@@ -262,7 +262,7 @@ public with sharing class stoHelperClass {
         for (Thread__c t : openThreads) {
             threadList.add(stoInboxHelper.formatThread(t)); // Filters out threads without messages
         }
-        return threadList >= maxThreadCount;
+        return threadList.size() >= maxThreadCount;
     }
 
     public class threadOrMessageException extends Exception {
