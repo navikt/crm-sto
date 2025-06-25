@@ -189,7 +189,7 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
         List<String> allowedThreadTypes;
-        if (threadTypeMap.keySet().contains(threadType)) {
+        if (threadTypeMap.containsKey(threadType)) {
             allowedThreadTypes = threadTypeMap.get(threadType);
         } else {
             allowedThreadTypes = threadTypeMap.get('ALL');
@@ -247,7 +247,7 @@ public with sharing class stoHelperClass {
 
     private static Boolean isMaxThreadCount(String theme, String threadType) {
         List<String> allowedThreadTypes;
-        if (threadTypeMap.keySet().contains(threadType)) {
+        if (threadTypeMap.containsKey(threadType)) {
             allowedThreadTypes = threadTypeMap.get(threadType);
         } else {
             allowedThreadTypes = threadTypeMap.get('ALL');
