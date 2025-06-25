@@ -58,7 +58,7 @@ public with sharing class stoHelperClass {
         String relatedObjId;
         Thread__c thread;
 
-         if (isMaxThreadCount(theme, type)) {
+        if (isMaxThreadCount(theme, type)) {
             logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
             throw new maxThreadLimitReachedException();
