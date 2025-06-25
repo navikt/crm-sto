@@ -59,13 +59,13 @@ public with sharing class stoHelperClass {
         String relatedObjId;
         Thread__c thread;
 
-        User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        if (isMaxThreadCount(theme, type)) {
-            logger.error('Max thread limit reached in the same category on Account: ' + personUser?.AccountId, null, CRM_ApplicationDomain.Domain.NKS);
+         if (isMaxThreadCount(theme, type)) {
+            logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
             throw new maxThreadLimitReachedException();
         }
 
+        User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
         thread = createThread(null, theme, personUser, medskriv, type, inboxTitle, inboxTheme);
         createMessage(thread, msgText, personUser.ContactId);
 
@@ -196,8 +196,6 @@ public with sharing class stoHelperClass {
         List<String> allowedThreadTypes;
         if (threadTypeMap.keySet().contains(threadType)) {
             allowedThreadTypes = threadTypeMap.get(threadType);
-        } else {
-            allowedThreadTypes = threadTypeMap.get('ALL');
         }
         List<Thread__c> openThreads = [
             SELECT
@@ -250,11 +248,21 @@ public with sharing class stoHelperClass {
     }
 
     private static Boolean isMaxThreadCount(String theme, String threadType) {
-        return [
+        List<String> allowedThreadTypes;
+        if (threadTypeMap.keySet().contains(threadType)) {
+            allowedThreadTypes = threadTypeMap.get(threadType);
+        }
+        List<Thread__c> openThreads = [
                 SELECT COUNT()
                 FROM Thread__c
-                WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c = :threadType
-            ] >= maxThreadCount;
+                WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :allowedThreadTypes
+            ];
+
+        List<stoInboxHelper.thread> threadList = new List<stoInboxHelper.thread>();
+        for (Thread__c t : openThreads) {
+            threadList.add(stoInboxHelper.formatThread(t)); // Filters out threads without messages
+        }
+        return threadList >= maxThreadCount;
     }
 
     public class threadOrMessageException extends Exception {
