@@ -186,19 +186,15 @@ public with sharing class stoHelperClass {
         }
     }
 
-    @AuraEnabled
-    public static List<stoInboxHelper.thread> getOpenThreads(String category) {
-        return getOpenThreads(category, 'ALL');
-    }
-
     @AuraEnabled(cacheable=true)
     public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
         List<String> allowedThreadTypes;
-        if (threadTypeMap.keySet().contains(threadType)) {
+        if (threadTypeMap.containsKey(threadType)) {
             allowedThreadTypes = threadTypeMap.get(threadType);
         } else {
             allowedThreadTypes = threadTypeMap.get('ALL');
         }
+
         List<Thread__c> openThreads = [
             SELECT
                 Id,
@@ -250,11 +246,32 @@ public with sharing class stoHelperClass {
     }
 
     private static Boolean isMaxThreadCount(String theme, String threadType) {
-        return [
-                SELECT COUNT()
+        List<String> allowedThreadTypes;
+        if (threadTypeMap.containsKey(threadType)) {
+            allowedThreadTypes = threadTypeMap.get(threadType);
+        } else {
+            allowedThreadTypes = threadTypeMap.get('ALL');
+        }
+
+        List<Thread__c> openThreads = [
+                SELECT Id,
+                (
+                    SELECT Id
+                    FROM Messages__r
+                    WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
+                    LIMIT 1
+                )
                 FROM Thread__c
-                WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c = :threadType
-            ] >= maxThreadCount;
+                WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :allowedThreadTypes
+            ];
+
+        List<Thread__c> threadList = new List<Thread__c>();
+        for (Thread__c t : openThreads) {
+            if (t.Messages__r != null && t.Messages__r.size() > 0) {
+                threadList.add(t);
+            }
+        }
+        return threadList.size() >= maxThreadCount;
     }
 
     public class threadOrMessageException extends Exception {
