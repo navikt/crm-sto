@@ -252,15 +252,24 @@ public with sharing class stoHelperClass {
         if (threadTypeMap.keySet().contains(threadType)) {
             allowedThreadTypes = threadTypeMap.get(threadType);
         }
+
         List<Thread__c> openThreads = [
-                SELECT COUNT()
+                SELECT Id,
+                (
+                    SELECT Id
+                    FROM Messages__r
+                    WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
+                    LIMIT 1
+                )
                 FROM Thread__c
                 WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :allowedThreadTypes
             ];
 
-        List<stoInboxHelper.thread> threadList = new List<stoInboxHelper.thread>();
+        List<Thread__c> threadList = new List<Thread__c>();
         for (Thread__c t : openThreads) {
-            threadList.add(stoInboxHelper.formatThread(t)); // Filters out threads without messages
+            if (t.Messages__r != null && t.Messages__r.size() > 0) {
+                threadList.add(t);
+            }
         }
         return threadList.size() >= maxThreadCount;
     }
