@@ -4,7 +4,8 @@ public with sharing class stoHelperClass {
     private static final Integer maxThreadCount = 3;
     private static final Map<String, List<String>> threadTypeMap = new Map<String, List<String>>{
         'STO' => new List<String>{ 'STO', 'STB' },
-        'BTO' => new List<String>{ 'BTO' }
+        'BTO' => new List<String>{ 'BTO' },
+        'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
     };
 
     private static Map<String, Id> commonCodeMap {
@@ -190,7 +191,10 @@ public with sharing class stoHelperClass {
         List<String> allowedThreadTypes;
         if (threadTypeMap.keySet().contains(threadType)) {
             allowedThreadTypes = threadTypeMap.get(threadType);
+        } else {
+            allowedThreadTypes = threadTypeMap.get('ALL');
         }
+
         List<Thread__c> openThreads = [
             SELECT
                 Id,
@@ -245,6 +249,8 @@ public with sharing class stoHelperClass {
         List<String> allowedThreadTypes;
         if (threadTypeMap.keySet().contains(threadType)) {
             allowedThreadTypes = threadTypeMap.get(threadType);
+        } else {
+            allowedThreadTypes = threadTypeMap.get('ALL');
         }
 
         List<Thread__c> openThreads = [
