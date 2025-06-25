@@ -4,8 +4,7 @@ public with sharing class stoHelperClass {
     private static final Integer maxThreadCount = 3;
     private static final Map<String, List<String>> threadTypeMap = new Map<String, List<String>>{
         'STO' => new List<String>{ 'STO', 'STB' },
-        'BTO' => new List<String>{ 'BTO' },
-        'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
+        'BTO' => new List<String>{ 'BTO' }
     };
 
     private static Map<String, Id> commonCodeMap {
@@ -184,11 +183,6 @@ public with sharing class stoHelperClass {
             this.body = body;
             this.id = id;
         }
-    }
-
-    @AuraEnabled
-    public static List<stoInboxHelper.thread> getOpenThreads(String category) {
-        return getOpenThreads(category, 'ALL');
     }
 
     @AuraEnabled(cacheable=true)
