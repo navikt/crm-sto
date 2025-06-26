@@ -35,7 +35,8 @@
             "enableNetworksEnabled": true
         },
         "lightningExperienceSettings": {
-            "enableS1DesktopEnabled": true
+            "enableS1DesktopEnabled": true,
+            "enableLightningPreviewPref": true
         },
         "languageSettings": {
             "enableTranslationWorkbench": true
