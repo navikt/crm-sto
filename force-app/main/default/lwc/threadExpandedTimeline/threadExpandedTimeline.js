@@ -9,6 +9,7 @@ export default class ThreadExpandedTimeline extends NavigationMixin(LightningEle
     messages;
     hasMessages = false;
     error;
+    btnDisabled = false;
 
     @wire(getRelatedListRecords, {
         parentRecordId: '$recordId',
@@ -63,6 +64,7 @@ export default class ThreadExpandedTimeline extends NavigationMixin(LightningEle
 
         if (!this.recordId) {
             console.error('No record ID found!');
+            this.btnDisabled = true;
             return;
         }
 
