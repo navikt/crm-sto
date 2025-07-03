@@ -6,7 +6,7 @@ export default class CommunityCheckbox extends LightningElement {
     checked = false;
 
     get wrapperClass() {
-        return 'navds-checkbox--medium flexCenter' + (this.error ? ' navds-checkbox--error' : '');
+        return 'navds-checkbox--medium' + (this.error ? ' navds-checkbox--error' : '');
     }
 
     checkError(event) {

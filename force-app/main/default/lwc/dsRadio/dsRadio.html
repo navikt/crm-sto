@@ -33,7 +33,16 @@
                 class="navds-fieldset__error"
             >
                 <template if:true={showErrorText}>
-                    <p class="navds-error-message navds-label">Du må velge et av alternativene</p>
+                    <div class="slds-grid slds-p-bottom_small">
+                        <lightning-icon
+                            icon-name="utility:warning"
+                            size="x-small"
+                            variant="error"
+                            class="slds-p-right_xx-small"
+                        >
+                        </lightning-icon>
+                        <p class="navds-error-message navds-label">Du må velge et av alternativene</p>
+                    </div>
                 </template>
             </div>
         </fieldset>

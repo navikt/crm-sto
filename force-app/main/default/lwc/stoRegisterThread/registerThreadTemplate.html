@@ -1,21 +1,20 @@
 <template>
     <div class="top-div">
         <div>
-            <div class="header">
-                <h1 class="navds-heading navds-heading--2xlarge">{title}</h1>
-            </div>
-            <div class="text-center">
-                <img aria-hidden="true" src={logopath} class="logo" />
-                <h2 class="navds-labels blokk-s theme-header">{themeToShow}</h2>
+            <div class="text-left">
+                <p class="slds-text-color_weak slds-p-bottom_small">{title}</p>
+                <div class="header">
+                    <h1 class="navds-heading navds-heading--2xlarge">{themeToShow}</h1>
+                </div>
                 <c-community-error-summary
                     error-list={errorList}
                     onclickedevent={handleErrorClick}
                     class="errorSummary"
                 >
                 </c-community-error-summary>
-                <div class="descholder slds-var-m-bottom_xx-large ingress">
+                <div class="descholder slds-var-m-bottom_large ingress">
                     <lightning-formatted-rich-text
-                        class="navds-body-short navds-body-short--small blokk-xs description"
+                        class="navds-body-short navds-body-short blokk-xs description"
                         value={ingressLabel}
                     ></lightning-formatted-rich-text>
                 </div>
@@ -23,11 +22,12 @@
                     <template if:false={showspinner}>
                         <div class="navds-accordion leftAlign">
                             <template for:each={newsList} for:item="news">
-                                <c-community-expandable-panel
-                                    header={news.header}
-                                    body={news.body}
-                                    key={news.id}
-                                ></c-community-expandable-panel>
+                                <c-community-expandable-panel title={news.header} key={news.id}>
+                                    <lightning-formatted-rich-text
+                                        class="navds-body-short navds-body-short--small blokk-xs description"
+                                        value={news.body}
+                                    ></lightning-formatted-rich-text>
+                                </c-community-expandable-panel>
                             </template>
                         </div>
                         <template if:true={showOpenThreadWarning}>
@@ -54,12 +54,12 @@
                             </template>
                             <!-- Textarea -->
                             <template lwc:if={showInputTextArea}>
-                                <div class="slds-var-m-top_xx-large">
-                                    <c-community-textarea
+                                <div class="slds-var-m-top_x-large">
+                                    <c-community-textarea-delete
                                         max-length={maxLength}
                                         class="inputTextbox"
                                         ontextchanged={handleTextChange}
-                                    ></c-community-textarea>
+                                    ></c-community-textarea-delete>
                                 </div>
                             </template>
                             <template lwc:else>
@@ -67,7 +67,7 @@
                             </template>
 
                             <!-- Medskriv radiobutton -->
-                            <div>
+                            <div class="slds-p-top_large">
                                 <c-ds-radio
                                     lwc:ref="medskrivRadiobuttons"
                                     title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
@@ -76,15 +76,17 @@
                                     onradiochange={handleRadioChange}
                                     ><div slot="legend" class="slds-grid">
                                         <p>Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?</p>
-                                        <c-ds-help-text
-                                            class="helptext"
-                                            title="Hva betyr dette?"
-                                            text="For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt."
-                                        ></c-ds-help-text></div
-                                ></c-ds-radio>
+                                    </div></c-ds-radio
+                                >
+
+                                <c-community-read-more title="Grunnen til at vi spør om samtykke  til opplæring">
+                                    For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som
+                                    ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring
+                                    eller utvikling har også taushetsplikt.
+                                </c-community-read-more>
                             </div>
                             <!-- Vilkaer checkbox -->
-                            <div class="skjemaelement checkbox">
+                            <div class="skjemaelement slds-grid slds-p-top_small slds-p-bottom_small">
                                 <c-community-checkbox
                                     label-text={label.acceptermtext}
                                     oncheckedchanged={handleChecked}
@@ -105,7 +107,7 @@
                                 aria-disabled="false"
                                 onclick={submitRequest}
                             >
-                                Send
+                                Send melding
                             </button>
                         </template>
                         <template if:false={showTextArea}>
@@ -166,7 +168,7 @@
             >
                 <h1
                     slot="modalHeader"
-                    class="slds-var-m-top_x-large typo-sidetittel text-center blokk-l textLeftAlign-mobile leftMargin-mobile"
+                    class="slds-var-m-top_x-large typo-sidetittel text-left blokk-l textLeftAlign-mobile leftMargin-mobile"
                 >
                     {label.SERVICE_TERMS_HEADER}
                 </h1>
@@ -180,7 +182,7 @@
                     </section>
                 </div>
                 <div slot="modalFooter" class="btnPositioning topGap">
-                    <div class="svar-godta text-center blokk-m">
+                    <div class="svar-godta text-left blokk-m">
                         <button
                             class="navds-button navds-button--primary navds-button--medium knapp-width"
                             aria-controls="betingelser"
@@ -191,7 +193,7 @@
                             {label.ACCEPT_TERMS_BUTTON}
                         </button>
                     </div>
-                    <div class="text-center">
+                    <div class="text-left">
                         <button
                             class="navds-button navds-button--secondary navds-button--medium knapp-width lastFocusElement"
                             type="submit"
