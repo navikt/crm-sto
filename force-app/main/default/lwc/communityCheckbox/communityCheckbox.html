@@ -11,7 +11,7 @@
             checked={checked}
             onfocusout={checkError}
         /><label class="navds-checkbox__label" for="checkbox">{labelText}</label>
-        <template if:true={error}>
+        <template lwc:if={error}>
             <div class="navds-error-message navds-error-message--medium navds-label">
                 <div class="slds-grid slds-p-bottom_small">
                     <lightning-icon
