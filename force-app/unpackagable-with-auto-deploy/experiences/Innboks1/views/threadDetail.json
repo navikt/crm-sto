@@ -1,157 +1,135 @@
 {
-    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
-    "componentName": "community_layout:sldsFlexibleLayout",
-    "dataProviders": [],
-    "id": "c09ad2fa-23f9-4070-a717-5e725a559153",
-    "label": "Thread Detail",
-    "regions": [
-        {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "backgroundImageConfig": "",
-                        "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"059501ba-1172-4c0b-ba95-724533afb054\",\"columns\":[{\"UUID\":\"138009be-c5ac-4bc9-9ee2-4c57f2fdc292\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
-                    },
-                    "componentName": "community_layout:section",
-                    "id": "059501ba-1172-4c0b-ba95-724533afb054",
-                    "regions": [
-                        {
-                            "components": [
-                                {
-                                    "componentAttributes": {},
-                                    "componentName": "c:communityBreadCrumbV2",
-                                    "id": "668b41ad-0b46-4501-9640-446f8fd654a7",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                }
-                            ],
-                            "id": "138009be-c5ac-4bc9-9ee2-4c57f2fdc292",
-                            "regionLabel": "Column 1",
-                            "regionName": "col1",
-                            "renditionMap": {},
-                            "type": "region"
-                        }
-                    ],
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "scopedBrandingSetId": null,
-                    "type": "component"
-                },
-                {
-                    "componentAttributes": {
-                        "backgroundImageConfig": "",
-                        "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"1d2762fd-a785-4928-803c-6c4f37930c21\",\"columns\":[{\"UUID\":\"9a749827-f85f-4a6c-acef-3b9c1f265175\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"71dddfb3-f13a-4e13-8313-985a55c8398b\",\"columnName\":\"Column 2\",\"columnKey\":\"a32e3\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"f21fe56b-ee62-44fb-8ce0-5ab36e60b831\",\"columnName\":\"Column 3\",\"columnKey\":\"a470b\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
-                    },
-                    "componentName": "community_layout:section",
-                    "id": "1d2762fd-a785-4928-803c-6c4f37930c21",
-                    "regions": [
-                        {
-                            "id": "9a749827-f85f-4a6c-acef-3b9c1f265175",
-                            "regionLabel": "Column 1",
-                            "regionName": "col1",
-                            "renditionMap": {},
-                            "type": "region"
-                        },
-                        {
-                            "components": [
-                                {
-                                    "componentAttributes": {},
-                                    "componentName": "c:mainContent",
-                                    "id": "dca9ac6f-823e-4d10-954a-5b46f26ba13b",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
-                                    "componentAttributes": {
-                                        "maxLength": 2000,
-                                        "recordId": "{!recordId}",
-                                        "threadType": "STO"
-                                    },
-                                    "componentName": "c:nksViewThread",
-                                    "id": "1ac33024-3e0f-48e7-b5e3-bbed0ac26013",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
-                                    "componentAttributes": {
-                                        "recordId": "{!recordId}"
-                                    },
-                                    "componentName": "c:stoInboxInformation",
-                                    "id": "186bf9f1-bbfe-4324-b52e-1ef8d7cf9115",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
-                                    "componentAttributes": {
-                                        "recordId": "{!recordId}"
-                                    },
-                                    "componentName": "c:stoMedskrivSamtykke",
-                                    "id": "08c78565-de24-42b2-a3af-14654878cca5",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
-                                    "componentAttributes": {},
-                                    "componentName": "c:refreshCookie",
-                                    "id": "e38f1581-d274-4110-8baa-b8960f959e8e",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                }
-                            ],
-                            "id": "71dddfb3-f13a-4e13-8313-985a55c8398b",
-                            "regionLabel": "Column 2",
-                            "regionName": "a32e3",
-                            "renditionMap": {},
-                            "type": "region"
-                        },
-                        {
-                            "id": "f21fe56b-ee62-44fb-8ce0-5ab36e60b831",
-                            "regionLabel": "Column 3",
-                            "regionName": "a470b",
-                            "renditionMap": {},
-                            "type": "region"
-                        }
-                    ],
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "scopedBrandingSetId": null,
-                    "type": "component"
-                }
-            ],
-            "id": "4a30738f-a9b8-4f0a-813f-d63e9aa14e95",
-            "regionName": "content",
-            "type": "region"
-        },
-        {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "customHeadTags": "",
-                        "description": "",
-                        "pageTitle": "{!Record._Object}: {!Record._Title}",
-                        "recordId": "{!recordId}"
-                    },
-                    "componentName": "community_builder:seoAssistant",
-                    "id": "03fdafe7-19b5-430a-9fbb-f6085ebd86b4",
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
-                }
-            ],
-            "id": "b12d56b1-98ef-4a92-8505-ded6a35a07e0",
-            "regionName": "sfdcHiddenRegion",
-            "type": "region"
-        }
-    ],
-    "themeLayoutType": "Inner",
-    "type": "view",
-    "viewType": "detail-a1j"
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "componentName" : "community_layout:sldsFlexibleLayout",
+  "dataProviders" : [ ],
+  "id" : "c09ad2fa-23f9-4070-a717-5e725a559153",
+  "label" : "Thread Detail",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "sectionConfig" : "{\"UUID\":\"059501ba-1172-4c0b-ba95-724533afb054\",\"columns\":[{\"UUID\":\"138009be-c5ac-4bc9-9ee2-4c57f2fdc292\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "059501ba-1172-4c0b-ba95-724533afb054",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:communityBreadCrumbV2",
+          "id" : "668b41ad-0b46-4501-9640-446f8fd654a7",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "138009be-c5ac-4bc9-9ee2-4c57f2fdc292",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "scopedBrandingSetId" : null,
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "sectionConfig" : "{\"UUID\":\"1d2762fd-a785-4928-803c-6c4f37930c21\",\"columns\":[{\"UUID\":\"9a749827-f85f-4a6c-acef-3b9c1f265175\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"71dddfb3-f13a-4e13-8313-985a55c8398b\",\"columnName\":\"Column 2\",\"columnKey\":\"a32e3\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"f21fe56b-ee62-44fb-8ce0-5ab36e60b831\",\"columnName\":\"Column 3\",\"columnKey\":\"a470b\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "1d2762fd-a785-4928-803c-6c4f37930c21",
+      "regions" : [ {
+        "id" : "9a749827-f85f-4a6c-acef-3b9c1f265175",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:mainContent",
+          "id" : "dca9ac6f-823e-4d10-954a-5b46f26ba13b",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "maxLength" : 2000,
+            "recordId" : "{!recordId}",
+            "threadType" : "STO"
+          },
+          "componentName" : "c:nksViewThread",
+          "id" : "1ac33024-3e0f-48e7-b5e3-bbed0ac26013",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "recordId" : "{!recordId}"
+          },
+          "componentName" : "c:stoInboxInformation",
+          "id" : "186bf9f1-bbfe-4324-b52e-1ef8d7cf9115",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "recordId" : "{!recordId}"
+          },
+          "componentName" : "c:stoMedskrivSamtykke",
+          "id" : "08c78565-de24-42b2-a3af-14654878cca5",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:refreshCookie",
+          "id" : "e38f1581-d274-4110-8baa-b8960f959e8e",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "71dddfb3-f13a-4e13-8313-985a55c8398b",
+        "regionLabel" : "Column 2",
+        "regionName" : "a32e3",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "id" : "f21fe56b-ee62-44fb-8ce0-5ab36e60b831",
+        "regionLabel" : "Column 3",
+        "regionName" : "a470b",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "scopedBrandingSetId" : null,
+      "type" : "component"
+    } ],
+    "id" : "4a30738f-a9b8-4f0a-813f-d63e9aa14e95",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "pageTitle" : "{!Record._Object}: {!Record._Title}",
+        "recordId" : "{!recordId}"
+      },
+      "componentName" : "community_builder:seoAssistant",
+      "id" : "03fdafe7-19b5-430a-9fbb-f6085ebd86b4",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "b12d56b1-98ef-4a92-8505-ded6a35a07e0",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "hT8VFi3ALt5MPMauN9StcpW046Z5yh",
+  "type" : "view",
+  "viewType" : "detail-a0O"
 }

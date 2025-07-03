@@ -1,11 +1,11 @@
 {
-    "activeViewId": "0bfa5786-f36c-4e19-b47a-63cd7bbe7859",
-    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
-    "configurationTags": [],
-    "id": "ab1ea89b-e031-4949-ae9f-241f9e9bd57a",
-    "label": "Conversation Note Detail",
-    "objectApiName": "Conversation_Note__c",
-    "routeType": "detail-a1a",
-    "type": "route",
-    "urlPrefix": "samtalereferat"
+  "activeViewId" : "0bfa5786-f36c-4e19-b47a-63cd7bbe7859",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "id" : "ab1ea89b-e031-4949-ae9f-241f9e9bd57a",
+  "label" : "Conversation Note Detail",
+  "objectApiName" : "Conversation_Note__c",
+  "routeType" : "detail-a0M",
+  "type" : "route",
+  "urlPrefix" : "samtalereferat"
 }
