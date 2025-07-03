@@ -33,6 +33,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Thraed__c.CRM_Created_By_Ident__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Thread__c.CRM_Last_Edited_By__c</field>
         <readable>true</readable>
