@@ -34,7 +34,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Thraed__c.CRM_Created_By_Ident__c</field>
+        <field>Thread__c.CRM_Created_By_Ident__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
