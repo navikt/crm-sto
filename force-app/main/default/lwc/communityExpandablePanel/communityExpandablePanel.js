@@ -2,58 +2,49 @@ import { LightningElement, api } from 'lwc';
 import { logAccordionEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class CommunityExpandablePanel extends LightningElement {
-    @api header;
-    @api body;
+    @api title;
+    @api simple = false;
 
-    showpanel = false;
+    isExpanded = false;
 
-    togglevisible() {
-        this.showpanel = !this.showpanel;
-        this.performAnimation();
+    toggleExpand() {
+        this.isExpanded = !this.isExpanded;
         logAccordionEvent(this.showpanel, this.header, getComponentName(this.template));
     }
 
-    get accordianClass() {
-        return 'navds-accordion__item ' + (this.showpanel ? 'navds-accordion__item--open' : '');
-    }
-
-    get inverseShowpanel() {
-        return !this.showpanel;
-    }
-
-    // To perform animations we can't use height:auto, so we use auto to get the height
-    // and set the height to that value.
-    performAnimation() {
-        let expand = this.template.querySelector('.expand-animation');
-        let wrapper = this.template.querySelector('.dropdown');
-        if (wrapper && expand) {
-            if (this.showpanel) {
-                wrapper.style.display = null;
-                expand.style.height = 'auto';
-                let boundingRect = expand.getBoundingClientRect();
-                expand.style.height = '0px';
-                // eslint-disable-next-line @lwc/lwc/no-async-operation
-                window.requestAnimationFrame(function () {
-                    expand.style.height = boundingRect.height + 'px';
-                });
-                // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
-                setTimeout(() => {
-                    if (this.showpanel) {
-                        expand.style.height = 'auto';
-                    }
-                }, 250);
-            } else {
-                let boundingRect = expand.getBoundingClientRect();
-                expand.style.height = boundingRect.height + 'px';
-                // eslint-disable-next-line @lwc/lwc/no-async-operation
-                window.requestAnimationFrame(function () {
-                    expand.style.height = '0px';
-                });
-                // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
-                setTimeout(() => {
-                    wrapper.display = 'none';
-                }, 250);
-            }
+    handleKeydown(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            this.toggleExpand();
         }
+    }
+
+    get containerStyle() {
+        return this.simple ? 'panel-background' : 'panel-background panel-background-bottom-border';
+    }
+
+    get panelHeaderClass() {
+        return (
+            'panel-header-expandable ' +
+            (this.simple ? 'panel-header-simple' : 'panel-header panel-header-padding-small')
+        );
+    }
+
+    get chevronClass() {
+        return (
+            'slds-icon slds-icon-text-default slds-icon_small custom-chevron' +
+            (this.isExpanded ? ' rotate-chevron' : '')
+        );
+    }
+
+    get chevronIconClass() {
+        return this.simple ? 'custom-icon-chevron-simple' : 'custom-icon-chevron';
+    }
+
+    get panelBodyClass() {
+        return (
+            'panel-body ' +
+            (this.simple ? 'panel-body-left-simple panel-body-x_small' : 'panel-body-left panel-body-small')
+        );
     }
 }

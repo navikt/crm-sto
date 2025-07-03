@@ -171,6 +171,25 @@ public with sharing class stoHelperClass {
         if (news.size() == 0 && Test.isRunningTest()) {
             news.add(new News('header test', 'body test', '123'));
         }
+
+        news.add( //Bare for test, må fjernes
+            new News(
+                'Har du jobbet og fått lønn i stede for å delta på tiltaket?',
+                'Gi beskjed om:\nDatoen du reiser\nDatoen du kommer hjem igjen',
+                '123'
+            )
+        );
+        news.add(
+            new News('Skal du til utlandet?', 'Gi beskjed om:\nDatoen du reiser\nDatoen du kommer hjem igjen', '123')
+        );
+        news.add(
+            new News(
+                'Har du fått barnetillegg for et barn som skal til utlandet?',
+                'Gi beskjed om:\nDatoen du reiser\nDatoen du kommer hjem igjen',
+                '123'
+            )
+        );
+
         return news;
     }
 
@@ -254,16 +273,17 @@ public with sharing class stoHelperClass {
         }
 
         List<Thread__c> openThreads = [
-                SELECT Id,
+            SELECT
+                Id,
                 (
                     SELECT Id
                     FROM Messages__r
                     WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
                     LIMIT 1
                 )
-                FROM Thread__c
-                WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :allowedThreadTypes
-            ];
+            FROM Thread__c
+            WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :allowedThreadTypes
+        ];
 
         List<Thread__c> threadList = new List<Thread__c>();
         for (Thread__c t : openThreads) {
