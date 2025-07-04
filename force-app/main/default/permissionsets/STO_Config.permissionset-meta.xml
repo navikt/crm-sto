@@ -19,7 +19,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Message__c.CRM_Created_By_Ident__c</field>
+        <field>Message__c.CRM_From_Ident__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
