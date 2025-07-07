@@ -11,7 +11,8 @@
 .theme-radio-button,
 .medskriv-radio-button,
 .text-area,
-.vilkar-container {
+.vilkar-container,
+.modal-footer {
     margin-top: var(--a-spacing-10);
 }
 
@@ -42,7 +43,7 @@
     box-shadow: 0 0 0 2px var(--ac-link-active-border, var(--a-border-focus));
 }
 
-.btn-positioning {
+.modal-footer {
     display: flex;
     justify-content: center;
     gap: 1rem;
@@ -64,11 +65,11 @@
         margin-left: 16px !important;
     }
 
-    .btn-positioning {
+    .modal-footer {
         display: block;
     }
 
-    .btn-positioning > *:first-child {
+    .modal-footer > *:first-child {
         margin-bottom: 1rem;
     }
 }

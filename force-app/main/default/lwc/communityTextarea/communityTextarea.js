@@ -25,7 +25,7 @@ export default class CommunityTextarea extends LightningElement {
             this.errorMessage = 'Tekstboksen kan ikke være tom.';
         } else if (this.limitCharacters && this.message.length > this.maxLength) {
             this.errorState = true;
-            this.errorMessage = 'Det er for mange tegn i Tekstboksen.';
+            this.errorMessage = 'Det er for mange tegn i tekstboksen.';
         } else {
             this.errorState = false;
         }

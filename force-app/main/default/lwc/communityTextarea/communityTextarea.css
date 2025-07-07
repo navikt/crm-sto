@@ -1,3 +1,7 @@
+.textBox {
+    overflow-y: hidden;
+}
+
 .mirror {
     font-family:
         Source Sans Pro,
