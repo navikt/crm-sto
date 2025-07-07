@@ -2,7 +2,9 @@ import { LightningElement, api } from 'lwc';
 
 export default class CommunityTextarea extends LightningElement {
     @api maxLength;
-    errorMessage = 'Tekstboksen kan ikke være tom';
+    @api label;
+
+    errorMessage = 'textBoxen kan ikke være tom';
     message;
     errorState = false;
 
@@ -20,10 +22,10 @@ export default class CommunityTextarea extends LightningElement {
     checkError() {
         if (!this.message || this.message.length === 0) {
             this.errorState = true;
-            this.errorMessage = 'Tekstboksen kan ikke være tom.';
+            this.errorMessage = 'textBoxen kan ikke være tom.';
         } else if (this.limitCharacters && this.message.length > this.maxLength) {
             this.errorState = true;
-            this.errorMessage = 'Det er for mange tegn i tekstboksen.';
+            this.errorMessage = 'Det er for mange tegn i textBoxen.';
         } else {
             this.errorState = false;
         }
@@ -32,7 +34,7 @@ export default class CommunityTextarea extends LightningElement {
     processMessageStyling() {
         // eslint-disable-next-line @locker/locker/distorted-node-text-content-setter
         this.mirror.textContent = this.message + '\n s';
-        this.tekstboks.style.height = this.mirror.offsetHeight + 'px';
+        this.textBox.style.height = this.mirror.offsetHeight + 'px';
         if (this.limitCharacters) {
             let counter = this.template.querySelector('.remainingCounter');
             counter.ariaLive = this.remainingCharacters <= 20 ? 'polite' : 'off';
@@ -49,14 +51,14 @@ export default class CommunityTextarea extends LightningElement {
     @api
     clearText() {
         this.message = '';
-        this.tekstboks.value = this.message;
+        this.textBox.value = this.message;
         this.publishMessage();
         this.processMessageStyling();
     }
 
     @api
     focus() {
-        this.tekstboks.focus();
+        this.textBox.focus();
     }
 
     get remainingCharacters() {
@@ -87,8 +89,8 @@ export default class CommunityTextarea extends LightningElement {
         return this.maxLength !== 0 && this.maxLength != null;
     }
 
-    get tekstboks() {
-        return this.template.querySelector('.tekstboks');
+    get textBox() {
+        return this.template.querySelector('.textBox');
     }
 
     get mirror() {
@@ -100,9 +102,5 @@ export default class CommunityTextarea extends LightningElement {
             'navds-form-field navds-form-field--medium navds-textarea--resize-both ' +
             (this.errorState ? ' navds-textarea--error' : '')
         );
-    }
-
-    get textAreaContainer() {
-        return this.errorState ? 'navds-textarea__wrapper' : 'navds-textarea__wrapper textarea-container';
     }
 }

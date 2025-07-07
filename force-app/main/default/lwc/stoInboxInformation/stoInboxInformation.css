@@ -1,11 +1,9 @@
-.spacing {
-    padding-bottom: 5.5em;
+.survey-container,
+.info-text {
+    margin-bottom: var(--a-spacing-10);
 }
 
-.cssFont {
-    font-size: 1.5rem;
-}
-
-.cssPadding {
-    margin-top: -0.5rem;
+.survey-span {
+    margin-top: var(--a-spacing-4);
+    padding-left: var(--a-spacing-3);
 }

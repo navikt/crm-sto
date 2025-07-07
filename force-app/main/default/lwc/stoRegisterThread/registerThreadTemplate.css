@@ -1,83 +1,34 @@
 .header {
-    text-align: cenleftter;
-    width: 100%;
-    margin-bottom: 1em;
-}
-.text-center {
-    text-align: left;
-    background-color: #fff;
-    display: block;
-    padding: 1rem 1rem 1rem 1rem;
-    border-radius: 4px;
-}
-.inputarea {
-    margin-bottom: 2em;
-}
-.ficon {
-    margin: 1em;
-    height: 2em;
-}
-.headlineholder {
-    display: flow-root;
-}
-.betingelser {
-    max-width: calc(992px - 2rem);
-    padding: 3em;
-    color: #3e3832;
-}
-.lukknapp-positioning {
-    position: absolute !important;
-    top: 1rem;
-    right: 1rem;
-}
-.sendbutton {
-    margin-top: 1em;
-    justify-content: center;
-}
-.typo-undertittel_farge {
-    color: #0067c5;
-    margin-bottom: 2em;
-}
-.descholder {
-    margin-top: 1em;
-}
-.skjemaelement {
-    margin-top: 1em;
-}
-:host {
-    --sds-c-textarea-sizing-min-height: 150px;
-}
-.nav-wrapper {
-    margin-bottom: 4em;
+    margin-bottom: var(--a-spacing-8);
 }
 
-.knapp-width {
+.ingress,
+.vilkar-container,
+.send-button {
+    margin-bottom: var(--a-spacing-10);
+}
+
+.theme-radio-button,
+.medskriv-radio-button,
+.text-area,
+.vilkar-container {
+    margin-top: var(--a-spacing-10);
+}
+
+.send-button {
+    padding: var(--a-spacing-3) var(--a-spacing-5);
+}
+
+.button-width {
     justify-content: center;
     width: 14em;
-}
-
-.list {
-    list-style-type: disc;
-}
-
-.listItem {
-    width: fit-content;
-    margin: auto;
-}
-
-.feilBoks {
-    border: var(--navds-global-color-nav-red) solid 3px;
-}
-
-.checkbox c-community-checkbox {
-    grid-column: 2;
 }
 
 .vilkar-link {
     align-self: start;
     justify-self: start;
     border: 0px;
-    margin-top: 12px;
+    margin-top: 0.75rem;
     background-color: transparent;
 }
 
@@ -91,43 +42,17 @@
     box-shadow: 0 0 0 2px var(--ac-link-active-border, var(--a-border-focus));
 }
 
-.override {
-    --override-border-top-right-radius: 0px;
-    --override-border-bottom-right-radius: 0px;
-}
-
-.leftAlign,
-.errorSummary,
-.themeRadioButton,
-.medskrive,
-.betingelser-div {
-    text-align: left;
-}
-
-.topGap {
-    margin-top: 16px;
-}
-
-.topBigGap {
-    margin-top: 32px;
-}
-
-.btnPositioning {
+.btn-positioning {
     display: flex;
     justify-content: center;
-    gap: 16px;
+    gap: 1rem;
 }
 
-.top-div {
-    margin-bottom: 4rem;
-}
-
-.theme-header {
-    color: #0067c5;
-}
-
-.helptext {
-    margin-left: 16px;
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 @media only screen and (max-width: 576px) {
@@ -139,15 +64,11 @@
         margin-left: 16px !important;
     }
 
-    .btnPositioning {
+    .btn-positioning {
         display: block;
     }
 
-    .btnPositioning > *:first-child {
-        margin-bottom: 16px;
+    .btn-positioning > *:first-child {
+        margin-bottom: 1rem;
     }
-}
-
-.ingress {
-    text-align: left;
 }

@@ -1,0 +1,14 @@
+.navds-link {
+    align-self: start;
+    justify-self: start;
+    border: 0px;
+    background-color: transparent;
+}
+
+.header {
+    margin-bottom: var(--a-spacing-10);
+}
+
+.modal-header {
+    margin-top: var(--a-spacing-12);
+}

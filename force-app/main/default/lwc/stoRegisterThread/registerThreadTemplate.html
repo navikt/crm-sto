@@ -1,220 +1,175 @@
 <template>
-    <div class="top-div">
-        <div>
-            <div class="text-left">
-                <p class="slds-text-color_weak slds-p-bottom_small">{title}</p>
-                <div class="header">
-                    <h1 class="navds-heading navds-heading--2xlarge">{themeToShow}</h1>
-                </div>
-                <c-community-error-summary
-                    error-list={errorList}
-                    onclickedevent={handleErrorClick}
-                    class="errorSummary"
-                >
-                </c-community-error-summary>
-                <div class="descholder slds-var-m-bottom_large ingress">
-                    <lightning-formatted-rich-text
-                        class="navds-body-short navds-body-short blokk-xs description"
-                        value={ingressLabel}
-                    ></lightning-formatted-rich-text>
-                </div>
-                <div class="inputarea">
-                    <template if:false={showspinner}>
-                        <div class="navds-accordion leftAlign">
-                            <template for:each={newsList} for:item="news">
-                                <c-community-expandable-panel title={news.header} key={news.id}>
-                                    <lightning-formatted-rich-text
-                                        class="navds-body-short navds-body-short--small blokk-xs description"
-                                        value={news.body}
-                                    ></lightning-formatted-rich-text>
-                                </c-community-expandable-panel>
-                            </template>
-                        </div>
-                        <template if:true={showOpenThreadWarning}>
-                            <div class="slds-var-m-top_xx-large slds-text-align_left" onclick={handleAlertBoxClick}>
-                                <c-crm-community-alert-stripe type={alertType} alerttext={openThreadText}>
-                                </c-crm-community-alert-stripe>
-                            </div>
-                        </template>
-                        <template if:true={showTextArea}>
-                            <!-- Theme Choice Radio Button -->
-                            <template lwc:if={showThemeRadioButton}>
-                                <div class="slds-var-p-top_medium">
-                                    <c-ds-radio
-                                        lwc:ref="themeRadioButton"
-                                        title={themeRadioButtonText}
-                                        options={radioButtonOptions}
-                                        class="radioFocus themeRadioButton"
-                                        onradiochange={handleThemeRadioButtonChange}
-                                        ><div slot="legend" class="slds-grid">
-                                            <p>{themeRadioButtonText}</p>
-                                        </div></c-ds-radio
-                                    >
-                                </div>
-                            </template>
-                            <!-- Textarea -->
-                            <template lwc:if={showInputTextArea}>
-                                <div class="slds-var-m-top_x-large">
-                                    <c-community-textarea-delete
-                                        max-length={maxLength}
-                                        class="inputTextbox"
-                                        ontextchanged={handleTextChange}
-                                    ></c-community-textarea-delete>
-                                </div>
-                            </template>
-                            <template lwc:else>
-                                <div class="slds-var-m-top_medium"></div>
-                            </template>
-
-                            <!-- Medskriv radiobutton -->
-                            <div class="slds-p-top_large">
-                                <c-ds-radio
-                                    lwc:ref="medskrivRadiobuttons"
-                                    title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
-                                    options={medskrivOptions}
-                                    class="radioFocus medskrive"
-                                    onradiochange={handleRadioChange}
-                                    ><div slot="legend" class="slds-grid">
-                                        <p>Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?</p>
-                                    </div></c-ds-radio
-                                >
-
-                                <c-community-read-more title="Grunnen til at vi spør om samtykke  til opplæring">
-                                    For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som
-                                    ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring
-                                    eller utvikling har også taushetsplikt.
-                                </c-community-read-more>
-                            </div>
-                            <!-- Vilkaer checkbox -->
-                            <div class="skjemaelement slds-grid slds-p-top_small slds-p-bottom_small">
-                                <c-community-checkbox
-                                    label-text={label.acceptermtext}
-                                    oncheckedchanged={handleChecked}
-                                    class="checkboxContainer"
-                                ></c-community-checkbox
-                                ><button
-                                    onclick={showTerms}
-                                    class="slds-var-m-left_small vilkar-link navds-link focusBtn"
-                                    tabindex="0"
-                                >
-                                    {label.showtermstext}
-                                </button>
-                            </div>
-
-                            <button
-                                class="sendbutton navds-button navds-button--primary navds-button--medium"
-                                type="submit"
-                                aria-disabled="false"
-                                onclick={submitRequest}
-                            >
-                                Send melding
-                            </button>
-                        </template>
-                        <template if:false={showTextArea}>
-                            <h2 class="navds-heading navds-heading--medium leftAlign topBigGap">
-                                Dine åpne samtaler om {category}
-                            </h2>
-                            <div class="nav-wrapper">
-                                <template for:each={openThreadList} for:item="thread" for:index="index">
-                                    <c-sto-inbox-close-item
-                                        thread={thread}
-                                        content-type={contentType}
-                                        key={thread.recordId}
-                                        index={index}
-                                        onclosethread={handleCloseThread}
-                                    ></c-sto-inbox-close-item>
-                                </template>
-                            </div>
-                        </template>
-                    </template>
-                    <template if:true={showspinner}>
-                        <svg
-                            tabindex="0"
-                            aria-labelledby="loader-navds-id-4"
-                            class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
-                            focusable="false"
-                            viewBox="0 0 50 50"
-                            preserveAspectRatio="xMidYMid"
-                        >
-                            <title id="loader-navds-id-4">{spinnerText}</title>
-                            <circle
-                                class="navds-loader__background"
-                                xmlns="http://www.w3.org/2000/svg"
-                                cx="25"
-                                cy="25"
-                                r="20"
-                                fill="none"
-                            ></circle>
-                            <circle
-                                class="navds-loader__foreground"
-                                cx="25"
-                                cy="25"
-                                r="20"
-                                fill="none"
-                                stroke-dasharray="50 155"
-                            ></circle>
-                        </svg>
-                    </template>
-                </div>
-            </div>
-        </div>
-        <div>
-            <c-community-modal
-                show-modal={modalOpen}
-                onmodalclosed={closeTerms}
-                onkeyup={handleKeyboardEvent}
-                onfocuslast={handleFocusLast}
-                hide-padding-mobile
+    <p class="navds-bodylong navds-bodylong--medium">{title}</p>
+    <h1 class="navds-heading navds-heading--xlarge header">{themeToShow}</h1>
+    <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
+    </c-community-error-summary>
+    <p class="navds-bodylong navds-bodylong--large ingress">{ingressLabel}</p>
+    <template lwc:if={showspinner}>
+        <div class="spinner-container">
+            <svg
+                tabindex="0"
+                aria-labelledby="loader-navds-id-4"
+                class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
+                focusable="false"
+                viewBox="0 0 50 50"
+                preserveAspectRatio="xMidYMid"
             >
-                <h1
-                    slot="modalHeader"
-                    class="slds-var-m-top_x-large typo-sidetittel text-left blokk-l textLeftAlign-mobile leftMargin-mobile"
-                >
-                    {label.SERVICE_TERMS_HEADER}
-                </h1>
-                <div slot="modalContent">
-                    <section>
-                        <form class="betingelser-panel panel side-innhold">
-                            <div class="blokk-m slds-var-m-top_medium betingelser-div">
-                                <lightning-formatted-rich-text value={termsContentText}></lightning-formatted-rich-text>
-                            </div>
-                        </form>
-                    </section>
-                </div>
-                <div slot="modalFooter" class="btnPositioning topGap">
-                    <div class="svar-godta text-left blokk-m">
-                        <button
-                            class="navds-button navds-button--primary navds-button--medium knapp-width"
-                            aria-controls="betingelser"
-                            onclick={termsAccepted}
-                            type="submit"
-                            label="Godta"
-                        >
-                            {label.ACCEPT_TERMS_BUTTON}
-                        </button>
-                    </div>
-                    <div class="text-left">
-                        <button
-                            class="navds-button navds-button--secondary navds-button--medium knapp-width lastFocusElement"
-                            type="submit"
-                            aria-controls="betingelser"
-                            role="button"
-                            onclick={termsDenied}
-                        >
-                            {label.DENY_TERMS_BUTTON}
-                        </button>
-                    </div>
-                </div>
-            </c-community-modal>
+                <title id="loader-navds-id-4">{spinnerText}</title>
+                <circle
+                    class="navds-loader__background"
+                    xmlns="http://www.w3.org/2000/svg"
+                    cx="25"
+                    cy="25"
+                    r="20"
+                    fill="none"
+                ></circle>
+                <circle
+                    class="navds-loader__foreground"
+                    cx="25"
+                    cy="25"
+                    r="20"
+                    fill="none"
+                    stroke-dasharray="50 155"
+                ></circle>
+            </svg>
         </div>
-        <c-alertdialog
-            header="Noe gikk galt"
-            content="Vennligst oppdater siden og prøv på nytt"
-            desktop-style="text-align: center; width: 50%;"
-            mobile-style="text-align: center; max-width: 100%;"
-            center-buttons="true"
-            no-cancel-button="true"
-        >
-        </c-alertdialog>
-    </div>
+    </template>
+    <template lwc:else>
+        <div class="navds-accordion">
+            <template for:each={newsList} for:item="news">
+                <c-community-expandable-panel title={news.header} key={news.id}>
+                    <lightning-formatted-rich-text
+                        class="navds-body-short navds-body-short--small"
+                        value={news.body}
+                    ></lightning-formatted-rich-text>
+                </c-community-expandable-panel>
+            </template>
+        </div>
+        <template lwc:if={showTextArea}>
+            <!-- Theme Choice Radio Button -->
+            <template lwc:if={showThemeRadioButton}>
+                <div class="theme-radio-button">
+                    <c-ds-radio
+                        lwc:ref="themeRadioButton"
+                        title={themeRadioButtonText}
+                        options={radioButtonOptions}
+                        class="themeRadioButton"
+                        onradiochange={handleThemeRadioButtonChange}
+                        ><div slot="legend">
+                            <p>{themeRadioButtonText}</p>
+                        </div></c-ds-radio
+                    >
+                </div>
+            </template>
+
+            <!-- Textarea -->
+            <template lwc:if={showInputTextArea}>
+                <div class="text-area">
+                    <c-community-textarea
+                        label="Din melding"
+                        max-length={maxLength}
+                        class="inputTextbox"
+                        ontextchanged={handleTextChange}
+                    ></c-community-textarea>
+                </div>
+            </template>
+
+            <!-- Medskriv radiobutton -->
+            <div class="medskriv-radio-button">
+                <c-ds-radio
+                    lwc:ref="medskrivRadiobuttons"
+                    title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
+                    options={medskrivOptions}
+                    class="medskriv"
+                    onradiochange={handleRadioChange}
+                    ><div slot="legend" class="slds-grid">
+                        <p>Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?</p>
+                    </div></c-ds-radio
+                >
+            </div>
+            <c-community-read-more title="Grunnen til at vi spør om samtykke  til opplæring">
+                For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på
+                meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt.
+            </c-community-read-more>
+
+            <!-- Vilkaer checkbox -->
+            <div class="slds-grid vilkar-container">
+                <c-community-checkbox
+                    label-text={label.acceptermtext}
+                    oncheckedchanged={handleChecked}
+                    class="checkboxContainer"
+                ></c-community-checkbox
+                ><button onclick={showTerms} class="navds-link navds-link--action focusBtn vilkar-link" tabindex="0">
+                    {label.showtermstext}
+                </button>
+            </div>
+
+            <button
+                class="navds-button navds-button--primary navds-button--medium send-button"
+                type="submit"
+                aria-disabled="false"
+                onclick={submitRequest}
+            >
+                Send melding
+            </button>
+        </template>
+        <template lwc:else>
+            <h2 class="navds-heading navds-heading--medium">Dine åpne samtaler om {category}</h2>
+            <template for:each={openThreadList} for:item="thread" for:index="index">
+                <c-sto-inbox-close-item
+                    thread={thread}
+                    content-type={contentType}
+                    key={thread.recordId}
+                    index={index}
+                    onclosethread={handleCloseThread}
+                ></c-sto-inbox-close-item>
+            </template>
+        </template>
+    </template>
+    <c-community-modal
+        show-modal={modalOpen}
+        onmodalclosed={closeTerms}
+        onkeyup={handleKeyboardEvent}
+        onfocuslast={handleFocusLast}
+        hide-padding-mobile
+    >
+        <h1 slot="modalHeader" class="textLeftAlign-mobile leftMargin-mobile">{label.SERVICE_TERMS_HEADER}</h1>
+        <div slot="modalContent">
+            <section>
+                <form class="betingelser-panel panel side-innhold">
+                    <div class="blokk-m slds-var-m-top_medium betingelser-div">
+                        <lightning-formatted-rich-text value={termsContentText}></lightning-formatted-rich-text>
+                    </div>
+                </form>
+            </section>
+        </div>
+        <div slot="modalFooter" class="btn-positioning">
+            <button
+                class="navds-button navds-button--primary navds-button--medium button-width"
+                aria-controls="betingelser"
+                onclick={termsAccepted}
+                type="submit"
+            >
+                {label.ACCEPT_TERMS_BUTTON}
+            </button>
+
+            <button
+                class="navds-button navds-button--secondary navds-button--medium button-width lastFocusElement"
+                type="submit"
+                aria-controls="betingelser"
+                onclick={termsDenied}
+            >
+                {label.DENY_TERMS_BUTTON}
+            </button>
+        </div>
+    </c-community-modal>
+    <c-alertdialog
+        header="Noe gikk galt"
+        content="Vennligst oppdater siden og prøv på nytt"
+        desktop-style="text-align: center; width: 50%;"
+        mobile-style="text-align: center; max-width: 100%;"
+        center-buttons="true"
+        no-cancel-button="true"
+    >
+    </c-alertdialog>
 </template>

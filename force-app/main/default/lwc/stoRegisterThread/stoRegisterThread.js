@@ -577,7 +577,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             if (medskriv == null) {
                 this.errorList.errors.push({
                     Id: 4,
-                    EventItem: '.medskrive',
+                    EventItem: '.medskriv',
                     Text: 'Du må velge et av alternativene.'
                 });
             }
