@@ -4,7 +4,7 @@ export default class CommunityTextarea extends LightningElement {
     @api maxLength;
     @api label;
 
-    errorMessage = 'textBoxen kan ikke være tom';
+    errorMessage = 'Tekstboksen kan ikke være tom';
     message;
     errorState = false;
 
@@ -22,10 +22,10 @@ export default class CommunityTextarea extends LightningElement {
     checkError() {
         if (!this.message || this.message.length === 0) {
             this.errorState = true;
-            this.errorMessage = 'textBoxen kan ikke være tom.';
+            this.errorMessage = 'Tekstboksen kan ikke være tom.';
         } else if (this.limitCharacters && this.message.length > this.maxLength) {
             this.errorState = true;
-            this.errorMessage = 'Det er for mange tegn i textBoxen.';
+            this.errorMessage = 'Det er for mange tegn i Tekstboksen.';
         } else {
             this.errorState = false;
         }
