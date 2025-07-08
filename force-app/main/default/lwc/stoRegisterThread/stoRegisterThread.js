@@ -481,14 +481,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     /**
      * Handles terms modal end
      */
-    navigateToBTO(thread) {
+    navigateToBTO() {
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
-                name: 'Visning__c'
-            },
-            state: {
-                samtale: thread.Id
+                name: 'Bekreftelsesvisning__c'
             }
         });
     }
