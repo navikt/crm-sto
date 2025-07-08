@@ -1,0 +1,7 @@
+.spacing-bottom {
+    margin-bottom: var(--a-spacing-7);
+}
+
+.spacing-top {
+    margin-top: var(--a-spacing-1);
+}
