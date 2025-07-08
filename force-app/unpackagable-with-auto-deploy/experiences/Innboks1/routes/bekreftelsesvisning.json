@@ -1,0 +1,10 @@
+{
+  "activeViewId" : "8462bede-29d0-4134-a26b-87fac6504997",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "id" : "a24c3d8b-28ca-4601-9441-e54dfdf06c96",
+  "label" : "Bekreftelsesvisning",
+  "routeType" : "custom-bekreftelsesvisning",
+  "type" : "route",
+  "urlPrefix" : "beskjed-til-oss/bekreftelsesvisning"
+}
