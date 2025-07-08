@@ -26,6 +26,7 @@ const fields = [
 export default class CommunityConversationNote extends LightningElement {
     @api recordId;
     @api title;
+
     name;
     note;
     date;
@@ -41,7 +42,7 @@ export default class CommunityConversationNote extends LightningElement {
     }
 
     @wire(getRecord, { recordId: '$recordId', fields })
-    wireData({ error, data }) {
+    wiredRecord({ error, data }) {
         if (data) {
             this.name = getFieldValue(data, NAME_FIELD);
             this.note = getFieldValue(data, NOTE_FIELD);
@@ -61,9 +62,8 @@ export default class CommunityConversationNote extends LightningElement {
                     this.relatedNotes = conv;
                 })
                 .catch((err) => console.log(err));
-        }
-        if (error) {
-            console.log(error);
+        } else if (error) {
+            console.error('Error on getting Conversation Note: ', error);
         }
     }
 

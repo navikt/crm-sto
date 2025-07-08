@@ -1,27 +1,20 @@
 <template>
-    <div class="nav-wrapper wrapper">
-        <div class="header header--center page-header" style="text-align: center">
-            <h1 class="navds-heading navds-heading--2xlarge header__tittel"><img src={navIcon} alt="" /> {title}</h1>
-        </div>
-        <div class="panel-custom">
-            <div class="big-gap">
-                <c-crm-nav-formatted-date date={date} class="inline-block thick"></c-crm-nav-formatted-date>
-                <lightning-formatted-rich-text value={note} class="linebreaks"></lightning-formatted-rich-text>
-            </div>
-            <template if:true={showRelatedNotes}>
-                <div class="slds-border_top grey-border big-gap slds-var-p-top_medium">
-                    <p class="navds-body-short navds-body-short--small">
-                        Du har flere referater fra samtaler om denne henvendelsen:
-                    </p>
-                    <br />
-                    <template for:each={relatedNotes} for:item="note">
-                        <c-community-conversation-note-related-item
-                            key={name}
-                            note={note}
-                        ></c-community-conversation-note-related-item>
-                    </template>
-                </div>
-            </template>
-        </div>
+    <p class="navds-bodylong navds-bodylong--medium">Samtalereferat</p>
+    <h1 class="navds-heading navds-heading--xlarge">{themeGroup}</h1>
+    <div class="conv-note-container">
+        <c-crm-nav-formatted-date date={date} class="inline-block"></c-crm-nav-formatted-date>
+        <lightning-formatted-rich-text value={note} class="linebreaks"></lightning-formatted-rich-text>
     </div>
+    <template lwc:if={showRelatedNotes}>
+        <p class="navds-body-short navds-body-short--small">
+            Du har flere referater fra samtaler om denne henvendelsen:
+        </p>
+        <br />
+        <template for:each={relatedNotes} for:item="note">
+            <c-community-conversation-note-related-item
+                key={name}
+                note={note}
+            ></c-community-conversation-note-related-item>
+        </template>
+    </template>
 </template>
