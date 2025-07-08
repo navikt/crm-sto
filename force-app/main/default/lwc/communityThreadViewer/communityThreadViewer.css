@@ -1,0 +1,12 @@
+.navds-heading {
+    margin-bottom: var(--a-spacing-10);
+}
+
+.text-area {
+    margin-bottom: var(--a-spacing-5);
+}
+
+.navds-button {
+    padding: var(--a-spacing-3) var(--a-spacing-5);
+    margin-bottom: var(--a-spacing-7);
+}

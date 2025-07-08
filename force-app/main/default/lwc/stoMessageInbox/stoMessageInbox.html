@@ -26,7 +26,7 @@
                     </strong>
                 </p>
             </div>
-            <template if:true={showrecentthreads}>
+            <template lwc:if={showrecentthreads}>
                 <div class="subheader">
                     <h2 class="typo-undertittel mobil-padding">Siste meldinger</h2>
                 </div>
@@ -36,7 +36,7 @@
                     </template>
                 </div>
             </template>
-            <template if:true={showthreads}>
+            <template lwc:if={showthreads}>
                 <div class="subheader">
                     <h2 class="typo-undertittel mobil-padding">Tidligere meldinger</h2>
                 </div>
@@ -47,13 +47,12 @@
                     </template>
                 </div>
             </template>
-            <template if:true={noItems}>
+            <template lwc:if={noItems}>
                 <div class="slds-var-p-vertical_large centerInfobox">
-                    <c-crm-community-alert-stripe
-                        class="alertbox"
-                        type="info"
-                        alerttext="Du har ingen meldinger i innboksen din."
-                    ></c-crm-community-alert-stripe>
+                    <c-community-alert
+                        alert-type="info"
+                        alert-text="Du har ingen meldinger i innboksen din."
+                    ></c-community-alert>
                 </div>
             </template>
         </div>
