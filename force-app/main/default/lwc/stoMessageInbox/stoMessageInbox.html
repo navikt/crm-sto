@@ -3,7 +3,7 @@
         <div class="header">
             <h1 class="navds-heading navds-heading--2xlarge">{title}</h1>
         </div>
-        <div class="header aroundGap">
+        <div class="header slds-p-top_x-large">
             <c-nav-Button
                 url="https://www.nav.no/kontaktoss"
                 title="Kontakt oss"
@@ -13,17 +13,15 @@
         </div>
         <div class="nav-wrapper">
             <div class="body">
-                <p class="navds-body-long navds-typo--spacing">
-                    <strong>
-                        For meldinger om dokumenter og/eller informasjonsbrev se&#32;
-                        <a
-                            href="https://www.nav.no/dokumentarkiv"
-                            target="_self"
-                            class="lenke lenke-inline"
-                            onclick={handleDocumentArchiveClick}
-                            >brev og vedtak</a
-                        >
-                    </strong>
+                <p class="navds-body-long navds-body-long--large">
+                    For meldinger om dokumenter og/eller informasjonsbrev se&#32;
+                    <a
+                        href="https://www.nav.no/dokumentarkiv"
+                        target="_self"
+                        class="navds-link navds-link--action"
+                        onclick={handleDocumentArchiveClick}
+                        >brev og vedtak</a
+                    >
                 </p>
             </div>
             <template lwc:if={showrecentthreads}>
