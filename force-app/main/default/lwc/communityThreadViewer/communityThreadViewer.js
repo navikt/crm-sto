@@ -12,7 +12,7 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import navStyling from '@salesforce/resourceUrl/navStyling';
 import index from '@salesforce/resourceUrl/newIndex';
 
-const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREAD_TYPE_FIELD]; //Extract the name of the thread record
+const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREAD_TYPE_FIELD];
 
 export default class CrmCommunityThreadViewer extends LightningElement {
     @api recordId;
