@@ -1,50 +1,48 @@
 <template>
-    <div>
-        <fieldset
-            aria-invalid="false"
-            class="navds-radio-group navds-radio-group--medium navds-fieldset navds-fieldset--medium"
-            onchange={handleChange}
+    <fieldset
+        aria-invalid="false"
+        class="navds-radio-group navds-radio-group--medium navds-fieldset navds-fieldset--medium"
+        onchange={handleChange}
+    >
+        <legend class="navds-fieldset__legend navds-label"><slot name="legend">Mangler legend</slot></legend>
+        <div class="navds-radio-buttons" onfocusout={checkForError}>
+            <template for:each={_options} for:item="option">
+                <div class="navds-radio navds-radio--medium" key={option.value}>
+                    <input
+                        id={option.id}
+                        data-id={option.id}
+                        aria-invalid="false"
+                        name={radioName}
+                        type="radio"
+                        class="navds-radio__input"
+                        value={option.value}
+                        checked={option.checked}
+                    /><label for={option.id} class="navds-radio__label"
+                        ><span class="navds-radio__content"
+                            ><span class="navds-body-short">{option.text}</span></span
+                        ></label
+                    >
+                </div>
+            </template>
+        </div>
+        <div
+            id="fieldset-error-navds-id-4"
+            aria-relevant="additions removals"
+            aria-live="polite"
+            class="navds-fieldset__error"
         >
-            <legend class="navds-fieldset__legend navds-label"><slot name="legend">Mangler legend</slot></legend>
-            <div class="navds-radio-buttons" onfocusout={checkForError}>
-                <template for:each={_options} for:item="option">
-                    <div class="navds-radio navds-radio--medium" key={option.value}>
-                        <input
-                            id={option.id}
-                            data-id={option.id}
-                            aria-invalid="false"
-                            name={radioName}
-                            type="radio"
-                            class="navds-radio__input"
-                            value={option.value}
-                            checked={option.checked}
-                        /><label for={option.id} class="navds-radio__label"
-                            ><span class="navds-radio__content"
-                                ><span class="navds-body-short">{option.text}</span></span
-                            ></label
-                        >
-                    </div>
-                </template>
-            </div>
-            <div
-                id="fieldset-error-navds-id-4"
-                aria-relevant="additions removals"
-                aria-live="polite"
-                class="navds-fieldset__error"
-            >
-                <template if:true={showErrorText}>
-                    <div class="slds-grid slds-p-bottom_small">
-                        <lightning-icon
-                            icon-name="utility:warning"
-                            size="x-small"
-                            variant="error"
-                            class="slds-p-right_xx-small"
-                        >
-                        </lightning-icon>
-                        <p class="navds-error-message navds-label">Du må velge et av alternativene</p>
-                    </div>
-                </template>
-            </div>
-        </fieldset>
-    </div>
+            <template lwc:if={showErrorText}>
+                <div class="slds-grid slds-p-bottom_small">
+                    <lightning-icon
+                        icon-name="utility:warning"
+                        size="x-small"
+                        variant="error"
+                        class="slds-p-right_xx-small"
+                    >
+                    </lightning-icon>
+                    <p class="navds-error-message navds-label">Du må velge et av alternativene</p>
+                </div>
+            </template>
+        </div>
+    </fieldset>
 </template>

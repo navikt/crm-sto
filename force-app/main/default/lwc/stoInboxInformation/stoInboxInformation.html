@@ -1,15 +1,12 @@
 <template>
-    <template if:false={isClosedSTOorBTO}>
-        <div if:true={infoText} class="slds-var-p-horizontal_medium spacing">
-            <c-crm-community-alert-stripe
-                class="alertbox"
-                type="info"
-                alerttext={infoText}
-            ></c-crm-community-alert-stripe>
+    <template lwc:if={isClosedSTOorBTO}></template>
+    <template lwc:else>
+        <div lwc:if={infoText} class="info-text">
+            <c-community-alert alert-type="info" alert-text={infoText}></c-community-alert>
         </div>
     </template>
-    <template if:true={showSurveyButton}>
-        <div class="slds-var-p-horizontal_medium slds-var-p-bottom_xx-large cssPadding">
+    <template lwc:if={showSurveyButton}>
+        <div class="survey-container">
             <h2 class="navds-heading navds-heading--medium navds-typo--spacing">
                 Vi ønsker å lære av din opplevelse. Har du tid til å svare på 2 spørsmål?
             </h2>
@@ -19,9 +16,7 @@
                 onclick={navigateToSurvey}
                 text="Klikk her for å svare"
             ></c-ds-button>
-            <span class="navds-body-short navds-body-short--medium slds-var-p-top_medium slds-var-p-left_small"
-                >Tilbakemeldingen er anonym.</span
-            >
+            <span class="navds-body-short navds-body-short--medium survey-span">Tilbakemeldingen er anonym.</span>
         </div>
     </template>
 </template>
