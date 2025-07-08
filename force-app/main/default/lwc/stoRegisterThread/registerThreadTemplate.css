@@ -56,6 +56,10 @@
     width: 100%;
 }
 
+.container {
+    margin: 0 var(--a-spacing-3);
+}
+
 @media only screen and (max-width: 576px) {
     .textLeftAlign-mobile {
         text-align: left;
