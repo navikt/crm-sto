@@ -1,0 +1,105 @@
+{
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "componentName" : "community_layout:sldsFlexibleLayout",
+  "dataProviders" : [ ],
+  "id" : "8462bede-29d0-4134-a26b-87fac6504997",
+  "label" : "Bekreftelsesvisning",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "componentSpacerSize" : "",
+        "layoutDirectionDesktop" : "row",
+        "layoutDirectionMobile" : "column",
+        "layoutDirectionTablet" : "column",
+        "maxContentWidth" : "",
+        "sectionColumnGutterWidth" : "",
+        "sectionConfig" : "{\"UUID\":\"a5c3a9af-83c3-48f2-b3b1-426fcf7e8102\",\"columns\":[{\"UUID\":\"88313d2e-e8c0-4d10-8bbd-f169ba7d3c8b\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"c7bcc4b5-88e4-4256-8361-4e0e9904e5d1\",\"columnName\":\"Column 2\",\"columnKey\":\"068f7\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"2e87a63a-7129-41bd-92a9-d69ddff9e04d\",\"columnName\":\"Column 3\",\"columnKey\":\"07631\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}",
+        "sectionMinHeight" : "",
+        "sectionVerticalAlign" : "flex-start"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "a5c3a9af-83c3-48f2-b3b1-426fcf7e8102",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:mainContent",
+          "id" : "93e38477-0042-4abe-8e79-5ca5443414ae",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:communityBreadCrumbV2",
+          "id" : "7dea667e-c032-44cc-93d4-68a6d59033fb",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "88313d2e-e8c0-4d10-8bbd-f169ba7d3c8b",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:mainContent",
+          "id" : "302f2081-dd4a-4130-881e-0f16eca723df",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "text" : "Vi kontakter deg om vi trenger mer informasjon.",
+            "title" : "Takk for melding om endring"
+          },
+          "componentName" : "c:communityConfirmation",
+          "id" : "c8b885c5-29d2-4f1a-9af1-20f2269ed65f",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "c7bcc4b5-88e4-4256-8361-4e0e9904e5d1",
+        "regionLabel" : "Column 2",
+        "regionName" : "068f7",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "id" : "2e87a63a-7129-41bd-92a9-d69ddff9e04d",
+        "regionLabel" : "Column 3",
+        "regionName" : "07631",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "scopedBrandingSetId" : null,
+      "type" : "component"
+    } ],
+    "id" : "808ce7f5-735e-43ce-8d9a-f3ee6381048e",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "pageTitle" : "Bekreftelsesvisning",
+        "recordId" : "{!recordId}"
+      },
+      "componentName" : "community_builder:seoAssistant",
+      "id" : "3ae7e885-3c4b-427f-b9a6-16cd2e571698",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "f2e3b0a7-f786-4146-8361-80edf5d1a59a",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "hT8VFi3ALt5MPMauN9StcpW046Z5yh",
+  "type" : "view",
+  "viewType" : "custom-bekreftelsesvisning"
+}
