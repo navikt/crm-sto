@@ -13,21 +13,17 @@ export default class StoMessageInboxItem extends LightningElement {
     threadId;
     hasunread = true;
     unreadmessage = 'lest';
-    className = 'lenkepanel';
-    statuscolor;
 
     connectedCallback() {
         this.objectName = this.thread.objectName;
 
         if (this.thread.status === 'Åpen') {
-            this.statuscolor = 'greenfont';
             this.isOpen = true;
         }
 
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
             this.unreadmessage = 'Ulest';
-            this.className = 'lenkepanel unread';
         }
 
         this.latestmessage = this.thread.latestmessage;
@@ -67,7 +63,7 @@ export default class StoMessageInboxItem extends LightningElement {
     get statusClass() {
         return (
             'navds-tag navds-tag--success navds-tag--small navds-body-short navds-body-short--small ' +
-            (this.thread.status === 'Åpen' ? 'navds-tag--success' : 'navds-tag--neutral-moderate')
+            (this.thread.status === 'Åpen' ? 'navds-tag--success' : 'navds-tag--neutral')
         );
     }
 

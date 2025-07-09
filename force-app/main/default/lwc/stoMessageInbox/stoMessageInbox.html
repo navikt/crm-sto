@@ -28,7 +28,7 @@
                 <div class="subheader">
                     <h2 class="typo-undertittel mobil-padding">Siste meldinger</h2>
                 </div>
-                <div class="horizontalMargin-mobile">
+                <div>
                     <template for:each={recentthreads} for:item="thread">
                         <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
                     </template>

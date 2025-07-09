@@ -1,16 +1,12 @@
 .header {
     text-align: left;
 }
-.ficon {
-    vertical-align: middle;
-    margin: auto;
-}
 .subheader {
-    margin-bottom: 1rem;
+    margin-bottom: var(--a-spacing-1);
     margin-top: 2rem;
 }
 .inboxwrapper {
-    margin-bottom: 3rem;
+    margin: 0 var(--a-spacing-3) 3rem var(--a-spacing-3);
 }
 .body {
     font-family: var(--navds-font-family);
@@ -29,12 +25,5 @@
 @media only screen and (max-width: 1023px) {
     .mobil-padding {
         padding-left: 1rem;
-    }
-}
-
-@media only screen and (max-width: 480px) {
-    .horizontalMargin-mobile {
-        margin-left: 0.5rem;
-        margin-right: 0.5rem;
     }
 }
