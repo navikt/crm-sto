@@ -1,0 +1,3 @@
+<apex:page controller="CookieCounterController">
+You have seen this page {!count} times
+</apex:page>
