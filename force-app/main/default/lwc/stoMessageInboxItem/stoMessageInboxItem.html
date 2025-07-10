@@ -1,44 +1,31 @@
 <template>
-    <a
-        class={className}
-        href={linkUrl}
-        key={thread.recordId}
-        id="a"
-        style="padding-left: 0rem; padding-right: 0rem; border: 1px solid var(--navds-semantic-color-border, #707070)"
-        onclick={handleNavigation}
-    >
-        <lightning-layout vertical-align="center" class="slds-size_1-of-1">
-            <div class="slds-is-relative hideMobile" style="min-width: 88px">
-                <div class="centerCircle"></div>
-                <img
-                    class="iconcolor slds-is-relative slds-show"
-                    src={dialog}
-                    id="b"
-                    aria-hidden="true"
-                    style="margin: auto; width: 24px; margin-right: 32px; margin-left: 32px"
-                />
+    <a class={panelClass} href={linkUrl} onclick={handleNavigation}>
+        <div class="slds-grid slds-grid_align-spread slds-var-p-bottom_small">
+            <lightning-formatted-date-time
+                value={thread.latestMessageDate}
+                month="long"
+                day="2-digit"
+                year="numeric"
+                hour="2-digit"
+                minute="2-digit"
+                class="navds-body-short--medium"
+            ></lightning-formatted-date-time>
+            <div>
+                <template lwc:if={showReadStatus}>
+                    <span
+                        class="navds-tag navds-tag--info navds-tag--small navds-body-short navds-body-short--small tag-spacing"
+                        >{unreadmessage}</span
+                    >
+                </template>
+                <template lwc:if={showStatus}>
+                    <span class={statusClass}>{statusText}</span>
+                </template>
             </div>
-            <div class="mobilePadding">
-                <p class="typo-normal blokk-xxxs">
-                    <lightning-formatted-date-time
-                        value={thread.latestMessageDate}
-                        month="2-digit"
-                        day="2-digit"
-                        year="numeric"
-                    ></lightning-formatted-date-time>
-                    <template if:true={showStatus}>
-                        &nbsp;- <span class={statuscolor}> {thread.status} </span>
-                    </template>
-                </p>
-                <h3 class="typo-undertittel lenkepanel__heading">{itemTitle}</h3>
-                <p class="typo-normal tema-avsnitt messagebox threeLinesMobile">{latestText}</p>
-            </div>
-            <slot name="endSection">
-                <span
-                    style="margin-right: 20px; padding-left: 10px; margin-left: auto"
-                    class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"
-                ></span>
-            </slot>
-        </lightning-layout>
+        </div>
+        <h3 class="navds-heading--small navds-typo--semibold navds-link--action slds-var-p-bottom_x-small">
+            {itemTitle}
+        </h3>
+        <p class="navds-body-long--large navds-typo--regular message-box">{latestText}</p>
     </a>
+    <slot name="endDialogue"></slot>
 </template>

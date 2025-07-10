@@ -1,86 +1,46 @@
 <template>
-    <div style="display: flex; text-align: initial; position: relative; align-items: center" class="">
-        <c-sto-Message-Inbox-Item style="flex-grow: 1" class="override" thread={thread}>
-            <div slot="endSection" style="display: contents; margin-left: auto">
-                <!-- Fake invisible button to "reserve" enough space for the absolute button -->
-                <c-ds-button
-                    size="small"
-                    style="
-                        margin-right: 24px;
-                        margin-left: 10px;
-                        white-space: nowrap;
-                        text-align: center;
-                        visibility: hidden;
-                    "
-                    class="hideMobile"
-                    variant="secondary"
-                    text="Avslutt samtale"
-                >
-                </c-ds-button>
-                <span
-                    style="margin-right: 24px; margin-left: auto"
-                    class="nav-frontend-chevron chevronboks chevron chevron--hoyre lenkepanel__indikator"
-                ></span>
-            </div>
-        </c-sto-Message-Inbox-Item>
-        <div>
-            <!-- The actual button, absolutely positioned above to avoid problems with having a button within a button -->
+    <c-sto-Message-Inbox-Item thread={thread} is-close-item>
+        <div slot="endDialogue" class="end-dialogue-container">
+            <button class="navds-button navds-button--secondary navds-button--small" onclick={openModal}>
+                Avslutt samtale
+            </button>
+        </div>
+    </c-sto-Message-Inbox-Item>
+    <c-community-modal
+        show-modal={modalOpen}
+        onmodalclosed={closeModal}
+        onkeyup={handleKeyboardEvent}
+        onfocuslast={handleFocusLast}
+        class="override"
+        show-footer-line
+        hide-padding
+    >
+        <div slot="modalHeader" class="modal-header">
+            <h1 class="navds-heading navds-heading--medium">Avslutt samtale</h1>
+            <p class="leftAlign-mobile modal-header-text">Er du sikker på at du vil avslutte denne samtalen?</p>
+        </div>
+        <div slot="modalContent" class="navds-panel navds-panel--border modal-content">
+            <lightning-formatted-date-time
+                value={thread.latestMessageDate}
+                month="2-digit"
+                day="2-digit"
+                year="numeric"
+            ></lightning-formatted-date-time>
+            &nbsp;- <span class={statusColor}> {thread.status} </span>
+            <h2 class="navds-heading navds-heading--small">{threadName}</h2>
+            <p class="navds-body-long messagebox threeLinesMobile">{thread.latestmessage.messageText}</p>
+        </div>
+        <div slot="modalFooter" class="modal-footer">
+            <c-ds-button size="medium" variant="primary" text="Ja, avslutt samtale" onbuttonclick={closeThread}>
+            </c-ds-button>
             <c-ds-button
-                class="endDialogBtn absPositionBtn"
-                size="small"
+                size="medium"
                 variant="secondary"
-                onbuttonclick={openModal}
-                text="Avslutt samtale"
+                text="Avbryt"
+                onbuttonclick={closeModal}
+                class="lastFocusElement"
             >
             </c-ds-button>
         </div>
-        <div>
-            <c-community-modal
-                show-modal={modalOpen}
-                onmodalclosed={closeModal}
-                onkeyup={handleKeyboardEvent}
-                onfocuslast={handleFocusLast}
-                class="override"
-                show-footer-line
-                hide-padding
-            >
-                <div slot="modalHeader" class="centerText" style="margin-bottom: 0.5rem; margin-top: 0.5rem">
-                    <h1 class="navds-heading navds-heading--medium" style="margin: 0px">Avslutt samtale</h1>
-                    <p class="leftAlign-mobile topGap bottomGap">Er du sikker på at du vil avslutte denne samtalen?</p>
-                </div>
-                <div slot="modalContent">
-                    <div
-                        class="navds-panel navds-panel--border bigHorizontalMargin-noMobile"
-                        style="background: var(--navds-global-color-gray-100, #f1f1f1)"
-                    >
-                        <lightning-formatted-date-time
-                            value={thread.latestMessageDate}
-                            month="2-digit"
-                            day="2-digit"
-                            year="numeric"
-                        ></lightning-formatted-date-time>
-                        &nbsp;- <span class={statusColor}> {thread.status} </span>
-                        <h2 class="navds-heading navds-heading--small">{threadName}</h2>
-                        <p class="navds-body-long messagebox threeLinesMobile">{thread.latestmessage.messageText}</p>
-                    </div>
-                </div>
-                <div
-                    slot="modalFooter"
-                    style="display: flex; gap: 10px; justify-content: center; padding-top: 24px; padding-bottom: 0.5rem"
-                >
-                    <c-ds-button size="medium" variant="primary" text="Ja, avslutt samtale" onbuttonclick={closeThread}>
-                    </c-ds-button>
-
-                    <c-ds-button
-                        size="medium"
-                        variant="secondary"
-                        text="Avbryt"
-                        onbuttonclick={closeModal}
-                        class="lastFocusElement"
-                    >
-                    </c-ds-button>
-                </div>
-            </c-community-modal>
-        </div>
-    </div>
+    </c-community-modal>
 </template>

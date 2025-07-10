@@ -1,6 +1,6 @@
 .survey-container,
 .info-text {
-    margin: 0 var(--a-spacing-3) var(--a-spacing-10) var(--a-spacing-3);
+    margin: 0 var(--a-spacing-3) var(--a-spacing-12) var(--a-spacing-3);
 }
 
 .survey-span {

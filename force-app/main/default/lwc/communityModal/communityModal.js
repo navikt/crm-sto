@@ -6,15 +6,8 @@ export default class CommunityModal extends LightningElement {
     @api hideFooterLine = false;
     @api hidePadding = false;
     @api hidePaddingMobile = false;
-    bufferFocus = false;
 
-    get modalClasses() {
-        return (
-            'modal modalMobile overrides' +
-            (this.hidePaddingMobile === false ? '' : 'noHorizontalPadding-mobile') +
-            (this.hidePadding === false ? ' modalpadding' : '')
-        );
-    }
+    bufferFocus = false;
 
     closeModal() {
         this.dispatchClose();
@@ -75,5 +68,13 @@ export default class CommunityModal extends LightningElement {
         if (event.target.classList.contains('firstfocusable')) {
             this.dispatchFocusLast();
         }
+    }
+
+    get modalClasses() {
+        return (
+            'modal modalMobile overrides' +
+            (this.hidePaddingMobile === false ? '' : 'noHorizontalPadding-mobile') +
+            (this.hidePadding === false ? ' modalpadding' : '')
+        );
     }
 }

@@ -1,3 +1,13 @@
+.end-dialogue-container {
+    background-color: var(--a-surface-neutral-subtle);
+    padding: var(--a-spacing-3);
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.navds-button {
+    padding: var(--a-spacing-1-alt) var(--a-spacing-3);
+}
+
 .backdrop {
     position: fixed;
     z-index: 999;
@@ -47,6 +57,7 @@
 
 .override {
     --override-padding-bottom-mobile: 3rem;
+    --override-max-width: calc(50% - 16px);
 }
 
 .messagebox {
@@ -59,8 +70,9 @@
     word-break: break-word;
 }
 
-.centerText {
+.modal-header {
     text-align: center;
+    margin: 0.5rem 0;
 }
 
 .absPositionBtn {
@@ -75,21 +87,25 @@
     color: #06893a;
 }
 
-.override {
-    --override-max-width: calc(50% - 16px);
+.modal-header-text {
+    margin: 1rem 0;
 }
 
-.topGap {
-    margin-top: 16px;
+.modal-content {
+    margin: 0 2rem;
+    background: var(--navds-global-color-gray-100, #f1f1f1);
 }
 
-.bottomGap {
-    margin-bottom: 16px;
+h1 {
+    margin: 0;
 }
 
-.bigHorizontalMargin-noMobile {
-    margin-left: 2rem;
-    margin-right: 2rem;
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding-top: 24px;
+    padding-bottom: 0.5rem;
 }
 
 @media only screen and (max-width: 480px) {

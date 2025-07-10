@@ -1,21 +1,19 @@
 import { LightningElement, api } from 'lwc';
-import navlogos from '@salesforce/resourceUrl/navsvglogos';
 import basepath from '@salesforce/community/basePath';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
+    @api isCloseItem = false;
 
-    dialog = navlogos + '/send.svg';
     latestmessage;
     latestText;
     objectName;
     isExternal;
     isOpen;
     threadId;
-    hasunread = false;
+    hasunread = true;
     unreadmessage = 'lest';
-    className = 'lenkepanel dialog read iconclass overrides';
     statuscolor;
 
     connectedCallback() {
@@ -26,18 +24,18 @@ export default class StoMessageInboxItem extends LightningElement {
             this.isOpen = true;
         }
 
-        if (this.objectName === 'samtalereferat') this.dialog = navlogos + '/FileContent.svg';
-        if (this.objectName === 'chat') this.dialog = navlogos + '/dialog.svg';
-
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
-            this.unreadmessage = 'ulest';
-            this.className = 'lenkepanel dialog unread iconclass';
+            this.unreadmessage = 'Ulest';
         }
 
         this.latestmessage = this.thread.latestmessage;
         this.latestText = this.thread.latestmessage.messageText;
         this.isExternal = this.thread.latestmessage.isExternal;
+    }
+
+    handleNavigation(event) {
+        logNavigationEvent(getComponentName(this.template), 'valgt henvendelse', event.target.href, this.itemTitle);
     }
 
     get itemTitle() {
@@ -61,6 +59,21 @@ export default class StoMessageInboxItem extends LightningElement {
         return this.objectName !== 'samtalereferat';
     }
 
+    get showReadStatus() {
+        return this.unreadmessage === 'Ulest';
+    }
+
+    get statusText() {
+        return this.thread.status === 'Åpen' ? 'Aktiv' : this.thread.status;
+    }
+
+    get statusClass() {
+        return (
+            'navds-tag navds-tag--success navds-tag--small navds-body-short navds-body-short--small ' +
+            (this.thread.status === 'Åpen' ? 'navds-tag--success' : 'navds-tag--neutral-moderate')
+        );
+    }
+
     get linkUrl() {
         return this.objectName === 'beskjed-til-oss'
             ? basepath + '/' + this.objectName + '/visning?samtale=' + this.thread.recordId
@@ -73,7 +86,7 @@ export default class StoMessageInboxItem extends LightningElement {
                   this.thread.recordName.replace(/[ -]+/g, '-');
     }
 
-    handleNavigation(event) {
-        logNavigationEvent(getComponentName(this.template), 'valgt henvendelse', event.target.href, this.itemTitle);
+    get panelClass() {
+        return `panel ${this.isCloseItem ? 'no-bottom-radius' : 'border-radius'}`;
     }
 }

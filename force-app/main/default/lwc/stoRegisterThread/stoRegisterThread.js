@@ -74,6 +74,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     maxLength = 2000;
     openThreadList;
     _title;
+    registerNewThread = false;
 
     label = {
         acceptermtext,
@@ -307,91 +308,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 console.error(error);
             }
         }
-    }
-
-    get tabName() {
-        return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
-    }
-
-    get title() {
-        return this._title;
-    }
-
-    @api
-    set title(value) {
-        this._title = value;
-    }
-
-    get validQueryParameter() {
-        return this.isValidSTOCategory || this.isValidBTOCategory;
-    }
-
-    get isValidSTOCategory() {
-        return this.threadTypeToMake === 'STO' && this.acceptedSTOCategories.has(this.lowerCaseUrlCategory);
-    }
-
-    get isValidBTOCategory() {
-        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory);
-    }
-
-    get termsModal() {
-        return this.template.querySelector('c-community-modal');
-    }
-
-    get termsContentText() {
-        return this.label.SERVICE_TERMS + this.label.SERVICE_TERMS_2;
-    }
-
-    get showOpenThreadWarning() {
-        return !!this.openThreadList?.length;
-    }
-
-    get openThreadText() {
-        if (!this.openThreadList) return '';
-        const openThreads = this.openThreadList.length;
-        return openThreads < maxThreadCount
-            ? `Du har allerede åpne samtaler om ${this.capitalizeFirstLetter(this.category)}. Hvis du lurer på noe mer, kan du <a href="${
-                  this.openThreadLink
-              }">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.`
-            : `Du har ${openThreads} åpne samtaler om ${this.capitalizeFirstLetter(this.category)}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
-    }
-
-    get openThreadLink() {
-        return this.threadTypeToMake === 'BTO'
-            ? basepath + this.subpath + 'visning?samtale=' + this.openThreadList[0].recordId
-            : basepath + this.subpath + this.openThreadList[0].recordId;
-    }
-
-    get alertType() {
-        return this.openThreadList.length >= maxThreadCount ? 'advarsel' : 'info';
-    }
-
-    get showTextArea() {
-        return this.openThreadList == null || this.openThreadList.length < maxThreadCount;
-    }
-
-    get backdropClass() {
-        return this.hideDeleteModal ? 'slds-hide' : 'backdrop';
-    }
-
-    get ingressLabel() {
-        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
-            return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
-        }
-
-        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
-    }
-
-    get showThemeRadioButton() {
-        return this.radioButtonMap[this.title]?.[this.themeToShow] ?? false;
-    }
-
-    get themeRadioButtonText() {
-        return this.radioButtonMap[this.title]?.[this.themeToShow]?.text;
-    }
-
-    get showInputTextArea() {
-        return !this.showThemeRadioButton || this.themeRadioButtonSelected != null;
     }
 
     setThemeToShow() {
@@ -686,5 +602,103 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             getComponentName(this.template),
             this.title
         );
+    }
+
+    handleShowTextArea() {
+        this.registerNewThread = true;
+    }
+
+    get tabName() {
+        return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
+    }
+
+    get title() {
+        return this._title;
+    }
+
+    @api
+    set title(value) {
+        this._title = value;
+    }
+
+    get validQueryParameter() {
+        return this.isValidSTOCategory || this.isValidBTOCategory;
+    }
+
+    get isValidSTOCategory() {
+        return this.threadTypeToMake === 'STO' && this.acceptedSTOCategories.has(this.lowerCaseUrlCategory);
+    }
+
+    get isValidBTOCategory() {
+        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory);
+    }
+
+    get termsModal() {
+        return this.template.querySelector('c-community-modal');
+    }
+
+    get termsContentText() {
+        return this.label.SERVICE_TERMS + this.label.SERVICE_TERMS_2;
+    }
+
+    get showOpenThreadWarning() {
+        return !!this.openThreadList?.length;
+    }
+
+    get openThreadText() {
+        if (!this.openThreadList) return '';
+        return this.canOpenMoreThreads
+            ? `Vi ser at du allerede har ${this.openThreads} åpne meldinger på dette temaet. Ønsker du å fortsette på en tidligere melding eller ønsker du å skrive en ny?`
+            : `Vi ser at du allerede har ${this.openThreads} åpne meldinger på dette temaet ${this.capitalizedCategory}. Du kan maks ha 3 samtaler på hvert tema. Hvis du vil opprette en ny samtale, må du derfor avslutte en av de du allerede har.`;
+    }
+
+    get openThreadLink() {
+        return this.threadTypeToMake === 'BTO'
+            ? basepath + this.subpath + 'visning?samtale=' + this.openThreadList[0].recordId
+            : basepath + this.subpath + this.openThreadList[0].recordId;
+    }
+
+    get alertType() {
+        return this.openThreadList.length >= maxThreadCount ? 'advarsel' : 'info';
+    }
+
+    get showTextArea() {
+        return this.openThreadList == null || this.registerNewThread;
+    }
+
+    get backdropClass() {
+        return this.hideDeleteModal ? 'slds-hide' : 'backdrop';
+    }
+
+    get ingressLabel() {
+        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
+            return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
+        }
+
+        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
+    }
+
+    get showThemeRadioButton() {
+        return this.radioButtonMap[this.title]?.[this.themeToShow] ?? false;
+    }
+
+    get themeRadioButtonText() {
+        return this.radioButtonMap[this.title]?.[this.themeToShow]?.text;
+    }
+
+    get showInputTextArea() {
+        return !this.showThemeRadioButton || this.themeRadioButtonSelected != null;
+    }
+
+    get capitalizedCategory() {
+        return this.capitalizeFirstLetter(this.category);
+    }
+
+    get openThreads() {
+        return this.openThreadList.length;
+    }
+
+    get canOpenMoreThreads() {
+        return this.openThreads < maxThreadCount;
     }
 }
