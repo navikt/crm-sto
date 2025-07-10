@@ -1,52 +1,26 @@
 .typo-undertittel {
 }
-.dialog {
-    margin-bottom: 8px !important;
-}
-.unread {
-    border-left: 0.5em solid #0067c5 !important;
-}
-.read {
-    border-style: hidden hidden hidden solid;
-    border-width: 0.5em;
-    border-color: #ffffff;
-}
-.greenfont {
-    color: #06893a;
-}
-.iconclass:hover .iconcolor {
-    filter: invert(26%) sepia(90%) saturate(1799%) hue-rotate(191deg) brightness(92%) contrast(106%);
-}
 .messagebox {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: pre-line;
     word-break: break-word;
 }
 
-.overrides {
-    border-top-left-radius: var(--override-border-top-left-radius, 4px) !important;
-    border-top-right-radius: var(--override-border-top-right-radius, 4px) !important;
-    border-bottom-right-radius: var(--override-border-bottom-right-radius, 4px) !important;
-    border-bottom-left-radius: var(--override-border-bottom-left-radius, 4px) !important;
+.tag-spacing {
+    margin-right: 0.5rem;
 }
 
-.centerCircle {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    border-radius: 100%;
-    background-color: #f1f1f1;
-    width: 100%;
-    max-width: 48px;
-    aspect-ratio: 1 / 1;
+.panel {
+    background-color: #f2f3f5;
+    border-radius: 5px;
+    display: block;
+    margin-bottom: 1rem;
+    color: #3e3832;
+    text-decoration: none;
 }
 
 @media only screen and (max-width: 480px) {

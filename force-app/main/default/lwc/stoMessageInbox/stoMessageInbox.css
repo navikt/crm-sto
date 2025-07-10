@@ -1,23 +1,20 @@
 .header {
-    text-align: center;
-}
-.ficon {
-    vertical-align: middle;
-    margin: auto;
+    text-align: left;
 }
 .subheader {
-    margin-bottom: 1rem;
-    margin-top: 3rem;
+    margin-bottom: var(--a-spacing-1);
+    margin-top: 2rem;
 }
 .inboxwrapper {
-    margin-bottom: 3rem;
+    margin: 0 var(--a-spacing-3) 3rem var(--a-spacing-3);
 }
 .body {
     font-family: var(--navds-font-family);
     line-height: 1.375;
     color: var(--navds-color-text-primary);
     font-size: 1.125rem;
-    text-align: center;
+    text-align: left;
+    padding-top: 1.25rem;
 }
 
 .centerInfobox {
@@ -25,19 +22,8 @@
     margin: auto;
 }
 
-.aroundGap {
-    margin: 1rem;
-}
-
 @media only screen and (max-width: 1023px) {
     .mobil-padding {
         padding-left: 1rem;
-    }
-}
-
-@media only screen and (max-width: 480px) {
-    .horizontalMargin-mobile {
-        margin-left: 0.5rem;
-        margin-right: 0.5rem;
     }
 }

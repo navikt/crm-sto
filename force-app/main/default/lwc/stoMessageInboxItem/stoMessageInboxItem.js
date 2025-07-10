@@ -1,38 +1,29 @@
 import { LightningElement, api } from 'lwc';
-import navlogos from '@salesforce/resourceUrl/navsvglogos';
 import basepath from '@salesforce/community/basePath';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
 
-    dialog = navlogos + '/send.svg';
     latestmessage;
     latestText;
     objectName;
     isExternal;
     isOpen;
     threadId;
-    hasunread = false;
+    hasunread = true;
     unreadmessage = 'lest';
-    className = 'lenkepanel dialog read iconclass overrides';
-    statuscolor;
 
     connectedCallback() {
         this.objectName = this.thread.objectName;
 
         if (this.thread.status === 'Åpen') {
-            this.statuscolor = 'greenfont';
             this.isOpen = true;
         }
 
-        if (this.objectName === 'samtalereferat') this.dialog = navlogos + '/FileContent.svg';
-        if (this.objectName === 'chat') this.dialog = navlogos + '/dialog.svg';
-
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasunread = true;
-            this.unreadmessage = 'ulest';
-            this.className = 'lenkepanel dialog unread iconclass';
+            this.unreadmessage = 'Ulest';
         }
 
         this.latestmessage = this.thread.latestmessage;
@@ -59,6 +50,21 @@ export default class StoMessageInboxItem extends LightningElement {
 
     get showStatus() {
         return this.objectName !== 'samtalereferat';
+    }
+
+    get showReadStatus() {
+        return this.unreadmessage === 'Ulest';
+    }
+
+    get statusText() {
+        return this.thread.status === 'Åpen' ? 'Aktiv' : this.thread.status;
+    }
+
+    get statusClass() {
+        return (
+            'navds-tag navds-tag--success navds-tag--small navds-body-short navds-body-short--small ' +
+            (this.thread.status === 'Åpen' ? 'navds-tag--success' : 'navds-tag--neutral')
+        );
     }
 
     get linkUrl() {
