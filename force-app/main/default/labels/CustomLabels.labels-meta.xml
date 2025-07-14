@@ -571,6 +571,14 @@
         <value>Share with user</value>
     </labels>
     <labels>
+        <fullName>BTO_Submit</fullName>
+        <categories>NKS, Buttons</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>BTO Submit</shortDescription>
+        <value>Send and end dialog</value>
+    </labels>
+    <labels>
         <fullName>STO_Medskriv_Label</fullName>
         <categories>STO, Labels</categories>
         <language>en_US</language>
