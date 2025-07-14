@@ -70,7 +70,7 @@ export default class CommunityModal extends LightningElement {
 
     get modalClasses() {
         return (
-            ' modal modalMobile overrides' +
+            'modal modalMobile overrides' +
             (!this.hidePaddingMobile ? '' : ' noHorizontalPadding-mobile') +
             (!this.hidePadding ? ' modal-padding' : ' remove-modal-padding')
         );

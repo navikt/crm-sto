@@ -37,10 +37,6 @@ export default class StoMessageInbox extends LightningElement {
         }
     }
 
-    get noItems() {
-        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
-    }
-
     setThreads() {
         if (this.wthreads) {
             this.threads = [...this.wthreads].sort(this.sortByDate);
@@ -83,5 +79,9 @@ export default class StoMessageInbox extends LightningElement {
             'https://www.nav.no/kontaktoss',
             'Kontakt oss'
         );
+    }
+
+    get noItems() {
+        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
     }
 }

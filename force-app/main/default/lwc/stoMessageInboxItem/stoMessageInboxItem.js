@@ -6,30 +6,25 @@ export default class StoMessageInboxItem extends LightningElement {
     @api thread;
     @api closeIntent = false;
 
-    latestmessage;
     latestText;
     objectName;
     isExternal;
     isOpen;
-    threadId;
     hasUnread = true;
-    unreadmessage = 'lest';
-    statuscolor;
+    unreadMessage = 'lest';
 
     connectedCallback() {
         this.objectName = this.thread.objectName;
 
         if (this.thread.status === 'Åpen') {
-            this.statuscolor = 'greenfont';
             this.isOpen = true;
         }
 
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
             this.hasUnread = true;
-            this.unreadmessage = 'Ulest';
+            this.unreadMessage = 'Ulest';
         }
 
-        this.latestmessage = this.thread.latestmessage;
         this.latestText = this.thread.latestmessage.messageText;
         this.isExternal = this.thread.latestmessage.isExternal;
     }
@@ -41,15 +36,9 @@ export default class StoMessageInboxItem extends LightningElement {
     get itemTitle() {
         if (this.objectName === 'samtalereferat') return this.thread.name;
 
-        if (this.objectName === 'skriv-til-oss' || this.objectName === 'beskjed-til-oss') {
-            if (this.isOpen) {
-                return this.thread.name + (this.isExternal ? ': Du sendte en melding' : ': Nav sendte en melding');
-            }
-            return this.thread.name;
-        }
-
-        if (this.objectName === 'chat') {
-            return this.thread.name + (this.isExternal ? ': Du sendte en melding' : ': Nav sendte en melding');
+        if (['skriv-til-oss', 'beskjed-til-oss', 'chat'].includes(this.objectName)) {
+            const sender = this.isExternal ? 'Du sendte en melding' : 'Nav sendte en melding';
+            return this.isOpen ? `${this.thread.name}: ${sender}` : this.thread.name;
         }
 
         return this.thread.name;
@@ -60,7 +49,7 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get showReadStatus() {
-        return this.unreadmessage === 'Ulest';
+        return this.unreadMessage === 'Ulest';
     }
 
     get statusText() {
