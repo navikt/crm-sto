@@ -5,3 +5,7 @@
 .spacing-top {
     margin-top: var(--a-spacing-1);
 }
+
+.container {
+    margin: 0 var(--a-spacing-3);
+}

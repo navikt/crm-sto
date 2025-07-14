@@ -265,6 +265,11 @@ public with sharing class stoHelperClass {
     }
 
     private static Boolean isMaxThreadCount(String theme, String threadType) {
+        // Skip max thread count check for BTO
+        if (threadType == 'BTO') {
+            return false;
+        }
+
         List<String> allowedThreadTypes;
         if (threadTypeMap.containsKey(threadType)) {
             allowedThreadTypes = threadTypeMap.get(threadType);
