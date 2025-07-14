@@ -42,8 +42,10 @@
 
 .vilkar-link:active,
 .vilkar-link:focus {
-    background-color: var(--ac-link-active-bg, var(--a-border-focus));
-    box-shadow: 0 0 0 2px var(--ac-link-active-border, var(--a-border-focus));
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--a-text-action);
 }
 
 .modal-footer {
@@ -88,5 +90,19 @@
 
     .modal-footer > *:first-child {
         margin-bottom: 1rem;
+    }
+
+    .vilkar-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .vilkar-container .vilkar-link {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .vilkar-container .vilkar-link {
+        width: auto;
     }
 }

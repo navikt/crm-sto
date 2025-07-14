@@ -4,7 +4,7 @@ import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
-    @api isCloseItem = false;
+    @api closeIntent = false;
 
     latestmessage;
     latestText;
@@ -12,7 +12,7 @@ export default class StoMessageInboxItem extends LightningElement {
     isExternal;
     isOpen;
     threadId;
-    hasunread = true;
+    hasUnread = true;
     unreadmessage = 'lest';
     statuscolor;
 
@@ -25,7 +25,7 @@ export default class StoMessageInboxItem extends LightningElement {
         }
 
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
-            this.hasunread = true;
+            this.hasUnread = true;
             this.unreadmessage = 'Ulest';
         }
 
@@ -75,18 +75,18 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get linkUrl() {
-        return this.objectName === 'beskjed-til-oss'
-            ? basepath + '/' + this.objectName + '/visning?samtale=' + this.thread.recordId
-            : basepath +
-                  '/' +
-                  this.objectName +
-                  '/' +
-                  this.thread.recordId +
-                  '/' +
-                  this.thread.recordName.replace(/[ -]+/g, '-');
+        const isBeskjed = this.objectName === 'beskjed-til-oss';
+        const base = `${basepath}/${this.objectName}`;
+
+        if (isBeskjed) {
+            return `${base}/visning?samtale=${this.thread.recordId}`;
+        }
+
+        const recordNameSlug = this.thread.recordName.replace(/[ -]+/g, '-');
+        return `${base}/${this.thread.recordId}/${recordNameSlug}?closeIntent=${this.closeIntent}`;
     }
 
     get panelClass() {
-        return `panel ${this.isCloseItem ? 'no-bottom-radius' : 'border-radius'}`;
+        return `panel ${this.closeIntent ? 'no-bottom-radius' : 'border-radius'}`;
     }
 }

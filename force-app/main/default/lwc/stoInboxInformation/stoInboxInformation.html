@@ -1,10 +1,7 @@
 <template>
-    <template lwc:if={isClosedSTOorBTO}></template>
-    <template lwc:else>
-        <div lwc:if={infoText} class="info-text">
-            <c-community-alert alert-type="info" alert-text={infoText}></c-community-alert>
-        </div>
-    </template>
+    <div class="info-text">
+        <c-community-alert alert-type="info" alert-text={infoText}></c-community-alert>
+    </div>
     <template lwc:if={showSurveyButton}>
         <div class="survey-container">
             <h2 class="navds-heading navds-heading--medium navds-typo--spacing">

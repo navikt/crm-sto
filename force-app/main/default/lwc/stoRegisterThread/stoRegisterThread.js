@@ -6,17 +6,6 @@ import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
-import acceptermtext from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
-import showtermstext from '@salesforce/label/c.Skriv_til_oss_Show_terms';
-import textareadescription from '@salesforce/label/c.Skriv_til_oss_text_area_description';
-import SERVICE_TERMS_HEADER from '@salesforce/label/c.STO_Skriv_til_oss_terms_header';
-import SERVICE_TERMS from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text';
-import SERVICE_TERMS_2 from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text_2';
-import ACCEPT_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Accept_Terms_Button';
-import ACCEPT_TERMS_ERROR from '@salesforce/label/c.Skriv_til_oss_Accept_terms_error_message';
-import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_Button';
-import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
-import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
@@ -31,6 +20,18 @@ import {
 } from 'c/inboxAmplitude';
 import registerThreadTemplate from './registerThreadTemplate.html';
 import badUrlTemplate from './badUrlTemplate.html';
+
+import ACCEPT_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
+import SHOW_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Show_terms';
+import SERVICE_TERMS_HEADER from '@salesforce/label/c.STO_Skriv_til_oss_terms_header';
+import SERVICE_TERMS from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text';
+import SERVICE_TERMS_2 from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text_2';
+import ACCEPT_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Accept_Terms_Button';
+import ACCEPT_TERMS_ERROR from '@salesforce/label/c.Skriv_til_oss_Accept_terms_error_message';
+import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_Button';
+import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
+import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
+
 import STO_DEFAULT_INGRESS from '@salesforce/label/c.Skriv_til_oss_Default_ingress';
 import STO_HJELPEMIDLER_INGRESS from '@salesforce/label/c.Skriv_til_oss_Hjelpemidler_ingress';
 import BTO_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Default_ingress';
@@ -57,7 +58,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     isLoading = true;
-    showspinner = false;
+    showSpinner = false;
     category;
     themeToShow;
     acceptedSTOCategories = new Set();
@@ -76,10 +77,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     _title;
     registerNewThread = false;
 
-    label = {
-        acceptermtext,
-        showtermstext,
-        textareadescription,
+    labels = {
+        ACCEPT_TERM_TEXT,
+        SHOW_TERM_TEXT,
         SERVICE_TERMS_HEADER,
         SERVICE_TERMS,
         SERVICE_TERMS_2,
@@ -258,9 +258,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     renderedCallback() {
-        if (this.showspinner) {
+        if (this.showSpinner) {
             this.template.querySelector('.spinner')?.focus();
         }
+
         document.title = this.tabName;
         setDecoratorParams(this.threadTypeToMake, this.title, this.themeToShow);
     }
@@ -377,7 +378,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     closeTerms() {
         this.modalOpen = false;
-        const btn = this.template.querySelector('.focusBtn');
+        const btn = this.template.querySelector('.vilkar-link');
         btn.focus();
         publish(this.messageContext, globalModalOpen, { status: 'false' });
     }
@@ -424,7 +425,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             (!radioButtonExists || radioButtonValue != null)
         ) {
             this.errorList = null;
-            this.showspinner = true;
+            this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
             createThreadWithCase({
@@ -440,7 +441,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     : this.themeToShow
             })
                 .then((thread) => {
-                    this.showspinner = false;
+                    this.showSpinner = false;
                     if (this.threadTypeToMake === 'BTO') {
                         this.navigateToBTO(thread);
                     } else {
@@ -463,7 +464,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 .catch((err) => {
                     console.error(err);
                     this.template.querySelector('c-alertdialog').showModal();
-                    this.showspinner = false;
+                    this.showSpinner = false;
                 });
         } else {
             this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
@@ -506,14 +507,21 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
+    handleCloseThread(e) {
+        const selectedThread = this.openThreadList[e.detail];
+        if (selectedThread.recordId) {
+            this.closeSelectedThread(selectedThread.recordId);
+        }
+    }
+
     closeSelectedThread(selectedThreadId) {
-        this.showspinner = true;
+        this.showSpinner = true;
         this.spinnerText = spinnerReasonTextMap.close;
         closeThread({ id: selectedThreadId })
             .then(() => {
                 refreshApex(this.wireThreadData)
                     .then(() => {
-                        this.showspinner = false;
+                        this.showSpinner = false;
                     })
                     .catch((err) => {
                         console.error(err);
@@ -554,13 +562,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     handleFocusLast() {
         this.template.querySelector('.lastFocusElement').focus();
-    }
-
-    handleCloseThread(e) {
-        const selectedThread = this.openThreadList[e.detail];
-        if (selectedThread.recordId) {
-            this.closeSelectedThread(selectedThread.recordId);
-        }
     }
 
     handleRadioChange(event) {
@@ -638,7 +639,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get termsContentText() {
-        return this.label.SERVICE_TERMS + this.label.SERVICE_TERMS_2;
+        return this.labels.SERVICE_TERMS + this.labels.SERVICE_TERMS_2;
     }
 
     get showOpenThreadWarning() {
@@ -659,15 +660,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get alertType() {
-        return this.openThreadList.length >= maxThreadCount ? 'advarsel' : 'info';
+        return this.openThreadList.length >= maxThreadCount && this.threadTypeToMake === 'STO' ? 'advarsel' : 'info';
     }
 
     get showTextArea() {
         return this.openThreadList == null || this.registerNewThread;
-    }
-
-    get backdropClass() {
-        return this.hideDeleteModal ? 'slds-hide' : 'backdrop';
     }
 
     get ingressLabel() {
@@ -699,6 +696,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get canOpenMoreThreads() {
-        return this.openThreads < maxThreadCount;
+        return this.openThreads < maxThreadCount || this.threadTypeToMake === 'BTO';
     }
 }

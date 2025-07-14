@@ -20,7 +20,7 @@ export default class StoMessageInbox extends LightningElement {
     @wire(getThreads, {})
     wirethreads(result) {
         if (result.error) {
-            console.log(result.error);
+            console.error(result.error);
         } else if (result.data) {
             this.wthreads = result.data;
             this.setThreads();
