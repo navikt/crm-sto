@@ -9,8 +9,6 @@ import CASE_ORIGIN_FIELD from '@salesforce/schema/Case.NKS_Case_Origin__c';
 import PUT_BACK_LABEL from '@salesforce/label/c.STO_Put_Back';
 import RESERVE_LABEL from '@salesforce/label/c.STO_Reserve_For_Me';
 import TRANSFER_LABEL from '@salesforce/label/c.STO_Transfer';
-import SHARE_WITH_USER_LABEL from '@salesforce/label/c.STO_Share_With_User';
-import SUBMIT_BTO_LABEL from '@salesforce/label/c.BTO_Submit';
 import JOURNAL_LABEL from '@salesforce/label/c.NKS_Journal';
 import CREATE_NAV_TASK_LABEL from '@salesforce/label/c.NKS_Create_NAV_Task';
 import SET_TO_REDACTION_LABEL from '@salesforce/label/c.NKS_Set_To_Redaction';
@@ -60,9 +58,7 @@ export default class StoMessagingContainer extends LightningElement {
         TRANSFER_LABEL,
         CREATE_NAV_TASK_LABEL,
         JOURNAL_LABEL,
-        SET_TO_REDACTION_LABEL,
-        SHARE_WITH_USER_LABEL,
-        SUBMIT_BTO_LABEL
+        SET_TO_REDACTION_LABEL
     };
 
     connectedCallback() {
@@ -295,9 +291,5 @@ export default class StoMessagingContainer extends LightningElement {
 
     get notificationBoxTemplate() {
         return this.template.querySelector('c-nks-notification-box');
-    }
-
-    get submitButtonLabel() {
-        return this.caseOrigin === 'BTO' ? this.labels.SUBMIT_BTO_LABEL : this.labels.SHARE_WITH_USER_LABEL;
     }
 }

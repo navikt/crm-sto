@@ -24,10 +24,10 @@
         <locationX>1018</locationX>
         <locationY>782</locationY>
         <assignmentItems>
-            <assignToReference>Get_Case.NKS_Case_Origin__c</assignToReference>
+            <assignToReference>Get_Case.Status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>BTO</stringValue>
+                <stringValue>Closed</stringValue>
             </value>
         </assignmentItems>
         <connector>
