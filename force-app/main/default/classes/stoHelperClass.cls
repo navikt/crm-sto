@@ -59,7 +59,7 @@ public with sharing class stoHelperClass {
         String relatedObjId;
         Thread__c thread;
 
-        if (isMaxThreadCount(theme, type)) {
+        if (type != 'BTO' && isMaxThreadCount(theme, type)) {
             logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
             throw new maxThreadLimitReachedException();
@@ -265,11 +265,6 @@ public with sharing class stoHelperClass {
     }
 
     private static Boolean isMaxThreadCount(String theme, String threadType) {
-        // Skip max thread count check for BTO
-        if (threadType == 'BTO') {
-            return false;
-        }
-
         List<String> allowedThreadTypes;
         if (threadTypeMap.containsKey(threadType)) {
             allowedThreadTypes = threadTypeMap.get(threadType);

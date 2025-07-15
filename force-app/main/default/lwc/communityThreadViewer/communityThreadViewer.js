@@ -30,7 +30,6 @@ export default class CrmCommunityThreadViewer extends LightningElement {
     thread;
     wiredThread;
     messageGroups;
-    hasRendered = false;
     showCloseButton = false;
     showSpinner = false;
     currentPageReference;
