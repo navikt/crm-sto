@@ -4,8 +4,13 @@
         <h1 class="navds-heading navds-heading--xlarge header">{themeToShow}</h1>
         <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
         </c-community-error-summary>
-        <p class="navds-bodylong navds-bodylong--large ingress">{ingressLabel}</p>
-        <template lwc:if={showspinner}>
+        <template lwc:if={showTextArea}>
+            <p class="navds-bodylong navds-bodylong--large subtitle">{ingressLabel}</p>
+        </template>
+        <template lwc:else>
+            <p class="navds-bodylong navds-bodylong--large subtitle">{openThreadText}</p>
+        </template>
+        <template lwc:if={showSpinner}>
             <div class="spinner-container">
                 <svg
                     tabindex="0"
@@ -36,17 +41,17 @@
             </div>
         </template>
         <template lwc:else>
-            <div class="navds-accordion">
-                <template for:each={newsList} for:item="news">
-                    <c-community-expandable-panel title={news.header} key={news.id}>
-                        <lightning-formatted-rich-text
-                            class="navds-body-short navds-body-short--small"
-                            value={news.body}
-                        ></lightning-formatted-rich-text>
-                    </c-community-expandable-panel>
-                </template>
-            </div>
             <template lwc:if={showTextArea}>
+                <div class="navds-accordion">
+                    <template for:each={newsList} for:item="news">
+                        <c-community-expandable-panel title={news.header} key={news.id}>
+                            <lightning-formatted-rich-text
+                                class="navds-body-short navds-body-short--small"
+                                value={news.body}
+                            ></lightning-formatted-rich-text>
+                        </c-community-expandable-panel>
+                    </template>
+                </div>
                 <!-- Theme Choice Radio Button -->
                 <template lwc:if={showThemeRadioButton}>
                     <div class="theme-radio-button">
@@ -95,23 +100,18 @@
                 </c-community-read-more>
 
                 <!-- Vilkaer checkbox -->
-                <div class="slds-grid vilkar-container">
+                <div class="slds-grid slds-wrap vilkar-container">
                     <c-community-checkbox
-                        label-text={label.acceptermtext}
+                        label-text={labels.ACCEPT_TERM_TEXT}
                         oncheckedchanged={handleChecked}
-                        class="checkboxContainer"
-                    ></c-community-checkbox
-                    ><button
-                        onclick={showTerms}
-                        class="navds-link navds-link--action focusBtn vilkar-link"
-                        tabindex="0"
-                    >
-                        {label.showtermstext}
+                    ></c-community-checkbox>
+                    <button onclick={showTerms} class="navds-link navds-link--action vilkar-link" tabindex="0">
+                        {labels.SHOW_TERM_TEXT}
                     </button>
                 </div>
 
                 <button
-                    class="navds-button navds-button--primary navds-button--medium send-button"
+                    class="navds-button navds-button--primary navds-button--medium"
                     type="submit"
                     aria-disabled="false"
                     onclick={submitRequest}
@@ -120,15 +120,37 @@
                 </button>
             </template>
             <template lwc:else>
-                <h2 class="navds-heading navds-heading--medium">Dine åpne samtaler om {category}</h2>
-                <template for:each={openThreadList} for:item="thread" for:index="index">
-                    <c-sto-inbox-close-item
-                        thread={thread}
-                        content-type={contentType}
-                        key={thread.recordId}
-                        index={index}
-                        onclosethread={handleCloseThread}
-                    ></c-sto-inbox-close-item>
+                <h2 class="navds-heading navds-heading--medium subheader">
+                    Dine aktive samtaler om {capitalizedCategory}
+                </h2>
+                <div class="inbox-list">
+                    <template for:each={openThreadList} for:item="thread" for:index="index">
+                        <div key={thread.recordId}>
+                            <template lwc:if={canOpenMoreThreads}>
+                                <c-sto-message-inbox-item
+                                    thread={thread}
+                                    content-type={contentType}
+                                ></c-sto-message-inbox-item>
+                            </template>
+                            <template lwc:else>
+                                <c-sto-inbox-close-item
+                                    thread={thread}
+                                    content-type={contentType}
+                                    index={index}
+                                    onclosethread={handleCloseThread}
+                                ></c-sto-inbox-close-item>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+                <template lwc:if={canOpenMoreThreads}>
+                    <button
+                        class="navds-button navds-button--primary navds-button--medium new-message-button"
+                        aria-disabled="false"
+                        onclick={handleShowTextArea}
+                    >
+                        Skriv ny melding
+                    </button>
                 </template>
             </template>
         </template>
@@ -139,7 +161,7 @@
             onfocuslast={handleFocusLast}
             hide-padding-mobile
         >
-            <h1 slot="modalHeader" class="textLeftAlign-mobile leftMargin-mobile">{label.SERVICE_TERMS_HEADER}</h1>
+            <h1 slot="modalHeader" class="textLeftAlign-mobile leftMargin-mobile">{labels.SERVICE_TERMS_HEADER}</h1>
             <div slot="modalContent">
                 <section>
                     <form class="betingelser-panel panel side-innhold">
@@ -156,7 +178,7 @@
                     onclick={termsAccepted}
                     type="submit"
                 >
-                    {label.ACCEPT_TERMS_BUTTON}
+                    {labels.ACCEPT_TERMS_BUTTON}
                 </button>
 
                 <button
@@ -165,7 +187,7 @@
                     aria-controls="betingelser"
                     onclick={termsDenied}
                 >
-                    {label.DENY_TERMS_BUTTON}
+                    {labels.DENY_TERMS_BUTTON}
                 </button>
             </div>
         </c-community-modal>
