@@ -1,6 +1,16 @@
-.typo-undertittel {
+.panel {
+    background-color: var(--a-surface-subtle);
+    display: block;
+    padding: var(--a-spacing-3);
+    color: #262626;
+    text-decoration: none;
 }
-.messagebox {
+
+.panel:hover {
+    background-color: var(--a-surface-neutral-subtle);
+}
+
+.message-box {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -14,28 +24,10 @@
     margin-right: 0.5rem;
 }
 
-.panel {
-    background-color: #f2f3f5;
-    border-radius: 5px;
-    display: block;
-    margin-bottom: 1rem;
-    color: #3e3832;
-    text-decoration: none;
+.no-bottom-radius {
+    border-radius: 0.5rem 0.5rem 0 0;
 }
 
-@media only screen and (max-width: 480px) {
-    .hideMobile {
-        display: none;
-    }
-
-    .dialog {
-        padding-bottom: var(--override-padding-bottom-mobile, 1rem) !important;
-    }
-
-    .threeLinesMobile {
-        -webkit-line-clamp: 3;
-    }
-    .mobilePadding {
-        padding-left: 0.5rem;
-    }
+.border-radius {
+    border-radius: 0.5rem;
 }

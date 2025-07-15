@@ -6,17 +6,6 @@ import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
-import acceptermtext from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
-import showtermstext from '@salesforce/label/c.Skriv_til_oss_Show_terms';
-import textareadescription from '@salesforce/label/c.Skriv_til_oss_text_area_description';
-import SERVICE_TERMS_HEADER from '@salesforce/label/c.STO_Skriv_til_oss_terms_header';
-import SERVICE_TERMS from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text';
-import SERVICE_TERMS_2 from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text_2';
-import ACCEPT_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Accept_Terms_Button';
-import ACCEPT_TERMS_ERROR from '@salesforce/label/c.Skriv_til_oss_Accept_terms_error_message';
-import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_Button';
-import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
-import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
@@ -31,6 +20,18 @@ import {
 } from 'c/inboxAmplitude';
 import registerThreadTemplate from './registerThreadTemplate.html';
 import badUrlTemplate from './badUrlTemplate.html';
+
+import ACCEPT_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
+import SHOW_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Show_terms';
+import SERVICE_TERMS_HEADER from '@salesforce/label/c.STO_Skriv_til_oss_terms_header';
+import SERVICE_TERMS from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text';
+import SERVICE_TERMS_2 from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text_2';
+import ACCEPT_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Accept_Terms_Button';
+import ACCEPT_TERMS_ERROR from '@salesforce/label/c.Skriv_til_oss_Accept_terms_error_message';
+import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_Button';
+import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
+import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
+
 import STO_DEFAULT_INGRESS from '@salesforce/label/c.Skriv_til_oss_Default_ingress';
 import STO_HJELPEMIDLER_INGRESS from '@salesforce/label/c.Skriv_til_oss_Hjelpemidler_ingress';
 import BTO_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Default_ingress';
@@ -57,7 +58,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     isLoading = true;
-    showspinner = false;
+    showSpinner = false;
     category;
     themeToShow;
     acceptedSTOCategories = new Set();
@@ -74,11 +75,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     maxLength = 2000;
     openThreadList;
     _title;
+    registerNewThread = false;
 
-    label = {
-        acceptermtext,
-        showtermstext,
-        textareadescription,
+    labels = {
+        ACCEPT_TERM_TEXT,
+        SHOW_TERM_TEXT,
         SERVICE_TERMS_HEADER,
         SERVICE_TERMS,
         SERVICE_TERMS_2,
@@ -257,9 +258,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     renderedCallback() {
-        if (this.showspinner) {
+        if (this.showSpinner) {
             this.template.querySelector('.spinner')?.focus();
         }
+
         document.title = this.tabName;
         setDecoratorParams(this.threadTypeToMake, this.title, this.themeToShow);
     }
@@ -307,91 +309,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 console.error(error);
             }
         }
-    }
-
-    get tabName() {
-        return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
-    }
-
-    get title() {
-        return this._title;
-    }
-
-    @api
-    set title(value) {
-        this._title = value;
-    }
-
-    get validQueryParameter() {
-        return this.isValidSTOCategory || this.isValidBTOCategory;
-    }
-
-    get isValidSTOCategory() {
-        return this.threadTypeToMake === 'STO' && this.acceptedSTOCategories.has(this.lowerCaseUrlCategory);
-    }
-
-    get isValidBTOCategory() {
-        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory);
-    }
-
-    get termsModal() {
-        return this.template.querySelector('c-community-modal');
-    }
-
-    get termsContentText() {
-        return this.label.SERVICE_TERMS + this.label.SERVICE_TERMS_2;
-    }
-
-    get showOpenThreadWarning() {
-        return !!this.openThreadList?.length;
-    }
-
-    get openThreadText() {
-        if (!this.openThreadList) return '';
-        const openThreads = this.openThreadList.length;
-        return openThreads < maxThreadCount
-            ? `Du har allerede åpne samtaler om ${this.capitalizeFirstLetter(this.category)}. Hvis du lurer på noe mer, kan du <a href="${
-                  this.openThreadLink
-              }">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.`
-            : `Du har ${openThreads} åpne samtaler om ${this.capitalizeFirstLetter(this.category)}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
-    }
-
-    get openThreadLink() {
-        return this.threadTypeToMake === 'BTO'
-            ? basepath + this.subpath + 'visning?samtale=' + this.openThreadList[0].recordId
-            : basepath + this.subpath + this.openThreadList[0].recordId;
-    }
-
-    get alertType() {
-        return this.openThreadList.length >= maxThreadCount ? 'advarsel' : 'info';
-    }
-
-    get showTextArea() {
-        return this.openThreadList == null || this.openThreadList.length < maxThreadCount;
-    }
-
-    get backdropClass() {
-        return this.hideDeleteModal ? 'slds-hide' : 'backdrop';
-    }
-
-    get ingressLabel() {
-        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
-            return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
-        }
-
-        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
-    }
-
-    get showThemeRadioButton() {
-        return this.radioButtonMap[this.title]?.[this.themeToShow] ?? false;
-    }
-
-    get themeRadioButtonText() {
-        return this.radioButtonMap[this.title]?.[this.themeToShow]?.text;
-    }
-
-    get showInputTextArea() {
-        return !this.showThemeRadioButton || this.themeRadioButtonSelected != null;
     }
 
     setThemeToShow() {
@@ -461,7 +378,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     closeTerms() {
         this.modalOpen = false;
-        const btn = this.template.querySelector('.focusBtn');
+        const btn = this.template.querySelector('.vilkar-link');
         btn.focus();
         publish(this.messageContext, globalModalOpen, { status: 'false' });
     }
@@ -508,7 +425,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             (!radioButtonExists || radioButtonValue != null)
         ) {
             this.errorList = null;
-            this.showspinner = true;
+            this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
             createThreadWithCase({
@@ -524,7 +441,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     : this.themeToShow
             })
                 .then((thread) => {
-                    this.showspinner = false;
+                    this.showSpinner = false;
                     if (this.threadTypeToMake === 'BTO') {
                         this.navigateToBTO(thread);
                     } else {
@@ -547,7 +464,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 .catch((err) => {
                     console.error(err);
                     this.template.querySelector('c-alertdialog').showModal();
-                    this.showspinner = false;
+                    this.showSpinner = false;
                 });
         } else {
             this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
@@ -590,14 +507,21 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
+    handleCloseThread(e) {
+        const selectedThread = this.openThreadList[e.detail];
+        if (selectedThread.recordId) {
+            this.closeSelectedThread(selectedThread.recordId);
+        }
+    }
+
     closeSelectedThread(selectedThreadId) {
-        this.showspinner = true;
+        this.showSpinner = true;
         this.spinnerText = spinnerReasonTextMap.close;
         closeThread({ id: selectedThreadId })
             .then(() => {
                 refreshApex(this.wireThreadData)
                     .then(() => {
-                        this.showspinner = false;
+                        this.showSpinner = false;
                     })
                     .catch((err) => {
                         console.error(err);
@@ -640,13 +564,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.template.querySelector('.lastFocusElement').focus();
     }
 
-    handleCloseThread(e) {
-        const selectedThread = this.openThreadList[e.detail];
-        if (selectedThread.recordId) {
-            this.closeSelectedThread(selectedThread.recordId);
-        }
-    }
-
     handleRadioChange(event) {
         logFilterEvent(
             'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
@@ -686,5 +603,99 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             getComponentName(this.template),
             this.title
         );
+    }
+
+    handleShowTextArea() {
+        this.registerNewThread = true;
+    }
+
+    get tabName() {
+        return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
+    }
+
+    get title() {
+        return this._title;
+    }
+
+    @api
+    set title(value) {
+        this._title = value;
+    }
+
+    get validQueryParameter() {
+        return this.isValidSTOCategory || this.isValidBTOCategory;
+    }
+
+    get isValidSTOCategory() {
+        return this.threadTypeToMake === 'STO' && this.acceptedSTOCategories.has(this.lowerCaseUrlCategory);
+    }
+
+    get isValidBTOCategory() {
+        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory);
+    }
+
+    get termsModal() {
+        return this.template.querySelector('c-community-modal');
+    }
+
+    get termsContentText() {
+        return this.labels.SERVICE_TERMS + this.labels.SERVICE_TERMS_2;
+    }
+
+    get showOpenThreadWarning() {
+        return !!this.openThreadList?.length;
+    }
+
+    get openThreadText() {
+        if (!this.openThreadList) return '';
+        return this.canOpenMoreThreads
+            ? `Vi ser at du allerede har ${this.openThreads} åpne meldinger på dette temaet. Ønsker du å fortsette på en tidligere melding eller ønsker du å skrive en ny?`
+            : `Vi ser at du allerede har ${this.openThreads} åpne meldinger på dette temaet ${this.capitalizedCategory}. Du kan maks ha 3 samtaler på hvert tema. Hvis du vil opprette en ny samtale, må du derfor avslutte en av de du allerede har.`;
+    }
+
+    get openThreadLink() {
+        return this.threadTypeToMake === 'BTO'
+            ? basepath + this.subpath + 'visning?samtale=' + this.openThreadList[0].recordId
+            : basepath + this.subpath + this.openThreadList[0].recordId;
+    }
+
+    get alertType() {
+        return this.openThreadList.length >= maxThreadCount && this.threadTypeToMake === 'STO' ? 'advarsel' : 'info';
+    }
+
+    get showTextArea() {
+        return this.openThreadList == null || this.registerNewThread;
+    }
+
+    get ingressLabel() {
+        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
+            return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
+        }
+
+        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
+    }
+
+    get showThemeRadioButton() {
+        return this.radioButtonMap[this.title]?.[this.themeToShow] ?? false;
+    }
+
+    get themeRadioButtonText() {
+        return this.radioButtonMap[this.title]?.[this.themeToShow]?.text;
+    }
+
+    get showInputTextArea() {
+        return !this.showThemeRadioButton || this.themeRadioButtonSelected != null;
+    }
+
+    get capitalizedCategory() {
+        return this.capitalizeFirstLetter(this.category);
+    }
+
+    get openThreads() {
+        return this.openThreadList.length;
+    }
+
+    get canOpenMoreThreads() {
+        return this.openThreads < maxThreadCount || this.threadTypeToMake === 'BTO';
     }
 }
