@@ -1,5 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { updateRecord, getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
@@ -8,6 +8,8 @@ import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
+import ACTIVE_FIELD from '@salesforce/schema/Thread__c.CRM_isActive__c';
+import THREAD_ID_FIELD from '@salesforce/schema/Thread__c.Id';
 import MEDSKRIV_TEXT from '@salesforce/label/c.STO_Medskriv_Text';
 import MEDSKRIV_LABEL from '@salesforce/label/c.STO_Medskriv_Label';
 import SUBMIT_BTO_LABEL from '@salesforce/label/c.BTO_Submit';
@@ -16,6 +18,8 @@ import userId from '@salesforce/user/Id';
 import newDesignTemplate from './newDesignTemplate.html';
 import oldDesignTemplate from './oldDesignTemplate.html';
 import { resolve } from 'c/nksComponentsUtils';
+import { publishToAmplitude } from 'c/amplitude';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const englishCompanyTranslations = {
     'DIR ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
@@ -69,11 +73,13 @@ export default class CrmStoMessaging extends LightningElement {
     resetTemplate = false;
     closeLanguageModal = false;
     isThreadIdNull = false;
+    threadWireResult;
 
     labels = {
         MEDSKRIV_TEXT,
         MEDSKRIV_LABEL,
-        SUBMIT_BTO_LABEL
+        SUBMIT_BTO_LABEL,
+        SHARE_WITH_USER_LABEL
     };
 
     render() {
@@ -430,6 +436,44 @@ export default class CrmStoMessaging extends LightningElement {
             console.error('Problem getting English company name: ' + error);
             return '';
         }
+    }
+
+    @api
+    closeThread() {
+        publishToAmplitude('STO', { type: 'closeThread' });
+        const fields = {};
+        fields[THREAD_ID_FIELD.fieldApiName] = this.threadId;
+        fields[ACTIVE_FIELD.fieldApiName] = false;
+
+        const threadInput = { fields };
+        this.showspinner = true;
+        updateRecord(threadInput)
+            .then(() => {
+                if (!this.newDesign) {
+                    const event1 = new ShowToastEvent({
+                        title: 'Avsluttet',
+                        message: 'Samtalen ble avsluttet',
+                        variant: 'success'
+                    });
+                    this.dispatchEvent(event1);
+                } else {
+                    this.dispatchEvent(new CustomEvent('closedevent'));
+                }
+            })
+            .catch((error) => {
+                console.log(JSON.stringify(error, null, 2));
+                if (!this.newDesign) {
+                    const event1 = new ShowToastEvent({
+                        title: 'Det oppstod en feil',
+                        message: 'Samtalen kunne ikke bli avsluttet',
+                        variant: 'error'
+                    });
+                    this.dispatchEvent(event1);
+                }
+            })
+            .finally(() => {
+                this.showspinner = false;
+            });
     }
 
     get textTemplate() {

@@ -576,7 +576,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>BTO Submit</shortDescription>
-        <value>Send and end dialog</value>
+        <value>Send and end dialogue</value>
     </labels>
     <labels>
         <fullName>STO_Medskriv_Label</fullName>

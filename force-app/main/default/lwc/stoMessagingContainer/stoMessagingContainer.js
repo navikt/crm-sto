@@ -165,6 +165,13 @@ export default class StoMessagingContainer extends LightningElement {
             refreshApex(this.wiredCase);
             this.showComplete = false;
             publishToAmplitude('STO', { type: 'Complete/Send pressed' });
+            if (this.caseOrigin === 'BTO') {
+                try {
+                    this.template.querySelector('c-crm-sto-messaging').closeThread();
+                } catch (error) {
+                    console.error('Error closing thread:', error);
+                }
+            }
         }
     }
 
