@@ -446,34 +446,9 @@ export default class CrmStoMessaging extends LightningElement {
         fields[ACTIVE_FIELD.fieldApiName] = false;
 
         const threadInput = { fields };
-        this.showspinner = true;
-        updateRecord(threadInput)
-            .then(() => {
-                if (!this.newDesign) {
-                    const event1 = new ShowToastEvent({
-                        title: 'Avsluttet',
-                        message: 'Samtalen ble avsluttet',
-                        variant: 'success'
-                    });
-                    this.dispatchEvent(event1);
-                } else {
-                    this.dispatchEvent(new CustomEvent('closedevent'));
-                }
-            })
-            .catch((error) => {
-                console.log(JSON.stringify(error, null, 2));
-                if (!this.newDesign) {
-                    const event1 = new ShowToastEvent({
-                        title: 'Det oppstod en feil',
-                        message: 'Samtalen kunne ikke bli avsluttet',
-                        variant: 'error'
-                    });
-                    this.dispatchEvent(event1);
-                }
-            })
-            .finally(() => {
-                this.showspinner = false;
-            });
+        updateRecord(threadInput).catch((error) => {
+            console.error(JSON.stringify(error, null, 2));
+        });
     }
 
     get textTemplate() {

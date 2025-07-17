@@ -3,26 +3,10 @@
     <apiVersion>54.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>Assign_Closed_Status</name>
-        <label>Assign Closed Status</label>
-        <locationX>314</locationX>
-        <locationY>566</locationY>
-        <assignmentItems>
-            <assignToReference>Get_Case.Status</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>Closed</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Update_Case</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Assign_On_Hold_Status</name>
         <label>Assign On Hold Status</label>
-        <locationX>578</locationX>
-        <locationY>566</locationY>
+        <locationX>314</locationX>
+        <locationY>518</locationY>
         <assignmentItems>
             <assignToReference>Get_Case.Status</assignToReference>
             <operator>Assign</operator>
@@ -35,35 +19,10 @@
         </connector>
     </assignments>
     <decisions>
-        <name>Check_case_origin</name>
-        <label>Check case origin</label>
-        <locationX>446</locationX>
-        <locationY>458</locationY>
-        <defaultConnector>
-            <targetReference>Assign_On_Hold_Status</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>BTO</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Case.NKS_Case_Origin__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>BTO</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_Closed_Status</targetReference>
-            </connector>
-            <label>BTO</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Check_If_Case_Is_In_Progress_Or_Reserved</name>
         <label>Check If Case Is In Progress Or Reserved</label>
-        <locationX>644</locationX>
-        <locationY>350</locationY>
+        <locationX>446</locationX>
+        <locationY>398</locationY>
         <defaultConnector>
             <targetReference>No_Condition_Screen</targetReference>
         </defaultConnector>
@@ -86,7 +45,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Check_case_origin</targetReference>
+                <targetReference>Assign_On_Hold_Status</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -94,8 +53,8 @@
     <decisions>
         <name>Check_Status</name>
         <label>Check Status</label>
-        <locationX>347</locationX>
-        <locationY>242</locationY>
+        <locationX>248</locationX>
+        <locationY>278</locationY>
         <defaultConnector>
             <targetReference>Check_If_Case_Is_In_Progress_Or_Reserved</targetReference>
         </defaultConnector>
@@ -130,7 +89,6 @@
             <label>Already Completed</label>
         </rules>
     </decisions>
-    <environments>Default</environments>
     <interviewLabel>Case STO Complete {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Complete</label>
     <processMetadataValues>
@@ -155,8 +113,8 @@
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>347</locationX>
-        <locationY>134</locationY>
+        <locationX>248</locationX>
+        <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Status</targetReference>
@@ -176,8 +134,8 @@
     <recordUpdates>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>446</locationX>
-        <locationY>758</locationY>
+        <locationX>314</locationX>
+        <locationY>638</locationY>
         <connector>
             <targetReference>Close_Screen</targetReference>
         </connector>
@@ -187,7 +145,7 @@
         <name>Case_Completed_Screen</name>
         <label>Case Completed Screen</label>
         <locationX>50</locationX>
-        <locationY>350</locationY>
+        <locationY>398</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -211,8 +169,8 @@
     <screens>
         <name>Close_Screen</name>
         <label>Close Screen</label>
-        <locationX>446</locationX>
-        <locationY>866</locationY>
+        <locationX>314</locationX>
+        <locationY>758</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -268,8 +226,8 @@
     <screens>
         <name>No_Condition_Screen</name>
         <label>No Condition Screen</label>
-        <locationX>842</locationX>
-        <locationY>458</locationY>
+        <locationX>578</locationX>
+        <locationY>518</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -291,7 +249,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>221</locationX>
+        <locationX>122</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Case</targetReference>

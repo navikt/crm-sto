@@ -3,42 +3,10 @@
     <apiVersion>58.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>Assign_Closed_Status</name>
-        <label>Assign Closed Status</label>
-        <locationX>50</locationX>
-        <locationY>674</locationY>
-        <assignmentItems>
-            <assignToReference>Get_Case_0.Status</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>Closed</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Update_Case_0</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_Closed_Status_2</name>
-        <label>Assign Closed Status</label>
-        <locationX>1018</locationX>
-        <locationY>782</locationY>
-        <assignmentItems>
-            <assignToReference>Get_Case.Status</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>Closed</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Update_Case</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Assign_On_Hold_Status</name>
         <label>Assign On Hold Status</label>
-        <locationX>1282</locationX>
-        <locationY>782</locationY>
+        <locationX>776</locationX>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>Get_Case.Status</assignToReference>
             <operator>Assign</operator>
@@ -53,8 +21,8 @@
     <assignments>
         <name>Assign_On_Hold_Status_0</name>
         <label>Assign On Hold Status 0</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
+        <locationX>72</locationX>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_0.Status</assignToReference>
             <operator>Assign</operator>
@@ -69,7 +37,7 @@
     <decisions>
         <name>Case_Reserved_Or_In_Progress</name>
         <label>Case Reserved Or In Progress</label>
-        <locationX>1348</locationX>
+        <locationX>908</locationX>
         <locationY>566</locationY>
         <defaultConnector>
             <isGoTo>true</isGoTo>
@@ -94,7 +62,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Check_case_origin_2</targetReference>
+                <targetReference>Assign_On_Hold_Status</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -102,7 +70,7 @@
     <decisions>
         <name>Case_Reserved_Or_In_Progress_0</name>
         <label>Case Reserved Or In Progress 0</label>
-        <locationX>380</locationX>
+        <locationX>204</locationX>
         <locationY>458</locationY>
         <defaultConnector>
             <targetReference>case_reserved</targetReference>
@@ -126,65 +94,15 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Check_case_origin</targetReference>
+                <targetReference>Assign_On_Hold_Status_0</targetReference>
             </connector>
             <label>Reserved</label>
         </rules>
     </decisions>
     <decisions>
-        <name>Check_case_origin</name>
-        <label>Check case origin</label>
-        <locationX>182</locationX>
-        <locationY>566</locationY>
-        <defaultConnector>
-            <targetReference>Assign_On_Hold_Status_0</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>BTO</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Case_0.NKS_Case_Origin__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>BTO</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_Closed_Status</targetReference>
-            </connector>
-            <label>BTO</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Check_case_origin_2</name>
-        <label>Check case origin</label>
-        <locationX>1150</locationX>
-        <locationY>674</locationY>
-        <defaultConnector>
-            <targetReference>Assign_On_Hold_Status</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>BTO_2</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Case.NKS_Case_Origin__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>BTO</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_Closed_Status_2</targetReference>
-            </connector>
-            <label>BTO</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Check_Record_Id</name>
         <label>Check Record Id</label>
-        <locationX>611</locationX>
+        <locationX>402</locationX>
         <locationY>134</locationY>
         <defaultConnector>
             <targetReference>Get_Thread</targetReference>
@@ -209,7 +127,7 @@
     <decisions>
         <name>Check_Status</name>
         <label>Check Status</label>
-        <locationX>1095</locationX>
+        <locationX>754</locationX>
         <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Case_Reserved_Or_In_Progress</targetReference>
@@ -248,7 +166,7 @@
     <decisions>
         <name>Check_Status_0</name>
         <label>Check Status 0</label>
-        <locationX>127</locationX>
+        <locationX>50</locationX>
         <locationY>350</locationY>
         <defaultConnector>
             <targetReference>Case_Reserved_Or_In_Progress_0</targetReference>
@@ -309,7 +227,7 @@
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>1095</locationX>
+        <locationX>754</locationX>
         <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -337,7 +255,7 @@
     <recordLookups>
         <name>Get_Case_0</name>
         <label>Get Case 0</label>
-        <locationX>127</locationX>
+        <locationX>50</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -358,7 +276,7 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>1095</locationX>
+        <locationX>754</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -379,22 +297,22 @@
     <recordUpdates>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>1150</locationX>
-        <locationY>974</locationY>
+        <locationX>776</locationX>
+        <locationY>782</locationY>
         <inputReference>Get_Case</inputReference>
     </recordUpdates>
     <recordUpdates>
         <name>Update_Case_0</name>
         <label>Update Case 0</label>
-        <locationX>182</locationX>
-        <locationY>866</locationY>
+        <locationX>72</locationX>
+        <locationY>674</locationY>
         <inputReference>Get_Case_0</inputReference>
     </recordUpdates>
     <screens>
         <name>Case_Completed</name>
         <label>Case Completed</label>
-        <locationX>611</locationX>
-        <locationY>1442</locationY>
+        <locationX>402</locationX>
+        <locationY>1250</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -417,7 +335,7 @@
     <screens>
         <name>case_reserved</name>
         <label>case reserved</label>
-        <locationX>578</locationX>
+        <locationX>336</locationX>
         <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -439,7 +357,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>485</locationX>
+        <locationX>276</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Check_Record_Id</targetReference>

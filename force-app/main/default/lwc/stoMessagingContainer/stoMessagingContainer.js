@@ -138,9 +138,17 @@ export default class StoMessagingContainer extends LightningElement {
     handleSubmit() {
         if (!this.completeDisabled) {
             this.resetButtonVisibility();
-            this.showComplete = !this.showComplete;
         }
-        this.template.querySelector('c-crm-sto-messaging').scrollIntoView({ behavior: 'smooth' });
+        if (this.caseOrigin === 'BTO') {
+            try {
+                this.template.querySelector('c-crm-sto-messaging').closeThread();
+            } catch (error) {
+                console.error('Error closing thread:', error);
+            }
+        } else {
+            this.showComplete = !this.showComplete;
+            this.template.querySelector('c-crm-sto-messaging').scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
     handleSetCaseToInProgress() {
@@ -165,13 +173,6 @@ export default class StoMessagingContainer extends LightningElement {
             refreshApex(this.wiredCase);
             this.showComplete = false;
             publishToAmplitude('STO', { type: 'Complete/Send pressed' });
-            if (this.caseOrigin === 'BTO') {
-                try {
-                    this.template.querySelector('c-crm-sto-messaging').closeThread();
-                } catch (error) {
-                    console.error('Error closing thread:', error);
-                }
-            }
         }
     }
 
