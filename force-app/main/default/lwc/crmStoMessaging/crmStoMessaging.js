@@ -69,7 +69,6 @@ export default class CrmStoMessaging extends LightningElement {
     resetTemplate = false;
     closeLanguageModal = false;
     isThreadIdNull = false;
-    threadWireResult;
 
     labels = {
         MEDSKRIV_TEXT,
