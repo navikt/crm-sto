@@ -139,16 +139,10 @@ export default class StoMessagingContainer extends LightningElement {
         if (!this.completeDisabled) {
             this.resetButtonVisibility();
         }
-        if (this.caseOrigin === 'BTO') {
-            try {
-                this.template.querySelector('c-crm-sto-messaging').closeThread();
-            } catch (error) {
-                console.error('Error closing thread:', error);
-            }
-        } else {
+        if (this.caseOrigin !== 'BTO') {
             this.showComplete = !this.showComplete;
-            this.template.querySelector('c-crm-sto-messaging').scrollIntoView({ behavior: 'smooth' });
         }
+        this.template.querySelector('c-crm-sto-messaging').scrollIntoView({ behavior: 'smooth' });
     }
 
     handleSetCaseToInProgress() {
