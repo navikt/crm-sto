@@ -1,5 +1,5 @@
 import { LightningElement, wire, api } from 'lwc';
-import getGroupedMessagesFromThread from '@salesforce/apex/stoInboxHelper.getGroupedMessagesFromThread';
+import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExperience.getGroupedMessagesFromThread';
 import markAsRead from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
