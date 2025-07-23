@@ -1,5 +1,5 @@
 import { LightningElement, wire, api } from 'lwc';
-import getGroupedMessagesFromThread from '@salesforce/apex/stoInboxHelper.getGroupedMessagesFromThread';
+import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExperience.getGroupedMessagesFromThread';
 import markAsRead from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
@@ -14,9 +14,8 @@ import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
 
 const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREAD_TYPE_FIELD];
 
-export default class CrmCommunityThreadViewer extends LightningElement {
+export default class CommunityThreadViewer extends LightningElement {
     @api recordId;
-    @api closedAlertText = 'Dialogen er lukket.';
     @api openAlertText;
     @api maxLength;
     @api overrideValidation = false;
