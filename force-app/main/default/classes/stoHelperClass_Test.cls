@@ -33,7 +33,7 @@ public with sharing class stoHelperClass_Test {
             null
         );
         Test.startTest();
-        System.assertNotEquals(null, stoHelperClass.getOpenThreads('Arbeid'), 'Expected to get a thread');
+        System.assertNotEquals(null, stoHelperClass.getOpenThreads('Arbeid', 'STO'), 'Expected to get a thread');
         Test.stopTest();
     }
 
