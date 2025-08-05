@@ -1,0 +1,36 @@
+<template>
+    <c-community-modal
+        show-modal={showModal}
+        onkeyup={handleKeyboardEvent}
+        onfocuslast={handleFocusLast}
+        hide-padding-mobile
+        hide-padding
+    >
+        <div slot="modalHeader" class="navds-modal__header">
+            <p class="navds-heading navds-heading--samll">Er du sikker på at du vil avslutte denne samtalen?</p>
+        </div>
+        <div slot="modalContent" class="navds-modal__body">
+            <div class="navds-bodylong navds-bodylong--medium">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur egestas mattis accumsan.
+                    Vestibulum vestibulum blandit ipsum, a porttitor nunc pretium eu. Vivamus turpis eros, dictum eu
+                    volutpat eu, dictum id nisl. Suspendisse nec tellus lobortis, egestas risus id, porta tellus. Mauris
+                    leo erat, vestibulum eu nunc et, mollis luctus tellus. Morbi consectetur interdum ante nec dictum.
+                    Nam facilisis ante quis nunc molestie viverra. Mauris est tellus, viverra vel lectus vulputate,
+                    ultricies hendrerit nulla.
+                </p>
+            </div>
+        </div>
+        <div slot="modalFooter" class="navds-modal__footer">
+            <button class="navds-button navds-button--secondary navds-button--medium" onclick={closeModal}>
+                Avbryt
+            </button>
+            <button
+                class="navds-button navds-button--primary navds-button--medium lastFocusElement"
+                onclick={closeThread}
+            >
+                Ja, jeg er sikker
+            </button>
+        </div>
+    </c-community-modal>
+</template>

@@ -2,10 +2,12 @@
     margin-bottom: var(--a-spacing-8);
 }
 
-.ingress,
-.vilkar-container,
-.send-button {
-    margin-bottom: var(--a-spacing-10);
+.navds-button {
+    padding: var(--a-spacing-3) var(--a-spacing-5);
+}
+
+.container {
+    margin: 0 var(--a-spacing-3) var(--a-spacing-10) var(--a-spacing-3);
 }
 
 .theme-radio-button,
@@ -16,13 +18,14 @@
     margin-top: var(--a-spacing-10);
 }
 
-.send-button {
-    padding: var(--a-spacing-3) var(--a-spacing-5);
-}
-
 .button-width {
     justify-content: center;
     width: 14em;
+}
+
+.subtitle,
+.vilkar-container {
+    margin-bottom: var(--a-spacing-10);
 }
 
 .vilkar-link {
@@ -39,8 +42,10 @@
 
 .vilkar-link:active,
 .vilkar-link:focus {
-    background-color: var(--ac-link-active-bg, var(--a-border-focus));
-    box-shadow: 0 0 0 2px var(--ac-link-active-border, var(--a-border-focus));
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--a-text-action);
 }
 
 .modal-footer {
@@ -54,6 +59,20 @@
     justify-content: center;
     align-items: center;
     width: 100%;
+}
+
+.new-message-button {
+    margin-top: var(--a-spacing-10);
+}
+
+.subheader {
+    margin-bottom: var(--a-spacing-1);
+}
+
+.inbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--a-spacing-4);
 }
 
 @media only screen and (max-width: 576px) {
@@ -71,5 +90,19 @@
 
     .modal-footer > *:first-child {
         margin-bottom: 1rem;
+    }
+
+    .vilkar-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .vilkar-container .vilkar-link {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .vilkar-container .vilkar-link {
+        width: auto;
     }
 }

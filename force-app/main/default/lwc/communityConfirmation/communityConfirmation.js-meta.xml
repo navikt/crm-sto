@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
-    <masterLabel>Skriv til oss - Innboks</masterLabel>
+    <isExposed>true</isExposed>
+    <masterLabel>Confirmation component</masterLabel>
     <targets>
-        <target>lightning__AppPage</target>
-        <target>lightning__RecordPage</target>
-        <target>lightning__HomePage</target>
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
     </targets>
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
-            <property name="title" label="Title" type="String" default="Title" />
+            <property name="title" label="Tittel som skal vises på toppen" type="String"
+                default="Legg til tittel her" />
+            <property name="text" label="Tekst som skal vises i bekreftelsesdialogen" type="String"
+                default="Legg til forklarende tekst her" />
         </targetConfig>
     </targetConfigs>
-    <isExposed>true</isExposed>
 </LightningComponentBundle>

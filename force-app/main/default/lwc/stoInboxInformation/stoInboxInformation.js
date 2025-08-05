@@ -4,25 +4,48 @@ import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
+import { CurrentPageReference } from 'lightning/navigation';
 
 export default class StoInboxInformation extends LightningElement {
     @api recordId;
 
     type;
-    closed = false;
+    closed;
     caseId;
     url;
     surveyLink;
     completed = false;
+    _recordId;
 
-    @wire(getThread, { recordId: '$recordId' })
-    wiredThread({ error, data }) {
-        if (error) {
+    connectedCallback() {
+        getURL()
+            .then((url) => {
+                this.url = url;
+            })
+            .catch((error) => {
+                console.error('Problem getting Base URL for Feedback Community: ' + JSON.stringify(error, null, 2));
+            });
+    }
+
+    @wire(CurrentPageReference)
+    async getStateParameters(currentPageReference) {
+        const newRecordId = currentPageReference?.state?.samtale || this.recordId;
+        if (newRecordId && newRecordId !== this._recordId) {
+            this._recordId = newRecordId;
+            await this.fetchThreadData();
+        }
+    }
+
+    async fetchThreadData() {
+        try {
+            const data = await getThread({ recordId: this._recordId });
+            if (data) {
+                this.type = data.CRM_Thread_Type__c;
+                this.closed = data.CRM_Is_Closed__c;
+                this.caseId = data.CRM_Related_Object__c;
+            }
+        } catch (error) {
             console.error('Problem getting thread:', error);
-        } else if (data) {
-            this.type = data.CRM_Thread_Type__c;
-            this.closed = data.CRM_Is_Closed__c;
-            this.caseId = data.CRM_Related_Object__c;
         }
     }
 
@@ -31,18 +54,8 @@ export default class StoInboxInformation extends LightningElement {
         if (data && this.caseId) {
             this.surveyLink = data;
         } else if (error) {
-            console.log('Problem getting surveyLink: ' + error);
+            console.error('Problem getting surveyLink: ' + error);
         }
-    }
-
-    connectedCallback() {
-        getURL()
-            .then((url) => {
-                this.url = url;
-            })
-            .catch((error) => {
-                console.log('Problem getting Base URL for Feedback Community: ' + JSON.stringify(error, null, 2));
-            });
     }
 
     navigateToSurvey() {
@@ -69,10 +82,6 @@ export default class StoInboxInformation extends LightningElement {
             this.completed ? this.url : this.surveyLink,
             'Klikk her for å svare'
         );
-    }
-
-    get isClosedSTOorBTO() {
-        return (this.type === 'STO' || this.type === 'BTO') && this.closed;
     }
 
     get infoText() {

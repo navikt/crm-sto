@@ -1,11 +1,11 @@
 {
-    "activeViewId": "f11fd376-2cad-4a36-84f5-c2306135e77c",
-    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
-    "configurationTags": [],
-    "id": "8f283d01-03c8-4479-8c82-ac748777f8dc",
-    "label": "Fedrekvotesaken",
-    "devName": "Fedrekvotesaken__c",
-    "routeType": "custom-fedrekvotesaken",
-    "type": "route",
-    "urlPrefix": "fedrekvotesaken"
+  "activeViewId" : "f11fd376-2cad-4a36-84f5-c2306135e77c",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "devName" : "Fedrekvotesaken__c",
+  "id" : "8f283d01-03c8-4479-8c82-ac748777f8dc",
+  "label" : "Fedrekvotesaken",
+  "routeType" : "custom-fedrekvotesaken",
+  "type" : "route",
+  "urlPrefix" : "fedrekvotesaken"
 }

@@ -1,22 +1,21 @@
 import { LightningElement, wire, api } from 'lwc';
-import getGroupedMessagesFromThread from '@salesforce/apex/stoInboxHelper.getGroupedMessagesFromThread';
+import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExperience.getGroupedMessagesFromThread';
 import markAsRead from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createMessage from '@salesforce/apex/CRM_MessageHelperExperience.createMessage';
+import { CurrentPageReference } from 'lightning/navigation';
+import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
+
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
-import { loadStyle } from 'lightning/platformResourceLoader';
-import navStyling from '@salesforce/resourceUrl/navStyling';
-import index from '@salesforce/resourceUrl/newIndex';
 
 const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREAD_TYPE_FIELD];
 
-export default class CrmCommunityThreadViewer extends LightningElement {
+export default class CommunityThreadViewer extends LightningElement {
     @api recordId;
-    @api closedAlertText = 'Dialogen er lukket.';
     @api openAlertText;
     @api maxLength;
     @api overrideValidation = false;
@@ -28,7 +27,11 @@ export default class CrmCommunityThreadViewer extends LightningElement {
     messageValue;
     userContactId;
     thread;
+    wiredThread;
     messageGroups;
+    showCloseButton = false;
+    showSpinner = false;
+    currentPageReference;
 
     connectedCallback() {
         markAsRead({ threadId: this.recordId });
@@ -42,21 +45,41 @@ export default class CrmCommunityThreadViewer extends LightningElement {
     }
 
     renderedCallback() {
-        loadStyle(this, navStyling);
-        loadStyle(this, index);
+        if (this.showSpinner) {
+            this.template.querySelector('.spinner')?.focus();
+        }
+    }
+
+    @wire(CurrentPageReference)
+    getStateParameters(currentPageReference) {
+        this.currentPageReference = currentPageReference;
+        if (currentPageReference?.state?.closeIntent === 'true') {
+            this.showCloseButton = true;
+        }
     }
 
     @wire(getRecord, { recordId: '$recordId', fields })
-    wirethread(result) {
-        this.thread = result;
+    wiredRecord(result) {
+        this.wiredThread = result;
+        const { error, data } = result;
+        if (data) {
+            this.thread = data;
+            const state = this.currentPageReference?.state;
+            if (state?.closeIntent === 'true') {
+                this.showCloseButton = !this.closed;
+            }
+        } else if (error) {
+            console.error('Problem getting thread record: ', error);
+        }
     }
 
     @wire(getGroupedMessagesFromThread, { threadId: '$recordId' })
     wiredGroups(result) {
         this.wiredMessages = result;
-        if (result.error) {
-            this.error = result.error;
-        } else if (result.data) {
+        const { error, data } = result;
+        if (error) {
+            console.error('Problem getting message groups: ', error);
+        } else if (data) {
             this.messageGroups = result.data;
         }
     }
@@ -164,8 +187,29 @@ export default class CrmCommunityThreadViewer extends LightningElement {
         item.focus();
     }
 
+    handleClick() {
+        this.refs.childRef.openModal();
+    }
+
+    handleCloseThread() {
+        this.refs.childRef.closeModal();
+        this.showSpinner = true;
+        closeThread({ id: this.recordId })
+            .then(() => {
+                return refreshApex(this.wireThread);
+            })
+            .then(() => {
+                this.showSpinner = false;
+                window.location.reload();
+            })
+            .catch((err) => {
+                console.error(err);
+                this.showSpinner = false;
+            });
+    }
+
     get isSTO() {
-        const value = getFieldValue(this.thread.data, THREAD_TYPE_FIELD);
+        const value = getFieldValue(this.thread, THREAD_TYPE_FIELD);
         return value === 'STO' || value === 'STB';
     }
 
@@ -177,15 +221,15 @@ export default class CrmCommunityThreadViewer extends LightningElement {
     }
 
     get name() {
-        return getFieldValue(this.thread.data, THREADNAME_FIELD);
+        return getFieldValue(this.thread, THREADNAME_FIELD);
     }
 
-    get isclosed() {
-        return getFieldValue(this.thread.data, THREADCLOSED_FIELD);
+    get closed() {
+        return getFieldValue(this.thread, THREADCLOSED_FIELD);
     }
 
     get showClosedText() {
-        return this.isclosed && !this.isSTO;
+        return this.closed && !this.isSTO;
     }
 
     get inboxType() {

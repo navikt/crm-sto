@@ -1,45 +1,93 @@
 <template>
-    <p class="navds-bodylong navds-bodylong--medium">{inboxType}</p>
-    <h1 class="navds-heading navds-heading--xlarge">{inboxTheme}</h1>
-    <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
-    </c-community-error-summary>
-    <c-community-message-container message-groups={messageGroups}></c-community-message-container>
-    <slot name="messageArea">
-        <template lwc:if={isclosed}></template>
-        <template lwc:else>
-            <lightning-input-field
-                class="slds-hidden messageText"
-                field-name="CRM_Message_Text__c"
-            ></lightning-input-field>
-            <div class="text-area">
-                <c-community-textarea
-                    label="Ny melding"
-                    max-length={maxLength}
-                    ontextchanged={handleTextChange}
-                ></c-community-textarea>
+    <div class="container">
+        <p class="navds-bodylong navds-bodylong--medium">{inboxType}</p>
+        <h1 class="navds-heading navds-heading--xlarge">{inboxTheme}</h1>
+        <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
+        </c-community-error-summary>
+        <template lwc:if={showCloseButton}>
+            <div class="end-dialogue-container">
+                <p class="navds-bodylong navds-bodylong--large">
+                    Vi ser at du allerede har 3 åpne meldinger på dette temaet . Hvis du vil opprette en ny samtale, må
+                    du derfor avslutte en av de du allerede har.
+                </p>
+                <p class="navds-bodylong navds-bodylong--large subtitle">Ønsker du å avslutte denne samtalen?</p>
+                <button
+                    class="navds-button navds-button--secondary navds-button--medium close-button"
+                    aria-disabled="false"
+                    onclick={handleClick}
+                >
+                    Avslutt samtalen
+                </button>
             </div>
-            <button
-                disabled={buttonDisabled}
-                class="navds-button navds-button--primary navds-button--medium"
-                type="submit"
-                aria-disabled="false"
-                onclick={handleSendButtonClick}
-            >
-                Send melding
-            </button>
-            <template lwc:if={showOpenWarning}>
-                <c-community-alert alert-type="info" alert-text={openAlertText}></c-community-alert>
-            </template>
-            <lightning-input-field
-                field-name="CRM_From_Contact__c"
-                value={userContactId}
-                class="slds-hidden"
-            ></lightning-input-field>
-            <lightning-input-field field-name="CRM_Thread__c" value={recordId} class="slds-hidden">
-            </lightning-input-field>
         </template>
-        <template lwc:if={showClosedText}>
-            <c-community-alert alert-type="info" alert-text={closedAlertText}></c-community-alert
-        ></template>
-    </slot>
+        <template lwc:if={showSpinner}>
+            <div class="spinner-container">
+                <svg
+                    tabindex="0"
+                    aria-labelledby="loader-navds-id-4"
+                    class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
+                    focusable="false"
+                    viewBox="0 0 50 50"
+                    preserveAspectRatio="xMidYMid"
+                >
+                    <title id="loader-navds-id-4">Avslutter samtale. Vennligst vent.</title>
+                    <circle
+                        class="navds-loader__background"
+                        xmlns="http://www.w3.org/2000/svg"
+                        cx="25"
+                        cy="25"
+                        r="20"
+                        fill="none"
+                    ></circle>
+                    <circle
+                        class="navds-loader__foreground"
+                        cx="25"
+                        cy="25"
+                        r="20"
+                        fill="none"
+                        stroke-dasharray="50 155"
+                    ></circle>
+                </svg>
+            </div>
+        </template>
+        <template lwc:else>
+            <c-community-message-container message-groups={messageGroups}></c-community-message-container>
+            <slot name="messageArea">
+                <template lwc:if={closed}></template>
+                <template lwc:else>
+                    <lightning-input-field
+                        class="slds-hidden messageText"
+                        field-name="CRM_Message_Text__c"
+                    ></lightning-input-field>
+                    <div class="text-area">
+                        <c-community-textarea
+                            label="Ny melding"
+                            max-length={maxLength}
+                            ontextchanged={handleTextChange}
+                        ></c-community-textarea>
+                    </div>
+                    <button
+                        disabled={buttonDisabled}
+                        class="navds-button navds-button--primary navds-button--medium"
+                        type="submit"
+                        aria-disabled="false"
+                        onclick={handleSendButtonClick}
+                    >
+                        Send melding
+                    </button>
+                    <template lwc:if={showOpenWarning}>
+                        <c-community-alert alert-type="info" alert-text={openAlertText}></c-community-alert>
+                    </template>
+                    <lightning-input-field
+                        field-name="CRM_From_Contact__c"
+                        value={userContactId}
+                        class="slds-hidden"
+                    ></lightning-input-field>
+                    <lightning-input-field field-name="CRM_Thread__c" value={recordId} class="slds-hidden">
+                    </lightning-input-field>
+                </template>
+            </slot>
+        </template>
+        <c-sto-end-dialogue-modal lwc:ref="childRef" onclosethread={handleCloseThread}></c-sto-end-dialogue-modal>
+    </div>
 </template>
