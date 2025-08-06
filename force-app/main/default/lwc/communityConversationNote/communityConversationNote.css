@@ -3,12 +3,13 @@
 }
 
 .conv-note-container {
-    margin-top: var(--a-spacing-10);
+    margin: var(--a-spacing-10) 0 var(--a-spacing-12) 0;
 }
 
 .navds-chat__bubble {
     --ac-chat-bubble-bg: var(--a-surface-action-subtle);
     padding-top: var(--a-spacing-6);
+    min-width: 640px;
 }
 
 .navds-detail,
@@ -18,4 +19,8 @@
 
 .border {
     border-bottom: 1px solid var(--a-border-default);
+}
+
+.navds-list__item {
+    padding-left: var(--a-spacing-2);
 }

@@ -12,7 +12,7 @@
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="64"
-                        height="18"
+                        height="20"
                         viewBox="320 260 240 60"
                         preserveAspectRatio="xMidYMid meet"
                     >
@@ -36,13 +36,17 @@
                         <p class="navds-body-long navds-body-long--medium">
                             Du har flere referater fra samtaler om denne henvendelsen:
                         </p>
-                        <br />
-                        <template for:each={relatedNotes} for:item="note">
-                            <c-community-conversation-note-related-item
-                                key={name}
-                                note={note}
-                            ></c-community-conversation-note-related-item>
-                        </template>
+                        <div class="navds-list navds-list--medium navds-body-long navds-body-long--medium">
+                            <ul>
+                                <template for:each={relatedNotes} for:item="note">
+                                    <li key={name} class="navds-list__item">
+                                        <c-community-conversation-note-related-item
+                                            note={note}
+                                        ></c-community-conversation-note-related-item>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
                     </template>
                 </div>
             </div>
