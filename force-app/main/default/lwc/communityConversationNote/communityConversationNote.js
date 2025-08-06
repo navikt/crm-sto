@@ -1,5 +1,4 @@
 import { LightningElement, api, wire } from 'lwc';
-import veiledericon from '@salesforce/resourceUrl/female';
 import markasread from '@salesforce/apex/stoInboxHelper.markAsRead';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedConversations from '@salesforce/apex/relatedConversationNoteHelper.getRelatedConversations';
@@ -32,10 +31,6 @@ export default class CommunityConversationNote extends LightningElement {
     date;
     relatedNotes;
     themeGroup;
-
-    get navIcon() {
-        return veiledericon;
-    }
 
     connectedCallback() {
         markasread({ conversationNoteId: this.recordId });

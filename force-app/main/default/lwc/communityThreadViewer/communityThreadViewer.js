@@ -232,14 +232,14 @@ export default class CommunityThreadViewer extends LightningElement {
         return this.closed && !this.isSTO;
     }
 
-    get inboxType() {
+    get inboxTheme() {
         const name = this.name;
         if (!name) return '';
         const parts = name.split('-');
         return parts[0].trim();
     }
 
-    get inboxTheme() {
+    get inboxType() {
         const name = this.name;
         if (!name) return '';
         const dashIndex = name.indexOf('-');
