@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Quick action to call flow for STO case completion.</description>
-    <flowDefinition>Case_STO_Complete_and_Next</flowDefinition>
-    <label>Close and Next</label>
-    <optionsCreateFeedItem>false</optionsCreateFeedItem>
-    <type>Flow</type>
-</QuickAction>
