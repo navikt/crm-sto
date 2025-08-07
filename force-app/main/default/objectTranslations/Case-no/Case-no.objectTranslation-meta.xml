@@ -4,7 +4,8 @@
         <layout>Case Feed Layout</layout>
         <layoutType>CaseInteraction</layoutType>
         <sections>
-            <label><!-- Fields --></label>
+            <label><!-- Fields -->
+            </label>
             <section>Fields</section>
         </sections>
     </layouts>
@@ -16,15 +17,11 @@
     <quickActions>
         <aspect>Master</aspect>
         <label>Ferdigstill</label>
-        <name>CRM_STO_Close_and_Next</name>
-    </quickActions>
-    <quickActions>
-        <aspect>Master</aspect>
-        <label>Ferdigstill</label>
         <name>Complete</name>
     </quickActions>
     <quickActions>
-        <label><!-- NewChildCase --></label>
+        <label><!-- NewChildCase -->
+        </label>
         <name>NewChildCase</name>
     </quickActions>
     <quickActions>
@@ -38,7 +35,8 @@
         <name>STO_Reserve_Case</name>
     </quickActions>
     <quickActions>
-        <label><!-- SendEmail --></label>
+        <label><!-- SendEmail -->
+        </label>
         <name>SendEmail</name>
     </quickActions>
     <quickActions>
@@ -52,7 +50,8 @@
         <name>Transfer</name>
     </quickActions>
     <recordTypes>
-        <label><!-- STO Case --></label>
+        <label><!-- STO Case -->
+        </label>
         <name>STO_Case</name>
     </recordTypes>
 </CustomObjectTranslation>
