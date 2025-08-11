@@ -3,6 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 
 export default class CommunityConversationNoteRelatedItem extends NavigationMixin(LightningElement) {
     @api note;
+
     url;
 
     connectedCallback() {
@@ -35,6 +36,6 @@ export default class CommunityConversationNoteRelatedItem extends NavigationMixi
     }
 
     get label() {
-        return 'Klikk her for å se referat' + this.date;
+        return 'Referat' + this.date;
     }
 }
