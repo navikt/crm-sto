@@ -53,7 +53,7 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get statusText() {
-        return this.thread.status === 'Åpen' ? 'Aktiv' : this.thread.status;
+        return this.thread.status;
     }
 
     get statusClass() {
