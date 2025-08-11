@@ -18,14 +18,14 @@
             </div>
         </div>
         <div slot="modalFooter" class="navds-modal__footer">
-            <button class="navds-button navds-button--secondary navds-button--medium" onclick={closeModal}>
-                Nei, gå tilbake
+            <button class="navds-button navds-button--primary navds-button--medium button-width" onclick={closeThread}>
+                Ja, avslutt samtalen
             </button>
             <button
-                class="navds-button navds-button--primary navds-button--medium lastFocusElement"
-                onclick={closeThread}
+                class="navds-button navds-button--secondary navds-button--medium button-width lastFocusElement"
+                onclick={closeModal}
             >
-                Ja, avslutt samtalen
+                Nei, gå tilbake
             </button>
         </div>
     </c-community-modal>

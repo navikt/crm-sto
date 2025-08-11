@@ -7,20 +7,17 @@
 }
 
 .container {
-    margin: 0 var(--a-spacing-3) var(--a-spacing-10) var(--a-spacing-3);
+    margin-bottom: var(--a-spacing-20);
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 640px;
 }
 
 .theme-radio-button,
 .medskriv-radio-button,
 .text-area,
-.vilkar-container,
-.modal-footer {
+.vilkar-container {
     margin-top: var(--a-spacing-10);
-}
-
-.button-width {
-    justify-content: center;
-    width: 14em;
 }
 
 .subtitle,
@@ -48,12 +45,6 @@
     color: var(--a-text-action);
 }
 
-.modal-footer {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-}
-
 .spinner-container {
     display: flex;
     justify-content: center;
@@ -75,6 +66,11 @@
     gap: var(--a-spacing-4);
 }
 
+.navds-modal__header {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
 @media only screen and (max-width: 576px) {
     .textLeftAlign-mobile {
         text-align: left;
@@ -82,14 +78,6 @@
 
     .leftMargin-mobile {
         margin-left: 16px !important;
-    }
-
-    .modal-footer {
-        display: block;
-    }
-
-    .modal-footer > *:first-child {
-        margin-bottom: 1rem;
     }
 
     .vilkar-container {
@@ -102,7 +90,7 @@
         margin-top: 0.5rem;
     }
 
-    .vilkar-container .vilkar-link {
-        width: auto;
+    .button-width {
+        width: 100%;
     }
 }
