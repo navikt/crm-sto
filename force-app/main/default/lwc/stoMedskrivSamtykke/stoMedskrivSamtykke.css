@@ -4,5 +4,13 @@
 
 .navds-panel {
     padding: 0;
-    margin: 0 var(--a-spacing-3) var(--a-spacing-12) var(--a-spacing-3);
+    margin: 0 auto var(--a-spacing-20) auto;
+    max-width: 640px;
+}
+
+@media only screen and (max-width: 576px) {
+    .navds-panel {
+        margin-left: var(--a-spacing-3);
+        margin-right: var(--a-spacing-3);
+    }
 }
