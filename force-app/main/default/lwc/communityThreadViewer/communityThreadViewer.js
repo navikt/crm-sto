@@ -161,7 +161,7 @@ export default class CommunityThreadViewer extends LightningElement {
     valid() {
         // This function will never run of errorList is defined from parent with overrideValidation
         // eslint-disable-next-line @lwc/lwc/no-api-reassignments
-        this.errorList = { title: '', errors: [] };
+        this.errorList = { title: 'For å sende melding må du rette følgende:', errors: [] };
         if (!this.messageValue || this.messageValue.length == null) {
             this.errorList.errors.push({ Id: 1, EventItem: '.inputTextbox', Text: 'Tekstboksen kan ikke være tom.' });
         } else if (this.maxLength !== 0 && this.maxLength != null && this.messageValue.length > this.maxLength) {

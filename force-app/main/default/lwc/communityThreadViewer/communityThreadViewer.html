@@ -2,8 +2,10 @@
     <div class="container">
         <p class="navds-bodylong navds-bodylong--medium">{inboxType}</p>
         <h1 class="navds-heading navds-heading--xlarge">{inboxTheme}</h1>
-        <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
-        </c-community-error-summary>
+        <div class="text-area">
+            <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
+            </c-community-error-summary>
+        </div>
         <template lwc:if={showCloseButton}>
             <div class="end-dialogue-container">
                 <p class="navds-bodylong navds-bodylong--large">

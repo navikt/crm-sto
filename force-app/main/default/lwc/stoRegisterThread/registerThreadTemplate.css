@@ -69,6 +69,10 @@
     margin-bottom: var(--a-spacing-1);
 }
 
+.errorBox {
+    margin-bottom: var(--a-spacing-5);
+}
+
 .inbox-list {
     display: flex;
     flex-direction: column;

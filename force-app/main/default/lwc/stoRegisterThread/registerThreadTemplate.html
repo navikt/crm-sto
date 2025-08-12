@@ -2,8 +2,10 @@
     <div class="container">
         <p class="navds-bodylong navds-bodylong--medium">{title}</p>
         <h1 class="navds-heading navds-heading--xlarge header">{themeToShow}</h1>
-        <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
-        </c-community-error-summary>
+        <div class="errorBox">
+            <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
+            </c-community-error-summary>
+        </div>
         <template lwc:if={showTextArea}>
             <p class="navds-bodylong navds-bodylong--large subtitle">{ingressLabel}</p>
         </template>
@@ -104,6 +106,7 @@
                     <c-community-checkbox
                         label-text={labels.ACCEPT_TERM_TEXT}
                         oncheckedchanged={handleChecked}
+                        class="checkboxContainer"
                     ></c-community-checkbox>
                     <button onclick={showTerms} class="navds-link navds-link--action vilkar-link" tabindex="0">
                         {labels.SHOW_TERM_TEXT}
