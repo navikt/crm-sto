@@ -59,7 +59,7 @@ export default class StoMessageInboxItem extends LightningElement {
     get statusClass() {
         return (
             'navds-tag navds-tag--success navds-tag--small navds-body-short navds-body-short--small ' +
-            (this.thread.status === 'Åpen' ? 'navds-tag--success' : 'navds-tag--neutral-moderate')
+            (this.thread.status === 'Åpen' ? 'navds-tag--success' : 'navds-tag--alt1')
         );
     }
 
