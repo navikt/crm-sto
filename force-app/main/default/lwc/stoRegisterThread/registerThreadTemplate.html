@@ -7,7 +7,10 @@
             </c-community-error-summary>
         </div>
         <template lwc:if={showTextArea}>
-            <p class="navds-bodylong navds-bodylong--large subtitle">{ingressLabel}</p>
+            <lightning-formatted-rich-text
+                class="navds-bodylong navds-bodylong--large subtitle"
+                value={ingressLabel}
+            ></lightning-formatted-rich-text>
         </template>
         <template lwc:else>
             <p class="navds-bodylong navds-bodylong--large subtitle">{openThreadText}</p>
