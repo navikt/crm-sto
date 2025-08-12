@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "61a34ced-8783-4028-bcff-c014761b973a",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "devName" : "Close_Thread__c",
+  "id" : "e6aeb875-0409-46ee-bcd7-92ed33ae7e21",
+  "label" : "Close Thread",
+  "routeType" : "custom-close-thread",
+  "type" : "route",
+  "urlPrefix" : "close-thread"
+}

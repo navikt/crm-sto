@@ -5,7 +5,6 @@ import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createMessage from '@salesforce/apex/CRM_MessageHelperExperience.createMessage';
-import { CurrentPageReference } from 'lightning/navigation';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
@@ -21,6 +20,7 @@ export default class CommunityThreadViewer extends LightningElement {
     @api overrideValidation = false;
     @api errorList = { title: '', errors: [] };
     @api logAmplitudeEvent = false;
+    @api showCloseButton = false;
 
     wiredMessages;
     buttonDisabled = false;
@@ -29,9 +29,7 @@ export default class CommunityThreadViewer extends LightningElement {
     thread;
     wiredThread;
     messageGroups;
-    showCloseButton = false;
     showSpinner = false;
-    currentPageReference;
 
     connectedCallback() {
         markAsRead({ threadId: this.recordId });
@@ -50,24 +48,12 @@ export default class CommunityThreadViewer extends LightningElement {
         }
     }
 
-    @wire(CurrentPageReference)
-    getStateParameters(currentPageReference) {
-        this.currentPageReference = currentPageReference;
-        if (currentPageReference?.state?.closeIntent === 'true') {
-            this.showCloseButton = true;
-        }
-    }
-
     @wire(getRecord, { recordId: '$recordId', fields })
     wiredRecord(result) {
         this.wiredThread = result;
         const { error, data } = result;
         if (data) {
             this.thread = data;
-            const state = this.currentPageReference?.state;
-            if (state?.closeIntent === 'true') {
-                this.showCloseButton = !this.closed;
-            }
         } else if (error) {
             console.error('Problem getting thread record: ', error);
         }
@@ -136,13 +122,13 @@ export default class CommunityThreadViewer extends LightningElement {
                     this.handleMessageFailed();
                 }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => console.error(error));
     }
 
     handleSendButtonClick() {
         this.buttonDisabled = true;
         // Sending out event to parent to handle any needed validation
-        if (this.overrideValidation === true) {
+        if (this.overrideValidation) {
             const validationEvent = new CustomEvent('validationevent', {
                 message: this.messageValue,
                 maxLength: this.maxLength

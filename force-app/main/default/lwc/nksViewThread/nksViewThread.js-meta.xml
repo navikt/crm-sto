@@ -16,6 +16,9 @@
                 description="Should be set to {!recordId}" />
             <property name="maxLength" type="Integer" label="Max length" default="0"
                 description="The max length a user is allowed to write. Defaults to 0 (infinite)" />
+            <property name="showCloseButton" type="Boolean" label="Show Close Button"
+                default="false"
+            />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

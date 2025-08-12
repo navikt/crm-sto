@@ -64,15 +64,17 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get linkUrl() {
-        const isBeskjed = this.objectName === 'beskjed-til-oss';
-        const base = `${basepath}/${this.objectName}`;
-
-        if (isBeskjed) {
-            return `${base}/visning?samtale=${this.thread.recordId}`;
-        }
-
-        const recordNameSlug = this.thread.recordName.replace(/[ -]+/g, '-');
-        return `${base}/${this.thread.recordId}/${recordNameSlug}?closeIntent=${this.closeIntent}`;
+        return this.objectName === 'beskjed-til-oss'
+            ? basepath + '/' + this.objectName + '/visning?samtale=' + this.thread.recordId
+            : this.closeIntent
+              ? basepath + '/close-thread?samtale=' + this.thread.recordId
+              : basepath +
+                '/' +
+                this.objectName +
+                '/' +
+                this.thread.recordId +
+                '/' +
+                this.thread.recordName.replace(/[ -]+/g, '-');
     }
 
     get panelClass() {
