@@ -7,9 +7,7 @@
 }
 
 .container {
-    margin-bottom: var(--a-spacing-20);
-    margin-left: auto;
-    margin-right: auto;
+    margin: var(--a-spacing-05) auto var(--a-spacing-20) auto;
     max-width: 640px;
 }
 
@@ -92,5 +90,10 @@
 
     .button-width {
         width: 100%;
+    }
+
+    .container {
+        margin-left: var(--a-spacing-3);
+        margin-right: var(--a-spacing-3);
     }
 }

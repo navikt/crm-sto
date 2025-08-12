@@ -1,12 +1,16 @@
-.survey-container,
-.info-text {
-    margin-bottom: var(--a-spacing-20);
-    margin-left: auto;
-    margin-right: auto;
+.container {
+    margin: 0 auto var(--a-spacing-20) auto;
     max-width: 640px;
 }
 
 .survey-span {
     margin-top: var(--a-spacing-4);
     padding-left: var(--a-spacing-3);
+}
+
+@media only screen and (max-width: 576px) {
+    .container {
+        margin-left: var(--a-spacing-3);
+        margin-right: var(--a-spacing-3);
+    }
 }
