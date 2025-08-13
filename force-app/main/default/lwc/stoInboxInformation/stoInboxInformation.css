@@ -8,6 +8,10 @@
     padding-left: var(--a-spacing-3);
 }
 
+.survey-container {
+    margin-top: var(--a-spacing-8);
+}
+
 @media only screen and (max-width: 576px) {
     .container {
         margin-left: var(--a-spacing-3);
