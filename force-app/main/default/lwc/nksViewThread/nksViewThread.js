@@ -19,7 +19,6 @@ export default class NksViewThread extends LightningElement {
     @api threadType;
     @api recordId;
     @api maxLength;
-    @api showCloseButton = false;
 
     _recordId;
     pageTheme;

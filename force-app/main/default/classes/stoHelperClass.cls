@@ -297,4 +297,21 @@ public with sharing class stoHelperClass {
             LIMIT 1
         ];
     }
+
+    @AuraEnabled(cacheable=true)
+    public static Integer getNumOfOpenThreads(Id accountId, String category) {
+        try {
+            return [
+                SELECT COUNT()
+                FROM Thread__c
+                WHERE
+                    CRM_Is_Closed__c = FALSE
+                    AND CRM_Thread_Type__c = 'STO'
+                    AND CRM_Account__c = :accountId
+                    AND STO_Category__c = :category
+            ];
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }

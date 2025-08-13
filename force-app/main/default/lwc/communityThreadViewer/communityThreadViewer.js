@@ -6,12 +6,15 @@ import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserCo
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createMessage from '@salesforce/apex/CRM_MessageHelperExperience.createMessage';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
+import getNumOfOpenThreads from '@salesforce/apex/stoHelperClass.getNumOfOpenThreads';
 
 import THREADNAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
+import ACCOUNT_ID_FIELD from '@salesforce/schema/Thread__c.CRM_Account__c';
+import CATEGORY_FIELD from '@salesforce/schema/Thread__c.STO_Category__c';
 
-const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREAD_TYPE_FIELD];
+const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREAD_TYPE_FIELD, ACCOUNT_ID_FIELD, CATEGORY_FIELD];
 
 export default class CommunityThreadViewer extends LightningElement {
     @api recordId;
@@ -20,7 +23,6 @@ export default class CommunityThreadViewer extends LightningElement {
     @api overrideValidation = false;
     @api errorList = { title: '', errors: [] };
     @api logAmplitudeEvent = false;
-    @api showCloseButton = false;
 
     wiredMessages;
     buttonDisabled = false;
@@ -30,8 +32,12 @@ export default class CommunityThreadViewer extends LightningElement {
     wiredThread;
     messageGroups;
     showSpinner = false;
+    showCloseButton = false;
+    referrer;
 
     connectedCallback() {
+        this.referrer = document.referrer;
+
         markAsRead({ threadId: this.recordId });
         getContactId({})
             .then((contactId) => {
@@ -54,6 +60,17 @@ export default class CommunityThreadViewer extends LightningElement {
         const { error, data } = result;
         if (data) {
             this.thread = data;
+            if (this.accountId && this.category) {
+                getNumOfOpenThreads({ accountId: this.accountId, category: this.category })
+                    .then((numOfOpenThreads) => {
+                        const hasMaxThreads = numOfOpenThreads >= 3;
+                        const expectedPath = `/innboks/s/skriv-til-oss?categroy=${this.category}`;
+                        this.showCloseButton = hasMaxThreads && this.referrer.includes(expectedPath);
+                    })
+                    .catch((err) => {
+                        console.error('Problem getting number of open threads: ', err);
+                    });
+            }
         } else if (error) {
             console.error('Problem getting thread record: ', error);
         }
@@ -237,5 +254,13 @@ export default class CommunityThreadViewer extends LightningElement {
             return name.substring(dashIndex + 1).trim();
         }
         return name.trim();
+    }
+
+    get accountId() {
+        return getFieldValue(this.thread, ACCOUNT_ID_FIELD);
+    }
+
+    get category() {
+        return getFieldValue(this.thread, CATEGORY_FIELD);
     }
 }

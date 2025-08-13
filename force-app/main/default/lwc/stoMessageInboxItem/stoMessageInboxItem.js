@@ -66,15 +66,13 @@ export default class StoMessageInboxItem extends LightningElement {
     get linkUrl() {
         return this.objectName === 'beskjed-til-oss'
             ? basepath + '/' + this.objectName + '/visning?samtale=' + this.thread.recordId
-            : this.closeIntent
-              ? basepath + '/close-thread?samtale=' + this.thread.recordId
-              : basepath +
-                '/' +
-                this.objectName +
-                '/' +
-                this.thread.recordId +
-                '/' +
-                this.thread.recordName.replace(/[ -]+/g, '-');
+            : basepath +
+                  '/' +
+                  this.objectName +
+                  '/' +
+                  this.thread.recordId +
+                  '/' +
+                  this.thread.recordName.replace(/[ -]+/g, '-');
     }
 
     get panelClass() {
