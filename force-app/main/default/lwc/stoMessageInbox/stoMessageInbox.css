@@ -1,10 +1,10 @@
 .header {
-    margin-bottom: var(--a-spacing-8);
+    margin-bottom: var(--a-spacing-7);
 }
 
 .subheader {
     margin-bottom: var(--a-spacing-1);
-    margin-top: var(--a-spacing-8);
+    margin-top: var(--a-spacing-5);
 }
 
 .inbox-wrapper {
@@ -13,7 +13,7 @@
 }
 
 .body {
-    margin-top: var(--a-spacing-5);
+    margin-top: var(--a-spacing-3);
 }
 
 .center-info-box {
@@ -24,7 +24,7 @@
 .inbox-list {
     display: flex;
     flex-direction: column;
-    gap: var(--a-spacing-4);
+    gap: var(--a-spacing-5);
 }
 
 .archive-link:active,
