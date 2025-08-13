@@ -6,15 +6,14 @@ import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserCo
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createMessage from '@salesforce/apex/CRM_MessageHelperExperience.createMessage';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
-import getNumOfOpenThreads from '@salesforce/apex/stoHelperClass.getNumOfOpenThreads';
+import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 
-import THREADNAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
-import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
+import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
+import THREAD_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
-import ACCOUNT_ID_FIELD from '@salesforce/schema/Thread__c.CRM_Account__c';
 import CATEGORY_FIELD from '@salesforce/schema/Thread__c.STO_Category__c';
 
-const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREAD_TYPE_FIELD, ACCOUNT_ID_FIELD, CATEGORY_FIELD];
+const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD, CATEGORY_FIELD];
 
 export default class CommunityThreadViewer extends LightningElement {
     @api recordId;
@@ -60,11 +59,11 @@ export default class CommunityThreadViewer extends LightningElement {
         const { error, data } = result;
         if (data) {
             this.thread = data;
-            if (this.accountId && this.category) {
-                getNumOfOpenThreads({ accountId: this.accountId, category: this.category })
-                    .then((numOfOpenThreads) => {
-                        const hasMaxThreads = numOfOpenThreads >= 3;
-                        const expectedPath = `/innboks/s/skriv-til-oss?categroy=${this.category}`;
+            if (this.category && this.threadType) {
+                getOpenThreads({ category: this.category, threadType: this.threadType })
+                    .then((res) => {
+                        const hasMaxThreads = res.length >= 3;
+                        const expectedPath = `/Innboks/s/skriv-til-oss?category=${this.category}`;
                         this.showCloseButton = hasMaxThreads && this.referrer.includes(expectedPath);
                     })
                     .catch((err) => {
@@ -211,9 +210,12 @@ export default class CommunityThreadViewer extends LightningElement {
             });
     }
 
+    get threadType() {
+        return getFieldValue(this.thread, THREAD_TYPE_FIELD);
+    }
+
     get isSTO() {
-        const value = getFieldValue(this.thread, THREAD_TYPE_FIELD);
-        return value === 'STO' || value === 'STB';
+        return this.threadType === 'STO' || this.threadType === 'STB';
     }
 
     get showOpenWarning() {
@@ -224,11 +226,11 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     get name() {
-        return getFieldValue(this.thread, THREADNAME_FIELD);
+        return getFieldValue(this.thread, THREAD_NAME_FIELD);
     }
 
     get closed() {
-        return getFieldValue(this.thread, THREADCLOSED_FIELD);
+        return getFieldValue(this.thread, THREAD_CLOSED_FIELD);
     }
 
     get showClosedText() {
@@ -254,10 +256,6 @@ export default class CommunityThreadViewer extends LightningElement {
             return name.substring(dashIndex + 1).trim();
         }
         return name.trim();
-    }
-
-    get accountId() {
-        return getFieldValue(this.thread, ACCOUNT_ID_FIELD);
     }
 
     get category() {
