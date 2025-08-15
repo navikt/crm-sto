@@ -4,7 +4,7 @@
 
 .navds-panel {
     padding: 0;
-    margin: 0 auto var(--a-spacing-20) auto;
+    margin: 0 auto var(--a-spacing-10) auto;
     max-width: 640px;
 }
 

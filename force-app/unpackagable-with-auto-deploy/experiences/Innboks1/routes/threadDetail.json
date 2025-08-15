@@ -6,7 +6,7 @@
   "id" : "94c285cd-a3a5-4772-9dd2-68fcb94df035",
   "label" : "Thread Detail",
   "objectApiName" : "Thread__c",
-  "routeType" : "detail-a0O",
+  "routeType" : "detail-a1j",
   "type" : "route",
   "urlPrefix" : "skriv-til-oss"
 }

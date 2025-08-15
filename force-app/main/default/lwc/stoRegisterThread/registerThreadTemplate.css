@@ -97,7 +97,7 @@
     }
 
     .container {
-        margin-left: var(--a-spacing-3);
-        margin-right: var(--a-spacing-3);
+        margin-left: var(--a-spacing-4);
+        margin-right: var(--a-spacing-4);
     }
 }

@@ -1,6 +1,7 @@
 import { LightningElement, api } from 'lwc';
 import basepath from '@salesforce/community/basePath';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
+import putCloseIntent from '@salesforce/apex/stoHelperClass.putCloseIntent';
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
@@ -31,6 +32,9 @@ export default class StoMessageInboxItem extends LightningElement {
 
     handleNavigation(event) {
         logNavigationEvent(getComponentName(this.template), 'valgt henvendelse', event.target.href, this.itemTitle);
+        if (this.closeIntent) {
+            putCloseIntent(this.thread.recordId);
+        }
     }
 
     get itemTitle() {

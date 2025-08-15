@@ -7,6 +7,7 @@ public with sharing class stoHelperClass {
         'BTO' => new List<String>{ 'BTO' },
         'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
     };
+    public static final String SESSION_CACHE = 'STOSessionCache';
 
     private static Map<String, Id> commonCodeMap {
         get {
@@ -296,5 +297,36 @@ public with sharing class stoHelperClass {
             WHERE Id = :recordId
             LIMIT 1
         ];
+    }
+
+    @AuraEnabled
+    public static Boolean putCloseIntent(String threadId) {
+        try {
+            Cache.SessionPartition cache = Cache.Session.getPartition(SESSION_CACHE);
+            System.debug('cache: ' + cache);
+            cache.put(threadId, 'closeIntent');
+            System.debug('close intent put for threadId: ' + threadId);
+
+            return true;
+        } catch (Exception e) {
+            System.debug('Error in putCloseIntent: ' + e.getMessage());
+            throw new AuraHandledException('Failed to put close intent: ' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static String getCloseIntent(String threadId) {
+        try {
+            Cache.SessionPartition cache = Cache.Session.getPartition(SESSION_CACHE);
+            if (cache.contains(threadId)) {
+                String value = (String) cache.get(threadId);
+                System.debug('Get: ' + threadId + ', Value: ' + value);
+                return value;
+            }
+            return null;
+        } catch (Exception e) {
+            System.debug('Error in getCloseIntent: ' + e.getMessage());
+            throw new AuraHandledException('Failed to get close intent: ' + e.getMessage());
+        }
     }
 }
