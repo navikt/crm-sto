@@ -69,8 +69,8 @@
           "componentAttributes" : {
             "recordId" : "{!recordId}"
           },
-          "componentName" : "c:stoInboxInformation",
-          "id" : "186bf9f1-bbfe-4324-b52e-1ef8d7cf9115",
+          "componentName" : "c:stoMedskrivSamtykke",
+          "id" : "08c78565-de24-42b2-a3af-14654878cca5",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
@@ -78,15 +78,8 @@
           "componentAttributes" : {
             "recordId" : "{!recordId}"
           },
-          "componentName" : "c:stoMedskrivSamtykke",
-          "id" : "08c78565-de24-42b2-a3af-14654878cca5",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:refreshCookie",
-          "id" : "e38f1581-d274-4110-8baa-b8960f959e8e",
+          "componentName" : "c:stoInboxInformation",
+          "id" : "186bf9f1-bbfe-4324-b52e-1ef8d7cf9115",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
@@ -129,7 +122,7 @@
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],
-  "themeLayoutType" : "hT8VFi3ALt5MPMauN9StcpW046Z5yh",
+  "themeLayoutType" : "OyOC6257lDn4jTY3wl3HApIhMcxoEg",
   "type" : "view",
-  "viewType" : "detail-a0O"
+  "viewType" : "detail-a1j"
 }
