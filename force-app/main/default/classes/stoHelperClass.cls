@@ -7,7 +7,8 @@ public with sharing class stoHelperClass {
         'BTO' => new List<String>{ 'BTO' },
         'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
     };
-    public static final String SESSION_CACHE = 'STOSessionCache';
+    private static final String SESSION_CACHE = 'STOSessionCache';
+    private static final String FLAG_PREFIX = 'CloseIntent';
 
     private static Map<String, Id> commonCodeMap {
         get {
@@ -300,31 +301,29 @@ public with sharing class stoHelperClass {
     }
 
     @AuraEnabled
-    public static Boolean putCloseIntent(String threadId) {
+    public static void putCloseIntent() {
         try {
             Cache.SessionPartition cache = Cache.Session.getPartition(SESSION_CACHE);
-            cache.put(threadId, 'closeIntent');
-            System.debug('close intent put for threadId: ' + threadId);
-            return true;
+            String key = FLAG_PREFIX + UserInfo.getUserId();
+            Cache.put(key, true);
         } catch (Exception e) {
-            System.debug('Error in putCloseIntent: ' + e.getMessage());
             throw new AuraHandledException('Failed to put close intent: ' + e.getMessage());
         }
     }
 
     @AuraEnabled
-    public static String getCloseIntent(String threadId) {
+    public static Boolean getCloseIntent() {
         try {
             Cache.SessionPartition cache = Cache.Session.getPartition(SESSION_CACHE);
-            if (cache.contains(threadId)) {
-                String value = (String) cache.get(threadId);
-                System.debug('Get: ' + threadId + ', Value: ' + value);
-                return value;
+            String key = FLAG_PREFIX + UserInfo.getUserId();
+            Boolean flag = (Boolean) cache.get(key);
+            if (flag != null && flag) {
+                cache.remove(key);
+                return true;
             }
-            return null;
         } catch (Exception e) {
-            System.debug('Error in getCloseIntent: ' + e.getMessage());
             throw new AuraHandledException('Failed to get close intent: ' + e.getMessage());
         }
+        return false;
     }
 }

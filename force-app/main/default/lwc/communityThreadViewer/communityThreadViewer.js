@@ -42,12 +42,12 @@ export default class CommunityThreadViewer extends LightningElement {
                 console.error('Problem on getting contact id: ', error);
             });
 
-        getCloseIntent({ threadId: this.recordId })
+        getCloseIntent()
             .then((closeIntent) => {
-                this.showCloseButton = closeIntent === 'closeIntent';
+                this.showCloseButton = closeIntent;
             })
             .catch((error) => {
-                console.error('Problem on getting close intent: ', error);
+                console.error('Problem on getting close intent: ', JSON.stringify(error));
             });
     }
 
