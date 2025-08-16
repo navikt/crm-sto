@@ -303,10 +303,8 @@ public with sharing class stoHelperClass {
     public static Boolean putCloseIntent(String threadId) {
         try {
             Cache.SessionPartition cache = Cache.Session.getPartition(SESSION_CACHE);
-            System.debug('cache: ' + cache);
             cache.put(threadId, 'closeIntent');
             System.debug('close intent put for threadId: ' + threadId);
-
             return true;
         } catch (Exception e) {
             System.debug('Error in putCloseIntent: ' + e.getMessage());
