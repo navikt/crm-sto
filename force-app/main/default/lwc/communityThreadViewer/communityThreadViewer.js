@@ -5,14 +5,14 @@ import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createMessage from '@salesforce/apex/CRM_MessageHelperExperience.createMessage';
-import { CurrentPageReference } from 'lightning/navigation';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
+import getCloseIntent from '@salesforce/apex/stoHelperClass.getCloseIntent';
 
-import THREADNAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
-import THREADCLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
+import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
+import THREAD_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
 
-const fields = [THREADNAME_FIELD, THREADCLOSED_FIELD, THREAD_TYPE_FIELD];
+const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD];
 
 export default class CommunityThreadViewer extends LightningElement {
     @api recordId;
@@ -29,9 +29,8 @@ export default class CommunityThreadViewer extends LightningElement {
     thread;
     wiredThread;
     messageGroups;
-    showCloseButton = false;
     showSpinner = false;
-    currentPageReference;
+    showCloseButton = false;
 
     connectedCallback() {
         markAsRead({ threadId: this.recordId });
@@ -42,19 +41,19 @@ export default class CommunityThreadViewer extends LightningElement {
             .catch((error) => {
                 console.error('Problem on getting contact id: ', error);
             });
+
+        getCloseIntent()
+            .then((closeIntent) => {
+                this.showCloseButton = closeIntent;
+            })
+            .catch((error) => {
+                console.error('Problem on getting close intent: ', JSON.stringify(error));
+            });
     }
 
     renderedCallback() {
         if (this.showSpinner) {
             this.template.querySelector('.spinner')?.focus();
-        }
-    }
-
-    @wire(CurrentPageReference)
-    getStateParameters(currentPageReference) {
-        this.currentPageReference = currentPageReference;
-        if (currentPageReference?.state?.closeIntent === 'true') {
-            this.showCloseButton = true;
         }
     }
 
@@ -64,10 +63,6 @@ export default class CommunityThreadViewer extends LightningElement {
         const { error, data } = result;
         if (data) {
             this.thread = data;
-            const state = this.currentPageReference?.state;
-            if (state?.closeIntent === 'true') {
-                this.showCloseButton = !this.closed;
-            }
         } else if (error) {
             console.error('Problem getting thread record: ', error);
         }
@@ -136,13 +131,13 @@ export default class CommunityThreadViewer extends LightningElement {
                     this.handleMessageFailed();
                 }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => console.error(error));
     }
 
     handleSendButtonClick() {
         this.buttonDisabled = true;
         // Sending out event to parent to handle any needed validation
-        if (this.overrideValidation === true) {
+        if (this.overrideValidation) {
             const validationEvent = new CustomEvent('validationevent', {
                 message: this.messageValue,
                 maxLength: this.maxLength
@@ -208,9 +203,12 @@ export default class CommunityThreadViewer extends LightningElement {
             });
     }
 
+    get threadType() {
+        return getFieldValue(this.thread, THREAD_TYPE_FIELD);
+    }
+
     get isSTO() {
-        const value = getFieldValue(this.thread, THREAD_TYPE_FIELD);
-        return value === 'STO' || value === 'STB';
+        return this.threadType === 'STO' || this.threadType === 'STB';
     }
 
     get showOpenWarning() {
@@ -221,11 +219,11 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     get name() {
-        return getFieldValue(this.thread, THREADNAME_FIELD);
+        return getFieldValue(this.thread, THREAD_NAME_FIELD);
     }
 
     get closed() {
-        return getFieldValue(this.thread, THREADCLOSED_FIELD);
+        return getFieldValue(this.thread, THREAD_CLOSED_FIELD);
     }
 
     get showClosedText() {

@@ -7,5 +7,13 @@
 }
 
 .container {
-    margin: 0 var(--a-spacing-3);
+    margin: 0 auto var(--a-spacing-20) auto;
+    max-width: 640px;
+}
+
+@media only screen and (max-width: 576px) {
+    .container {
+        margin-left: var(--a-spacing-4);
+        margin-right: var(--a-spacing-4);
+    }
 }
