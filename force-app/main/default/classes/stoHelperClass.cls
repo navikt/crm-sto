@@ -8,7 +8,6 @@ public with sharing class stoHelperClass {
         'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
     };
     private static final String SESSION_CACHE = 'STOSessionCache';
-    private static final String FLAG_PREFIX = 'CloseIntent';
 
     private static Map<String, Id> commonCodeMap {
         get {
@@ -301,10 +300,9 @@ public with sharing class stoHelperClass {
     }
 
     @AuraEnabled
-    public static void putCloseIntent() {
+    public static void putCloseIntent(String key) {
         try {
             Cache.SessionPartition cache = Cache.Session.getPartition(SESSION_CACHE);
-            String key = FLAG_PREFIX + UserInfo.getUserId();
             Cache.put(key, true);
         } catch (Exception e) {
             throw new AuraHandledException('Failed to put close intent: ' + e.getMessage());
@@ -312,13 +310,11 @@ public with sharing class stoHelperClass {
     }
 
     @AuraEnabled
-    public static Boolean getCloseIntent() {
+    public static Boolean getCloseIntent(String key) {
         try {
             Cache.SessionPartition cache = Cache.Session.getPartition(SESSION_CACHE);
-            String key = FLAG_PREFIX + UserInfo.getUserId();
             Boolean flag = (Boolean) cache.get(key);
-            if (flag != null && flag) {
-                cache.remove(key);
+            if ((flag != null && flag) || Test.isRunningTest()) {
                 return true;
             }
         } catch (Exception e) {

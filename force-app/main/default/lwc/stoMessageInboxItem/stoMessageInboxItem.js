@@ -33,7 +33,7 @@ export default class StoMessageInboxItem extends LightningElement {
     handleNavigation(event) {
         logNavigationEvent(getComponentName(this.template), 'valgt henvendelse', event.target.href, this.itemTitle);
         if (this.closeIntent) {
-            putCloseIntent();
+            putCloseIntent({ key: this.thread.recordId });
         }
     }
 

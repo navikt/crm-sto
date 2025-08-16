@@ -11,8 +11,9 @@ import getCloseIntent from '@salesforce/apex/stoHelperClass.getCloseIntent';
 import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import THREAD_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
+import CATEGORY_FIELD from '@salesforce/schema/Thread__c.STO_Category__c';
 
-const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD];
+const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD, CATEGORY_FIELD];
 
 export default class CommunityThreadViewer extends LightningElement {
     @api recordId;
@@ -31,8 +32,11 @@ export default class CommunityThreadViewer extends LightningElement {
     messageGroups;
     showSpinner = false;
     showCloseButton = false;
+    referrer;
 
     connectedCallback() {
+        this.referrer = document.referrer;
+
         markAsRead({ threadId: this.recordId });
         getContactId({})
             .then((contactId) => {
@@ -40,14 +44,6 @@ export default class CommunityThreadViewer extends LightningElement {
             })
             .catch((error) => {
                 console.error('Problem on getting contact id: ', error);
-            });
-
-        getCloseIntent()
-            .then((closeIntent) => {
-                this.showCloseButton = closeIntent;
-            })
-            .catch((error) => {
-                console.error('Problem on getting close intent: ', JSON.stringify(error));
             });
     }
 
@@ -63,6 +59,17 @@ export default class CommunityThreadViewer extends LightningElement {
         const { error, data } = result;
         if (data) {
             this.thread = data;
+            if (this.category) {
+                getCloseIntent({ key: this.recordId })
+                    .then((closeIntent) => {
+                        if (this.referrer.includes(`skriv-til-oss?category=${this.category}`) && closeIntent) {
+                            this.showCloseButton = true;
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('Problem on getting close intent: ', JSON.stringify(err));
+                    });
+            }
         } else if (error) {
             console.error('Problem getting thread record: ', error);
         }
@@ -249,5 +256,9 @@ export default class CommunityThreadViewer extends LightningElement {
             return name.substring(dashIndex + 1).trim();
         }
         return name.trim();
+    }
+
+    get category() {
+        return getFieldValue(this.thread, CATEGORY_FIELD);
     }
 }
