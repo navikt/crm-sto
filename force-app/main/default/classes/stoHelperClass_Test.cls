@@ -14,19 +14,18 @@ public with sharing class stoHelperClass_Test {
         );
     }
 
-    // Utility method to fetch Contact based on Person Name
-    private static Contact getPersonContact(String personName) {
+    private static Contact getContactBasedOnPersonIdent(String personIdent) {
         return [
             SELECT Id, AccountId
             FROM Contact
-            WHERE Account.CRM_Person__r.Name = :personName
+            WHERE Account.CRM_Person__r.Name = :personIdent
             LIMIT 1
         ];
     }
 
     @isTest
     static void getOpenThreadsTest() {
-        Contact personContact = getPersonContact('12345678910');
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
@@ -54,7 +53,7 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void createThreadCaseTest() {
-        Contact personContact = getPersonContact('12345678910');
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Test.startTest();
         Thread__c t = stoHelperClass.createThread(
             null,
@@ -73,7 +72,7 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void createMessageTest() {
-        Contact personContact = getPersonContact('12345678910');
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
@@ -147,7 +146,7 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void closeThreadTest() {
-        Contact personContact = getPersonContact('12345678910');
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
@@ -167,7 +166,7 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void testPutAndGetCloseIntent() {
-        Contact personContact = getPersonContact('12345678910');
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c testThread = stoHelperClass.createThread(
             null,
             'Arbeid',
