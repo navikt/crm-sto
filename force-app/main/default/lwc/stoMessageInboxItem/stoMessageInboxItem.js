@@ -1,6 +1,7 @@
 import { LightningElement, api } from 'lwc';
 import basepath from '@salesforce/community/basePath';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
+import putCloseIntent from '@salesforce/apex/stoHelperClass.putCloseIntent';
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
@@ -31,6 +32,9 @@ export default class StoMessageInboxItem extends LightningElement {
 
     handleNavigation(event) {
         logNavigationEvent(getComponentName(this.template), 'valgt henvendelse', event.target.href, this.itemTitle);
+        if (this.closeIntent) {
+            putCloseIntent({ key: this.thread.recordId });
+        }
     }
 
     get itemTitle() {
@@ -64,15 +68,15 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get linkUrl() {
-        const isBeskjed = this.objectName === 'beskjed-til-oss';
-        const base = `${basepath}/${this.objectName}`;
-
-        if (isBeskjed) {
-            return `${base}/visning?samtale=${this.thread.recordId}`;
-        }
-
-        const recordNameSlug = this.thread.recordName.replace(/[ -]+/g, '-');
-        return `${base}/${this.thread.recordId}/${recordNameSlug}?closeIntent=${this.closeIntent}`;
+        return this.objectName === 'beskjed-til-oss'
+            ? basepath + '/' + this.objectName + '/visning?samtale=' + this.thread.recordId
+            : basepath +
+                  '/' +
+                  this.objectName +
+                  '/' +
+                  this.thread.recordId +
+                  '/' +
+                  this.thread.recordName.replace(/[ -]+/g, '-');
     }
 
     get panelClass() {

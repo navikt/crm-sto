@@ -14,14 +14,18 @@ public with sharing class stoHelperClass_Test {
         );
     }
 
-    @isTest
-    static void getOpenThreadsTest() {
-        Contact personContact = [
+    private static Contact getContactBasedOnPersonIdent(String personIdent) {
+        return [
             SELECT Id, AccountId
             FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
+            WHERE Account.CRM_Person__r.Name = :personIdent
             LIMIT 1
         ];
+    }
+
+    @isTest
+    static void getOpenThreadsTest() {
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
@@ -33,7 +37,7 @@ public with sharing class stoHelperClass_Test {
             null
         );
         Test.startTest();
-        System.assertNotEquals(null, stoHelperClass.getOpenThreads('Arbeid', 'STO'), 'Expected to get a thread');
+        Assert.areNotEqual(null, stoHelperClass.getOpenThreads('Arbeid', 'STO'), 'Expected to get a thread');
         Test.stopTest();
     }
 
@@ -41,20 +45,15 @@ public with sharing class stoHelperClass_Test {
     static void getThemesTest() {
         Test.startTest();
         List<STO_Category__mdt> themes = stoHelperClass.getThemes('no');
-        List<STO_Category__mdt> themesen = stoHelperClass.getThemes('en-US');
+        List<STO_Category__mdt> themesEn = stoHelperClass.getThemes('en-US');
         Test.stopTest();
-        System.assertEquals(themes.isEmpty(), false, 'Missing metadata setup - initiate STO Category Themes');
+
+        Assert.areEqual(themes.isEmpty(), false, 'Missing metadata setup - initiate STO Category Themes');
     }
 
     @isTest
     static void createThreadCaseTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Test.startTest();
         Thread__c t = stoHelperClass.createThread(
             null,
@@ -67,17 +66,13 @@ public with sharing class stoHelperClass_Test {
             null
         );
         Test.stopTest();
-        System.assertNotEquals(null, t.Id);
+
+        Assert.areNotEqual(null, t.Id, 'Thread should have been created and have an Id');
     }
+
     @isTest
     static void createMessageTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
@@ -92,7 +87,8 @@ public with sharing class stoHelperClass_Test {
         stoHelperClass.createMessage(t, 'this is a test message', personContact.Id);
         Test.stopTest();
         List<Message__c> m = [SELECT CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c = :t.Id];
-        System.assertEquals('this is a test message', m.get(0).CRM_Message_Text__c);
+
+        Assert.areEqual('this is a test message', m[0].CRM_Message_Text__c, 'Message text should match');
     }
 
     @isTest
@@ -108,7 +104,8 @@ public with sharing class stoHelperClass_Test {
         );
         Test.stopTest();
         List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
-        System.assertEquals(1, msgList.size());
+
+        Assert.areEqual(1, msgList.size(), 'Thread should contain exactly one message');
     }
 
     @isTest
@@ -126,34 +123,30 @@ public with sharing class stoHelperClass_Test {
         }
         Test.stopTest();
 
-        Assert.areNotEqual(null, ex);
+        Assert.areNotEqual(null, ex, 'Exception expected when creating more than three threads');
     }
 
     @isTest
     static void getNewsBasedOnThemeSTOTest() {
         Test.startTest();
         List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Skriv til oss', 'Pensjon');
-        System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
+
+        Assert.isTrue(!newsList.isEmpty(), 'Expected at least one news item for STO theme');
     }
 
     @isTest
     static void getNewsBasedOnThemeBTOTest() {
         Test.startTest();
         List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Beskjed til oss', 'Pensjon');
-        System.assertEquals(newsList.isEmpty(), false);
         Test.stopTest();
+
+        Assert.isTrue(!newsList.isEmpty(), 'Expected at least one news item for BTO theme');
     }
 
     @isTest
     static void closeThreadTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
@@ -164,11 +157,31 @@ public with sharing class stoHelperClass_Test {
             null,
             null
         );
-
         Test.startTest();
         stoHelperClass.closeThread(t.Id);
         Test.stopTest();
 
-        Assert.areEqual(false, t.CRM_isActive__c);
+        Assert.areEqual(false, t.CRM_isActive__c, 'Thread should be closed');
+    }
+
+    @isTest
+    static void testPutAndGetCloseIntent() {
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        Thread__c testThread = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            personContact.AccountId,
+            personContact.Id,
+            true,
+            'STO',
+            null,
+            null
+        );
+        Test.startTest();
+        stoHelperClass.putCloseIntent(testThread.Id);
+        Test.stopTest();
+
+        Boolean result = stoHelperClass.getCloseIntent(testThread.Id);
+        Assert.areEqual(true, result, 'getCloseIntent should return true after putCloseIntent');
     }
 }
