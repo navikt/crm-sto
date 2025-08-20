@@ -310,7 +310,7 @@ public with sharing class stoHelperClass {
             }
             update u;
         } catch (Exception e) {
-            throw new AuraHandledException('Failed to evaluate close button logic: ' + e.getMessage());
+            throw new AuraHandledException('Failed to put close intent: ' + e.getMessage());
         }
     }
 
