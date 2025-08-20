@@ -4,8 +4,12 @@
 
 .navds-panel {
     padding: 0;
-    margin: 0 auto var(--a-spacing-10) auto;
+    margin: var(--a-spacing-10) auto var(--a-spacing-20) auto;
     max-width: 640px;
+}
+
+.panel-bottom-margin {
+    margin-bottom: var(--a-spacing-20);
 }
 
 @media only screen and (max-width: 576px) {

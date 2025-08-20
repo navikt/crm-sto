@@ -6,15 +6,19 @@
         <template lwc:if={showSurveyButton}>
             <div class="survey-container">
                 <h2 class="navds-heading navds-heading--medium navds-typo--spacing">
-                    Vi ønsker å lære av din opplevelse. Har du tid til å svare på 2 spørsmål?
+                    Vi ønsker å lære av din opplevelse. Har du tid til å svare på to spørsmål?
                 </h2>
-                <c-ds-button
-                    variant="primary"
-                    size="medium"
-                    onclick={navigateToSurvey}
-                    text="Klikk her for å svare"
-                ></c-ds-button>
-                <span class="navds-body-short navds-body-short--medium survey-span">Tilbakemeldingen er anonym.</span>
+                <div class="survey-row">
+                    <c-ds-button
+                        variant="primary"
+                        size="medium"
+                        onclick={navigateToSurvey}
+                        text="Klikk her for å svare"
+                    ></c-ds-button>
+                    <span class="navds-body-short navds-body-short--medium survey-span"
+                        >Din tilbakemeldingen er anonym.</span
+                    >
+                </div>
             </div>
         </template>
     </div>
