@@ -20,6 +20,7 @@ import {
 } from 'c/inboxAmplitude';
 import registerThreadTemplate from './registerThreadTemplate.html';
 import badUrlTemplate from './badUrlTemplate.html';
+import putCloseIntent from '@salesforce/apex/stoHelperClass.putCloseIntent';
 
 import ACCEPT_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
 import SHOW_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Show_terms';
@@ -300,11 +301,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     openThread(result) {
         const { error, data } = result;
         this.wireThreadData = result;
-
         if (data) {
             this.openThreadList = data;
+            if (this.openThreadList.length > 0) {
+                putCloseIntent({ count: this.openThreadList.length });
+            }
         } else {
             this.openThreadList = null; // Set to null when no data for radiobutton case
+            putCloseIntent({ count: 0 });
             if (error) {
                 console.error(error);
             }

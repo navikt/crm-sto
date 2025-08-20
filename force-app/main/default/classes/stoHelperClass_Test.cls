@@ -165,7 +165,114 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void testPutAndGetCloseIntent() {
+    static void testPutCloseIntent_GreaterThanOrEqualTo3() {
+        User u = [SELECT Id, NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        System.runAs(u) {
+            Test.startTest();
+            // count >= 3 should set NKS_Close_Intent__c = true
+            stoHelperClass.putCloseIntent(3);
+            Test.stopTest();
+
+            User updatedUser = [SELECT NKS_Close_Intent__c FROM User WHERE Id = :u.Id];
+            Assert.areEqual(true, updatedUser.NKS_Close_Intent__c, 'Close intent should be true when count >= 3');
+        }
+    }
+
+    @isTest
+    static void testPutCloseIntent_LessThan3() {
+        User u = [SELECT Id, NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        System.runAs(u) {
+            Test.startTest();
+            // count < 3 should set NKS_Close_Intent__c = false
+            stoHelperClass.putCloseIntent(2);
+            Test.stopTest();
+
+            User updatedUser = [SELECT NKS_Close_Intent__c FROM User WHERE Id = :u.Id];
+            Assert.areEqual(false, updatedUser.NKS_Close_Intent__c, 'Close intent should be false when count < 3');
+        }
+    }
+
+    @isTest
+    static void testGetCloseIntent_True() {
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        u.NKS_Close_Intent__c = true;
+        update u;
+
+        // Insert 3 open Thread__c records for the category
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        List<Thread__c> threads = new List<Thread__c>();
+        for (Integer i = 0; i < 3; i++) {
+            threads.add(
+                stoHelperClass.createThread(
+                    null,
+                    'Arbeid',
+                    personContact.AccountId,
+                    personContact.Id,
+                    true,
+                    'STO',
+                    null,
+                    null
+                )
+            );
+        }
+
+        System.runAs(u) {
+            Test.startTest();
+            Boolean result = stoHelperClass.getCloseIntent('Arbeid');
+            Test.stopTest();
+
+            Assert.areEqual(
+                true,
+                result,
+                'Should return true if NKS_Close_Intent__c is true and canUserCloseThread returns true'
+            );
+        }
+    }
+
+    @isTest
+    static void testGetCloseIntent_FalseDueToFlag() {
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        u.NKS_Close_Intent__c = false;
+        update u;
+
+        // Insert 3 open Thread__c records for the category
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        List<Thread__c> threads = new List<Thread__c>();
+        for (Integer i = 0; i < 3; i++) {
+            threads.add(
+                stoHelperClass.createThread(
+                    null,
+                    'Arbeid',
+                    personContact.AccountId,
+                    personContact.Id,
+                    true,
+                    'STO',
+                    null,
+                    null
+                )
+            );
+        }
+
+        System.runAs(u) {
+            Test.startTest();
+            Boolean result = stoHelperClass.getCloseIntent('Arbeid');
+            Test.stopTest();
+
+            Assert.areEqual(
+                false,
+                result,
+                'Should return false if NKS_Close_Intent__c is false even if canUserCloseThread returns true'
+            );
+        }
+    }
+
+    @isTest
+    static void testGetCloseIntent_FalseDueToCount() {
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        u.NKS_Close_Intent__c = true;
+        update u;
+
+        // Insert only 1 open Thread__c record for the category
         Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c testThread = stoHelperClass.createThread(
             null,
@@ -177,11 +284,17 @@ public with sharing class stoHelperClass_Test {
             null,
             null
         );
-        Test.startTest();
-        stoHelperClass.putCloseIntent(testThread.Id);
-        Test.stopTest();
 
-        Boolean result = stoHelperClass.getCloseIntent(testThread.Id);
-        Assert.areEqual(true, result, 'getCloseIntent should return true after putCloseIntent');
+        System.runAs(u) {
+            Test.startTest();
+            Boolean result = stoHelperClass.getCloseIntent('Arbeid');
+            Test.stopTest();
+
+            Assert.areEqual(
+                false,
+                result,
+                'Should return false if canUserCloseThread returns false even if NKS_Close_Intent__c is true'
+            );
+        }
     }
 }
