@@ -60,7 +60,7 @@ export default class CommunityThreadViewer extends LightningElement {
         if (data) {
             this.thread = data;
             if (this.category) {
-                getCloseIntent({ key: this.recordId })
+                getCloseIntent({ category: this.category })
                     .then((closeIntent) => {
                         if (this.referrer.includes(`skriv-til-oss?category=${this.category}`) && closeIntent) {
                             this.showCloseButton = true;
