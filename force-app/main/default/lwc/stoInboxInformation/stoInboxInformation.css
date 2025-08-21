@@ -1,20 +1,32 @@
 .container {
-    margin: 0 auto var(--a-spacing-20) auto;
+    margin: 0 auto 0 auto;
     max-width: 640px;
-}
-
-.survey-span {
-    margin-top: var(--a-spacing-4);
-    padding-left: var(--a-spacing-3);
 }
 
 .survey-container {
     margin-top: var(--a-spacing-8);
 }
 
+@media only screen and (min-width: 577px) {
+    .survey-span {
+        margin-top: var(--a-spacing-4);
+        padding-left: var(--a-spacing-3);
+    }
+}
+
 @media only screen and (max-width: 576px) {
     .container {
         margin-left: var(--a-spacing-4);
         margin-right: var(--a-spacing-4);
+    }
+
+    .survey-row {
+        display: flex;
+        flex-wrap: wrap-reverse;
+    }
+
+    .survey-span {
+        margin-top: var(--a-spacing-4);
+        margin-bottom: var(--a-spacing-4);
     }
 }
