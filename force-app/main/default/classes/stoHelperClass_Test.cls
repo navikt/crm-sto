@@ -169,7 +169,6 @@ public with sharing class stoHelperClass_Test {
         User u = [SELECT Id, NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         System.runAs(u) {
             Test.startTest();
-            // count >= 3 should set NKS_Close_Intent__c = true
             stoHelperClass.putCloseIntent(3);
             Test.stopTest();
 
@@ -183,7 +182,6 @@ public with sharing class stoHelperClass_Test {
         User u = [SELECT Id, NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         System.runAs(u) {
             Test.startTest();
-            // count < 3 should set NKS_Close_Intent__c = false
             stoHelperClass.putCloseIntent(2);
             Test.stopTest();
 
@@ -198,7 +196,6 @@ public with sharing class stoHelperClass_Test {
         u.NKS_Close_Intent__c = true;
         update u;
 
-        // Insert 3 open Thread__c records for the category
         Contact personContact = getContactBasedOnPersonIdent('12345678910');
         List<Thread__c> threads = new List<Thread__c>();
         for (Integer i = 0; i < 3; i++) {
@@ -235,7 +232,6 @@ public with sharing class stoHelperClass_Test {
         u.NKS_Close_Intent__c = false;
         update u;
 
-        // Insert 3 open Thread__c records for the category
         Contact personContact = getContactBasedOnPersonIdent('12345678910');
         List<Thread__c> threads = new List<Thread__c>();
         for (Integer i = 0; i < 3; i++) {
@@ -272,7 +268,6 @@ public with sharing class stoHelperClass_Test {
         u.NKS_Close_Intent__c = true;
         update u;
 
-        // Insert only 1 open Thread__c record for the category
         Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c testThread = stoHelperClass.createThread(
             null,
