@@ -7,7 +7,6 @@ public with sharing class stoHelperClass {
         'BTO' => new List<String>{ 'BTO' },
         'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
     };
-    private static final String SESSION_CACHE = 'STOSessionCache';
 
     private static Map<String, Id> commonCodeMap {
         get {
@@ -300,26 +299,33 @@ public with sharing class stoHelperClass {
     }
 
     @AuraEnabled
-    public static void putCloseIntent(String key) {
+    public static void putCloseIntent(Integer count) {
         try {
-            Cache.SessionPartition cache = Cache.Session.getPartition(SESSION_CACHE);
-            Cache.put(key, true);
+            User u = [SELECT Id, NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+            if (count >= 3) {
+                u.NKS_Close_Intent__c = true;
+            } else {
+                u.NKS_Close_Intent__c = false;
+            }
+            update u;
         } catch (Exception e) {
             throw new AuraHandledException('Failed to put close intent: ' + e.getMessage());
         }
     }
 
     @AuraEnabled
-    public static Boolean getCloseIntent(String key) {
-        try {
-            Cache.SessionPartition cache = Cache.Session.getPartition(SESSION_CACHE);
-            Boolean flag = (Boolean) cache.get(key);
-            if ((flag != null && flag) || Test.isRunningTest()) {
-                return true;
-            }
-        } catch (Exception e) {
-            throw new AuraHandledException('Failed to get close intent: ' + e.getMessage());
-        }
-        return false;
+    public static Boolean getCloseIntent(String category) {
+        User u = [SELECT NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId()];
+        return u.NKS_Close_Intent__c && canUserCloseThread(category);
+    }
+
+    private static Boolean canUserCloseThread(String category) {
+        Integer count = [
+            SELECT COUNT()
+            FROM Thread__c
+            WHERE CRM_Is_Closed__c = FALSE AND STO_Category__c = :category AND CRM_Type__c = 'STO'
+        ];
+        return count >= 3;
     }
 }
