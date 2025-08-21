@@ -653,7 +653,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     get openThreadText() {
         if (!this.openThreadList) return '';
         return this.canOpenMoreThreads
-            ? `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet. Ønsker du å fortsette på en tidligere melding eller ønsker du å skrive en ny?`
+            ? this.openThreads === 1
+                ? `Vi ser at du allerede har ${this.openThreadsWord} åpen melding på dette temaet. Ønsker du å fortsette på denne meldingen eller ønsker du å skrive en ny?`
+                : `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet. Ønsker du å fortsette på en tidligere melding eller ønsker du å skrive en ny?`
             : `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet ${this.capitalizedCategory}. Du kan maks ha tre samtaler på hvert tema. Hvis du vil opprette en ny samtale må du derfor avslutte en av de du allerede har.`;
     }
 

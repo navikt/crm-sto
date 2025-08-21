@@ -33,6 +33,7 @@ export default class StoEndDialogueModal extends LightningElement {
             getComponentName(this.template),
             'Avslutt samtale modal'
         );
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         this.dispatchEvent(new CustomEvent('closethread'));
     }
 
