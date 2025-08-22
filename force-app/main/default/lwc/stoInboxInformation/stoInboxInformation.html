@@ -1,11 +1,10 @@
 <template>
     <div class="container">
-        <div class="info-text">
-            <c-community-alert alert-type="info" alert-text={infoText}></c-community-alert>
-        </div>
+        <c-sto-medskriv-samtykke record-id={recordId}></c-sto-medskriv-samtykke>
+        <c-community-alert alert-type="info" alert-text={infoText}></c-community-alert>
         <template lwc:if={showSurveyButton}>
             <div class="survey-container">
-                <h2 class="navds-heading navds-heading--medium navds-typo--spacing">
+                <h2 class="navds-heading navds-heading--small navds-typo--spacing">
                     Vi ønsker å lære av din opplevelse. Har du tid til å svare på to spørsmål?
                 </h2>
                 <div class="survey-row">
