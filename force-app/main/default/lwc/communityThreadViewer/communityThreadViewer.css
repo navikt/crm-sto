@@ -37,6 +37,10 @@
     padding: var(--a-spacing-5);
 }
 
+.spinner {
+    outline: none;
+}
+
 @media only screen and (max-width: 576px) {
     .container {
         margin-left: var(--a-spacing-4);

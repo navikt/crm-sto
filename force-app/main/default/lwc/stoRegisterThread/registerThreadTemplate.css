@@ -1,5 +1,5 @@
 .header {
-    margin-bottom: var(--a-spacing-8);
+    margin-bottom: var(--a-spacing-6);
 }
 
 .navds-button {
@@ -71,6 +71,10 @@
 .navds-modal__header {
     margin-bottom: 0;
     padding-bottom: 0;
+}
+
+.spinner {
+    outline: none;
 }
 
 @media only screen and (max-width: 576px) {
