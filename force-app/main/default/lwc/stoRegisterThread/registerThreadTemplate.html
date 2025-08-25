@@ -6,16 +6,9 @@
             <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
             </c-community-error-summary>
         </div>
-        <template lwc:if={showTextArea}>
-            <lightning-formatted-rich-text
-                class="navds-bodylong navds-bodylong--large subtitle"
-                value={ingressLabel}
-            ></lightning-formatted-rich-text>
-        </template>
-        <template lwc:else>
-            <p class="navds-bodylong navds-bodylong--large subtitle">{openThreadText}</p>
-        </template>
-        <template lwc:if={showSpinner}>
+
+        <!-- Show spinner -->
+        <template lwc:if={shouldShowSpinner}>
             <div class="spinner-container">
                 <svg
                     tabindex="0"
@@ -45,121 +38,125 @@
                 </svg>
             </div>
         </template>
-        <template lwc:else>
-            <template lwc:if={showTextArea}>
-                <div class="navds-accordion">
-                    <template for:each={newsList} for:item="news">
-                        <c-community-expandable-panel title={news.header} key={news.id}>
-                            <lightning-formatted-rich-text
-                                class="navds-body-short navds-body-short--small"
-                                value={news.body}
-                            ></lightning-formatted-rich-text>
-                        </c-community-expandable-panel>
-                    </template>
-                </div>
-                <!-- Theme Choice Radio Button -->
-                <template lwc:if={showThemeRadioButton}>
-                    <div class="theme-radio-button">
-                        <c-ds-radio
-                            lwc:ref="themeRadioButton"
-                            title={themeRadioButtonText}
-                            options={radioButtonOptions}
-                            class="themeRadioButton"
-                            onradiochange={handleThemeRadioButtonChange}
-                            ><div slot="legend">
-                                <p>{themeRadioButtonText}</p>
-                            </div></c-ds-radio
-                        >
-                    </div>
-                </template>
 
-                <!-- Textarea -->
-                <template lwc:if={showInputTextArea}>
-                    <div class="text-area">
-                        <c-community-textarea
-                            label="Din melding"
-                            max-length={maxLength}
-                            class="inputTextbox"
-                            ontextchanged={handleTextChange}
-                        ></c-community-textarea>
-                    </div>
+        <!-- Show textarea -->
+        <template lwc:elseif={shouldShowTextArea}>
+            <lightning-formatted-rich-text
+                class="navds-bodylong navds-bodylong--large subtitle"
+                value={ingressLabel}
+            ></lightning-formatted-rich-text>
+            <div class="navds-accordion">
+                <template for:each={newsList} for:item="news">
+                    <c-community-expandable-panel title={news.header} key={news.id}>
+                        <lightning-formatted-rich-text
+                            class="navds-body-short navds-body-short--small"
+                            value={news.body}
+                        ></lightning-formatted-rich-text>
+                    </c-community-expandable-panel>
                 </template>
-
-                <!-- Medskriv radiobutton -->
-                <div class="medskriv-radio-button">
+            </div>
+            <!-- Theme Choice Radio Button -->
+            <template lwc:if={showThemeRadioButton}>
+                <div class="theme-radio-button">
                     <c-ds-radio
-                        lwc:ref="medskrivRadiobuttons"
-                        title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
-                        options={medskrivOptions}
-                        class="medskriv"
-                        onradiochange={handleRadioChange}
-                        ><div slot="legend" class="slds-grid">
-                            <p>Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?</p>
-                        </div></c-ds-radio
+                        lwc:ref="themeRadioButton"
+                        title={themeRadioButtonText}
+                        options={radioButtonOptions}
+                        class="themeRadioButton"
+                        onradiochange={handleThemeRadioButtonChange}
                     >
+                        <div slot="legend">
+                            <p>{themeRadioButtonText}</p>
+                        </div>
+                    </c-ds-radio>
                 </div>
-                <c-community-read-more title="Grunnen til at vi spør om samtykke  til opplæring">
-                    For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på
-                    meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også
-                    taushetsplikt.
-                </c-community-read-more>
-
-                <!-- Vilkaer checkbox -->
-                <div class="slds-grid slds-wrap vilkar-container">
-                    <c-community-checkbox
-                        label-text={labels.ACCEPT_TERM_TEXT}
-                        oncheckedchanged={handleChecked}
-                        class="checkboxContainer"
-                    ></c-community-checkbox>
-                    <button onclick={showTerms} class="navds-link navds-link--action vilkar-link" tabindex="0">
-                        {labels.SHOW_TERM_TEXT}
-                    </button>
+            </template>
+            <!-- Textarea -->
+            <template lwc:if={showInputTextArea}>
+                <div class="text-area">
+                    <c-community-textarea
+                        label="Din melding"
+                        max-length={maxLength}
+                        class="inputTextbox"
+                        ontextchanged={handleTextChange}
+                    ></c-community-textarea>
                 </div>
-
-                <button
-                    class="navds-button navds-button--primary navds-button--medium"
-                    type="submit"
-                    aria-disabled="false"
-                    onclick={submitRequest}
+            </template>
+            <!-- Medskriv radiobutton -->
+            <div class="medskriv-radio-button">
+                <c-ds-radio
+                    lwc:ref="medskrivRadiobuttons"
+                    title="Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?"
+                    options={medskrivOptions}
+                    class="medskriv"
+                    onradiochange={handleRadioChange}
                 >
-                    Send melding
+                    <div slot="legend" class="slds-grid">
+                        <p>Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?</p>
+                    </div>
+                </c-ds-radio>
+            </div>
+            <c-community-read-more title="Grunnen til at vi spør om samtykke  til opplæring">
+                For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på
+                meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt.
+            </c-community-read-more>
+            <!-- Vilkår checkbox -->
+            <div class="slds-grid slds-wrap vilkar-container">
+                <c-community-checkbox
+                    label-text={labels.ACCEPT_TERM_TEXT}
+                    oncheckedchanged={handleChecked}
+                    class="checkboxContainer"
+                ></c-community-checkbox>
+                <button onclick={showTerms} class="navds-link navds-link--action vilkar-link" tabindex="0">
+                    {labels.SHOW_TERM_TEXT}
+                </button>
+            </div>
+            <button
+                class="navds-button navds-button--primary navds-button--medium"
+                type="submit"
+                aria-disabled="false"
+                onclick={submitRequest}
+            >
+                Send melding
+            </button>
+        </template>
+
+        <!-- Show active threads -->
+        <template lwc:elseif={shouldShowThreads}>
+            <p class="navds-bodylong navds-bodylong--large subtitle">{openThreadText}</p>
+            <h2 class="navds-heading navds-heading--medium subheader">Dine aktive samtaler om {capitalizedCategory}</h2>
+            <div class="inbox-list">
+                <template for:each={openThreadList} for:item="thread" for:index="index">
+                    <div key={thread.recordId}>
+                        <template lwc:if={canOpenMoreThreads}>
+                            <c-sto-message-inbox-item
+                                thread={thread}
+                                content-type={contentType}
+                            ></c-sto-message-inbox-item>
+                        </template>
+                        <template lwc:else>
+                            <c-sto-inbox-close-item
+                                thread={thread}
+                                content-type={contentType}
+                                index={index}
+                                onclosethread={handleCloseThread}
+                            ></c-sto-inbox-close-item>
+                        </template>
+                    </div>
+                </template>
+            </div>
+            <template lwc:if={canOpenMoreThreads}>
+                <button
+                    class="navds-button navds-button--primary navds-button--medium new-message-button"
+                    aria-disabled="false"
+                    onclick={handleShowTextArea}
+                >
+                    Skriv ny melding
                 </button>
             </template>
-            <template lwc:else>
-                <h2 class="navds-heading navds-heading--medium subheader">
-                    Dine aktive samtaler om {capitalizedCategory}
-                </h2>
-                <div class="inbox-list">
-                    <template for:each={openThreadList} for:item="thread" for:index="index">
-                        <div key={thread.recordId}>
-                            <template lwc:if={canOpenMoreThreads}>
-                                <c-sto-message-inbox-item
-                                    thread={thread}
-                                    content-type={contentType}
-                                ></c-sto-message-inbox-item>
-                            </template>
-                            <template lwc:else>
-                                <c-sto-inbox-close-item
-                                    thread={thread}
-                                    content-type={contentType}
-                                    index={index}
-                                    onclosethread={handleCloseThread}
-                                ></c-sto-inbox-close-item>
-                            </template>
-                        </div>
-                    </template>
-                </div>
-                <template lwc:if={canOpenMoreThreads}>
-                    <button
-                        class="navds-button navds-button--primary navds-button--medium new-message-button"
-                        aria-disabled="false"
-                        onclick={handleShowTextArea}
-                    >
-                        Skriv ny melding
-                    </button>
-                </template>
-            </template>
         </template>
+
+        <!-- Modal and alert dialog -->
         <c-community-modal
             show-modal={modalOpen}
             onmodalclosed={closeTerms}
@@ -170,7 +167,7 @@
         >
             <h1 slot="modalHeader" class="navds-modal__header">{labels.SERVICE_TERMS_HEADER}</h1>
             <div slot="modalContent" class="navds-modal__body">
-                <form class="">
+                <form>
                     <div class="navds-bodylong navds-bodylong--medium">
                         <lightning-formatted-rich-text value={termsContentText}></lightning-formatted-rich-text>
                     </div>

@@ -46,7 +46,11 @@ import BESKJED_KLAGE_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_K
 import BESKJED_FRITA_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Frita_ingress';
 
 const maxThreadCount = 3;
-const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
+const spinnerReasonTextMap = {
+    send: 'Sender melding. Vennligst vent.',
+    close: 'Avslutter samtale. Vennligst vent.',
+    load: 'Laster samtaler. Vennligst vent.'
+};
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api threadTypeToMake;
@@ -71,6 +75,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     openThreadList = [];
     _title;
     registerNewThread = false;
+    isThreadDataLoading = true;
 
     labels = {
         ACCEPT_TERM_TEXT,
@@ -301,6 +306,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     @wire(getOpenThreads, { category: '$category', threadType: '$threadTypeToMake' })
     openThread(result) {
+        this.isThreadDataLoading = true;
+        this.spinnerText = spinnerReasonTextMap.load;
         const { error, data } = result;
         this.wireThreadData = result;
         if (data) {
@@ -315,6 +322,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 console.error(error);
             }
         }
+        this.isThreadDataLoading = false;
     }
 
     setThemeToShow() {
@@ -608,6 +616,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     previousCategory;
     themeRadioButtonSelected;
     handleThemeRadioButtonChange(event) {
+        this.isThreadDataLoading = true;
+        this.spinnerText = spinnerReasonTextMap.load;
         const mappingKey = this.originalThemeToShow;
         if (event.detail.value === 'true') {
             this.themeRadioButtonSelected = true;
@@ -618,9 +628,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.themeToShow = radioMap.inboxTheme;
             }
         } else {
+            const prevCategory = this.category;
+            const prevTheme = this.themeToShow;
+
             this.category = this.previousCategory;
             this.themeRadioButtonSelected = false;
             this.themeToShow = this.originalThemeToShow;
+
+            if (prevCategory === this.category && prevTheme === this.themeToShow) {
+                this.isThreadDataLoading = false;
+            }
         }
 
         logFilterEvent(
@@ -691,10 +708,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.openThreadList?.length >= maxThreadCount && this.threadTypeToMake === 'STO' ? 'advarsel' : 'info';
     }
 
-    get showTextArea() {
-        return this.openThreadList == null || this.registerNewThread;
-    }
-
     get ingressLabel() {
         if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
             return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
@@ -737,5 +750,17 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get canOpenMoreThreads() {
         return this.openThreads < maxThreadCount || this.threadTypeToMake === 'BTO';
+    }
+
+    get shouldShowSpinner() {
+        return this.isThreadDataLoading || this.showSpinner;
+    }
+
+    get shouldShowTextArea() {
+        return !this.isThreadDataLoading && this.registerNewThread;
+    }
+
+    get shouldShowThreads() {
+        return !this.isThreadDataLoading && !this.registerNewThread;
     }
 }
