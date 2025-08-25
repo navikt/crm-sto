@@ -1,7 +1,7 @@
 <template>
     <a class={panelClass} href={linkUrl} onclick={handleNavigation}>
-        <div class="slds-grid slds-grid_align-spread text-padding">
-            <div class="slds-col slds-grow-none">
+        <div class="slds-grid text-padding align-status-row">
+            <div class="slds-col slds-grow no-wrap-date">
                 <lightning-formatted-date-time
                     value={thread.latestMessageDate}
                     month="long"
@@ -14,8 +14,7 @@
             </div>
             <div class="status-container">
                 <template lwc:if={showReadStatus}>
-                    <span
-                        class="navds-tag navds-tag--info navds-tag--small navds-body-short navds-body-short--small tag-spacing"
+                    <span class="navds-tag navds-tag--info navds-tag--small navds-body-short navds-body-short--small"
                         >{unreadMessage}</span
                     >
                 </template>
