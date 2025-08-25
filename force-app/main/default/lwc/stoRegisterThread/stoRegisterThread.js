@@ -51,17 +51,11 @@ const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: '
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api threadTypeToMake;
 
-    render() {
-        if (this.isLoading) {
-            return null; // Show nothing until data is loaded
-        }
-        return this.validQueryParameter ? registerThreadTemplate : badUrlTemplate;
-    }
-
     isLoading = true;
     showSpinner = false;
     category;
     themeToShow;
+    originalThemeToShow;
     acceptedSTOCategories = new Set();
     acceptedBTOCategories = [];
     currentPageReference = null;
@@ -74,7 +68,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     message;
     modalOpen = false;
     maxLength = 2000;
-    openThreadList;
+    openThreadList = [];
     _title;
     registerNewThread = false;
 
@@ -258,6 +252,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             });
     }
 
+    render() {
+        if (this.isLoading) {
+            return null;
+        }
+        return this.validQueryParameter ? registerThreadTemplate : badUrlTemplate;
+    }
+
     renderedCallback() {
         if (this.showSpinner) {
             this.template.querySelector('.spinner')?.focus();
@@ -282,6 +283,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.lowerCaseUrlCategory = this.urlStateParameters.category.toLowerCase();
             this.setTitleAndCategory();
             this.setThemeToShow();
+            this.originalThemeToShow = this.themeToShow;
         }
     }
 
@@ -303,12 +305,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.wireThreadData = result;
         if (data) {
             this.openThreadList = data;
-            if (this.openThreadList.length > 0) {
-                putCloseIntent({ count: this.openThreadList.length });
-            }
+            putCloseIntent({ count: this.openThreadList.length });
+            this.registerNewThread = this.openThreadList.length === 0;
         } else {
-            this.openThreadList = null; // Set to null when no data for radiobutton case
+            this.openThreadList = [];
             putCloseIntent({ count: 0 });
+            this.registerNewThread = true;
             if (error) {
                 console.error(error);
             }
@@ -420,6 +422,24 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         const radioButtonValue = this.refs.themeRadioButton?.getValue();
         const radioButtonExists = this.refs.themeRadioButton != null;
 
+        let theme = this.category;
+        let inboxTheme = this.themeToShow;
+
+        // Only build inboxTheme from radioButtonMap if radio is actually selected "Ja"
+        if (this.themeRadioButtonSelected) {
+            // Use the original theme for robust mapping
+            const radioMap = this.radioButtonMap[this.title]?.[this.originalThemeToShow];
+            const initialCategory = radioMap?.initialCategory
+                ? this.capitalizeFirstLetter(radioMap.initialCategory)
+                : '';
+            const mappedInboxTheme = radioMap?.inboxTheme;
+            if (initialCategory && mappedInboxTheme) {
+                inboxTheme = `${initialCategory}-${mappedInboxTheme}`;
+            } else if (mappedInboxTheme) {
+                inboxTheme = mappedInboxTheme;
+            }
+        }
+
         if (
             this.acceptedTerms &&
             this.message &&
@@ -433,16 +453,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.spinnerText = spinnerReasonTextMap.send;
 
             createThreadWithCase({
-                theme: this.category,
+                theme: theme,
                 msgText: this.message,
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxTitle: this.title,
-                inboxTheme: this.themeRadioButtonSelected
-                    ? this.capitalizeFirstLetter(this.radioButtonMap[this.title]?.[this.themeToShow]?.initialCategory) +
-                      '-' +
-                      this.radioButtonMap[this.title]?.[this.themeToShow]?.inboxTheme
-                    : this.themeToShow
+                inboxTheme: inboxTheme
             })
                 .then((thread) => {
                     this.showSpinner = false;
@@ -592,13 +608,19 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     previousCategory;
     themeRadioButtonSelected;
     handleThemeRadioButtonChange(event) {
+        const mappingKey = this.originalThemeToShow;
         if (event.detail.value === 'true') {
             this.themeRadioButtonSelected = true;
             this.previousCategory = this.category;
-            this.category = this.radioButtonMap[this.title]?.[this.themeToShow]?.category;
+            const radioMap = this.radioButtonMap[this.title]?.[mappingKey];
+            if (radioMap) {
+                this.category = radioMap.category;
+                this.themeToShow = radioMap.inboxTheme;
+            }
         } else {
             this.category = this.previousCategory;
             this.themeRadioButtonSelected = false;
+            this.themeToShow = this.originalThemeToShow;
         }
 
         logFilterEvent(
@@ -666,7 +688,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get alertType() {
-        return this.openThreadList.length >= maxThreadCount && this.threadTypeToMake === 'STO' ? 'advarsel' : 'info';
+        return this.openThreadList?.length >= maxThreadCount && this.threadTypeToMake === 'STO' ? 'advarsel' : 'info';
     }
 
     get showTextArea() {
@@ -682,11 +704,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get showThemeRadioButton() {
-        return this.radioButtonMap[this.title]?.[this.themeToShow] ?? false;
+        const mapping = this.radioButtonMap[this.title]?.[this.originalThemeToShow];
+        if (!mapping) return false;
+        return this.themeToShow === this.originalThemeToShow;
     }
 
     get themeRadioButtonText() {
-        return this.radioButtonMap[this.title]?.[this.themeToShow]?.text;
+        return this.radioButtonMap[this.title]?.[this.originalThemeToShow]?.text;
     }
 
     get showInputTextArea() {
@@ -698,11 +722,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get openThreads() {
-        return this.openThreadList.length;
+        return this.openThreadList?.length;
     }
 
     get openThreadsWord() {
-        const length = this.openThreadList.length;
+        const length = this.openThreadList?.length;
         const numberWords = {
             1: 'en',
             2: 'to',
