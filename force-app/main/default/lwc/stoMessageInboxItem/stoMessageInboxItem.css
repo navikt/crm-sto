@@ -22,6 +22,7 @@
 
 .tag-spacing {
     margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .no-bottom-radius {
@@ -34,4 +35,10 @@
 
 .text-padding {
     padding-bottom: var(--a-spacing-2);
+}
+
+.status-container {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
 }

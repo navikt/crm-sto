@@ -1,16 +1,18 @@
 <template>
     <a class={panelClass} href={linkUrl} onclick={handleNavigation}>
         <div class="slds-grid slds-grid_align-spread text-padding">
-            <lightning-formatted-date-time
-                value={thread.latestMessageDate}
-                month="long"
-                day="2-digit"
-                year="numeric"
-                hour="2-digit"
-                minute="2-digit"
-                class="navds-body-short--medium"
-            ></lightning-formatted-date-time>
-            <div>
+            <div class="slds-col slds-grow-none">
+                <lightning-formatted-date-time
+                    value={thread.latestMessageDate}
+                    month="long"
+                    day="2-digit"
+                    year="numeric"
+                    hour="2-digit"
+                    minute="2-digit"
+                    class="navds-body-short--medium"
+                ></lightning-formatted-date-time>
+            </div>
+            <div class="status-container">
                 <template lwc:if={showReadStatus}>
                     <span
                         class="navds-tag navds-tag--info navds-tag--small navds-body-short navds-body-short--small tag-spacing"

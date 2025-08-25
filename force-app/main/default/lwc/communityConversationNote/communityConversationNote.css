@@ -10,6 +10,7 @@
     --ac-chat-bubble-bg: var(--a-surface-action-subtle);
     padding-top: var(--a-spacing-6);
     min-width: 640px;
+    width: 100%;
 }
 
 .navds-detail,
