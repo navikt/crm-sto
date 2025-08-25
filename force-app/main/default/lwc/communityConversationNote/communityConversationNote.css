@@ -13,6 +13,10 @@
     width: 100%;
 }
 
+.bubble-width {
+    width: 100%;
+}
+
 .navds-detail,
 .border {
     margin: var(--a-spacing-2) 0;
