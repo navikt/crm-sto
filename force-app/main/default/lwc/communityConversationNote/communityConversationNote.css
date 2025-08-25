@@ -29,6 +29,7 @@
 .main-container {
     margin: var(--a-spacing-05) auto var(--a-spacing-20) auto;
     max-width: 640px;
+    word-break: break-word;
 }
 
 @media only screen and (max-width: 576px) {
