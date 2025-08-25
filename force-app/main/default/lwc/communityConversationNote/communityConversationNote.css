@@ -10,6 +10,7 @@
     --ac-chat-bubble-bg: var(--a-surface-action-subtle);
     padding-top: var(--a-spacing-6);
     min-width: 640px;
+    width: 100%;
 }
 
 .navds-detail,
@@ -28,10 +29,6 @@
 .main-container {
     margin: var(--a-spacing-05) auto var(--a-spacing-20) auto;
     max-width: 640px;
-}
-
-.bubble-width {
-    width: 100%;
 }
 
 @media only screen and (max-width: 576px) {
