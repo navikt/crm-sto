@@ -55,7 +55,7 @@
 }
 
 .subheader {
-    margin-bottom: var(--a-spacing-1);
+    margin-bottom: var(--a-spacing-3);
 }
 
 .errorBox {
