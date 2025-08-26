@@ -488,6 +488,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                         this.title,
                         'ny samtale'
                     );
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 })
                 .catch((err) => {
                     console.error(err);
@@ -540,6 +541,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (selectedThread.recordId) {
             this.closeSelectedThread(selectedThread.recordId);
         }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     closeSelectedThread(selectedThreadId) {
