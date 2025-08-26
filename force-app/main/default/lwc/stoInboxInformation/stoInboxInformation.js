@@ -90,7 +90,7 @@ export default class StoInboxInformation extends LightningElement {
                 ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/send-beskjed">sende en ny melding</a>, kan du gjøre det her.'
                 : 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.';
         }
-        return 'Du kan svare på denne samtalen innen syv dager';
+        return 'Du kan svare på denne samtalen innen syv dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
     }
 
     get showSurveyButton() {
