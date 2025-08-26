@@ -202,6 +202,7 @@ export default class CommunityThreadViewer extends LightningElement {
             })
             .then(() => {
                 this.showSpinner = false;
+                this.showCloseButton = false;
                 window.location.reload();
             })
             .catch((err) => {
