@@ -629,6 +629,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.category = radioMap.category;
                 this.themeToShow = radioMap.inboxTheme;
             }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             const prevCategory = this.category;
             const prevTheme = this.themeToShow;
