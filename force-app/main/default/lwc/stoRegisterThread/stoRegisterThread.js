@@ -488,6 +488,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                         this.title,
                         'ny samtale'
                     );
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 })
                 .catch((err) => {
                     console.error(err);
@@ -540,6 +541,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (selectedThread.recordId) {
             this.closeSelectedThread(selectedThread.recordId);
         }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     closeSelectedThread(selectedThreadId) {
@@ -627,6 +629,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.category = radioMap.category;
                 this.themeToShow = radioMap.inboxTheme;
             }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             const prevCategory = this.category;
             const prevTheme = this.themeToShow;
@@ -650,6 +653,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     handleShowTextArea() {
         this.registerNewThread = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     get tabName() {
