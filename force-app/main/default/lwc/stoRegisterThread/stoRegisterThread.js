@@ -652,6 +652,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     handleShowTextArea() {
         this.registerNewThread = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     get tabName() {
