@@ -113,7 +113,7 @@ export default class CommunityThreadViewer extends LightningElement {
                 {
                     Id: 1,
                     EventItem: '',
-                    Text: 'Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her. Husk å kopiere det du har skrevet.'
+                    Text: 'Vil du <a href="https://www.nav.no/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her. Husk å kopiere det du har skrevet.'
                 }
             ]
         };
