@@ -87,8 +87,8 @@ export default class StoInboxInformation extends LightningElement {
     get infoText() {
         if (this.closed) {
             return this.type === 'BTO'
-                ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/melde">sende en ny melding</a>, kan du gjøre det her.'
-                : 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/still-sporsmal">sende en ny melding</a>, kan du gjøre det her.';
+                ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.'
+                : 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.';
         }
         return 'Du kan svare på denne samtalen innen syv dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
     }
