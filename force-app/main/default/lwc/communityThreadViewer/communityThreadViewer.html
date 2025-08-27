@@ -6,22 +6,6 @@
             <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
             </c-community-error-summary>
         </div>
-        <template lwc:if={showCloseButton}>
-            <div class="end-dialogue-container">
-                <p class="navds-bodylong navds-bodylong--large">
-                    Vi ser at du allerede har tre åpne meldinger på dette temaet . Hvis du vil opprette en ny samtale,
-                    må du derfor avslutte en av de du allerede har.
-                </p>
-                <p class="navds-bodylong navds-bodylong--large subtitle">Ønsker du å avslutte denne samtalen?</p>
-                <button
-                    class="navds-button navds-button--secondary navds-button--medium close-button"
-                    aria-disabled="false"
-                    onclick={handleClick}
-                >
-                    Avslutt samtalen
-                </button>
-            </div>
-        </template>
         <template lwc:if={showSpinner}>
             <div class="spinner-container">
                 <svg
@@ -52,45 +36,59 @@
                 </svg>
             </div>
         </template>
-        <template lwc:else>
-            <c-community-message-container message-groups={messageGroups}></c-community-message-container>
-            <slot name="messageArea">
-                <template lwc:if={closed}></template>
-                <template lwc:else>
-                    <lightning-input-field
-                        class="slds-hidden messageText"
-                        field-name="CRM_Message_Text__c"
-                    ></lightning-input-field>
-                    <div class="text-area">
-                        <c-community-textarea
-                            label="Ny melding"
-                            max-length={maxLength}
-                            ontextchanged={handleTextChange}
-                            class="inputTextbox"
-                        ></c-community-textarea>
-                    </div>
-                    <button
-                        disabled={buttonDisabled}
-                        class="navds-button navds-button--primary navds-button--medium"
-                        type="submit"
-                        aria-disabled="false"
-                        onclick={handleSendButtonClick}
-                    >
-                        Send melding
-                    </button>
-                    <template lwc:if={showOpenWarning}>
-                        <c-community-alert alert-type="info" alert-text={openAlertText}></c-community-alert>
-                    </template>
-                    <lightning-input-field
-                        field-name="CRM_From_Contact__c"
-                        value={userContactId}
-                        class="slds-hidden"
-                    ></lightning-input-field>
-                    <lightning-input-field field-name="CRM_Thread__c" value={recordId} class="slds-hidden">
-                    </lightning-input-field>
-                </template>
-            </slot>
+        <template lwc:elseif={showCloseButton}>
+            <div class="end-dialogue-container">
+                <p class="navds-bodylong navds-bodylong--large">
+                    Vi ser at du allerede har tre åpne meldinger på dette temaet . Hvis du vil opprette en ny samtale,
+                    må du derfor avslutte en av de du allerede har.
+                </p>
+                <p class="navds-bodylong navds-bodylong--large subtitle">Ønsker du å avslutte denne samtalen?</p>
+                <button
+                    class="navds-button navds-button--secondary navds-button--medium close-button"
+                    aria-disabled="false"
+                    onclick={handleClick}
+                >
+                    Avslutt samtalen
+                </button>
+            </div>
         </template>
+        <c-community-message-container message-groups={messageGroups}></c-community-message-container>
+        <slot name="messageArea">
+            <template lwc:if={closed}></template>
+            <template lwc:else>
+                <lightning-input-field
+                    class="slds-hidden messageText"
+                    field-name="CRM_Message_Text__c"
+                ></lightning-input-field>
+                <div class="text-area">
+                    <c-community-textarea
+                        label="Ny melding"
+                        max-length={maxLength}
+                        ontextchanged={handleTextChange}
+                        class="inputTextbox"
+                    ></c-community-textarea>
+                </div>
+                <button
+                    disabled={buttonDisabled}
+                    class="navds-button navds-button--primary navds-button--medium"
+                    type="submit"
+                    aria-disabled="false"
+                    onclick={handleSendButtonClick}
+                >
+                    Send melding
+                </button>
+                <template lwc:if={showOpenWarning}>
+                    <c-community-alert alert-type="info" alert-text={openAlertText}></c-community-alert>
+                </template>
+                <lightning-input-field
+                    field-name="CRM_From_Contact__c"
+                    value={userContactId}
+                    class="slds-hidden"
+                ></lightning-input-field>
+                <lightning-input-field field-name="CRM_Thread__c" value={recordId} class="slds-hidden">
+                </lightning-input-field>
+            </template>
+        </slot>
         <c-sto-end-dialogue-modal lwc:ref="childRef" onclosethread={handleCloseThread}></c-sto-end-dialogue-modal>
     </div>
 </template>
