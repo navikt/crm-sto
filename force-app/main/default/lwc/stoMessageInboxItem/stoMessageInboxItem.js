@@ -78,4 +78,20 @@ export default class StoMessageInboxItem extends LightningElement {
     get panelClass() {
         return `panel ${this.closeIntent ? 'no-bottom-radius' : 'border-radius'}`;
     }
+
+    get formattedLatestMessageDate() {
+        if (!this.thread?.latestMessageDate) return '';
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        return new Intl.DateTimeFormat('nb-NO', options).format(new Date(this.thread.latestMessageDate));
+    }
+
+    get linkSummary() {
+        return `${this.formattedLatestMessageDate}. ${this.showReadStatus ? this.unreadMessage : ''} . ${this.showStatus ? this.statusText : ''} . ${this.itemTitle} . ${this.latestText}`;
+    }
 }

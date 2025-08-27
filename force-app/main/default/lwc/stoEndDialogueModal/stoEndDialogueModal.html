@@ -1,11 +1,5 @@
 <template>
-    <c-community-modal
-        show-modal={showModal}
-        onkeyup={handleKeyboardEvent}
-        onfocuslast={handleFocusLast}
-        hide-padding-mobile
-        hide-padding
-    >
+    <c-community-modal show-modal={showModal} hide-padding-mobile hide-padding>
         <div slot="modalHeader" class="navds-modal__header">
             <p class="navds-heading navds-heading--samll">Er du sikker på at du vil avslutte denne samtalen?</p>
         </div>
@@ -21,10 +15,7 @@
             <button class="navds-button navds-button--primary navds-button--medium button-width" onclick={closeThread}>
                 Ja, avslutt samtalen
             </button>
-            <button
-                class="navds-button navds-button--secondary navds-button--medium button-width lastFocusElement"
-                onclick={closeModal}
-            >
+            <button class="navds-button navds-button--secondary navds-button--medium button-width" onclick={closeModal}>
                 Nei, gå tilbake
             </button>
         </div>
