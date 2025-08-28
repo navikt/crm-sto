@@ -51,12 +51,9 @@
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : {
-            "text" : "Vi kontakter deg om vi trenger mer informasjon.",
-            "title" : "Takk for melding om endring"
-          },
+          "componentAttributes" : { },
           "componentName" : "c:communityConfirmation",
-          "id" : "c8b885c5-29d2-4f1a-9af1-20f2269ed65f",
+          "id" : "3184ca03-f276-4c5f-aad8-3ba69b677c6b",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"

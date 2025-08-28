@@ -7,12 +7,4 @@
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
     </targets>
-    <targetConfigs>
-        <targetConfig targets="lightningCommunity__Default">
-            <property name="title" label="Tittel som skal vises på toppen" type="String"
-                default="Legg til tittel her" />
-            <property name="text" label="Tekst som skal vises i bekreftelsesdialogen" type="String"
-                default="Legg til forklarende tekst her" />
-        </targetConfig>
-    </targetConfigs>
 </LightningComponentBundle>

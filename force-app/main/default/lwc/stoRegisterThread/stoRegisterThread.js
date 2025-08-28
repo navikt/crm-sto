@@ -417,6 +417,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             type: 'comm__namedPage',
             attributes: {
                 name: 'Bekreftelsesvisning__c'
+            },
+            state: {
+                category: this.lowerCaseUrlCategory
             }
         });
     }
