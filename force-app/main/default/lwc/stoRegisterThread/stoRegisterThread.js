@@ -76,6 +76,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     _title;
     registerNewThread = false;
     isThreadDataLoading = true;
+    showBTOConfirmation = false;
 
     labels = {
         ACCEPT_TERM_TEXT,
@@ -410,21 +411,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     /**
-     * Handles terms modal end
-     */
-    navigateToBTO() {
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                name: 'Bekreftelsesvisning__c'
-            },
-            state: {
-                category: this.lowerCaseUrlCategory
-            }
-        });
-    }
-
-    /**
      * Creates a Thread record, with an message attached, and then navigates the user to the record page
      * @Author Lars Petter Johnsen
      */
@@ -474,7 +460,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 .then((thread) => {
                     this.showSpinner = false;
                     if (this.threadTypeToMake === 'BTO') {
-                        this.navigateToBTO(thread);
+                        this.showBTOConfirmation = true;
                     } else {
                         // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
                         window.open(
@@ -769,5 +755,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get shouldShowThreads() {
         return !this.isThreadDataLoading && !this.registerNewThread;
+    }
+
+    get btoConfirmationTitle() {
+        const messages = {
+            beskjed: 'Vi har mottatt meldingen din. Takk for at du tok kontakt.',
+            endring: 'Endringen er registrert. Takk for at du ga beskjed.',
+            'trekke-soknad': 'Vi har mottatt beskjed om at du ønsker å trekke søknaden. Takk for at du informerte oss.'
+        };
+
+        return Object.entries(messages).find(([key]) => this.lowerCaseUrlCategory?.includes(key))?.[1] || '';
     }
 }
