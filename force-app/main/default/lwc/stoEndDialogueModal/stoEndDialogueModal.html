@@ -1,30 +1,16 @@
 <template>
-    <c-community-modal
-        show-modal={showModal}
-        onkeyup={handleKeyboardEvent}
-        onfocuslast={handleFocusLast}
-        hide-padding-mobile
-        hide-padding
-    >
-        <div slot="modalHeader" class="navds-modal__header">
-            <p class="navds-heading navds-heading--samll">Er du sikker på at du vil avslutte denne samtalen?</p>
-        </div>
-        <div slot="modalContent" class="navds-modal__body">
-            <div class="navds-bodylong navds-bodylong--medium">
-                <p>
-                    Etter at du avslutter, kan du ikke sende flere meldinger i denne samtalen. Du kan fremdeles lese
-                    samtalen i innboksen din. Den er også tilgjengelig for veilederen i Nav.
-                </p>
-            </div>
+    <c-community-modal show-modal={showModal} modal-header="Er du sikker på at du vil avslutte denne samtalen?">
+        <div slot="modalContent">
+            <p class="navds-bodylong navds-bodylong--medium">
+                Etter at du avslutter, kan du ikke sende flere meldinger i denne samtalen. Du kan fremdeles lese
+                samtalen i innboksen din. Den er også tilgjengelig for veilederen i Nav.
+            </p>
         </div>
         <div slot="modalFooter" class="navds-modal__footer">
             <button class="navds-button navds-button--primary navds-button--medium button-width" onclick={closeThread}>
                 Ja, avslutt samtalen
             </button>
-            <button
-                class="navds-button navds-button--secondary navds-button--medium button-width lastFocusElement"
-                onclick={closeModal}
-            >
+            <button class="navds-button navds-button--secondary navds-button--medium button-width" onclick={closeModal}>
                 Nei, gå tilbake
             </button>
         </div>
