@@ -21,6 +21,10 @@
         <name>STO_Share_With_User</name>
     </customLabels>
     <customLabels>
+        <label>Send og avslutt</label>
+        <name>BTO_Submit</name>
+    </customLabels>
+    <customLabels>
         <label>Vis melding</label>
         <name>STO_Medskriv_Label</name>
     </customLabels>
