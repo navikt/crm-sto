@@ -387,15 +387,17 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     showTerms() {
         this.modalOpen = true;
-        this.termsModal.focusModal();
         publish(this.messageContext, globalModalOpen, { status: 'true' });
     }
 
     closeTerms() {
         this.modalOpen = false;
-        const btn = this.template.querySelector('.vilkar-link');
-        btn.focus();
-        publish(this.messageContext, globalModalOpen, { status: 'false' });
+        // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
+        setTimeout(() => {
+            const btn = this.template.querySelector('.vilkar-link');
+            if (btn) btn.focus();
+            publish(this.messageContext, globalModalOpen, { status: 'false' });
+        }, 0);
     }
 
     termsAccepted() {
