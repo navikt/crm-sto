@@ -171,10 +171,18 @@
             </template>
 
             <!-- Modal and alert dialog -->
-            <c-community-modal show-modal={modalOpen} modal-header={labels.SERVICE_TERMS_HEADER}>
-                <div slot="modalContent">
+            <c-community-modal
+                show-modal={modalOpen}
+                onmodalclosed={closeTerms}
+                onkeyup={handleKeyboardEvent}
+                onfocuslast={handleFocusLast}
+                hide-padding-mobile
+                hide-padding
+            >
+                <h1 slot="modalHeader" class="navds-modal__header">{labels.SERVICE_TERMS_HEADER}</h1>
+                <div slot="modalContent" class="navds-modal__body">
                     <form>
-                        <div class="navds-body-long navds-body-long--medium">
+                        <div class="navds-bodylong navds-bodylong--medium">
                             <lightning-formatted-rich-text value={termsContentText}></lightning-formatted-rich-text>
                         </div>
                     </form>
@@ -182,14 +190,16 @@
                 <div slot="modalFooter" class="navds-modal__footer">
                     <button
                         class="navds-button navds-button--primary navds-button--medium button-width"
+                        aria-controls="betingelser"
                         onclick={termsAccepted}
                         type="submit"
                     >
                         {labels.ACCEPT_TERMS_BUTTON}
                     </button>
                     <button
-                        class="navds-button navds-button--secondary navds-button--medium button-width"
+                        class="navds-button navds-button--secondary navds-button--medium button-width lastFocusElement"
                         type="submit"
+                        aria-controls="betingelser"
                         onclick={termsDenied}
                     >
                         {labels.DENY_TERMS_BUTTON}
