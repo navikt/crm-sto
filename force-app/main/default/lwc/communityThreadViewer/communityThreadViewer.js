@@ -35,7 +35,7 @@ export default class CommunityThreadViewer extends LightningElement {
     referrer;
 
     connectedCallback() {
-        this.referrer = document.referrer;
+        this.referrer = document.referrer.toLowerCase();
 
         markAsRead({ threadId: this.recordId });
         getContactId({})
@@ -62,7 +62,10 @@ export default class CommunityThreadViewer extends LightningElement {
             if (this.category) {
                 getCloseIntent({ category: this.category })
                     .then((closeIntent) => {
-                        if (this.referrer.includes(`skriv-til-oss?category=${this.category}`) && closeIntent) {
+                        if (
+                            this.referrer.includes(`skriv-til-oss?category=${this.category.toLowerCase()}`) &&
+                            closeIntent
+                        ) {
                             this.showCloseButton = true;
                         }
                     })
