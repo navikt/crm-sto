@@ -1,4 +1,4 @@
-import { LightningElement, api } from 'lwc';
+import { api, LightningElement } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 import NAV_SVG_LOGOS from '@salesforce/resourceUrl/navsvglogos';
