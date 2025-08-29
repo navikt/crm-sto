@@ -27,14 +27,6 @@
     gap: var(--a-spacing-5);
 }
 
-.archive-link:active,
-.archive-link:focus {
-    background-color: transparent;
-    border: none;
-    box-shadow: none;
-    color: var(--a-text-action);
-}
-
 @media only screen and (max-width: 576px) {
     .inbox-wrapper {
         margin-left: var(--a-spacing-4);
