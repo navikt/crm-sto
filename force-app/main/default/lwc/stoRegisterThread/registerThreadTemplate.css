@@ -27,17 +27,23 @@
     background-color: transparent;
 }
 
-.vilkar-link:hover {
+.vilkar-link:hover,
+.vilkar-link:focus {
     text-decoration: none;
 }
 
-.vilkar-link:active {
+.vilkar-link:active,
+.vilkar-link:focus {
     background-color: #014486;
 }
 
 .vilkar-link:active,
 .vilkar-link:hover {
     outline: none;
+}
+
+.vilkar-link:focus {
+    color: #ffffff;
 }
 
 .spinner-container {
