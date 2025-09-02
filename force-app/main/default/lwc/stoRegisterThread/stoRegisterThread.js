@@ -45,7 +45,8 @@ import BESKJED_ARBEID_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_
 import BESKJED_KLAGE_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Klage_ingress';
 import BESKJED_FRITA_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Frita_ingress';
 
-const maxThreadCount = 3;
+const maxThreadCountSto = 3;
+const maxThreadCountBto = 10;
 const spinnerReasonTextMap = {
     send: 'Sender melding. Vennligst vent.',
     close: 'Avslutter samtale. Vennligst vent.',
@@ -314,7 +315,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (data) {
             this.openThreadList = data;
             putCloseIntent({ count: this.openThreadList.length });
-            this.registerNewThread = this.openThreadList.length === 0;
+            this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
         } else {
             this.openThreadList = [];
             putCloseIntent({ count: 0 });
@@ -643,8 +644,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     handleShowTextArea() {
-        this.registerNewThread = true;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (this.threadTypeToMake === 'STO') {
+            this.registerNewThread = true;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
+            window.open(basepath + `/skriv-til-oss?category=${this.category}`, '_self');
+        }
     }
 
     get tabName() {
@@ -686,11 +692,18 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get openThreadText() {
         if (!this.openThreadList) return '';
-        return this.canOpenMoreThreads
-            ? this.openThreads === 1
-                ? `Vi ser at du allerede har ${this.openThreadsWord} åpen melding på dette temaet. Ønsker du å fortsette på denne meldingen eller ønsker du å skrive en ny?`
-                : `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet. Ønsker du å fortsette på en tidligere melding eller ønsker du å skrive en ny?`
-            : `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet ${this.capitalizedCategory}. Du kan maks ha tre samtaler på hvert tema. Hvis du vil opprette en ny samtale må du derfor avslutte en av de du allerede har.`;
+
+        if (this.threadTypeToMake === 'STO') {
+            if (this.canOpenMoreThreads) {
+                if (this.openThreads === 1) {
+                    return `Vi ser at du allerede har ${this.openThreadsWord} åpen melding på dette temaet. Ønsker du å fortsette på denne meldingen eller skrive en ny?`;
+                }
+                return `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet. Ønsker du å fortsette på en tidligere melding eller skrive en ny?`;
+            }
+            return `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet ${this.capitalizedCategory}. Du kan maks ha tre samtaler på hvert tema. Hvis du vil opprette en ny samtale må du derfor avslutte en av de du allerede har.`;
+        }
+        //TODO: replace this text with text from Kommunikasjon
+        return 'Du kan ikke ha mer enn 10 åpne samtaler, send gjerne en STO i stedet.';
     }
 
     get openThreadLink() {
@@ -700,7 +713,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get alertType() {
-        return this.openThreadList?.length >= maxThreadCount && this.threadTypeToMake === 'STO' ? 'advarsel' : 'info';
+        return this.openThreadList?.length >= maxThreadCountSto && this.threadTypeToMake === 'STO'
+            ? 'advarsel'
+            : 'info';
     }
 
     get ingressLabel() {
@@ -744,7 +759,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get canOpenMoreThreads() {
-        return this.openThreads < maxThreadCount || this.threadTypeToMake === 'BTO';
+        return this.openThreads < maxThreadCountSto || this.threadTypeToMake === 'BTO';
     }
 
     get shouldShowSpinner() {
@@ -756,7 +771,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get shouldShowThreads() {
-        return !this.isThreadDataLoading && !this.registerNewThread;
+        return !this.isThreadDataLoading && !this.registerNewThread && !this.showBtoTextArea;
     }
 
     get btoConfirmationTitle() {
@@ -767,5 +782,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         };
 
         return Object.entries(messages).find(([key]) => this.lowerCaseUrlCategory?.includes(key))?.[1] || '';
+    }
+
+    get showBtoTextArea() {
+        return this.threadTypeToMake === 'BTO' && this.openThreads < maxThreadCountBto;
+    }
+
+    // TODO: update button label for BTO with label from Kommunikasjon
+    get newThreadLabel() {
+        return this.threadTypeToMake === 'BTO' ? 'Send en STO' : 'Skriv ny melding';
     }
 }
