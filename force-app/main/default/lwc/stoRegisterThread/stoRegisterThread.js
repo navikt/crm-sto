@@ -102,9 +102,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         { text: 'Nei', value: 'false', checked: false }
     ];
 
-    logopath = navlogos + '/email.svg';
-    deletepath = navlogos + '/delete.svg';
-    wiredNews;
     wireThreadData;
 
     stoAndBtoThemeMapping = {
@@ -297,10 +294,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @wire(getNews, { pageTitle: '$title', pageTheme: '$themeToShow' })
     wirednews(result) {
         const { data, error } = result;
-        this.wiredNews = result;
 
         if (data) {
-            this.newsList = result.data;
+            this.newsList = data;
         } else if (error) {
             console.error(error);
         }
@@ -576,16 +572,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.acceptedTerms = event.detail;
     }
 
-    handleKeyboardEvent(event) {
-        if (event.keyCode === 27 || event.code === 'Escape') {
-            this.closeTerms();
-        }
-    }
-
-    handleFocusLast() {
-        this.template.querySelector('.lastFocusElement').focus();
-    }
-
     handleRadioChange(event) {
         logFilterEvent(
             'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
@@ -644,13 +630,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     handleShowTextArea() {
-        if (this.threadTypeToMake === 'STO') {
-            this.registerNewThread = true;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
-            window.open(basepath + `/skriv-til-oss?category=${this.category}`, '_self');
-        }
+        this.registerNewThread = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    handleSendSto() {
+        // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
+        window.open(basepath + `/skriv-til-oss?category=${this.category}`, '_self');
     }
 
     get tabName() {
@@ -678,10 +664,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory);
     }
 
-    get termsModal() {
-        return this.template.querySelector('c-community-modal');
-    }
-
     get termsContentText() {
         return this.labels.SERVICE_TERMS + this.labels.SERVICE_TERMS_2;
     }
@@ -702,8 +684,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
             return `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet ${this.capitalizedCategory}. Du kan maks ha tre samtaler på hvert tema. Hvis du vil opprette en ny samtale må du derfor avslutte en av de du allerede har.`;
         }
-        //TODO: replace this text with text from Kommunikasjon
-        return 'Du kan ikke ha mer enn 10 åpne samtaler, send gjerne en STO i stedet.';
+        return 'Du har nå nådd grensen på 10 åpne samtaler. Hvis du har flere opplysninger eller spørsmål til oss, kan du opprette en ny samtale via «skriv til oss»';
     }
 
     get openThreadLink() {
@@ -788,8 +769,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.threadTypeToMake === 'BTO' && this.openThreads < maxThreadCountBto;
     }
 
-    // TODO: update button label for BTO with label from Kommunikasjon
-    get newThreadLabel() {
-        return this.threadTypeToMake === 'BTO' ? 'Send en STO' : 'Skriv ny melding';
+    get showSendSTOButton() {
+        return this.threadTypeToMake === 'BTO' && this.openThreads >= maxThreadCountBto;
+    }
+
+    get showNewMessageButton() {
+        return this.threadTypeToMake === 'STO' && this.canOpenMoreThreads;
     }
 }
