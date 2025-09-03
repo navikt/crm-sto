@@ -5,7 +5,6 @@
             text="Vi kontakter deg hvis vi trenger mer informasjon"
         ></c-community-confirmation>
     </template>
-
     <template lwc:else>
         <div class="container">
             <p class="navds-bodylong navds-bodylong--medium">{title}</p>
@@ -18,7 +17,6 @@
                 >
                 </c-community-error-summary>
             </div>
-
             <!-- Show spinner -->
             <template lwc:if={shouldShowSpinner}>
                 <div class="spinner-container">
@@ -50,11 +48,10 @@
                     </svg>
                 </div>
             </template>
-
             <!-- Show textarea -->
             <template lwc:elseif={shouldShowTextArea}>
                 <lightning-formatted-rich-text
-                    class="navds-bodylong navds-bodylong--large subtitle"
+                    class="navds-bodylong navds-bodylong--large"
                     value={ingressLabel}
                 ></lightning-formatted-rich-text>
                 <div class="navds-accordion">
@@ -136,7 +133,16 @@
 
             <!-- Show active threads -->
             <template lwc:elseif={shouldShowThreads}>
-                <p class="navds-bodylong navds-bodylong--large subtitle">{openThreadText}</p>
+                <p class="navds-bodylong navds-bodylong--large">{openThreadText}</p>
+                <template lwc:if={showSendSTOButton}>
+                    <button
+                        class="navds-button navds-button--primary navds-button--medium send-sto-button"
+                        aria-disabled="false"
+                        onclick={handleSendSto}
+                    >
+                        Opprett ny samtale
+                    </button>
+                </template>
                 <h2 class="navds-heading navds-heading--medium subheader">
                     Dine aktive samtaler om {capitalizedCategory}
                 </h2>
@@ -160,7 +166,7 @@
                         </div>
                     </template>
                 </div>
-                <template lwc:if={canOpenMoreThreads}>
+                <template lwc:if={showNewMessageButton}>
                     <button
                         class="navds-button navds-button--primary navds-button--medium new-message-button"
                         aria-disabled="false"

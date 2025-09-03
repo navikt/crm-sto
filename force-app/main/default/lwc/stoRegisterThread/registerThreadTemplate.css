@@ -10,11 +10,11 @@
 .theme-radio-button,
 .medskriv-radio-button,
 .text-area,
-.vilkar-container {
+.vilkar-container,
+.subheader {
     margin-top: var(--a-spacing-10);
 }
 
-.subtitle,
 .vilkar-container {
     margin-bottom: var(--a-spacing-10);
 }
@@ -71,24 +71,15 @@
     gap: var(--a-spacing-5);
 }
 
-.navds-modal__header {
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
 .spinner {
     outline: none;
 }
 
+.send-sto-button {
+    margin-top: var(--a-spacing-4);
+}
+
 @media only screen and (max-width: 576px) {
-    .textLeftAlign-mobile {
-        text-align: left;
-    }
-
-    .leftMargin-mobile {
-        margin-left: 16px !important;
-    }
-
     .vilkar-container {
         flex-direction: row;
         flex-wrap: wrap;
