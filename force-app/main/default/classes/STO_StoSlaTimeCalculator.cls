@@ -1,17 +1,25 @@
 global without sharing class STO_StoSlaTimeCalculator implements Support.MilestoneTriggerTimeCalculator {
-    private Id STO_BUSINESS_HOURS_ID {
-        get {
+    private static Id STO_BUSINESS_HOURS_ID;
+    // Returns cached BusinessHours Id (queried once per transaction)
+    private static Id getBusinessHoursId() {
+        if (STO_BUSINESS_HOURS_ID == null) {
+            STO_BUSINESS_HOURS_ID = [
+                SELECT Id
+                FROM BusinessHours
+                WHERE Name = 'STO Business Hours'
+                LIMIT 1
+            ]?.Id;
+
             if (STO_BUSINESS_HOURS_ID == null) {
-                Id stoBusId = [SELECT Id FROM BusinessHours WHERE Name = 'STO Business Hours']?.Id;
-                if (stoBusId == null) {
-                    stoBusId = [SELECT Id FROM BusinessHours WHERE IsDefault = TRUE]?.Id;
-                }
-                STO_BUSINESS_HOURS_ID = stoBusId;
+                STO_BUSINESS_HOURS_ID = [
+                    SELECT Id
+                    FROM BusinessHours
+                    WHERE IsDefault = TRUE
+                    LIMIT 1
+                ]?.Id;
             }
-            return STO_BUSINESS_HOURS_ID;
         }
-        private set {
-        }
+        return STO_BUSINESS_HOURS_ID;
     }
     private TimeZone osloTimezone = TimeZone.getTimeZone('Europe/Oslo');
     private static final String RESPOND_STO_TYPE_NAME = 'Respond STO';
@@ -57,7 +65,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
      * @return Integer
      **/
     private Integer getMinutesBetween(Datetime dt1, Datetime dt2) {
-        Long msBetween = BusinessHours.diff(STO_BUSINESS_HOURS_ID, dt1, dt2);
+        Long msBetween = BusinessHours.diff(getBusinessHoursId(), dt1, dt2);
         //msBetween += osloTimezone.getOffset(dt2); //Handling the timezone offset in the SLA calculation
         Double secondsBetween = msBetween < 0
             ? Double.valueOf(-1 * msBetween / 1000)
@@ -78,7 +86,7 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
         Integer businessDaysAdded = 0;
         while (businessDaysAdded < businessDaysToAdd) {
             slaDate = slaDate.addDays(1);
-            if (BusinessHours.isWithin(STO_BUSINESS_HOURS_ID, slaDate)) {
+            if (BusinessHours.isWithin(getBusinessHoursId(), slaDate)) {
                 businessDaysAdded++;
             }
         }
