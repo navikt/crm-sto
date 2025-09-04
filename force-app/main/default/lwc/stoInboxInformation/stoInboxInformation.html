@@ -1,27 +1,24 @@
 <template>
-    <template if:false={isClosedSTOorBTO}>
-        <div if:true={infoText} class="slds-var-p-horizontal_medium spacing">
-            <c-crm-community-alert-stripe
-                class="alertbox"
-                type="info"
-                alerttext={infoText}
-            ></c-crm-community-alert-stripe>
-        </div>
-    </template>
-    <template if:true={showSurveyButton}>
-        <div class="slds-var-p-horizontal_medium slds-var-p-bottom_xx-large cssPadding">
-            <h2 class="navds-heading navds-heading--medium navds-typo--spacing">
-                Vi ønsker å lære av din opplevelse. Har du tid til å svare på 2 spørsmål?
-            </h2>
-            <c-ds-button
-                variant="primary"
-                size="medium"
-                onclick={navigateToSurvey}
-                text="Klikk her for å svare"
-            ></c-ds-button>
-            <span class="navds-body-short navds-body-short--medium slds-var-p-top_medium slds-var-p-left_small"
-                >Tilbakemeldingen er anonym.</span
-            >
-        </div>
-    </template>
+    <div class="container">
+        <c-sto-medskriv-samtykke record-id={recordId}></c-sto-medskriv-samtykke>
+        <c-community-alert alert-type="info" alert-text={infoText}></c-community-alert>
+        <template lwc:if={showSurveyButton}>
+            <div class="survey-container">
+                <h2 class="navds-heading navds-heading--small navds-typo--spacing">
+                    Vi ønsker å lære av din opplevelse. Har du tid til å svare på to spørsmål?
+                </h2>
+                <div class="survey-row">
+                    <c-ds-button
+                        variant="primary"
+                        size="medium"
+                        onclick={navigateToSurvey}
+                        text="Klikk her for å svare"
+                    ></c-ds-button>
+                    <span class="navds-body-short navds-body-short--medium survey-span"
+                        >Din tilbakemelding er anonym.</span
+                    >
+                </div>
+            </div>
+        </template>
+    </div>
 </template>

@@ -1,0 +1,41 @@
+.spacing-bottom {
+    margin-bottom: var(--a-spacing-7);
+}
+
+.spacing-top {
+    margin-top: var(--a-spacing-1);
+}
+
+.container {
+    margin: 0 auto var(--a-spacing-20) auto;
+    max-width: 640px;
+}
+
+.icon-container {
+    padding-right: var(--a-spacing-5);
+    text-align: right !important;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media only screen and (max-width: 576px) {
+    .container {
+        margin-left: var(--a-spacing-4);
+        margin-right: var(--a-spacing-4);
+    }
+
+    .icon-container {
+        padding-right: 0;
+        text-align: left !important;
+    }
+}

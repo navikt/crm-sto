@@ -2,11 +2,12 @@ import { LightningElement, api } from 'lwc';
 
 export default class CommunityCheckbox extends LightningElement {
     @api labelText;
+
     error = false;
     checked = false;
 
     get wrapperClass() {
-        return 'navds-checkbox--medium flexCenter' + (this.error ? ' navds-checkbox--error' : '');
+        return 'navds-checkbox navds-checkbox--medium' + (this.error ? ' navds-checkbox--error' : '');
     }
 
     checkError(event) {
@@ -28,7 +29,7 @@ export default class CommunityCheckbox extends LightningElement {
 
     @api
     focus() {
-        let checkbox = this.template.querySelector('.checkboks');
+        let checkbox = this.template.querySelector('.checkbox');
         checkbox.focus();
     }
 

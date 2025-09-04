@@ -1,13 +1,13 @@
 <template>
     <template lwc:if={showPanel}>
-        <div class="navds-panel slds-var-m-horizontal_medium" style="margin-top: -0.5rem; margin-bottom: 5.5rem">
+        <div class="navds-panel">
             <h2 class="navds-heading navds-heading--xsmall navds-typo--spacing">{title}</h2>
             <p class="navds-body-long navds-body-long--small">{text}</p>
-            <div style="margin-top: 0.5rem">
+            <div class="button">
                 <c-ds-button
                     class={btnClasses}
                     variant="secondary"
-                    size="small"
+                    size="medium"
                     onclick={revokeMedskriv}
                     text="Fjern min godkjenning"
                 ></c-ds-button>

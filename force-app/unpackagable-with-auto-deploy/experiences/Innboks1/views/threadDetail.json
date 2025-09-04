@@ -88,16 +88,6 @@
                                     "type": "component"
                                 },
                                 {
-                                    "componentAttributes": {
-                                        "recordId": "{!recordId}"
-                                    },
-                                    "componentName": "c:stoMedskrivSamtykke",
-                                    "id": "08c78565-de24-42b2-a3af-14654878cca5",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
                                     "componentAttributes": {},
                                     "componentName": "c:refreshCookie",
                                     "id": "e38f1581-d274-4110-8baa-b8960f959e8e",
@@ -151,7 +141,7 @@
             "type": "region"
         }
     ],
-    "themeLayoutType": "Inner",
+    "themeLayoutType": "hT8VFi3ALt5MPMauN9StcpW046Z5yh",
     "type": "view",
-    "viewType": "detail-a1j"
+    "viewType": "detail-a0O"
 }

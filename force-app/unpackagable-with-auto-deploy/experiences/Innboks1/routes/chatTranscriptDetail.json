@@ -1,10 +1,11 @@
 {
-    "activeViewId": "3053dbfd-f680-45ff-89b3-a0c589b83c4a",
-    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
-    "configurationTags": [],
-    "id": "24c7deb4-6a93-4d7e-8898-2bb403bd51f2",
-    "label": "Chat Transcript Detail",
-    "routeType": "detail-570",
-    "type": "route",
-    "urlPrefix": "chat"
+  "activeViewId" : "3053dbfd-f680-45ff-89b3-a0c589b83c4a",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "devName" : "Chat_Transcript_Detail__c",
+  "id" : "24c7deb4-6a93-4d7e-8898-2bb403bd51f2",
+  "label" : "Chat Transcript Detail",
+  "routeType" : "detail-570",
+  "type" : "route",
+  "urlPrefix" : "chat"
 }

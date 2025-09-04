@@ -59,7 +59,7 @@ public with sharing class stoHelperClass {
         String relatedObjId;
         Thread__c thread;
 
-        if (isMaxThreadCount(theme, type)) {
+        if (type != 'BTO' && isMaxThreadCount(theme, type)) {
             logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
             throw new maxThreadLimitReachedException();
@@ -254,16 +254,17 @@ public with sharing class stoHelperClass {
         }
 
         List<Thread__c> openThreads = [
-                SELECT Id,
+            SELECT
+                Id,
                 (
                     SELECT Id
                     FROM Messages__r
                     WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
                     LIMIT 1
                 )
-                FROM Thread__c
-                WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :allowedThreadTypes
-            ];
+            FROM Thread__c
+            WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :allowedThreadTypes
+        ];
 
         List<Thread__c> threadList = new List<Thread__c>();
         for (Thread__c t : openThreads) {
@@ -295,5 +296,36 @@ public with sharing class stoHelperClass {
             WHERE Id = :recordId
             LIMIT 1
         ];
+    }
+
+    @AuraEnabled
+    public static void putCloseIntent(Integer count) {
+        try {
+            User u = [SELECT Id, NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+            if (count >= 3) {
+                u.NKS_Close_Intent__c = true;
+            } else {
+                u.NKS_Close_Intent__c = false;
+            }
+            update u;
+        } catch (Exception e) {
+            throw new AuraHandledException('Failed to put close intent: ' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static Boolean getCloseIntent(String category) {
+        User u = [SELECT NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId()];
+        return u.NKS_Close_Intent__c && canUserCloseThread(category);
+    }
+
+    private static Boolean canUserCloseThread(String category) {
+        Integer count = [
+            SELECT COUNT()
+            FROM Thread__c
+            WHERE CRM_Is_Closed__c = FALSE AND STO_Category__c = :category AND CRM_Type__c = 'STO'
+        ];
+        return count >= 3;
     }
 }
