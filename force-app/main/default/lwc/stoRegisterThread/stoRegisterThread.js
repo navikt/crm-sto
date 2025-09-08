@@ -45,7 +45,8 @@ import BESKJED_ARBEID_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_
 import BESKJED_KLAGE_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Klage_ingress';
 import BESKJED_FRITA_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Frita_ingress';
 
-const maxThreadCount = 3;
+const maxThreadCountSto = 3;
+const maxThreadCountBto = 10;
 const spinnerReasonTextMap = {
     send: 'Sender melding. Vennligst vent.',
     close: 'Avslutter samtale. Vennligst vent.',
@@ -101,9 +102,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         { text: 'Nei', value: 'false', checked: false }
     ];
 
-    logopath = navlogos + '/email.svg';
-    deletepath = navlogos + '/delete.svg';
-    wiredNews;
     wireThreadData;
 
     stoAndBtoThemeMapping = {
@@ -296,10 +294,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @wire(getNews, { pageTitle: '$title', pageTheme: '$themeToShow' })
     wirednews(result) {
         const { data, error } = result;
-        this.wiredNews = result;
 
         if (data) {
-            this.newsList = result.data;
+            this.newsList = data;
         } else if (error) {
             console.error(error);
         }
@@ -314,7 +311,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         if (data) {
             this.openThreadList = data;
             putCloseIntent({ count: this.openThreadList.length });
-            this.registerNewThread = this.openThreadList.length === 0;
+            this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
         } else {
             this.openThreadList = [];
             putCloseIntent({ count: 0 });
@@ -575,16 +572,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.acceptedTerms = event.detail;
     }
 
-    handleKeyboardEvent(event) {
-        if (event.keyCode === 27 || event.code === 'Escape') {
-            this.closeTerms();
-        }
-    }
-
-    handleFocusLast() {
-        this.template.querySelector('.lastFocusElement').focus();
-    }
-
     handleRadioChange(event) {
         logFilterEvent(
             'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
@@ -647,6 +634,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    handleSendSto() {
+        // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
+        window.open(basepath + `/skriv-til-oss?category=${this.category}`, '_self');
+    }
+
     get tabName() {
         return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
     }
@@ -672,10 +664,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory);
     }
 
-    get termsModal() {
-        return this.template.querySelector('c-community-modal');
-    }
-
     get termsContentText() {
         return this.labels.SERVICE_TERMS + this.labels.SERVICE_TERMS_2;
     }
@@ -686,11 +674,17 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get openThreadText() {
         if (!this.openThreadList) return '';
-        return this.canOpenMoreThreads
-            ? this.openThreads === 1
-                ? `Vi ser at du allerede har ${this.openThreadsWord} åpen melding på dette temaet. Ønsker du å fortsette på denne meldingen eller ønsker du å skrive en ny?`
-                : `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet. Ønsker du å fortsette på en tidligere melding eller ønsker du å skrive en ny?`
-            : `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet ${this.capitalizedCategory}. Du kan maks ha tre samtaler på hvert tema. Hvis du vil opprette en ny samtale må du derfor avslutte en av de du allerede har.`;
+
+        if (this.threadTypeToMake === 'STO') {
+            if (this.canOpenMoreThreads) {
+                if (this.openThreads === 1) {
+                    return `Vi ser at du allerede har ${this.openThreadsWord} åpen melding på dette temaet. Ønsker du å fortsette på denne meldingen eller skrive en ny?`;
+                }
+                return `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet. Ønsker du å fortsette på en tidligere melding eller skrive en ny?`;
+            }
+            return `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet ${this.capitalizedCategory}. Du kan maks ha tre samtaler på hvert tema. Hvis du vil opprette en ny samtale må du derfor avslutte en av de du allerede har.`;
+        }
+        return 'Du har nå nådd grensen på 10 åpne samtaler. Hvis du har flere opplysninger eller spørsmål til oss, kan du opprette en ny samtale via «skriv til oss»';
     }
 
     get openThreadLink() {
@@ -700,7 +694,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get alertType() {
-        return this.openThreadList?.length >= maxThreadCount && this.threadTypeToMake === 'STO' ? 'advarsel' : 'info';
+        return this.openThreadList?.length >= maxThreadCountSto && this.threadTypeToMake === 'STO'
+            ? 'advarsel'
+            : 'info';
     }
 
     get ingressLabel() {
@@ -744,7 +740,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get canOpenMoreThreads() {
-        return this.openThreads < maxThreadCount || this.threadTypeToMake === 'BTO';
+        return this.openThreads < maxThreadCountSto || this.threadTypeToMake === 'BTO';
     }
 
     get shouldShowSpinner() {
@@ -756,7 +752,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get shouldShowThreads() {
-        return !this.isThreadDataLoading && !this.registerNewThread;
+        return !this.isThreadDataLoading && !this.registerNewThread && !this.showBtoTextArea;
     }
 
     get btoConfirmationTitle() {
@@ -767,5 +763,17 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         };
 
         return Object.entries(messages).find(([key]) => this.lowerCaseUrlCategory?.includes(key))?.[1] || '';
+    }
+
+    get showBtoTextArea() {
+        return this.threadTypeToMake === 'BTO' && this.openThreads < maxThreadCountBto;
+    }
+
+    get showSendSTOButton() {
+        return this.threadTypeToMake === 'BTO' && this.openThreads >= maxThreadCountBto;
+    }
+
+    get showNewMessageButton() {
+        return this.threadTypeToMake === 'STO' && this.canOpenMoreThreads;
     }
 }
