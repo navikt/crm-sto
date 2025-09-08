@@ -62,7 +62,7 @@ public with sharing class stoHelperClass {
 
         if (isMaxThreadCount(theme, type)) {
             LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
-            logger.publish();
+            LOGGER.publish();
             throw new maxThreadLimitReachedException();
         }
 
