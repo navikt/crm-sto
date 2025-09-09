@@ -1,11 +1,28 @@
-.spacing {
-    padding-bottom: 5.5em;
+.container {
+    margin: var(--a-spacing-5) auto var(--a-spacing-20) auto;
+    max-width: 640px;
 }
 
-.cssFont {
-    font-size: 1.5rem;
+.survey-container {
+    margin-top: var(--a-spacing-8);
 }
 
-.cssPadding {
-    margin-top: -0.5rem;
+.survey-span {
+    margin-left: var(--a-spacing-3);
+}
+
+@media only screen and (max-width: 576px) {
+    .container {
+        margin-left: var(--a-spacing-4);
+        margin-right: var(--a-spacing-4);
+    }
+
+    .survey-row {
+        display: flex;
+        flex-wrap: wrap-reverse;
+    }
+
+    .survey-span {
+        margin: var(--a-spacing-4) 0 var(--a-spacing-4) 0;
+    }
 }

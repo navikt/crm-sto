@@ -1,0 +1,30 @@
+<template>
+    <div class="slds-grid slds-wrap container">
+        <div class="slds-col slds-size_12-of-12 slds-medium-size_2-of-12 icon-container">
+            <span class="slds-icon_container">
+                <svg class="slds-icon slds-icon-text-default slds-icon_large" aria-hidden="true">
+                    <use xlink:href={applicationSuccessSrc}></use>
+                </svg>
+            </span>
+        </div>
+        <div role="alert" class="sr-only">{title}</div>
+        <div class="slds-col slds-size_10-of-12">
+            <h1 class="navds-heading navds-heading--large spacing-bottom spacing-top">{title}</h1>
+        </div>
+        <div class="slds-col slds-size_2-of-12"></div>
+        <div class="slds-col slds-size_10-of-12">
+            <p class="spacing-bottom navds-body-long--medium">{text}</p>
+        </div>
+        <div class="slds-col slds-size_2-of-12"></div>
+        <div class="slds-col slds-size_10-of-12">
+            <button
+                class="navds-button navds-button--primary navds-button--medium"
+                type="submit"
+                aria-disabled="false"
+                onclick={submitRequest}
+            >
+                Til Min Side
+            </button>
+        </div>
+    </div>
+</template>

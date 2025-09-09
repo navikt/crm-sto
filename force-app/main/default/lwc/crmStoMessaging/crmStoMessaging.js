@@ -10,6 +10,8 @@ import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
 import MEDSKRIV_TEXT from '@salesforce/label/c.STO_Medskriv_Text';
 import MEDSKRIV_LABEL from '@salesforce/label/c.STO_Medskriv_Label';
+import SUBMIT_BTO_LABEL from '@salesforce/label/c.BTO_Submit';
+import SHARE_WITH_USER_LABEL from '@salesforce/label/c.STO_Share_With_User';
 import userId from '@salesforce/user/Id';
 import newDesignTemplate from './newDesignTemplate.html';
 import oldDesignTemplate from './oldDesignTemplate.html';
@@ -70,7 +72,9 @@ export default class CrmStoMessaging extends LightningElement {
 
     labels = {
         MEDSKRIV_TEXT,
-        MEDSKRIV_LABEL
+        MEDSKRIV_LABEL,
+        SUBMIT_BTO_LABEL,
+        SHARE_WITH_USER_LABEL
     };
 
     render() {
@@ -234,71 +238,6 @@ export default class CrmStoMessaging extends LightningElement {
 
     forwardEvent(event) {
         this.dispatchEvent(new CustomEvent(event.type));
-    }
-
-    // Getters
-    get textTemplate() {
-        const isEnglish = this.englishTextTemplate;
-        const defaultSalutation = isEnglish ? 'Hi,' : 'Hei,';
-        const defaultRegards = isEnglish ? 'Kind regards' : 'Med vennlig hilsen';
-        const companyName = isEnglish ? this.englishCompanyName : this.norwegianCompanyName;
-        const salutation = this.userName ? `${defaultSalutation} ${this.userName}` : defaultSalutation;
-        let userText = '';
-
-        if (!this.resetTemplate && this.userInput) {
-            const regCompanyName = isEnglish ? this.norwegianCompanyName : this.englishCompanyName;
-            const regStart = this.userName
-                ? `^(?:Hi,|Hei,)(?: ${this.userName}\\s*\\n)`
-                : '^(?:Hi,\\s*\\n|Hei,\\s*\\n)';
-            const regEnd = `.*?([\\s\\S]*?)\\n+(?:Kind regards\\s*|Med vennlig hilsen\\s*)(?:${this.supervisorName}\\s*)(?:${regCompanyName}\\s*)$`;
-
-            const regex = new RegExp(`${regStart}${regEnd}`);
-            const match = this.userInput.match(regex);
-
-            if (match) {
-                userText = match[1].trim();
-                this.showLanguageChangeModal = false;
-            } else {
-                this.showLanguageChangeModal = true;
-            }
-
-            if (this.showLanguageChangeModal) {
-                if (this.closeLanguageModal) {
-                    this.showLanguageChangeModal = false;
-                }
-                return this.userInput;
-            }
-        } else {
-            this.showLanguageChangeModal = false;
-        }
-
-        return `${salutation}\n\n${userText}\n\n${defaultRegards}\n${this.supervisorName}\n${companyName}`;
-    }
-
-    get computeClasses() {
-        return this.threadType === 'BTO' ? 'greenHeader' : '';
-    }
-
-    get actualCardTitle() {
-        if (['BTO', 'STO'].includes(this.threadType))
-            return this.threadType === 'STO' ? 'Skriv til oss' : 'Meld i fra om endring';
-        else if (this.isThread && this.threadType === 'CHAT') {
-            return 'Chat';
-        }
-
-        return this.cardTitle;
-    }
-
-    get iconName() {
-        return this.isThread && this.threadType === 'CHAT'
-            ? 'standard:live_chat'
-            : this.threadType === 'BTO'
-              ? 'standard:contact_request'
-              : 'standard:messaging_user';
-    }
-
-    get showMedskrivBlocker() {
-        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
     }
 
     getAccountApiName() {
@@ -492,5 +431,77 @@ export default class CrmStoMessaging extends LightningElement {
             console.error('Problem getting English company name: ' + error);
             return '';
         }
+    }
+
+    get textTemplate() {
+        const isEnglish = this.englishTextTemplate;
+        const defaultSalutation = isEnglish ? 'Hi,' : 'Hei,';
+        const defaultRegards = isEnglish ? 'Kind regards' : 'Med vennlig hilsen';
+        const companyName = isEnglish ? this.englishCompanyName : this.norwegianCompanyName;
+        const salutation = this.userName ? `${defaultSalutation} ${this.userName}` : defaultSalutation;
+        let userText = '';
+
+        if (!this.resetTemplate && this.userInput) {
+            const regCompanyName = isEnglish ? this.norwegianCompanyName : this.englishCompanyName;
+            const regStart = this.userName
+                ? `^(?:Hi,|Hei,)(?: ${this.userName}\\s*\\n)`
+                : '^(?:Hi,\\s*\\n|Hei,\\s*\\n)';
+            const regEnd = `.*?([\\s\\S]*?)\\n+(?:Kind regards\\s*|Med vennlig hilsen\\s*)(?:${this.supervisorName}\\s*)(?:${regCompanyName}\\s*)$`;
+
+            const regex = new RegExp(`${regStart}${regEnd}`);
+            const match = this.userInput.match(regex);
+
+            if (match) {
+                userText = match[1].trim();
+                this.showLanguageChangeModal = false;
+            } else {
+                this.showLanguageChangeModal = true;
+            }
+
+            if (this.showLanguageChangeModal) {
+                if (this.closeLanguageModal) {
+                    this.showLanguageChangeModal = false;
+                }
+                return this.userInput;
+            }
+        } else {
+            this.showLanguageChangeModal = false;
+        }
+
+        return `${salutation}\n\n${userText}\n\n${defaultRegards}\n${this.supervisorName}\n${companyName}`;
+    }
+
+    get computeClasses() {
+        return this.threadType === 'BTO' ? 'greenHeader' : '';
+    }
+
+    get actualCardTitle() {
+        if (['BTO', 'STO'].includes(this.threadType))
+            return this.threadType === 'STO' ? 'Skriv til oss' : 'Meld fra om endring';
+        else if (this.isThread && this.threadType === 'CHAT') {
+            return 'Chat';
+        }
+
+        return this.cardTitle;
+    }
+
+    get iconName() {
+        return this.isThread && this.threadType === 'CHAT'
+            ? 'standard:live_chat'
+            : this.threadType === 'BTO'
+              ? 'standard:contact_request'
+              : 'standard:messaging_user';
+    }
+
+    get showMedskrivBlocker() {
+        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
+    }
+
+    get buttonLabel() {
+        return this.threadType === 'BTO'
+            ? this.labels.SUBMIT_BTO_LABEL
+            : this.newDesign
+              ? this.labels.SHARE_WITH_USER_LABEL
+              : 'Send';
     }
 }
