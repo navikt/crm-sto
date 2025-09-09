@@ -1,12 +1,12 @@
 {
-    "activeViewId": "c09ad2fa-23f9-4070-a717-5e725a559153",
-    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
-    "configurationTags": [],
-    "devName": "Thread_Detail__c",
-    "id": "94c285cd-a3a5-4772-9dd2-68fcb94df035",
-    "label": "Thread Detail",
-    "objectApiName": "Thread__c",
-    "routeType": "detail-a0O",
-    "type": "route",
-    "urlPrefix": "skriv-til-oss"
+  "activeViewId" : "c09ad2fa-23f9-4070-a717-5e725a559153",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "devName" : "Thread_Detail__c",
+  "id" : "94c285cd-a3a5-4772-9dd2-68fcb94df035",
+  "label" : "Thread Detail",
+  "objectApiName" : "Thread__c",
+  "routeType" : "detail-a1j",
+  "type" : "route",
+  "urlPrefix" : "skriv-til-oss"
 }

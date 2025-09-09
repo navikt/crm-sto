@@ -6,7 +6,7 @@
   "id" : "fc42ed54-388c-49db-b187-05b7f0881c28",
   "label" : "Thread Related List",
   "objectApiName" : "Thread__c",
-  "routeType" : "relatedlist-a0O",
+  "routeType" : "relatedlist-a1j",
   "type" : "route",
   "urlPrefix" : "skriv-til-oss"
 }

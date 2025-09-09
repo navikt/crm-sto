@@ -6,7 +6,7 @@
   "id" : "4046f81e-ae8f-4442-8f7c-a2f2cea025e5",
   "label" : "Conversation Note List",
   "objectApiName" : "Conversation_Note__c",
-  "routeType" : "list-a0M",
+  "routeType" : "list-a1a",
   "type" : "route",
   "urlPrefix" : "samtalereferat"
 }

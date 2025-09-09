@@ -6,7 +6,7 @@
   "id" : "ab1ea89b-e031-4949-ae9f-241f9e9bd57a",
   "label" : "Conversation Note Detail",
   "objectApiName" : "Conversation_Note__c",
-  "routeType" : "detail-a0M",
+  "routeType" : "detail-a1a",
   "type" : "route",
   "urlPrefix" : "samtalereferat"
 }
