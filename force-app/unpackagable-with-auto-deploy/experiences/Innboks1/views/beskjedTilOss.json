@@ -16,13 +16,6 @@
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : { },
-          "componentName" : "c:mainContent",
-          "id" : "4b8c466f-2222-400c-a6c7-ed3e87f74c45",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
           "componentName" : "c:communityBreadCrumbV2",
           "id" : "5396fa31-bee5-42fb-8fcf-d908b369a238",
           "renderPriority" : "NEUTRAL",
@@ -68,6 +61,13 @@
           },
           "componentName" : "c:stoRegisterThread",
           "id" : "455b66a1-1197-452a-8335-6885e8f51fb7",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : { },
+          "componentName" : "c:refreshCookie",
+          "id" : "f6f4ef0a-0a1e-4a3a-a8e7-8a181838c1b1",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
