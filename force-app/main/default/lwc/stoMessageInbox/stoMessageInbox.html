@@ -1,61 +1,47 @@
 <template>
-    <div class="inboxwrapper">
-        <div class="header">
-            <h1 class="navds-heading navds-heading--2xlarge">{title}</h1>
+    <div class="inbox-wrapper">
+        <h1 class="navds-heading navds-heading--xlarge header">{title}</h1>
+        <c-nav-Button
+            url="https://www.nav.no/kontaktoss"
+            title="Kontakt oss"
+            log-amplitude-event
+            onlogevent={handleContactUsClick}
+        ></c-nav-Button>
+        <div class="body">
+            <p class="navds-body-long navds-body-long--large">
+                For meldinger om dokumenter og/eller informasjonsbrev se&#32;
+                <a
+                    href="https://www.nav.no/dokumentarkiv"
+                    target="_self"
+                    class="navds-link navds-link--action archive-link"
+                    onclick={handleDocumentArchiveClick}
+                    >brev og vedtak</a
+                >
+            </p>
         </div>
-        <div class="header aroundGap">
-            <c-nav-Button
-                url="https://www.nav.no/kontaktoss"
-                title="Kontakt oss"
-                log-amplitude-event
-                onlogevent={handleContactUsClick}
-            ></c-nav-Button>
-        </div>
-        <div class="nav-wrapper">
-            <div class="body">
-                <p class="navds-body-long navds-typo--spacing">
-                    <strong>
-                        For meldinger om dokumenter og/eller informasjonsbrev se&#32;
-                        <a
-                            href="https://www.nav.no/dokumentarkiv"
-                            target="_self"
-                            class="lenke lenke-inline"
-                            onclick={handleDocumentArchiveClick}
-                            >brev og vedtak</a
-                        >
-                    </strong>
-                </p>
+        <template lwc:if={showrecentthreads}>
+            <h2 class="navds-heading navds-heading--small subheader">Siste meldinger</h2>
+            <div class="inbox-list">
+                <template for:each={recentthreads} for:item="thread">
+                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+                </template>
             </div>
-            <template if:true={showrecentthreads}>
-                <div class="subheader">
-                    <h2 class="typo-undertittel mobil-padding">Siste meldinger</h2>
-                </div>
-                <div class="horizontalMargin-mobile">
-                    <template for:each={recentthreads} for:item="thread">
-                        <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
-                    </template>
-                </div>
-            </template>
-            <template if:true={showthreads}>
-                <div class="subheader">
-                    <h2 class="typo-undertittel mobil-padding">Tidligere meldinger</h2>
-                </div>
-
-                <div class="horizontalMargin-mobile">
-                    <template for:each={threads} for:item="thread">
-                        <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
-                    </template>
-                </div>
-            </template>
-            <template if:true={noItems}>
-                <div class="slds-var-p-vertical_large centerInfobox">
-                    <c-crm-community-alert-stripe
-                        class="alertbox"
-                        type="info"
-                        alerttext="Du har ingen meldinger i innboksen din."
-                    ></c-crm-community-alert-stripe>
-                </div>
-            </template>
-        </div>
+        </template>
+        <template lwc:if={showthreads}>
+            <h2 class="navds-heading navds-heading--small subheader">Tidligere meldinger</h2>
+            <div class="inbox-list">
+                <template for:each={threads} for:item="thread">
+                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+                </template>
+            </div>
+        </template>
+        <template lwc:if={noItems}>
+            <div class="slds-var-p-vertical_large center-info-box">
+                <c-community-alert
+                    alert-type="info"
+                    alert-text="Du har ingen meldinger i innboksen din."
+                ></c-community-alert>
+            </div>
+        </template>
     </div>
 </template>

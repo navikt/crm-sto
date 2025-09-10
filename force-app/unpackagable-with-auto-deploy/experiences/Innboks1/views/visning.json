@@ -94,16 +94,6 @@
                                     "type": "component"
                                 },
                                 {
-                                    "componentAttributes": {
-                                        "recordId": "{!recordId}"
-                                    },
-                                    "componentName": "c:stoMedskrivSamtykke",
-                                    "id": "7a5ce91f-b1e7-45eb-b9f1-e4e6c743f9ba",
-                                    "renderPriority": "NEUTRAL",
-                                    "renditionMap": {},
-                                    "type": "component"
-                                },
-                                {
                                     "componentAttributes": {},
                                     "componentName": "c:refreshCookie",
                                     "id": "2002a436-fe32-43f4-9c1c-c53ae189d94e",
@@ -157,7 +147,7 @@
             "type": "region"
         }
     ],
-    "themeLayoutType": "Inner",
+    "themeLayoutType": "hT8VFi3ALt5MPMauN9StcpW046Z5yh",
     "type": "view",
     "viewType": "custom-visning"
 }

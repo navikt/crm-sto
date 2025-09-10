@@ -6,17 +6,6 @@ import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import navlogos from '@salesforce/resourceUrl/navsvglogos';
-import acceptermtext from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
-import showtermstext from '@salesforce/label/c.Skriv_til_oss_Show_terms';
-import textareadescription from '@salesforce/label/c.Skriv_til_oss_text_area_description';
-import SERVICE_TERMS_HEADER from '@salesforce/label/c.STO_Skriv_til_oss_terms_header';
-import SERVICE_TERMS from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text';
-import SERVICE_TERMS_2 from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text_2';
-import ACCEPT_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Accept_Terms_Button';
-import ACCEPT_TERMS_ERROR from '@salesforce/label/c.Skriv_til_oss_Accept_terms_error_message';
-import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_Button';
-import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
-import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
@@ -31,6 +20,19 @@ import {
 } from 'c/inboxAmplitude';
 import registerThreadTemplate from './registerThreadTemplate.html';
 import badUrlTemplate from './badUrlTemplate.html';
+import putCloseIntent from '@salesforce/apex/stoHelperClass.putCloseIntent';
+
+import ACCEPT_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
+import SHOW_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Show_terms';
+import SERVICE_TERMS_HEADER from '@salesforce/label/c.STO_Skriv_til_oss_terms_header';
+import SERVICE_TERMS from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text';
+import SERVICE_TERMS_2 from '@salesforce/label/c.STO_Skriv_til_oss_terms_og_use_text_2';
+import ACCEPT_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Accept_Terms_Button';
+import ACCEPT_TERMS_ERROR from '@salesforce/label/c.Skriv_til_oss_Accept_terms_error_message';
+import DENY_TERMS_BUTTON from '@salesforce/label/c.STO_Skriv_til_oss_Deny_Terms_Button';
+import EMPTY_TEXT_FIELD_ERROR from '@salesforce/label/c.STO_Skriv_til_oss_text_field_empty_error';
+import INCORRECT_CATEGORY from '@salesforce/label/c.STO_Incorrect_Category';
+
 import STO_DEFAULT_INGRESS from '@salesforce/label/c.Skriv_til_oss_Default_ingress';
 import STO_HJELPEMIDLER_INGRESS from '@salesforce/label/c.Skriv_til_oss_Hjelpemidler_ingress';
 import BTO_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Default_ingress';
@@ -43,23 +45,22 @@ import BESKJED_ARBEID_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_
 import BESKJED_KLAGE_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Klage_ingress';
 import BESKJED_FRITA_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Frita_ingress';
 
-const maxThreadCount = 3;
-const spinnerReasonTextMap = { send: 'Sender melding. Vennligst vent.', close: 'Avslutter samtale. Vennligst vent.' };
+const maxThreadCountSto = 3;
+const maxThreadCountBto = 10;
+const spinnerReasonTextMap = {
+    send: 'Sender melding. Vennligst vent.',
+    close: 'Avslutter samtale. Vennligst vent.',
+    load: 'Laster samtaler. Vennligst vent.'
+};
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api threadTypeToMake;
 
-    render() {
-        if (this.isLoading) {
-            return null; // Show nothing until data is loaded
-        }
-        return this.validQueryParameter ? registerThreadTemplate : badUrlTemplate;
-    }
-
     isLoading = true;
-    showspinner = false;
+    showSpinner = false;
     category;
     themeToShow;
+    originalThemeToShow;
     acceptedSTOCategories = new Set();
     acceptedBTOCategories = [];
     currentPageReference = null;
@@ -72,13 +73,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     message;
     modalOpen = false;
     maxLength = 2000;
-    openThreadList;
+    openThreadList = [];
     _title;
+    registerNewThread = false;
+    isThreadDataLoading = true;
+    showBTOConfirmation = false;
 
-    label = {
-        acceptermtext,
-        showtermstext,
-        textareadescription,
+    labels = {
+        ACCEPT_TERM_TEXT,
+        SHOW_TERM_TEXT,
         SERVICE_TERMS_HEADER,
         SERVICE_TERMS,
         SERVICE_TERMS_2,
@@ -99,9 +102,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         { text: 'Nei', value: 'false', checked: false }
     ];
 
-    logopath = navlogos + '/email.svg';
-    deletepath = navlogos + '/delete.svg';
-    wiredNews;
     wireThreadData;
 
     stoAndBtoThemeMapping = {
@@ -256,10 +256,18 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             });
     }
 
+    render() {
+        if (this.isLoading) {
+            return null;
+        }
+        return this.validQueryParameter ? registerThreadTemplate : badUrlTemplate;
+    }
+
     renderedCallback() {
-        if (this.showspinner) {
+        if (this.showSpinner) {
             this.template.querySelector('.spinner')?.focus();
         }
+
         document.title = this.tabName;
         setDecoratorParams(this.threadTypeToMake, this.title, this.themeToShow);
     }
@@ -279,16 +287,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.lowerCaseUrlCategory = this.urlStateParameters.category.toLowerCase();
             this.setTitleAndCategory();
             this.setThemeToShow();
+            this.originalThemeToShow = this.themeToShow;
         }
     }
 
     @wire(getNews, { pageTitle: '$title', pageTheme: '$themeToShow' })
     wirednews(result) {
         const { data, error } = result;
-        this.wiredNews = result;
 
         if (data) {
-            this.newsList = result.data;
+            this.newsList = data;
         } else if (error) {
             console.error(error);
         }
@@ -296,102 +304,23 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     @wire(getOpenThreads, { category: '$category', threadType: '$threadTypeToMake' })
     openThread(result) {
+        this.isThreadDataLoading = true;
+        this.spinnerText = spinnerReasonTextMap.load;
         const { error, data } = result;
         this.wireThreadData = result;
-
         if (data) {
             this.openThreadList = data;
+            putCloseIntent({ count: this.openThreadList.length });
+            this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
         } else {
-            this.openThreadList = null; // Set to null when no data for radiobutton case
+            this.openThreadList = [];
+            putCloseIntent({ count: 0 });
+            this.registerNewThread = true;
             if (error) {
                 console.error(error);
             }
         }
-    }
-
-    get tabName() {
-        return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
-    }
-
-    get title() {
-        return this._title;
-    }
-
-    @api
-    set title(value) {
-        this._title = value;
-    }
-
-    get validQueryParameter() {
-        return this.isValidSTOCategory || this.isValidBTOCategory;
-    }
-
-    get isValidSTOCategory() {
-        return this.threadTypeToMake === 'STO' && this.acceptedSTOCategories.has(this.lowerCaseUrlCategory);
-    }
-
-    get isValidBTOCategory() {
-        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory);
-    }
-
-    get termsModal() {
-        return this.template.querySelector('c-community-modal');
-    }
-
-    get termsContentText() {
-        return this.label.SERVICE_TERMS + this.label.SERVICE_TERMS_2;
-    }
-
-    get showOpenThreadWarning() {
-        return !!this.openThreadList?.length;
-    }
-
-    get openThreadText() {
-        if (!this.openThreadList) return '';
-        const openThreads = this.openThreadList.length;
-        return openThreads < maxThreadCount
-            ? `Du har allerede åpne samtaler om ${this.capitalizeFirstLetter(this.category)}. Hvis du lurer på noe mer, kan du <a href="${
-                  this.openThreadLink
-              }">fortsette dine åpne samtaler</a>. Du kan ikke ha mer enn 3 åpne samtaler samtidig.`
-            : `Du har ${openThreads} åpne samtaler om ${this.capitalizeFirstLetter(this.category)}. Du kan maksimalt ha 3 åpne samtaler. Hvis du vil opprette en ny samtale, må du derfor avslutte noen av de du allerede har.`;
-    }
-
-    get openThreadLink() {
-        return this.threadTypeToMake === 'BTO'
-            ? basepath + this.subpath + 'visning?samtale=' + this.openThreadList[0].recordId
-            : basepath + this.subpath + this.openThreadList[0].recordId;
-    }
-
-    get alertType() {
-        return this.openThreadList.length >= maxThreadCount ? 'advarsel' : 'info';
-    }
-
-    get showTextArea() {
-        return this.openThreadList == null || this.openThreadList.length < maxThreadCount;
-    }
-
-    get backdropClass() {
-        return this.hideDeleteModal ? 'slds-hide' : 'backdrop';
-    }
-
-    get ingressLabel() {
-        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
-            return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
-        }
-
-        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
-    }
-
-    get showThemeRadioButton() {
-        return this.radioButtonMap[this.title]?.[this.themeToShow] ?? false;
-    }
-
-    get themeRadioButtonText() {
-        return this.radioButtonMap[this.title]?.[this.themeToShow]?.text;
-    }
-
-    get showInputTextArea() {
-        return !this.showThemeRadioButton || this.themeRadioButtonSelected != null;
+        this.isThreadDataLoading = false;
     }
 
     setThemeToShow() {
@@ -455,15 +384,17 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     showTerms() {
         this.modalOpen = true;
-        this.termsModal.focusModal();
         publish(this.messageContext, globalModalOpen, { status: 'true' });
     }
 
     closeTerms() {
         this.modalOpen = false;
-        const btn = this.template.querySelector('.focusBtn');
-        btn.focus();
-        publish(this.messageContext, globalModalOpen, { status: 'false' });
+        // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
+        setTimeout(() => {
+            const btn = this.template.querySelector('.vilkar-link');
+            if (btn) btn.focus();
+            publish(this.messageContext, globalModalOpen, { status: 'false' });
+        }, 0);
     }
 
     termsAccepted() {
@@ -479,21 +410,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     /**
-     * Handles terms modal end
-     */
-    navigateToBTO(thread) {
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                name: 'Visning__c'
-            },
-            state: {
-                samtale: thread.Id
-            }
-        });
-    }
-
-    /**
      * Creates a Thread record, with an message attached, and then navigates the user to the record page
      * @Author Lars Petter Johnsen
      */
@@ -501,6 +417,24 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         const medskriv = this.refs.medskrivRadiobuttons?.getValue();
         const radioButtonValue = this.refs.themeRadioButton?.getValue();
         const radioButtonExists = this.refs.themeRadioButton != null;
+
+        let theme = this.category;
+        let inboxTheme = this.themeToShow;
+
+        // Only build inboxTheme from radioButtonMap if radio is actually selected "Ja"
+        if (this.themeRadioButtonSelected) {
+            // Use the original theme for robust mapping
+            const radioMap = this.radioButtonMap[this.title]?.[this.originalThemeToShow];
+            const initialCategory = radioMap?.initialCategory
+                ? this.capitalizeFirstLetter(radioMap.initialCategory)
+                : '';
+            const mappedInboxTheme = radioMap?.inboxTheme;
+            if (initialCategory && mappedInboxTheme) {
+                inboxTheme = `${initialCategory}-${mappedInboxTheme}`;
+            } else if (mappedInboxTheme) {
+                inboxTheme = mappedInboxTheme;
+            }
+        }
 
         if (
             this.acceptedTerms &&
@@ -511,25 +445,21 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             (!radioButtonExists || radioButtonValue != null)
         ) {
             this.errorList = null;
-            this.showspinner = true;
+            this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
             createThreadWithCase({
-                theme: this.category,
+                theme: theme,
                 msgText: this.message,
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxTitle: this.title,
-                inboxTheme: this.themeRadioButtonSelected
-                    ? this.capitalizeFirstLetter(this.radioButtonMap[this.title]?.[this.themeToShow]?.initialCategory) +
-                      '-' +
-                      this.radioButtonMap[this.title]?.[this.themeToShow]?.inboxTheme
-                    : this.themeToShow
+                inboxTheme: inboxTheme
             })
                 .then((thread) => {
-                    this.showspinner = false;
+                    this.showSpinner = false;
                     if (this.threadTypeToMake === 'BTO') {
-                        this.navigateToBTO(thread);
+                        this.showBTOConfirmation = true;
                     } else {
                         // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
                         window.open(
@@ -546,11 +476,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                         this.title,
                         'ny samtale'
                     );
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 })
                 .catch((err) => {
                     console.error(err);
                     this.template.querySelector('c-alertdialog').showModal();
-                    this.showspinner = false;
+                    this.showSpinner = false;
                 });
         } else {
             this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
@@ -577,7 +508,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             if (medskriv == null) {
                 this.errorList.errors.push({
                     Id: 4,
-                    EventItem: '.medskrive',
+                    EventItem: '.medskriv',
                     Text: 'Du må velge et av alternativene.'
                 });
             }
@@ -593,14 +524,22 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
+    handleCloseThread(e) {
+        const selectedThread = this.openThreadList[e.detail];
+        if (selectedThread.recordId) {
+            this.closeSelectedThread(selectedThread.recordId);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     closeSelectedThread(selectedThreadId) {
-        this.showspinner = true;
+        this.showSpinner = true;
         this.spinnerText = spinnerReasonTextMap.close;
         closeThread({ id: selectedThreadId })
             .then(() => {
                 refreshApex(this.wireThreadData)
                     .then(() => {
-                        this.showspinner = false;
+                        this.showSpinner = false;
                     })
                     .catch((err) => {
                         console.error(err);
@@ -633,23 +572,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.acceptedTerms = event.detail;
     }
 
-    handleKeyboardEvent(event) {
-        if (event.keyCode === 27 || event.code === 'Escape') {
-            this.closeTerms();
-        }
-    }
-
-    handleFocusLast() {
-        this.template.querySelector('.lastFocusElement').focus();
-    }
-
-    handleCloseThread(e) {
-        const selectedThread = this.openThreadList[e.detail];
-        if (selectedThread.recordId) {
-            this.closeSelectedThread(selectedThread.recordId);
-        }
-    }
-
     handleRadioChange(event) {
         logFilterEvent(
             'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
@@ -674,13 +596,29 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     previousCategory;
     themeRadioButtonSelected;
     handleThemeRadioButtonChange(event) {
+        this.isThreadDataLoading = true;
+        this.spinnerText = spinnerReasonTextMap.load;
+        const mappingKey = this.originalThemeToShow;
         if (event.detail.value === 'true') {
             this.themeRadioButtonSelected = true;
             this.previousCategory = this.category;
-            this.category = this.radioButtonMap[this.title]?.[this.themeToShow]?.category;
+            const radioMap = this.radioButtonMap[this.title]?.[mappingKey];
+            if (radioMap) {
+                this.category = radioMap.category;
+                this.themeToShow = radioMap.inboxTheme;
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
+            const prevCategory = this.category;
+            const prevTheme = this.themeToShow;
+
             this.category = this.previousCategory;
             this.themeRadioButtonSelected = false;
+            this.themeToShow = this.originalThemeToShow;
+
+            if (prevCategory === this.category && prevTheme === this.themeToShow) {
+                this.isThreadDataLoading = false;
+            }
         }
 
         logFilterEvent(
@@ -689,5 +627,153 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             getComponentName(this.template),
             this.title
         );
+    }
+
+    handleShowTextArea() {
+        this.registerNewThread = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    handleSendSto() {
+        // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
+        window.open(basepath + `/skriv-til-oss?category=${this.category}`, '_self');
+    }
+
+    get tabName() {
+        return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
+    }
+
+    get title() {
+        return this._title;
+    }
+
+    @api
+    set title(value) {
+        this._title = value;
+    }
+
+    get validQueryParameter() {
+        return this.isValidSTOCategory || this.isValidBTOCategory;
+    }
+
+    get isValidSTOCategory() {
+        return this.threadTypeToMake === 'STO' && this.acceptedSTOCategories.has(this.lowerCaseUrlCategory);
+    }
+
+    get isValidBTOCategory() {
+        return this.threadTypeToMake === 'BTO' && this.acceptedBTOCategories.includes(this.lowerCaseUrlCategory);
+    }
+
+    get termsContentText() {
+        return this.labels.SERVICE_TERMS + this.labels.SERVICE_TERMS_2;
+    }
+
+    get showOpenThreadWarning() {
+        return !!this.openThreadList?.length;
+    }
+
+    get openThreadText() {
+        if (!this.openThreadList) return '';
+
+        if (this.threadTypeToMake === 'STO') {
+            if (this.canOpenMoreThreads) {
+                if (this.openThreads === 1) {
+                    return `Vi ser at du allerede har ${this.openThreadsWord} åpen melding på dette temaet. Ønsker du å fortsette på denne meldingen eller skrive en ny?`;
+                }
+                return `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet. Ønsker du å fortsette på en tidligere melding eller skrive en ny?`;
+            }
+            return `Vi ser at du allerede har ${this.openThreadsWord} åpne meldinger på dette temaet ${this.capitalizedCategory}. Du kan maks ha tre samtaler på hvert tema. Hvis du vil opprette en ny samtale må du derfor avslutte en av de du allerede har.`;
+        }
+        return 'Du har nå nådd grensen på 10 åpne samtaler. Hvis du har flere opplysninger eller spørsmål til oss, kan du opprette en ny samtale via «skriv til oss»';
+    }
+
+    get openThreadLink() {
+        return this.threadTypeToMake === 'BTO'
+            ? basepath + this.subpath + 'visning?samtale=' + this.openThreadList[0].recordId
+            : basepath + this.subpath + this.openThreadList[0].recordId;
+    }
+
+    get alertType() {
+        return this.openThreadList?.length >= maxThreadCountSto && this.threadTypeToMake === 'STO'
+            ? 'advarsel'
+            : 'info';
+    }
+
+    get ingressLabel() {
+        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
+            return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
+        }
+
+        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
+    }
+
+    get showThemeRadioButton() {
+        const mapping = this.radioButtonMap[this.title]?.[this.originalThemeToShow];
+        if (!mapping) return false;
+        return this.themeToShow === this.originalThemeToShow;
+    }
+
+    get themeRadioButtonText() {
+        return this.radioButtonMap[this.title]?.[this.originalThemeToShow]?.text;
+    }
+
+    get showInputTextArea() {
+        return !this.showThemeRadioButton || this.themeRadioButtonSelected != null;
+    }
+
+    get capitalizedCategory() {
+        return this.capitalizeFirstLetter(this.category);
+    }
+
+    get openThreads() {
+        return this.openThreadList?.length;
+    }
+
+    get openThreadsWord() {
+        const length = this.openThreadList?.length;
+        const numberWords = {
+            1: 'en',
+            2: 'to',
+            3: 'tre'
+        };
+        return numberWords[length] || length;
+    }
+
+    get canOpenMoreThreads() {
+        return this.openThreads < maxThreadCountSto || this.threadTypeToMake === 'BTO';
+    }
+
+    get shouldShowSpinner() {
+        return this.isThreadDataLoading || this.showSpinner;
+    }
+
+    get shouldShowTextArea() {
+        return !this.isThreadDataLoading && this.registerNewThread;
+    }
+
+    get shouldShowThreads() {
+        return !this.isThreadDataLoading && !this.registerNewThread && !this.showBtoTextArea;
+    }
+
+    get btoConfirmationTitle() {
+        const messages = {
+            beskjed: 'Vi har mottatt meldingen din. Takk for at du tok kontakt.',
+            endring: 'Endringen er registrert. Takk for at du ga beskjed.',
+            'trekke-soknad': 'Vi har mottatt beskjed om at du ønsker å trekke søknaden. Takk for at du informerte oss.'
+        };
+
+        return Object.entries(messages).find(([key]) => this.lowerCaseUrlCategory?.includes(key))?.[1] || '';
+    }
+
+    get showBtoTextArea() {
+        return this.threadTypeToMake === 'BTO' && this.openThreads < maxThreadCountBto;
+    }
+
+    get showSendSTOButton() {
+        return this.threadTypeToMake === 'BTO' && this.openThreads >= maxThreadCountBto;
+    }
+
+    get showNewMessageButton() {
+        return this.threadTypeToMake === 'STO' && this.canOpenMoreThreads;
     }
 }
