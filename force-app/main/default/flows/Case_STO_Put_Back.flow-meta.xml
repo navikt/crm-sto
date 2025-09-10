@@ -107,6 +107,13 @@
                 <stringValue>STO</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Skriv til oss</stringValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Update_Thread_Type_and_Category</targetReference>
         </connector>
