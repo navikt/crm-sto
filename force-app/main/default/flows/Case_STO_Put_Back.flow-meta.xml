@@ -234,7 +234,7 @@
     </decisions>
     <decisions>
         <name>IsBTO</name>
-        <label>IsBTO?</label>
+        <label>Is BTO and put back as STO?</label>
         <locationX>182</locationX>
         <locationY>782</locationY>
         <defaultConnector>
@@ -251,10 +251,17 @@
                     <stringValue>BTO</stringValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>STO</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>Set_STO_Origin_Status_New_and_Thread_Type</targetReference>
             </connector>
-            <label>BTO</label>
+            <label>BTO and put back as STO</label>
         </rules>
     </decisions>
     <dynamicChoiceSets>
@@ -440,6 +447,36 @@
                             <operator>EqualTo</operator>
                             <rightValue>
                                 <elementReference>Other</elementReference>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>STO</name>
+                    <dataType>Boolean</dataType>
+                    <defaultValue>
+                        <booleanValue>false</booleanValue>
+                    </defaultValue>
+                    <fieldText>Legg tilbake som STO</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <isDisabled>
+                        <booleanValue>false</booleanValue>
+                    </isDisabled>
+                    <isRequired>true</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Put_Back_Reason</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <elementReference>Wrong_Queue</elementReference>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>Get_Case_Record.Origin</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>BTO</stringValue>
                             </rightValue>
                         </conditions>
                     </visibilityRule>
