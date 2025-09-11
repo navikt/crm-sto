@@ -16,11 +16,6 @@
     margin-top: var(--a-spacing-4);
 }
 
-.center-info-box {
-    width: 65%;
-    margin: auto;
-}
-
 .inbox-list {
     display: flex;
     flex-direction: column;
