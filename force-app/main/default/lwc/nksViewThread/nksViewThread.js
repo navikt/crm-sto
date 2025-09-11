@@ -107,6 +107,6 @@ export default class NksViewThread extends LightningElement {
     }
 
     get documentTitle() {
-        return this.threadType === 'STO' ? `Skriv til oss - ${this.category}` : `${this.pageTitle} - ${this.pageTheme}`;
+        return this.threadType === 'STO' ? `${this.category} - Skriv til oss` : `${this.pageTheme} - ${this.pageTitle}`;
     }
 }

@@ -639,7 +639,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get tabName() {
-        return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
+        return `${this.themeToShow ? this.themeToShow + ' - ' : ''}${this.title}`;
     }
 
     get title() {
