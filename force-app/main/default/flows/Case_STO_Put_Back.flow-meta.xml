@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionCalls>
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
@@ -7,7 +8,8 @@
         <locationY>1664</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
-        <flowTransactionModel>CurrentTransaction</flowTransacti        <    </actionCalls>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+    </actionCalls>
     <apiVersion>52.0</apiVersion>
     <assignments>
         <name>Assign_Case_Values</name>
@@ -280,8 +282,8 @@
     <dynamicChoiceSets>
         <name>STO_Category_Picklist</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true"/>
-        <object xsi:nil="true"/>
+        <displayField xsi:nil="true" />
+        <object xsi:nil="true" />
         <picklistField>STO_Category__c</picklistField>
         <picklistObject>Case</picklistObject>
     </dynamicChoiceSets>
@@ -289,7 +291,9 @@
     <formulas>
         <name>Incompetent_Value_Formula</name>
         <dataType>String</dataType>
-        <expression>IF(CONTAINS({!Prior_Incompetent_Values},CASESAFEID({!$User.Id})), {!Prior_Incompetent_Values}, {!Prior_Incompetent_Values}&amp;CASESAFEID({!$User.Id})&amp;&apos;,&apos;)</expression>
+        <expression>IF(CONTAINS({!Prior_Incompetent_Values},CASESAFEID({!$User.Id})),
+            {!Prior_Incompetent_Values},
+            {!Prior_Incompetent_Values}&amp;CASESAFEID({!$User.Id})&amp;&apos;,&apos;)</expression>
     </formulas>
     <formulas>
         <name>Queue_Transfer_Text</name>
@@ -402,7 +406,9 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Is_Put_Back_Screen</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede lagt tilbake.&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);
+                font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede lagt
+                tilbake.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
@@ -510,58 +516,6 @@
                                 <elementReference>Wrong_Queue</elementReference>
                             </rightValue>
                         </conditions>
-                    </visibilityRule>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>8</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-           </conditions>
-                    </visibilityRule>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>8</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-           </conditions>
-                    </visibilityRule>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>8</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-           </conditions>
-                    </visibilityRule>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>8</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-            </conditions>
                     </visibilityRule>
                 </fields>
                 <inputParameters>
