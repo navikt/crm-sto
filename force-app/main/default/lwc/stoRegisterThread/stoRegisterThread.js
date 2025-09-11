@@ -5,7 +5,6 @@ import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
-import navlogos from '@salesforce/resourceUrl/navsvglogos';
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
@@ -640,7 +639,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get tabName() {
-        return `${this.title}${this.themeToShow ? ' - ' + this.themeToShow : ''}`;
+        return `${this.themeToShow ? this.themeToShow + ' - ' : ''}${this.title}`;
     }
 
     get title() {
