@@ -24,6 +24,15 @@ export default class NksViewThread extends LightningElement {
     pageTheme;
     pageTitle;
     actualThreadType;
+    category;
+
+    stoCategoryMap = {
+        Familie: 'Familie og barn',
+        Helse: 'Helse og sykdom',
+        Hjelpemidler: 'Hjelpemidler og tilrettelegging',
+        Internasjonal: 'Bor eller jobber i utlandet',
+        Pleiepenger: 'Pleiepenger for sykt barn'
+    };
 
     renderedCallback() {
         // Set decorator params first when rendered
@@ -52,6 +61,7 @@ export default class NksViewThread extends LightningElement {
         this.actualThreadType = data.CRM_Thread_Type__c;
         let pageTheme = data.NKS_Inbox_Theme__c;
         this.pageTitle = data.NKS_Inbox_Title__c;
+        this.category = this.stoCategoryMap[data.STO_Category__c] || data.STO_Category__c;
 
         if (!allowedThreadTypes[this.threadType]?.includes(this.actualThreadType)) {
             this.redirect(this.actualThreadType);
@@ -70,7 +80,7 @@ export default class NksViewThread extends LightningElement {
             // eslint-disable-next-line @lwc/lwc/no-async-operation, @locker/locker/distorted-window-set-timeout
             setTimeout(() => {
                 // Extra SetTimeout needed for STO to work
-                document.title = `${this.pageTitle} - ${this.pageTheme}`;
+                document.title = this.documentTitle;
             }, '500');
         }
     }
@@ -94,5 +104,9 @@ export default class NksViewThread extends LightningElement {
             `${this.pageTitle} - ${this.pageTheme}`,
             'ny melding'
         );
+    }
+
+    get documentTitle() {
+        return this.threadType === 'STO' ? `Skriv til oss - ${this.category}` : `${this.pageTitle} - ${this.pageTheme}`;
     }
 }

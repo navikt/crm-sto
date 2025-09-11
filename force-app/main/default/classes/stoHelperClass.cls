@@ -295,7 +295,8 @@ public with sharing class stoHelperClass {
                 NKS_Inbox_Title__c,
                 NKS_Inbox_Theme__c,
                 CRM_Is_Closed__c,
-                CRM_Related_Object__c
+                CRM_Related_Object__c,
+                STO_Category__c
             FROM Thread__c
             WHERE Id = :recordId
             LIMIT 1
