@@ -7,8 +7,7 @@
         <locationY>1664</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-    </actionCalls>
+        <flowTransactionModel>CurrentTransaction</flowTransacti        <    </actionCalls>
     <apiVersion>52.0</apiVersion>
     <assignments>
         <name>Assign_Case_Values</name>
@@ -112,6 +111,13 @@
             <operator>Assign</operator>
             <value>
                 <stringValue>Skriv til oss</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread.CRM_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>STO</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -504,6 +510,58 @@
                                 <elementReference>Wrong_Queue</elementReference>
                             </rightValue>
                         </conditions>
+                    </visibilityRule>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>8</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+           </conditions>
+                    </visibilityRule>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>8</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+           </conditions>
+                    </visibilityRule>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>8</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+           </conditions>
+                    </visibilityRule>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>8</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            </conditions>
                     </visibilityRule>
                 </fields>
                 <inputParameters>
