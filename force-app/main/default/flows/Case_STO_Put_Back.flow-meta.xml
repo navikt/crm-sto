@@ -114,6 +114,13 @@
                 <stringValue>Skriv til oss</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread.CRM_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Update_Thread_Type_and_Category</targetReference>
         </connector>
@@ -274,8 +281,8 @@
     <dynamicChoiceSets>
         <name>STO_Category_Picklist</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true"/>
-        <object xsi:nil="true"/>
+        <displayField xsi:nil="true" />
+        <object xsi:nil="true" />
         <picklistField>STO_Category__c</picklistField>
         <picklistObject>Case</picklistObject>
     </dynamicChoiceSets>
