@@ -232,14 +232,6 @@ export default class CrmStoMessaging extends LightningElement {
         child.focus();
     }
 
-    handleSubmit() {
-        this.dispatchEvent(new CustomEvent('submitfromparent'));
-    }
-
-    forwardEvent(event) {
-        this.dispatchEvent(new CustomEvent(event.type));
-    }
-
     getAccountApiName() {
         if (this.objectApiName === 'Case') {
             return 'AccountId';
