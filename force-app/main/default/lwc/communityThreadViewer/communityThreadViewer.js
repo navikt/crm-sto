@@ -124,24 +124,23 @@ export default class CommunityThreadViewer extends LightningElement {
         errorSummary.focusHeader();
     }
 
-    /**
-     * Creates a message through apex
-     */
-    @api
     createMessage(validation) {
-        if (validation !== true) {
+        if (!validation) {
             this.buttonDisabled = false;
             return;
         }
         createMessage({ threadId: this.recordId, messageText: this.messageValue, fromContactId: this.userContactId })
             .then((result) => {
-                if (result === true) {
+                if (result) {
                     this.handlesuccess();
                 } else {
                     this.handleMessageFailed();
                 }
             })
-            .catch((error) => console.error(error));
+            .catch((error) => {
+                console.error('Problem sending message: ', error);
+                this.template.querySelector('c-alertdialog').showModal();
+            });
     }
 
     handleSendButtonClick() {
