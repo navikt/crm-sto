@@ -35,8 +35,6 @@ export default class StoMessagingContainer extends LightningElement {
     @api showClose = false;
     @api checkMedskriv = false;
 
-    @track singleThread = true;
-
     caseId;
     wiredCase;
     label;
