@@ -187,8 +187,8 @@
         </rules>
     </decisions>
     <environments>Default</environments>
-    <interviewLabel>Case STO Reserve v. 2 {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Case STO Reserve v. 2</label>
+    <interviewLabel>Case STO Reserve {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Case STO Reserve</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
