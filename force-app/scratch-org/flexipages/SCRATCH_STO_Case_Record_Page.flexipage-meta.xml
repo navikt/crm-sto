@@ -386,7 +386,7 @@
         <name>leftsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>SCRATCH STO Case Record Page v. 2</masterLabel>
+    <masterLabel>SCRATCH STO Case Record Page</masterLabel>
     <sobjectType>Case</sobjectType>
     <template>
         <name>flexipage:recordHomePinnedHeaderLeftSidebarTwoColTemplateDesktop</name>

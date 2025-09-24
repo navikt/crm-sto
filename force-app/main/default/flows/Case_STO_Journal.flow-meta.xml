@@ -152,12 +152,6 @@
                     <booleanValue>true</booleanValue>
                 </value>
             </inputParameters>
-            <inputParameters>
-                <name>useNewDesign</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <outputParameters>
@@ -218,12 +212,6 @@
                     <booleanValue>true</booleanValue>
                 </value>
             </inputParameters>
-            <inputParameters>
-                <name>useNewDesign</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <outputParameters>
@@ -267,7 +255,7 @@
         <connector>
             <targetReference>Create_Thread_Journal_Event</targetReference>
         </connector>
-        <flowName>CRM_Thread_Create_Journal_Entry_v_2</flowName>
+        <flowName>CRM_Thread_Create_Journal_Entry</flowName>
         <inputAssignments>
             <name>Journal_Case_ID</name>
             <value>
@@ -327,7 +315,7 @@
         <connector>
             <targetReference>Create_Thread_Journal_Event_1</targetReference>
         </connector>
-        <flowName>CRM_Thread_Create_Journal_Entry_v_2</flowName>
+        <flowName>CRM_Thread_Create_Journal_Entry</flowName>
         <inputAssignments>
             <name>Journal_Case_ID</name>
             <value>
