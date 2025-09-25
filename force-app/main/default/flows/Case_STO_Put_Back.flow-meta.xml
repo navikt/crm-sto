@@ -102,6 +102,7 @@
         </connector>
     </assignments>
     <assignments>
+        <description>Set Status New instead of Forwarded to prevent BTO -&gt; STO to get prioritized.</description>
         <name>Set_STO_Origin_Status_New_and_Thread_Type</name>
         <label>Set STO Origin, Status New and Thread Type</label>
         <locationX>50</locationX>
