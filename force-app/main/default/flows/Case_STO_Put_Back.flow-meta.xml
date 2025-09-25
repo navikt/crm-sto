@@ -4,17 +4,20 @@
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
         <locationX>512</locationX>
-        <locationY>1664</locationY>
+        <locationY>1856</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <nameSegment>c:crmTabCloser</nameSegment>
+        <offset>0</offset>
     </actionCalls>
     <apiVersion>52.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Assign_Case_Values</name>
         <label>Assign Case Values</label>
         <locationX>512</locationX>
-        <locationY>1448</locationY>
+        <locationY>1640</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.CRM_Run_Case_Assignment__c</assignToReference>
             <operator>Assign</operator>
@@ -27,10 +30,10 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Set_forwarded_status</name>
-        <label>Set forwarded status</label>
-        <locationX>512</locationX>
-        <locationY>1340</locationY>
+        <name>Set_Forwarded_Status</name>
+        <label>Set Forwarded Status</label>
+        <locationX>644</locationX>
+        <locationY>1448</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Status</assignToReference>
             <operator>Assign</operator>
@@ -59,6 +62,23 @@
         </connector>
     </assignments>
     <assignments>
+        <description>Set Status to New so that the Case is picked up again.</description>
+        <name>Set_New_Status</name>
+        <label>Set New Status</label>
+        <locationX>380</locationX>
+        <locationY>1448</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_Record.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>New</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_Case_Values</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Set_STO_Category</name>
         <label>Set STO Category</label>
         <locationX>182</locationX>
@@ -82,6 +102,7 @@
         </connector>
     </assignments>
     <assignments>
+        <description>Set Status New instead of Forwarded to prevent BTO -&gt; STO to get prioritized.</description>
         <name>Set_STO_Origin_Status_New_and_Thread_Type</name>
         <label>Set STO Origin, Status New and Thread Type</label>
         <locationX>50</locationX>
@@ -137,10 +158,6 @@
                 <elementReference>Incompetent_Value_Formula</elementReference>
             </value>
         </assignmentItems>
-        <connector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Set_forwarded_status</targetReference>
-        </connector>
     </assignments>
     <choices>
         <name>End_Of_Session</name>
@@ -212,7 +229,7 @@
         <locationX>512</locationX>
         <locationY>458</locationY>
         <defaultConnector>
-            <targetReference>Set_forwarded_status</targetReference>
+            <targetReference>Is_Case_Category_International</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -244,6 +261,32 @@
                 <targetReference>Set_Incompetent_IDs</targetReference>
             </connector>
             <label>Incompetent</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>International queue has a problem where there are many cases from other queues being transfered to International. This leads to a big queue of International PSRs building up because the forwarded Cases are prioritized. To solve this we do not give International Cases Forwarded status, to prevent them from being picked up first. Now they will be put in the back of the PSR queue.</description>
+        <name>Is_Case_Category_International</name>
+        <label>Is Case Category International?</label>
+        <locationX>512</locationX>
+        <locationY>1340</locationY>
+        <defaultConnector>
+            <targetReference>Set_Forwarded_Status</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not International</defaultConnectorLabel>
+        <rules>
+            <name>International</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case_Record.STO_Category__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Internasjonal</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_New_Status</targetReference>
+            </connector>
+            <label>International</label>
         </rules>
     </decisions>
     <decisions>
@@ -281,8 +324,8 @@
     <dynamicChoiceSets>
         <name>STO_Category_Picklist</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true" />
-        <object xsi:nil="true" />
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
         <picklistField>STO_Category__c</picklistField>
         <picklistObject>Case</picklistObject>
     </dynamicChoiceSets>
@@ -365,7 +408,7 @@
         <name>Update_Case</name>
         <label>Update Case</label>
         <locationX>512</locationX>
-        <locationY>1556</locationY>
+        <locationY>1748</locationY>
         <connector>
             <targetReference>Close_workspace_tab</targetReference>
         </connector>
@@ -377,7 +420,7 @@
         <locationX>314</locationX>
         <locationY>890</locationY>
         <connector>
-            <targetReference>Set_forwarded_status</targetReference>
+            <targetReference>Is_Case_Category_International</targetReference>
         </connector>
         <inputReference>Get_Thread</inputReference>
     </recordUpdates>
@@ -405,6 +448,14 @@
             <name>Is_Put_Back_Screen</name>
             <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede lagt tilbake.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -436,7 +487,16 @@
                     <dataType>String</dataType>
                     <defaultSelectedChoiceReference>Wrong_Queue</defaultSelectedChoiceReference>
                     <fieldType>RadioButtons</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -453,7 +513,16 @@
                     <name>Put_Back_Reason_Input</name>
                     <fieldText>Årsak</fieldText>
                     <fieldType>LargeTextArea</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
                     <visibilityRule>
                         <conditionLogic>and</conditionLogic>
                         <conditions>
@@ -473,10 +542,19 @@
                     </defaultValue>
                     <fieldText>Legg tilbake som STO</fieldText>
                     <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isDisabled>
                         <booleanValue>false</booleanValue>
                     </isDisabled>
                     <isRequired>true</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
                     <visibilityRule>
                         <conditionLogic>and</conditionLogic>
                         <conditions>
@@ -501,7 +579,16 @@
                     <dataType>String</dataType>
                     <fieldText>Velg temagruppe</fieldText>
                     <fieldType>DropdownBox</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
                     <visibilityRule>
                         <conditionLogic>and</conditionLogic>
                         <conditions>
@@ -523,6 +610,14 @@
             </fields>
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Legg tilbake</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
