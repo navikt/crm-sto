@@ -20,7 +20,7 @@ export default class StoMessageInbox extends LightningElement {
     @wire(getThreads, {})
     wirethreads(result) {
         if (result.error) {
-            console.log(result.error);
+            console.error(result.error);
         } else if (result.data) {
             this.wthreads = result.data;
             this.setThreads();
@@ -35,10 +35,6 @@ export default class StoMessageInbox extends LightningElement {
             this.wrthreads = result.data;
             this.setRecentThreads();
         }
-    }
-
-    get noItems() {
-        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
     }
 
     setThreads() {
@@ -83,5 +79,9 @@ export default class StoMessageInbox extends LightningElement {
             'https://www.nav.no/kontaktoss',
             'Kontakt oss'
         );
+    }
+
+    get noItems() {
+        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
     }
 }

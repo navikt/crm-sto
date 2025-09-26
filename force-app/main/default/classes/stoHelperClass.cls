@@ -1,8 +1,9 @@
 public with sharing class stoHelperClass {
-    private static final LoggerUtility logger = new LoggerUtility('STO');
-    private static final List<String> allowedThreadTypes = new List<String>{ 'STO', 'BTO' };
-    private static final Integer maxThreadCount = 3;
-    private static final Map<String, List<String>> threadTypeMap = new Map<String, List<String>>{
+    private static final LoggerUtility LOGGER = new LoggerUtility('STO');
+    private static final List<String> ALLOWED_THREAD_TYPES = new List<String>{ 'STO', 'BTO' };
+    private static final Integer MAX_THREAD_COUNT_STO = 3;
+    private static final Integer MAX_THREAD_COUNT_BTO = 10;
+    private static final Map<String, List<String>> THREAD_TYPE_MAP = new Map<String, List<String>>{
         'STO' => new List<String>{ 'STO', 'STB' },
         'BTO' => new List<String>{ 'BTO' },
         'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
@@ -60,8 +61,8 @@ public with sharing class stoHelperClass {
         Thread__c thread;
 
         if (isMaxThreadCount(theme, type)) {
-            logger.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
-            logger.publish();
+            LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
             throw new maxThreadLimitReachedException();
         }
 
@@ -114,7 +115,7 @@ public with sharing class stoHelperClass {
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
         thread.Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss';
-        thread.CRM_Thread_Type__c = allowedThreadTypes.contains(type) ? type : 'STO';
+        thread.CRM_Thread_Type__c = ALLOWED_THREAD_TYPES.contains(type) ? type : 'STO';
         thread.STO_Category__c = theme;
         thread.STO_Medskriv__c = medskriv;
         thread.NKS_Inbox_Title__c = inboxTitle;
@@ -131,8 +132,8 @@ public with sharing class stoHelperClass {
         try {
             insert thread;
         } catch (DmlException e) {
-            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
-            logger.publish();
+            LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
             throw new threadOrMessageException();
         }
         return thread;
@@ -149,8 +150,8 @@ public with sharing class stoHelperClass {
         try {
             insert msg;
         } catch (DmlException e) {
-            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
-            logger.publish();
+            LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
             throw new threadOrMessageException();
         }
     }
@@ -188,11 +189,11 @@ public with sharing class stoHelperClass {
 
     @AuraEnabled(cacheable=true)
     public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
-        List<String> allowedThreadTypes;
-        if (threadTypeMap.containsKey(threadType)) {
-            allowedThreadTypes = threadTypeMap.get(threadType);
+        List<String> ALLOWED_THREAD_TYPES;
+        if (THREAD_TYPE_MAP.containsKey(threadType)) {
+            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(threadType);
         } else {
-            allowedThreadTypes = threadTypeMap.get('ALL');
+            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get('ALL');
         }
 
         List<Thread__c> openThreads = [
@@ -217,7 +218,10 @@ public with sharing class stoHelperClass {
                     LIMIT 1
                 )
             FROM Thread__c
-            WHERE CRM_Is_Closed__C = FALSE AND CRM_Thread_Type__c IN :allowedThreadTypes AND STO_Category__c = :category
+            WHERE
+                CRM_Is_Closed__C = FALSE
+                AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES
+                AND STO_Category__c = :category
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         if (openThreads.size() > 0) {
@@ -240,30 +244,31 @@ public with sharing class stoHelperClass {
             thread.CRM_isActive__c = false;
             update thread;
         } catch (DmlException e) {
-            logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
-            logger.publish();
+            LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
         }
     }
 
     private static Boolean isMaxThreadCount(String theme, String threadType) {
-        List<String> allowedThreadTypes;
-        if (threadTypeMap.containsKey(threadType)) {
-            allowedThreadTypes = threadTypeMap.get(threadType);
+        List<String> ALLOWED_THREAD_TYPES;
+        if (THREAD_TYPE_MAP.containsKey(threadType)) {
+            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(threadType);
         } else {
-            allowedThreadTypes = threadTypeMap.get('ALL');
+            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get('ALL');
         }
 
         List<Thread__c> openThreads = [
-                SELECT Id,
+            SELECT
+                Id,
                 (
                     SELECT Id
                     FROM Messages__r
                     WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
                     LIMIT 1
                 )
-                FROM Thread__c
-                WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :allowedThreadTypes
-            ];
+            FROM Thread__c
+            WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES
+        ];
 
         List<Thread__c> threadList = new List<Thread__c>();
         for (Thread__c t : openThreads) {
@@ -271,7 +276,7 @@ public with sharing class stoHelperClass {
                 threadList.add(t);
             }
         }
-        return threadList.size() >= maxThreadCount;
+        return threadList.size() >= (threadType == 'BTO' ? MAX_THREAD_COUNT_BTO : MAX_THREAD_COUNT_STO);
     }
 
     public class threadOrMessageException extends Exception {
@@ -290,10 +295,42 @@ public with sharing class stoHelperClass {
                 NKS_Inbox_Title__c,
                 NKS_Inbox_Theme__c,
                 CRM_Is_Closed__c,
-                CRM_Related_Object__c
+                CRM_Related_Object__c,
+                STO_Category__c
             FROM Thread__c
             WHERE Id = :recordId
             LIMIT 1
         ];
+    }
+
+    @AuraEnabled
+    public static void putCloseIntent(Integer count) {
+        try {
+            User u = [SELECT Id, NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+            if (count >= 3) {
+                u.NKS_Close_Intent__c = true;
+            } else {
+                u.NKS_Close_Intent__c = false;
+            }
+            update u;
+        } catch (Exception e) {
+            throw new AuraHandledException('Failed to put close intent: ' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static Boolean getCloseIntent(String category) {
+        User u = [SELECT NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId()];
+        return u.NKS_Close_Intent__c && canUserCloseThread(category);
+    }
+
+    private static Boolean canUserCloseThread(String category) {
+        Integer count = [
+            SELECT COUNT()
+            FROM Thread__c
+            WHERE CRM_Is_Closed__c = FALSE AND STO_Category__c = :category AND CRM_Type__c = 'STO'
+        ];
+        return count >= 3;
     }
 }

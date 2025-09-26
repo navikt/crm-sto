@@ -1,5 +1,4 @@
 import { LightningElement, api, wire } from 'lwc';
-import veiledericon from '@salesforce/resourceUrl/female';
 import markasread from '@salesforce/apex/stoInboxHelper.markAsRead';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedConversations from '@salesforce/apex/relatedConversationNoteHelper.getRelatedConversations';
@@ -26,22 +25,19 @@ const fields = [
 export default class CommunityConversationNote extends LightningElement {
     @api recordId;
     @api title;
+
     name;
     note;
     date;
     relatedNotes;
     themeGroup;
 
-    get navIcon() {
-        return veiledericon;
-    }
-
     connectedCallback() {
         markasread({ conversationNoteId: this.recordId });
     }
 
     @wire(getRecord, { recordId: '$recordId', fields })
-    wireData({ error, data }) {
+    wiredRecord({ error, data }) {
         if (data) {
             this.name = getFieldValue(data, NAME_FIELD);
             this.note = getFieldValue(data, NOTE_FIELD);
@@ -61,9 +57,8 @@ export default class CommunityConversationNote extends LightningElement {
                     this.relatedNotes = conv;
                 })
                 .catch((err) => console.log(err));
-        }
-        if (error) {
-            console.log(error);
+        } else if (error) {
+            console.error('Error on getting Conversation Note: ', error);
         }
     }
 
