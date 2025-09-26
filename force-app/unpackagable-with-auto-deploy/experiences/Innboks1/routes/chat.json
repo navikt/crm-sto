@@ -1,0 +1,10 @@
+{
+  "activeViewId" : "a213cb8c-2a62-48b8-83e8-1739473a3df9",
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "configurationTags" : [ ],
+  "id" : "c1f744e8-e989-47b7-a986-277a66dd6845",
+  "label" : "Chat",
+  "routeType" : "custom-chat",
+  "type" : "route",
+  "urlPrefix" : "chat"
+}
