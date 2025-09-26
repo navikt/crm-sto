@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>54.0</apiVersion>
+    <apiVersion>58.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Assign_On_Hold_Status</name>
         <label>Assign On Hold Status</label>
-        <locationX>314</locationX>
-        <locationY>518</locationY>
+        <locationX>776</locationX>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>Get_Case.Status</assignToReference>
             <operator>Assign</operator>
@@ -18,13 +18,30 @@
             <targetReference>Update_Case</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>Assign_On_Hold_Status_0</name>
+        <label>Assign On Hold Status 0</label>
+        <locationX>72</locationX>
+        <locationY>566</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_0.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>On Hold</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Case_0</targetReference>
+        </connector>
+    </assignments>
     <decisions>
-        <name>Check_If_Case_Is_In_Progress_Or_Reserved</name>
-        <label>Check If Case Is In Progress Or Reserved</label>
-        <locationX>446</locationX>
-        <locationY>398</locationY>
+        <name>Case_Reserved_Or_In_Progress</name>
+        <label>Case Reserved Or In Progress</label>
+        <locationX>908</locationX>
+        <locationY>566</locationY>
         <defaultConnector>
-            <targetReference>No_Condition_Screen</targetReference>
+            <isGoTo>true</isGoTo>
+            <targetReference>case_reserved</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -51,12 +68,69 @@
         </rules>
     </decisions>
     <decisions>
+        <name>Case_Reserved_Or_In_Progress_0</name>
+        <label>Case Reserved Or In Progress 0</label>
+        <locationX>204</locationX>
+        <locationY>458</locationY>
+        <defaultConnector>
+            <targetReference>case_reserved</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Reserved</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>In progress</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Reserved</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_On_Hold_Status_0</targetReference>
+            </connector>
+            <label>Reserved</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Record_Id</name>
+        <label>Check Record Id</label>
+        <locationX>402</locationX>
+        <locationY>134</locationY>
+        <defaultConnector>
+            <targetReference>Get_Thread</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_Case</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>recordId</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>500</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Case_0</targetReference>
+            </connector>
+            <label>Is Case</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Check_Status</name>
         <label>Check Status</label>
-        <locationX>248</locationX>
-        <locationY>278</locationY>
+        <locationX>754</locationX>
+        <locationY>458</locationY>
         <defaultConnector>
-            <targetReference>Check_If_Case_Is_In_Progress_Or_Reserved</targetReference>
+            <targetReference>Case_Reserved_Or_In_Progress</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -84,11 +158,51 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Case_Completed_Screen</targetReference>
+                <targetReference>Case_Completed</targetReference>
             </connector>
             <label>Already Completed</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Check_Status_0</name>
+        <label>Check Status 0</label>
+        <locationX>50</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>Case_Reserved_Or_In_Progress_0</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Already_Completed_0</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>On Hold</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Forwarded</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Case_0.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Case_Completed</targetReference>
+            </connector>
+            <label>Already Completed</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
     <interviewLabel>Case STO Complete {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Complete</label>
     <processMetadataValues>
@@ -113,11 +227,39 @@
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>248</locationX>
-        <locationY>158</locationY>
+        <locationX>754</locationX>
+        <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Status</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Case__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>NKS_Henvendelse_BehandlingsId__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_API_Reference__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Case</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Case_0</name>
+        <label>Get Case 0</label>
+        <locationX>50</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Status_0</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -131,86 +273,53 @@
         <object>Case</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Thread</name>
+        <label>Get Thread</label>
+        <locationX>754</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Case</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Thread__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>314</locationX>
-        <locationY>638</locationY>
-        <connector>
-            <targetReference>Close_Screen</targetReference>
-        </connector>
+        <locationX>776</locationX>
+        <locationY>782</locationY>
         <inputReference>Get_Case</inputReference>
     </recordUpdates>
+    <recordUpdates>
+        <name>Update_Case_0</name>
+        <label>Update Case 0</label>
+        <locationX>72</locationX>
+        <locationY>674</locationY>
+        <inputReference>Get_Case_0</inputReference>
+    </recordUpdates>
     <screens>
-        <name>Case_Completed_Screen</name>
-        <label>Case Completed Screen</label>
-        <locationX>50</locationX>
-        <locationY>398</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Case_Completed</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px; background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede ferdigstilt.&lt;/strong&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Close_Screen</name>
-        <label>Close Screen</label>
-        <locationX>314</locationX>
-        <locationY>758</locationY>
+        <name>Case_Completed</name>
+        <label>Case Completed</label>
+        <locationX>402</locationX>
+        <locationY>1250</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
-            <name>Success_toast</name>
-            <extensionName>c:fcFlowCloseWithToast</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>closeModal</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>mode</name>
-                <value>
-                    <stringValue>dismissible</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>message</name>
-                <value>
-                    <stringValue>Henvendelsen ble ferdigstilt.</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>title</name>
-                <value>
-                    <stringValue>Ferdigstilt</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>success</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <name>Complete_Screen</name>
+            <fieldText>&lt;p&gt;{!$Label.STO_Case_Completed}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
                     <stringValue>top</stringValue>
@@ -224,16 +333,16 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>No_Condition_Screen</name>
-        <label>No Condition Screen</label>
-        <locationX>578</locationX>
-        <locationY>518</locationY>
-        <allowBack>false</allowBack>
+        <name>case_reserved</name>
+        <label>case reserved</label>
+        <locationX>336</locationX>
+        <locationY>566</locationY>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
+        <allowPause>true</allowPause>
         <fields>
-            <name>Not_In_Progress_Reserved</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Du kan ikke ferdigstille denne henvendelsen for den er verken reservert til deg eller under arbeid.&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <name>Reserve_Screen</name>
+            <fieldText>&lt;p&gt;{!$Label.STO_Case_Reserved}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -244,15 +353,14 @@
                 </width>
             </styleProperties>
         </fields>
-        <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>122</locationX>
+        <locationX>276</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Case</targetReference>
+            <targetReference>Check_Record_Id</targetReference>
         </connector>
     </start>
     <status>Active</status>

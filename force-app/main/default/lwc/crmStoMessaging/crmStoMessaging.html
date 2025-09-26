@@ -8,16 +8,17 @@
         record-id={threadId}
         single-thread={singleThread}
         card-title={actualCardTitle}
+        icon-name={iconName}
         text-template={textTemplate}
         show-close={showClose}
         english-text-template={englishTextTemplate}
         onenglisheventtwo={handleEnglishEventTwo}
         class={computeClasses}
         show-quick
-        show-language-change-modal={showLanguageChangeModal}
         submit-button-label={buttonLabel}
+        is-thread={isThread}
+        is-case-reserved={isCaseReserved}
     >
-        <c-crm-sto-messaging-toolbar slot="toolbar" object-api-name={objectApiName}></c-crm-sto-messaging-toolbar>
         <template lwc:if={showMedskrivBlocker}>
             <div slot="messages">
                 <div class="slds-align_absolute-center slds-grid_vertical medskrivBlocker scroller">
@@ -30,5 +31,11 @@
                 </div>
             </div>
         </template>
+        <div slot="buttonContainer">
+            <slot name="buttonContainer"></slot>
+        </div>
+        <div slot="flowSection">
+            <slot name="flowSection"></slot>
+        </div>
     </c-crm-messaging-message-component>
 </template>

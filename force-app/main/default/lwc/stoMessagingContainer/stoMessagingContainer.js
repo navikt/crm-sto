@@ -35,8 +35,6 @@ export default class StoMessagingContainer extends LightningElement {
     @api showClose = false;
     @api checkMedskriv = false;
 
-    @track singleThread = true;
-
     caseId;
     wiredCase;
     label;
@@ -135,7 +133,7 @@ export default class StoMessagingContainer extends LightningElement {
         }
     }
 
-    handleSubmit() {
+    handleMessageSentFromThreadViewer() {
         if (!this.completeDisabled) {
             this.resetButtonVisibility();
         }
@@ -170,7 +168,7 @@ export default class StoMessagingContainer extends LightningElement {
         }
     }
 
-    handleClosed() {
+    handleThreadClosed() {
         refreshApex(this.wiredCase);
     }
 
@@ -232,7 +230,7 @@ export default class StoMessagingContainer extends LightningElement {
             {
                 id: 'reserve',
                 condition: this.showReserveButton,
-                flowApiName: 'Case_STO_Reserve_v_2'
+                flowApiName: 'Case_STO_Reserve'
             },
             {
                 id: 'putBack',
@@ -242,12 +240,12 @@ export default class StoMessagingContainer extends LightningElement {
             {
                 id: 'transfer',
                 condition: this.showTransferButton,
-                flowApiName: 'STO_Transfer_v_2'
+                flowApiName: 'STO_Transfer'
             },
             {
                 id: 'redact',
                 condition: this.showRedactButton,
-                flowApiName: 'Case_STO_Redact_v_2'
+                flowApiName: 'Case_STO_Redact'
             }
         ];
     }
@@ -257,19 +255,19 @@ export default class StoMessagingContainer extends LightningElement {
             {
                 id: 'journal',
                 condition: this.showJournalButton,
-                flowApiName: 'Case_STO_Journal_v_2',
+                flowApiName: 'Case_STO_Journal',
                 handleStatusChange: this.handleFlowStatusChange
             },
             {
                 id: 'createNavTask',
                 condition: this.showCreateNavTaskButton,
-                flowApiName: 'Case_STO_Send_NAV_Task_v_2',
+                flowApiName: 'Case_STO_Send_NAV_Task',
                 handleStatusChange: this.handleFlowStatusChange
             },
             {
                 id: 'complete',
                 condition: this.showComplete,
-                flowApiName: 'Case_STO_Complete_v_2',
+                flowApiName: 'Case_STO_Complete',
                 handleStatusChange: this.handleSubmitStatusChange
             }
         ];

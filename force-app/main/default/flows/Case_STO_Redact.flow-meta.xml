@@ -237,8 +237,8 @@
         </rules>
     </decisions>
     <environments>Default</environments>
-    <interviewLabel>Case STO Redact v. 2 {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Case STO Redact v. 2</label>
+    <interviewLabel>Case STO Redact {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Case STO Redact</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
