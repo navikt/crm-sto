@@ -1,11 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <apiVersion>58.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>Set_Thread_Category</name>
-        <label>Set Thread Category</label>
+        <description>Set Status New instead of Forwarded to prevent BTO -&gt; STO to get prioritized.</description>
+        <name>Set_Case_and_Thread_fields</name>
+        <label>Set Case and Thread fields</label>
         <locationX>50</locationX>
+        <locationY>890</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_Record.Origin</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Case_Record.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>New</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread.CRM_Thread_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Skriv til oss</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread.CRM_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Set_Run_Case_Assignment_Field</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Case_and_Thread_STO_Category</name>
+        <label>Set Case and Thread STO Category</label>
+        <locationX>248</locationX>
         <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_Record.STO_Category__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>STO_Category_Picklist</elementReference>
+            </value>
+        </assignmentItems>
         <assignmentItems>
             <assignToReference>Get_Thread.STO_Category__c</assignToReference>
             <operator>Assign</operator>
@@ -14,13 +67,61 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Submit_Transfer_Event</targetReference>
+            <targetReference>Is_BTO_and_put_back_as_STO</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Forwarded_Status</name>
+        <label>Set Forwarded Status</label>
+        <locationX>578</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_Record.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Forwarded</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Set_Run_Case_Assignment_Field</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_New_Status</name>
+        <label>Set New Status</label>
+        <locationX>314</locationX>
+        <locationY>998</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_Record.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>New</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Set_Run_Case_Assignment_Field</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Run_Case_Assignment_Field</name>
+        <label>Set Run Case Assignment Field</label>
+        <locationX>248</locationX>
+        <locationY>1274</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_Record.CRM_Run_Case_Assignment__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Case</targetReference>
         </connector>
     </assignments>
     <decisions>
         <name>Check_If_Has_Case</name>
         <label>Check If Has Case</label>
-        <locationX>380</locationX>
+        <locationX>825</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Has_No_Case</targetReference>
@@ -44,7 +145,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Check_If_In_Queue</targetReference>
+                <targetReference>Get_Case_Record</targetReference>
             </connector>
             <label>Has Case</label>
         </rules>
@@ -52,8 +153,8 @@
     <decisions>
         <name>Check_If_In_Queue</name>
         <label>Check If In Queue</label>
-        <locationX>182</locationX>
-        <locationY>350</locationY>
+        <locationX>545</locationX>
+        <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Not_In_Queue_Screen</targetReference>
         </defaultConnector>
@@ -62,7 +163,7 @@
             <name>In_Queue</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Thread.CRM_Case__r.CRM_In_Queue__c</leftValueReference>
+                <leftValueReference>Get_Case_Record.CRM_In_Queue__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -72,6 +173,64 @@
                 <targetReference>Transfer_Screen</targetReference>
             </connector>
             <label>In Queue</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_BTO_and_put_back_as_STO</name>
+        <label>Is BTO and put back as STO?</label>
+        <locationX>248</locationX>
+        <locationY>782</locationY>
+        <defaultConnector>
+            <targetReference>Is_Case_Category_Internasjonal</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>BTO_and_put_back_as_STO</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case_Record.Origin</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>BTO</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>STO</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Case_and_Thread_fields</targetReference>
+            </connector>
+            <label>BTO and put back as STO</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>International queue has a problem where there are many cases from other queues being transfered to International. This leads to a big queue of International PSRs building up because the forwarded Cases are prioritized. To solve this we do not give International Cases Forwarded status, to prevent them from being picked up first. Now they will be put in the back of the PSR queue.</description>
+        <name>Is_Case_Category_Internasjonal</name>
+        <label>Is Case Category Internasjonal?</label>
+        <locationX>446</locationX>
+        <locationY>890</locationY>
+        <defaultConnector>
+            <targetReference>Set_Forwarded_Status</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not International</defaultConnectorLabel>
+        <rules>
+            <name>International</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case_Record.STO_Category__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Internasjonal</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_New_Status</targetReference>
+            </connector>
+            <label>International</label>
         </rules>
     </decisions>
     <dynamicChoiceSets>
@@ -110,10 +269,31 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
+        <name>Get_Case_Record</name>
+        <label>Get Case Record</label>
+        <locationX>545</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_If_In_Queue</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Thread.CRM_Case__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Case</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <description>Get the STO Thread information</description>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>380</locationX>
+        <locationX>825</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -132,53 +312,27 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
-        <name>Assign_Case_to_Queue</name>
-        <label>Assign Case to Queue</label>
-        <locationX>50</locationX>
-        <locationY>566</locationY>
+        <name>Update_Case</name>
+        <label>Update Case</label>
+        <locationX>248</locationX>
+        <locationY>1382</locationY>
         <connector>
-            <targetReference>Set_Thread_Category</targetReference>
+            <targetReference>Submit_Transfer_Event</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>CRM_Run_Case_Assignment__c</field>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>STO_Category__c</field>
-            <value>
-                <elementReference>STO_Category_Picklist</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Status</field>
-            <value>
-                <stringValue>Forwarded</stringValue>
-            </value>
-        </inputAssignments>
-        <object>Case</object>
+        <inputReference>Get_Case_Record</inputReference>
     </recordUpdates>
     <recordUpdates>
         <name>Update_Thread</name>
         <label>Update Thread</label>
-        <locationX>50</locationX>
-        <locationY>890</locationY>
+        <locationX>248</locationX>
+        <locationY>1598</locationY>
         <inputReference>Get_Thread</inputReference>
     </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Has_No_Case</name>
         <label>Has No Case</label>
-        <locationX>578</locationX>
+        <locationX>1106</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -187,6 +341,14 @@
             <name>Case_Not_Found_Screen</name>
             <fieldText>&lt;p&gt;{!$Label.STO_Transfer_Display_Text}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -195,8 +357,8 @@
     <screens>
         <name>Not_In_Queue_Screen</name>
         <label>Not In Queue Screen</label>
-        <locationX>314</locationX>
-        <locationY>458</locationY>
+        <locationX>842</locationX>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -204,6 +366,14 @@
             <name>display_text</name>
             <fieldText>&lt;p&gt;{!$Label.STO_Transfer_Display_Text}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -213,13 +383,13 @@
         <description>Screen including transfer options.</description>
         <name>Transfer_Screen</name>
         <label>Transfer Screen</label>
-        <locationX>50</locationX>
-        <locationY>458</locationY>
+        <locationX>248</locationX>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Assign_Case_to_Queue</targetReference>
+            <targetReference>Set_Case_and_Thread_STO_Category</targetReference>
         </connector>
         <fields>
             <name>Transfer_Screen_Section1</name>
@@ -239,6 +409,38 @@
                 <name>Transfer_Screen_Section1_Column2</name>
                 <fieldType>Region</fieldType>
                 <fields>
+                    <name>STO</name>
+                    <dataType>Boolean</dataType>
+                    <defaultValue>
+                        <booleanValue>false</booleanValue>
+                    </defaultValue>
+                    <fieldText>Legg tilbake som STO</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isDisabled>
+                        <booleanValue>false</booleanValue>
+                    </isDisabled>
+                    <isRequired>true</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Get_Case_Record.Origin</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>BTO</stringValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
                     <name>STO_Category_Picklist</name>
                     <choiceReferences>STO_Categories</choiceReferences>
                     <dataType>String</dataType>
@@ -247,7 +449,16 @@
                     </defaultValue>
                     <fieldText>Velg kø:</fieldText>
                     <fieldType>RadioButtons</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -270,13 +481,21 @@
             </fields>
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Overfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>254</locationX>
+        <locationX>699</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -287,8 +506,8 @@
         <description>Add a transfer event message to the thread</description>
         <name>Submit_Transfer_Event</name>
         <label>Submit Transfer Event</label>
-        <locationX>50</locationX>
-        <locationY>782</locationY>
+        <locationX>248</locationX>
+        <locationY>1490</locationY>
         <connector>
             <targetReference>Update_Thread</targetReference>
         </connector>
