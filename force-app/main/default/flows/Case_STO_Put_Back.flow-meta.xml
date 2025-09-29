@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
-        <locationX>776</locationX>
-        <locationY>2006</locationY>
+        <locationX>644</locationX>
+        <locationY>1856</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -16,8 +16,8 @@
     <assignments>
         <name>Assign_Case_Values</name>
         <label>Assign Case Values</label>
-        <locationX>776</locationX>
-        <locationY>1790</locationY>
+        <locationX>644</locationX>
+        <locationY>1640</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.CRM_Run_Case_Assignment__c</assignToReference>
             <operator>Assign</operator>
@@ -32,8 +32,8 @@
     <assignments>
         <name>Set_Forwarded_Status</name>
         <label>Set Forwarded Status</label>
-        <locationX>908</locationX>
-        <locationY>1598</locationY>
+        <locationX>776</locationX>
+        <locationY>1448</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Status</assignToReference>
             <operator>Assign</operator>
@@ -65,8 +65,8 @@
         <description>Set Status to New so that the Case is picked up again.</description>
         <name>Set_New_Status</name>
         <label>Set New Status</label>
-        <locationX>644</locationX>
-        <locationY>1598</locationY>
+        <locationX>512</locationX>
+        <locationY>1448</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Status</assignToReference>
             <operator>Assign</operator>
@@ -104,8 +104,8 @@
     <assignments>
         <name>Set_STO_fields</name>
         <label>Set STO fields on Case and Thread</label>
-        <locationX>1106</locationX>
-        <locationY>782</locationY>
+        <locationX>842</locationX>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Origin</assignToReference>
             <operator>Assign</operator>
@@ -243,7 +243,7 @@
     <decisions>
         <name>Check_Case_Status</name>
         <label>Check Case Status</label>
-        <locationX>1161</locationX>
+        <locationX>963</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Case_Is_Put_Back_Screen</targetReference>
@@ -275,7 +275,7 @@
     <decisions>
         <name>Check_Put_Back_Decision</name>
         <label>Check Put Back Decision</label>
-        <locationX>776</locationX>
+        <locationX>644</locationX>
         <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Is_Case_Category_International</targetReference>
@@ -283,9 +283,16 @@
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Wrong_Queue_Choice</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>or</conditionLogic>
             <conditions>
-                <leftValueReference>Put_Back_Reason</leftValueReference>
+                <leftValueReference>Put_Back_Reason_BTO</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Wrong_Queue</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Put_Back_Reason_STO</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Wrong_Queue</elementReference>
@@ -298,9 +305,16 @@
         </rules>
         <rules>
             <name>Incompetent_Choice</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>or</conditionLogic>
             <conditions>
-                <leftValueReference>Put_Back_Reason</leftValueReference>
+                <leftValueReference>Put_Back_Reason_BTO</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Incompetent</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Put_Back_Reason_STO</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Incompetent</elementReference>
@@ -315,49 +329,24 @@
             <name>Change_to_STO</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Put_Back_Reason</leftValueReference>
+                <leftValueReference>Put_Back_Reason_BTO</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>ChangetoSTO</elementReference>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Is_Already_STO</targetReference>
+                <targetReference>Get_Thread2</targetReference>
             </connector>
             <label>Change to STO</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Is_Already_STO</name>
-        <label>Is Already STO?</label>
-        <locationX>974</locationX>
-        <locationY>566</locationY>
-        <defaultConnector>
-            <targetReference>Get_Thread2</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Is Not STO</defaultConnectorLabel>
-        <rules>
-            <name>Is_STO</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Case_Record.Origin</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>STO</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Is_Already_STO_Screen</targetReference>
-            </connector>
-            <label>Is STO</label>
         </rules>
     </decisions>
     <decisions>
         <description>International queue has a problem where there are many cases from other queues being transfered to International. This leads to a big queue of International PSRs building up because the forwarded Cases are prioritized. To solve this we do not give International Cases Forwarded status, to prevent them from being picked up first. Now they will be put in the back of the PSR queue.</description>
         <name>Is_Case_Category_International</name>
         <label>Is Case Category International?</label>
-        <locationX>776</locationX>
-        <locationY>1490</locationY>
+        <locationX>644</locationX>
+        <locationY>1340</locationY>
         <defaultConnector>
             <targetReference>Set_Forwarded_Status</targetReference>
         </defaultConnector>
@@ -453,7 +442,7 @@
     <recordLookups>
         <name>Get_Case_Record</name>
         <label>Get Case Record</label>
-        <locationX>1161</locationX>
+        <locationX>963</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -495,8 +484,8 @@
     <recordLookups>
         <name>Get_Thread2</name>
         <label>Get Thread</label>
-        <locationX>1106</locationX>
-        <locationY>674</locationY>
+        <locationX>842</locationX>
+        <locationY>566</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_STO_fields</targetReference>
@@ -517,8 +506,8 @@
         <description>Updates the case to retrigger assignment to be put back to queue.</description>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>776</locationX>
-        <locationY>1898</locationY>
+        <locationX>644</locationX>
+        <locationY>1748</locationY>
         <connector>
             <targetReference>Close_workspace_tab</targetReference>
         </connector>
@@ -527,8 +516,8 @@
     <recordUpdates>
         <name>Update_Case_Fields</name>
         <label>Update Case</label>
-        <locationX>1106</locationX>
-        <locationY>998</locationY>
+        <locationX>842</locationX>
+        <locationY>890</locationY>
         <connector>
             <targetReference>Refresh_Tab</targetReference>
         </connector>
@@ -537,8 +526,8 @@
     <recordUpdates>
         <name>Update_Thread</name>
         <label>Update Thread</label>
-        <locationX>1106</locationX>
-        <locationY>890</locationY>
+        <locationX>842</locationX>
+        <locationY>782</locationY>
         <connector>
             <targetReference>Update_Case_Fields</targetReference>
         </connector>
@@ -569,7 +558,7 @@
     <screens>
         <name>Case_Is_Put_Back_Screen</name>
         <label>Case Is Put Back Screen</label>
-        <locationX>1546</locationX>
+        <locationX>1282</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -592,34 +581,9 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Is_Already_STO_Screen</name>
-        <label>Is Already STO Screen</label>
-        <locationX>842</locationX>
-        <locationY>674</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Is_Already_STO_Screen_Text</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede av typen STO.&lt;/strong&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
         <name>Put_Back_Screen</name>
         <label>Put Back Screen</label>
-        <locationX>776</locationX>
+        <locationX>644</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -634,7 +598,7 @@
                 <name>Put_Back_Screen_Section1_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <name>Put_Back_Reason</name>
+                    <name>Put_Back_Reason_BTO</name>
                     <choiceReferences>Wrong_Queue</choiceReferences>
                     <choiceReferences>ChangetoSTO</choiceReferences>
                     <choiceReferences>Incompetent</choiceReferences>
@@ -653,6 +617,46 @@
                             <stringValue>12</stringValue>
                         </width>
                     </styleProperties>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Get_Case_Record.Origin</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>BTO</stringValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>Put_Back_Reason_STO</name>
+                    <choiceReferences>Wrong_Queue</choiceReferences>
+                    <choiceReferences>Incompetent</choiceReferences>
+                    <choiceReferences>End_Of_Session</choiceReferences>
+                    <choiceReferences>Other</choiceReferences>
+                    <dataType>String</dataType>
+                    <defaultSelectedChoiceReference>Wrong_Queue</defaultSelectedChoiceReference>
+                    <fieldType>RadioButtons</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Get_Case_Record.Origin</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>STO</stringValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -680,9 +684,16 @@
                         </width>
                     </styleProperties>
                     <visibilityRule>
-                        <conditionLogic>and</conditionLogic>
+                        <conditionLogic>or</conditionLogic>
                         <conditions>
-                            <leftValueReference>Put_Back_Reason</leftValueReference>
+                            <leftValueReference>Put_Back_Reason_BTO</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <elementReference>Other</elementReference>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>Put_Back_Reason_STO</leftValueReference>
                             <operator>EqualTo</operator>
                             <rightValue>
                                 <elementReference>Other</elementReference>
@@ -714,7 +725,7 @@
                     <visibilityRule>
                         <conditionLogic>and</conditionLogic>
                         <conditions>
-                            <leftValueReference>Put_Back_Reason</leftValueReference>
+                            <leftValueReference>Put_Back_Reason_BTO</leftValueReference>
                             <operator>EqualTo</operator>
                             <rightValue>
                                 <elementReference>Wrong_Queue</elementReference>
@@ -746,9 +757,16 @@
                         </width>
                     </styleProperties>
                     <visibilityRule>
-                        <conditionLogic>and</conditionLogic>
+                        <conditionLogic>or</conditionLogic>
                         <conditions>
-                            <leftValueReference>Put_Back_Reason</leftValueReference>
+                            <leftValueReference>Put_Back_Reason_BTO</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <elementReference>Wrong_Queue</elementReference>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>Put_Back_Reason_STO</leftValueReference>
                             <operator>EqualTo</operator>
                             <rightValue>
                                 <elementReference>Wrong_Queue</elementReference>
@@ -846,8 +864,8 @@
     <screens>
         <name>Refresh_Tab</name>
         <label>Refresh Tab</label>
-        <locationX>1106</locationX>
-        <locationY>1106</locationY>
+        <locationX>842</locationX>
+        <locationY>998</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -871,7 +889,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>1035</locationX>
+        <locationX>837</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Case_Record</targetReference>
