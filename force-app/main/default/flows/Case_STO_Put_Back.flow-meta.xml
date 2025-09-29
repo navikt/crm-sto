@@ -707,7 +707,7 @@
                     <defaultValue>
                         <booleanValue>false</booleanValue>
                     </defaultValue>
-                    <fieldText>Legg tilbake som STO</fieldText>
+                    <fieldText>Legg tilbake i kø som STO</fieldText>
                     <fieldType>InputField</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isDisabled>
