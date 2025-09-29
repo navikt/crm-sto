@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
-        <locationX>512</locationX>
-        <locationY>1856</locationY>
+        <locationX>776</locationX>
+        <locationY>2006</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -16,8 +16,8 @@
     <assignments>
         <name>Assign_Case_Values</name>
         <label>Assign Case Values</label>
-        <locationX>512</locationX>
-        <locationY>1640</locationY>
+        <locationX>776</locationX>
+        <locationY>1790</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.CRM_Run_Case_Assignment__c</assignToReference>
             <operator>Assign</operator>
@@ -32,8 +32,8 @@
     <assignments>
         <name>Set_Forwarded_Status</name>
         <label>Set Forwarded Status</label>
-        <locationX>644</locationX>
-        <locationY>1448</locationY>
+        <locationX>908</locationX>
+        <locationY>1598</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Status</assignToReference>
             <operator>Assign</operator>
@@ -65,8 +65,8 @@
         <description>Set Status to New so that the Case is picked up again.</description>
         <name>Set_New_Status</name>
         <label>Set New Status</label>
-        <locationX>380</locationX>
-        <locationY>1448</locationY>
+        <locationX>644</locationX>
+        <locationY>1598</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Status</assignToReference>
             <operator>Assign</operator>
@@ -99,6 +99,43 @@
         </assignmentItems>
         <connector>
             <targetReference>IsBTO</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_STO_fields</name>
+        <label>Set STO fields on Case and Thread</label>
+        <locationX>1106</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>Get_Case_Record.Origin</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread2.CRM_Thread_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread2.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Skriv til oss</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Get_Thread2.CRM_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>STO</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Thread</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -158,7 +195,19 @@
                 <elementReference>Incompetent_Value_Formula</elementReference>
             </value>
         </assignmentItems>
+        <connector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Set_Forwarded_Status</targetReference>
+        </connector>
     </assignments>
+    <choices>
+        <name>ChangetoSTO</name>
+        <choiceText>Gjør om til STO</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Gjør om til STO</stringValue>
+        </value>
+    </choices>
     <choices>
         <name>End_Of_Session</name>
         <choiceText>Avslutning av økt</choiceText>
@@ -185,7 +234,7 @@
     </choices>
     <choices>
         <name>Wrong_Queue</name>
-        <choiceText>Legg til kø</choiceText>
+        <choiceText>Legg tilbake i kø</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>Wrong_Queue</stringValue>
@@ -194,7 +243,7 @@
     <decisions>
         <name>Check_Case_Status</name>
         <label>Check Case Status</label>
-        <locationX>765</locationX>
+        <locationX>1161</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Case_Is_Put_Back_Screen</targetReference>
@@ -226,7 +275,7 @@
     <decisions>
         <name>Check_Put_Back_Decision</name>
         <label>Check Put Back Decision</label>
-        <locationX>512</locationX>
+        <locationX>776</locationX>
         <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Is_Case_Category_International</targetReference>
@@ -262,13 +311,53 @@
             </connector>
             <label>Incompetent</label>
         </rules>
+        <rules>
+            <name>Change_to_STO</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Put_Back_Reason</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>ChangetoSTO</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Is_Already_STO</targetReference>
+            </connector>
+            <label>Change to STO</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_Already_STO</name>
+        <label>Is Already STO?</label>
+        <locationX>974</locationX>
+        <locationY>566</locationY>
+        <defaultConnector>
+            <targetReference>Get_Thread2</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Is Not STO</defaultConnectorLabel>
+        <rules>
+            <name>Is_STO</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Case_Record.Origin</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>STO</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Is_Already_STO_Screen</targetReference>
+            </connector>
+            <label>Is STO</label>
+        </rules>
     </decisions>
     <decisions>
         <description>International queue has a problem where there are many cases from other queues being transfered to International. This leads to a big queue of International PSRs building up because the forwarded Cases are prioritized. To solve this we do not give International Cases Forwarded status, to prevent them from being picked up first. Now they will be put in the back of the PSR queue.</description>
         <name>Is_Case_Category_International</name>
         <label>Is Case Category International?</label>
-        <locationX>512</locationX>
-        <locationY>1340</locationY>
+        <locationX>776</locationX>
+        <locationY>1490</locationY>
         <defaultConnector>
             <targetReference>Set_Forwarded_Status</targetReference>
         </defaultConnector>
@@ -364,7 +453,7 @@
     <recordLookups>
         <name>Get_Case_Record</name>
         <label>Get Case Record</label>
-        <locationX>765</locationX>
+        <locationX>1161</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -403,16 +492,57 @@
         <object>Thread__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Thread2</name>
+        <label>Get Thread</label>
+        <locationX>1106</locationX>
+        <locationY>674</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Set_STO_fields</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Thread__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <description>Updates the case to retrigger assignment to be put back to queue.</description>
         <name>Update_Case</name>
         <label>Update Case</label>
-        <locationX>512</locationX>
-        <locationY>1748</locationY>
+        <locationX>776</locationX>
+        <locationY>1898</locationY>
         <connector>
             <targetReference>Close_workspace_tab</targetReference>
         </connector>
         <inputReference>Get_Case_Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Case_Fields</name>
+        <label>Update Case</label>
+        <locationX>1106</locationX>
+        <locationY>998</locationY>
+        <connector>
+            <targetReference>Refresh_Tab</targetReference>
+        </connector>
+        <inputReference>Get_Case_Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Thread</name>
+        <label>Update Thread</label>
+        <locationX>1106</locationX>
+        <locationY>890</locationY>
+        <connector>
+            <targetReference>Update_Case_Fields</targetReference>
+        </connector>
+        <inputReference>Get_Thread2</inputReference>
     </recordUpdates>
     <recordUpdates>
         <name>Update_Thread_Category</name>
@@ -439,7 +569,7 @@
     <screens>
         <name>Case_Is_Put_Back_Screen</name>
         <label>Case Is Put Back Screen</label>
-        <locationX>1018</locationX>
+        <locationX>1546</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -462,9 +592,34 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>Is_Already_STO_Screen</name>
+        <label>Is Already STO Screen</label>
+        <locationX>842</locationX>
+        <locationY>674</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Is_Already_STO_Screen_Text</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede av typen STO.&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Put_Back_Screen</name>
         <label>Put Back Screen</label>
-        <locationX>512</locationX>
+        <locationX>776</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -481,6 +636,7 @@
                 <fields>
                     <name>Put_Back_Reason</name>
                     <choiceReferences>Wrong_Queue</choiceReferences>
+                    <choiceReferences>ChangetoSTO</choiceReferences>
                     <choiceReferences>Incompetent</choiceReferences>
                     <choiceReferences>End_Of_Session</choiceReferences>
                     <choiceReferences>Other</choiceReferences>
@@ -619,12 +775,103 @@
                 </width>
             </styleProperties>
         </fields>
+        <fields>
+            <name>NEXT_BUTTON</name>
+            <extensionName>c:nksFlowNavigation</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>buttonLabel</name>
+                <value>
+                    <stringValue>Legg tilbake</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChangetoSTO</leftValueReference>
+                    <operator>WasSelected</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NEXT_BUTTON_CHANGE_BTO_TO_STO</name>
+            <extensionName>c:nksFlowNavigation</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>buttonLabel</name>
+                <value>
+                    <stringValue>Gjennomfør</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChangetoSTO</leftValueReference>
+                    <operator>WasSelected</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
         <nextOrFinishButtonLabel>Legg tilbake</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Refresh_Tab</name>
+        <label>Refresh Tab</label>
+        <locationX>1106</locationX>
+        <locationY>1106</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>nksTabRefresher</name>
+            <extensionName>c:nksTabRefresher</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>639</locationX>
+        <locationX>1035</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Case_Record</targetReference>
