@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <apiVersion>58.0</apiVersion>
     <assignments>
         <name>Add_henvendelse_ID</name>
@@ -238,6 +239,13 @@
                 <elementReference>Task_Name</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NavTask.CRM_Subtype__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Selected_Subtype_SF_Id</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <isGoTo>true</isGoTo>
             <targetReference>Send_NAV_Task</targetReference>
@@ -347,8 +355,8 @@
     <dynamicChoiceSets>
         <name>Priority_Picklist</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true"/>
-        <object xsi:nil="true"/>
+        <displayField xsi:nil="true" />
+        <object xsi:nil="true" />
         <picklistField>CRM_Priority__c</picklistField>
         <picklistObject>NavTask__c</picklistObject>
     </dynamicChoiceSets>
@@ -357,8 +365,9 @@
         <name>Task_Name</name>
         <dataType>String</dataType>
         <expression>Case(
-IF(ISBLANK({!Task_Type_Selector.selectedTaskType}), {!Task_Type_Selector_1.selectedTaskType},{!Task_Type_Selector.selectedTaskType}), 
-            &apos;KONT_BRUK&apos;, &apos;Kontakt bruker&apos;, 
+            IF(ISBLANK({!Task_Type_Selector.selectedTaskType}),
+            {!Task_Type_Selector_1.selectedTaskType},{!Task_Type_Selector.selectedTaskType}),
+            &apos;KONT_BRUK&apos;, &apos;Kontakt bruker&apos;,
             &apos;VURD_HENV&apos;, &apos;Vurder henvendelse&apos;,
             &apos;Vurder konsekvens for ytelse&apos;)</expression>
     </formulas>
