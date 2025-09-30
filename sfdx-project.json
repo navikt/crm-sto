@@ -4,7 +4,7 @@
             "path": "force-app",
             "default": true,
             "versionName": "ver 1.0",
-            "versionNumber": "1.224.0.NEXT",
+            "versionNumber": "1.225.0.NEXT",
             "package": "crm-sto",
             "dependencies": [
                 {
@@ -65,7 +65,7 @@
                 },
                 {
                     "package": "crm-nks-base-components",
-                    "versionNumber": "0.94.0.LATEST"
+                    "versionNumber": "0.103.0.LATEST"
                 },
                 {
                     "package": "crm-nks-survey",

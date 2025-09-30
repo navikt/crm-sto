@@ -1,5 +1,8 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { refreshApex } from '@salesforce/apex';
+import { subscribe, MessageContext } from 'lightning/messageService';
+import TAB_REFRESH from '@salesforce/messageChannel/tabRefresh__c';
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
@@ -38,6 +41,8 @@ const englishCompanyTranslations = {
 };
 
 export default class CrmStoMessaging extends LightningElement {
+    @wire(MessageContext) messageContext;
+
     @api recordId;
     @api objectApiName;
     @api singleThread;
@@ -69,6 +74,7 @@ export default class CrmStoMessaging extends LightningElement {
     resetTemplate = false;
     closeLanguageModal = false;
     isThreadIdNull = false;
+    wiredThreadResult;
 
     labels = {
         MEDSKRIV_TEXT,
@@ -82,6 +88,13 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     connectedCallback() {
+        this.subscription = subscribe(
+            this.messageContext,
+            TAB_REFRESH,
+            () => {
+                refreshApex(this.wiredThreadResult);
+            }
+        );
         if (!this.newDesign) {
             this.template.addEventListener('toolbaraction', (event) => {
                 let flowInputs = [];
@@ -212,7 +225,9 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     @wire(getRecord, { recordId: '$threadId', fields: [THREAD_MEDSKRIV_REFERENCE, THREAD_TYPE] })
-    wiredThread({ error, data }) {
+    wiredThread(result) {
+        this.wiredThreadResult = result;
+        const { data, error } = result;
         if (error) {
             console.error('wiredThread failed: ', error);
         }
@@ -220,6 +235,10 @@ export default class CrmStoMessaging extends LightningElement {
             this.medskriv = getFieldValue(data, THREAD_MEDSKRIV_REFERENCE);
             this.threadType = getFieldValue(data, THREAD_TYPE);
         }
+    }
+
+    refreshThread() {
+        refreshApex(this.wiredThreadResult);
     }
 
     handleMedskrivClick() {
