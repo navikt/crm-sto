@@ -238,6 +238,13 @@
                 <elementReference>Task_Name</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NavTask.CRM_Subtype__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Selected_Subtype_SF_Id</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <isGoTo>true</isGoTo>
             <targetReference>Send_NAV_Task</targetReference>
