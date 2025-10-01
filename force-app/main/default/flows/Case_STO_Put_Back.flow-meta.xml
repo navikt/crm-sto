@@ -703,7 +703,7 @@
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>4</stringValue>
+                        <stringValue>5</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
@@ -819,7 +819,7 @@
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>8</stringValue>
+                        <stringValue>7</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
