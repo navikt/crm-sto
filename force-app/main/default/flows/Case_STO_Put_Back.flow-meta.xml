@@ -4,7 +4,7 @@
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
         <locationX>644</locationX>
-        <locationY>1856</locationY>
+        <locationY>1964</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -509,7 +509,7 @@
         <locationX>644</locationX>
         <locationY>1748</locationY>
         <connector>
-            <targetReference>Close_workspace_tab</targetReference>
+            <targetReference>Prevent_Bob_PopUp</targetReference>
         </connector>
         <inputReference>Get_Case_Record</inputReference>
     </recordUpdates>
@@ -579,6 +579,48 @@
         <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Prevent_Bob_PopUp</name>
+        <label>Prevent Bob PopUp</label>
+        <locationX>644</locationX>
+        <locationY>1856</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Close_workspace_tab</targetReference>
+        </connector>
+        <fields>
+            <name>nkwLMSPublisher</name>
+            <extensionName>c:nksLMSPublisher</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>messageChannelApiName</name>
+                <value>
+                    <stringValue>bobPreventPopUp__c</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>recordId</name>
+                <value>
+                    <elementReference>Get_Case_Record.Id</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>Put_Back_Screen</name>
