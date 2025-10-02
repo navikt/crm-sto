@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionCalls>
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
@@ -102,7 +103,8 @@
         </connector>
     </assignments>
     <assignments>
-        <description>Set Status New instead of Forwarded to prevent BTO -&gt; STO to get prioritized.</description>
+        <description>Set Status New instead of Forwarded to prevent BTO -&gt; STO to get
+            prioritized.</description>
         <name>Set_STO_Origin_Status_New_and_Thread_Type</name>
         <label>Set STO Origin, Status New and Thread Type</label>
         <locationX>50</locationX>
@@ -264,7 +266,11 @@
         </rules>
     </decisions>
     <decisions>
-        <description>International queue has a problem where there are many cases from other queues being transfered to International. This leads to a big queue of International PSRs building up because the forwarded Cases are prioritized. To solve this we do not give International Cases Forwarded status, to prevent them from being picked up first. Now they will be put in the back of the PSR queue.</description>
+        <description>International queue has a problem where there are many cases from other queues
+            being transfered to International. This leads to a big queue of International PSRs
+            building up because the forwarded Cases are prioritized. To solve this we do not give
+            International Cases Forwarded status, to prevent them from being picked up first. Now
+            they will be put in the back of the PSR queue.</description>
         <name>Is_Case_Category_International</name>
         <label>Is Case Category International?</label>
         <locationX>512</locationX>
@@ -324,8 +330,8 @@
     <dynamicChoiceSets>
         <name>STO_Category_Picklist</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true"/>
-        <object xsi:nil="true"/>
+        <displayField xsi:nil="true" />
+        <object xsi:nil="true" />
         <picklistField>STO_Category__c</picklistField>
         <picklistObject>Case</picklistObject>
     </dynamicChoiceSets>
@@ -333,7 +339,9 @@
     <formulas>
         <name>Incompetent_Value_Formula</name>
         <dataType>String</dataType>
-        <expression>IF(CONTAINS({!Prior_Incompetent_Values},CASESAFEID({!$User.Id})), {!Prior_Incompetent_Values}, {!Prior_Incompetent_Values}&amp;CASESAFEID({!$User.Id})&amp;&apos;,&apos;)</expression>
+        <expression>IF(CONTAINS({!Prior_Incompetent_Values},CASESAFEID({!$User.Id})),
+            {!Prior_Incompetent_Values},
+            {!Prior_Incompetent_Values}&amp;CASESAFEID({!$User.Id})&amp;&apos;,&apos;)</expression>
     </formulas>
     <formulas>
         <name>Queue_Transfer_Text</name>
@@ -446,7 +454,9 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Is_Put_Back_Screen</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede lagt tilbake.&lt;/strong&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;background-color: rgb(255, 255, 255);
+                font-size: 14px; color: rgb(68, 68, 68);&quot;&gt;Henvendelsen er allerede lagt
+                tilbake.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
