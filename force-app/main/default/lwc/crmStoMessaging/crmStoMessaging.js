@@ -1,10 +1,14 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import userId from '@salesforce/user/Id';
 import { refreshApex } from '@salesforce/apex';
 import { subscribe, MessageContext } from 'lightning/messageService';
 import TAB_REFRESH from '@salesforce/messageChannel/tabRefresh__c';
+
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
+import { resolve } from 'c/nksComponentsUtils';
+
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import COMPANY_NAME from '@salesforce/schema/User.CompanyName';
 import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
@@ -15,10 +19,6 @@ import MEDSKRIV_TEXT from '@salesforce/label/c.STO_Medskriv_Text';
 import MEDSKRIV_LABEL from '@salesforce/label/c.STO_Medskriv_Label';
 import SUBMIT_BTO_LABEL from '@salesforce/label/c.BTO_Submit';
 import SHARE_WITH_USER_LABEL from '@salesforce/label/c.STO_Share_With_User';
-import userId from '@salesforce/user/Id';
-import newDesignTemplate from './newDesignTemplate.html';
-import oldDesignTemplate from './oldDesignTemplate.html';
-import { resolve } from 'c/nksComponentsUtils';
 
 const englishCompanyTranslations = {
     'DIR ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
@@ -49,12 +49,10 @@ export default class CrmStoMessaging extends LightningElement {
     @api cardTitle;
     @api showClose = false;
     @api checkMedskriv = false;
-    @api newDesign = false;
     @api submitButtonLabel;
     @api isThread;
     @api isCaseReserved;
 
-    wireField;
     accountId;
     userId;
     personId;
@@ -83,61 +81,10 @@ export default class CrmStoMessaging extends LightningElement {
         SHARE_WITH_USER_LABEL
     };
 
-    render() {
-        return this.newDesign ? newDesignTemplate : oldDesignTemplate;
-    }
-
     connectedCallback() {
-        this.subscription = subscribe(
-            this.messageContext,
-            TAB_REFRESH,
-            () => {
-                refreshApex(this.wiredThreadResult);
-            }
-        );
-        if (!this.newDesign) {
-            this.template.addEventListener('toolbaraction', (event) => {
-                let flowInputs = [];
-                //logic to validate and create correct flowInputs for the flow to be triggered
-                switch (event.detail.flowName) {
-                    case 'CRM_Case_Journal_STO_Thread':
-                        flowInputs = [
-                            {
-                                name: 'Thread_ID',
-                                type: 'String',
-                                value: event.threadId
-                            }
-                        ];
-                        //Adding the flowInputs parameters to the event
-                        event.detail.flowInputs = flowInputs;
-                        break;
-                    case 'CRM_STO_transfer':
-                        flowInputs = [
-                            {
-                                name: 'recordId',
-                                type: 'String',
-                                value: this.recordId
-                            },
-                            {
-                                name: 'Thread_ID',
-                                type: 'String',
-                                value: event.threadId
-                            }
-                        ];
-                        break;
-                    default:
-                        break;
-                }
-                //Adding the flowInputs parameters to the event
-                event.detail.flowInputs = flowInputs;
-
-                this.dispatchStoToolbarAction(event); //Forwards the event to parent
-            });
-        }
-        this.wireField =
-            this.objectApiName === 'Case'
-                ? [this.objectApiName + '.Id', CASE_THREAD_API_REFERENCE]
-                : [this.objectApiName + '.Id'];
+        this.subscription = subscribe(this.messageContext, TAB_REFRESH, () => {
+            refreshApex(this.wiredThreadResult);
+        });
         this.userId = userId;
         this.accountApiName = this.getAccountApiName();
     }
@@ -249,14 +196,6 @@ export default class CrmStoMessaging extends LightningElement {
         const child = this.template.querySelector('c-crm-messaging-message-component');
         child.checkSlotChange('messages');
         child.focus();
-    }
-
-    handleSubmit() {
-        this.dispatchEvent(new CustomEvent('submitfromparent'));
-    }
-
-    forwardEvent(event) {
-        this.dispatchEvent(new CustomEvent(event.type));
     }
 
     getAccountApiName() {
@@ -495,12 +434,9 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get actualCardTitle() {
-        if (['BTO', 'STO'].includes(this.threadType))
-            return this.threadType === 'STO' ? 'Skriv til oss' : 'Meld fra om endring';
-        else if (this.isThread && this.threadType === 'CHAT') {
-            return 'Chat';
-        }
-
+        if (this.threadType === 'STO') return 'Skriv til oss';
+        if (this.threadType === 'BTO') return 'Meld fra om endring';
+        if (this.isThread && this.threadType === 'CHAT') return 'Chat';
         return this.cardTitle;
     }
 
@@ -513,14 +449,16 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     get showMedskrivBlocker() {
-        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
+        return this.checkMedskriv && !this.acceptedMedskriv && !this.medskriv;
     }
 
     get buttonLabel() {
-        return this.threadType === 'BTO'
-            ? this.labels.SUBMIT_BTO_LABEL
-            : this.newDesign
-              ? this.labels.SHARE_WITH_USER_LABEL
-              : 'Send';
+        return this.threadType === 'BTO' ? this.labels.SUBMIT_BTO_LABEL : this.labels.SHARE_WITH_USER_LABEL;
+    }
+
+    get wireField() {
+        return this.objectApiName === 'Case'
+            ? [this.objectApiName + '.Id', CASE_THREAD_API_REFERENCE]
+            : [this.objectApiName + '.Id'];
     }
 }

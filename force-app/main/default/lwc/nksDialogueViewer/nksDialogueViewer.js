@@ -10,7 +10,6 @@ const CONV_NOTE_TYPE = 'Conversation_Note__c';
 export default class NksDialogueViewer extends LightningElement {
     @api recordId;
     @api objectApiName;
-    @api newDesign = false;
 
     threadId;
     convNoteId;

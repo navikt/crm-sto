@@ -25,16 +25,6 @@
         <name>NewChildCase</name>
     </quickActions>
     <quickActions>
-        <aspect>Master</aspect>
-        <label>Journalfør</label>
-        <name>STO_Journal_Thread</name>
-    </quickActions>
-    <quickActions>
-        <aspect>Master</aspect>
-        <label>Reserver til meg</label>
-        <name>STO_Reserve_Case</name>
-    </quickActions>
-    <quickActions>
         <label><!-- SendEmail -->
         </label>
         <name>SendEmail</name>
@@ -43,11 +33,6 @@
         <aspect>Master</aspect>
         <label>Sladd</label>
         <name>Sladd</name>
-    </quickActions>
-    <quickActions>
-        <aspect>Master</aspect>
-        <label>Overfør</label>
-        <name>Transfer</name>
     </quickActions>
     <recordTypes>
         <label><!-- STO Case -->
