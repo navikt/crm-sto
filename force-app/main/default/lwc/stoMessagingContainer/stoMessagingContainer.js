@@ -230,7 +230,7 @@ export default class StoMessagingContainer extends LightningElement {
             {
                 id: 'reserve',
                 condition: this.showReserveButton,
-                flowApiName: 'Case_STO_Reserve'
+                flowApiName: 'Case_STO_Reserve_v_2'
             },
             {
                 id: 'putBack',
@@ -240,12 +240,12 @@ export default class StoMessagingContainer extends LightningElement {
             {
                 id: 'transfer',
                 condition: this.showTransferButton,
-                flowApiName: 'STO_Transfer'
+                flowApiName: 'STO_Transfer_v_2'
             },
             {
                 id: 'redact',
                 condition: this.showRedactButton,
-                flowApiName: 'Case_STO_Redact'
+                flowApiName: 'Case_STO_Redact_v_2'
             }
         ];
     }
@@ -255,19 +255,19 @@ export default class StoMessagingContainer extends LightningElement {
             {
                 id: 'journal',
                 condition: this.showJournalButton,
-                flowApiName: 'Case_STO_Journal',
+                flowApiName: 'Case_STO_Journal_v_2',
                 handleStatusChange: this.handleFlowStatusChange
             },
             {
                 id: 'createNavTask',
                 condition: this.showCreateNavTaskButton,
-                flowApiName: 'Case_STO_Send_NAV_Task',
+                flowApiName: 'Case_STO_Send_NAV_Task_v_2',
                 handleStatusChange: this.handleFlowStatusChange
             },
             {
                 id: 'complete',
                 condition: this.showComplete,
-                flowApiName: 'Case_STO_Complete',
+                flowApiName: 'Case_STO_Complete_v_2',
                 handleStatusChange: this.handleSubmitStatusChange
             }
         ];
