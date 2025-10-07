@@ -15,7 +15,7 @@
                     <name>displayedFields</name>
                     <value>NKS_Full_Name__c,Name,INT_Sex__c, INT_LegalStatus__c,
                         INT_Citizenships__c,
-                        INT_BankAccountNumber__c,INT_BankAccountNumberLastModified__c</value>
+        INT_BankAccountNumber__c,INT_BankAccountNumberLastModified__c</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>enableRefresh</name>
@@ -49,8 +49,8 @@
                     <name>viewedObjectApiName</name>
                     <value>Person__c</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>c_nksRecordInfo</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>c_nksRecordInformation</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -65,7 +65,7 @@
                 <componentInstanceProperties>
                     <name>displayedFields</name>
                     <value>NKS_Mobile_Phone__c, NKS_Phone_1__c, NKS_Email__c, NKS_Phone_2__c,
-                        INT_KRR_Reservation__c, NKS_County__c, INT_VerifiedFromKRR__c</value>
+        INT_KRR_Reservation__c, NKS_County__c, INT_VerifiedFromKRR__c</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>enableRefresh</name>
@@ -99,8 +99,8 @@
                     <name>viewedObjectApiName</name>
                     <value>Person__c</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>c_nksRecordInfo2</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>c_nksRecordInformation2</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -115,7 +115,7 @@
                 <componentInstanceProperties>
                     <name>displayedFields</name>
                     <value>INT_MovedFromCountry__c,
-                        INT_MovedFromPlace__c,INT_MovedToCountry__c,INT_MovedToPlace__c</value>
+        INT_MovedFromPlace__c,INT_MovedToCountry__c,INT_MovedToPlace__c</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>enableRefresh</name>
@@ -149,8 +149,8 @@
                     <name>viewedObjectApiName</name>
                     <value>Person__c</value>
                 </componentInstanceProperties>
-                <componentName>nksRecordInfo</componentName>
-                <identifier>c_nksRecordInfo3</identifier>
+                <componentName>nksRecordInformation</componentName>
+                <identifier>c_nksRecordInformation3</identifier>
                 <visibilityRule>
                     <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
@@ -194,7 +194,8 @@
                 <identifier>c_nksNavUnitSingle</identifier>
             </componentInstance>
         </itemInstances>
-        <name>Facet-6ed558ed-9f2e-4851-9627-6f13381caa6a</name>
+        <name>
+        Facet-6ed558ed-9f2e-4851-9627-6f13381caa6a</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -273,7 +274,8 @@
                 <identifier>lst_dynamicRelatedList</identifier>
             </componentInstance>
         </itemInstances>
-        <name>Facet-c86b163d-9d35-4007-8381-f5a8a4c7dd91</name>
+        <name>
+        Facet-c86b163d-9d35-4007-8381-f5a8a4c7dd91</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -291,7 +293,8 @@
                 <identifier>forceKnowledge_articleSearchDesktop</identifier>
             </componentInstance>
         </itemInstances>
-        <name>Facet-d8a9e34d-0cb8-4be5-a102-38edc05556f1</name>
+        <name>
+        Facet-d8a9e34d-0cb8-4be5-a102-38edc05556f1</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -341,7 +344,8 @@
                 <identifier>knowledgeTab</identifier>
             </componentInstance>
         </itemInstances>
-        <name>Facet-45043c8b-ab68-4511-b013-b96932a46bbe</name>
+        <name>
+        Facet-45043c8b-ab68-4511-b013-b96932a46bbe</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -361,7 +365,8 @@
                 </visibilityRule>
             </componentInstance>
         </itemInstances>
-        <name>main</name>
+        <name>
+        main</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -383,7 +388,8 @@
                 <identifier>c_stoMessagingContainer</identifier>
             </componentInstance>
         </itemInstances>
-        <name>leftsidebar</name>
+        <name>
+        leftsidebar</name>
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>SCRATCH STO Case Record Page v. 2</masterLabel>
