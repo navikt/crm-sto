@@ -106,8 +106,7 @@
         <name>Set_STO_fields</name>
         <label>Set STO fields on Case and Thread</label>
         <locationX>842</locationX>
-        <locationY>
-        674</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Origin</assignToReference>
             <operator>Assign</operator>
