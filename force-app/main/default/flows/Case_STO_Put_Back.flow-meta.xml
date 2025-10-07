@@ -5,12 +5,10 @@
         <name>Close_workspace_tab</name>
         <label>Close workspace tab</label>
         <locationX>644</locationX>
-        <locationY>
-        1856</locationY>
+        <locationY>1856</locationY>
         <actionName>c:crmTabCloser</actionName>
         <actionType>component</actionType>
-        <flowTransactionModel>
-        CurrentTransaction</flowTransactionModel>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <nameSegment>c:crmTabCloser</nameSegment>
         <offset>0</offset>
     </actionCalls>
@@ -20,8 +18,7 @@
         <name>Assign_Case_Values</name>
         <label>Assign Case Values</label>
         <locationX>644</locationX>
-        <locationY>
-        1640</locationY>
+        <locationY>1640</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.CRM_Run_Case_Assignment__c</assignToReference>
             <operator>Assign</operator>
@@ -37,8 +34,7 @@
         <name>Set_Forwarded_Status</name>
         <label>Set Forwarded Status</label>
         <locationX>776</locationX>
-        <locationY>
-        1448</locationY>
+        <locationY>1448</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.Status</assignToReference>
             <operator>Assign</operator>
@@ -54,8 +50,7 @@
         <name>Set_Incompetent_IDs</name>
         <label>Set Incompetent IDs</label>
         <locationX>578</locationX>
-        <locationY>
-        566</locationY>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>Prior_Incompetent_Values</assignToReference>
             <operator>Assign</operator>
@@ -69,8 +64,7 @@
     </assignments>
     <assignments>
         <description>Set Status to New so that the Case is picked up again.</description>
-        <name>
-        Set_New_Status</name>
+        <name>Set_New_Status</name>
         <label>Set New Status</label>
         <locationX>512</locationX>
         <locationY>1448</locationY>
@@ -89,8 +83,7 @@
         <name>Set_STO_Category</name>
         <label>Set STO Category</label>
         <locationX>182</locationX>
-        <locationY>
-        674</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.STO_Category__c</assignToReference>
             <operator>Assign</operator>
@@ -148,11 +141,9 @@
         </connector>
     </assignments>
     <assignments>
-        <description>Set Status New instead of Forwarded to prevent BTO -&gt; STO to get
-        prioritized.</description>
+        <description>Set Status New instead of Forwarded to prevent BTO -&gt; STO to get prioritized.</description>
         <name>Set_STO_Origin_Status_New_and_Thread_Type</name>
-        <label>Set
-        STO Origin, Status New and Thread Type</label>
+        <label>Set STO Origin, Status New and Thread Type</label>
         <locationX>50</locationX>
         <locationY>890</locationY>
         <assignmentItems>
@@ -198,8 +189,7 @@
         <name>Update_case_field</name>
         <label>Update case field</label>
         <locationX>578</locationX>
-        <locationY>
-        674</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>Get_Case_Record.NKS_Incompetent_IDs__c</assignToReference>
             <operator>Assign</operator>
@@ -256,13 +246,11 @@
         <name>Check_Case_Status</name>
         <label>Check Case Status</label>
         <locationX>963</locationX>
-        <locationY>
-        242</locationY>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Case_Is_Put_Back_Screen</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Default
-        Outcome</defaultConnectorLabel>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Not_Forwarded_Or_Closed</name>
             <conditionLogic>and</conditionLogic>
@@ -290,13 +278,11 @@
         <name>Check_Put_Back_Decision</name>
         <label>Check Put Back Decision</label>
         <locationX>644</locationX>
-        <locationY>
-        458</locationY>
+        <locationY>458</locationY>
         <defaultConnector>
             <targetReference>Is_Case_Category_International</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Default
-        Outcome</defaultConnectorLabel>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Wrong_Queue_Choice</name>
             <conditionLogic>or</conditionLogic>
@@ -364,15 +350,13 @@
         Cases Forwarded status, to prevent them from being picked up first. Now they will be put in
         the back of the PSR queue.</description>
         <name>Is_Case_Category_International</name>
-        <label>Is
-        Case Category International?</label>
+        <label>Is Case Category International?</label>
         <locationX>644</locationX>
         <locationY>1340</locationY>
         <defaultConnector>
             <targetReference>Set_Forwarded_Status</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Not
-        International</defaultConnectorLabel>
+        <defaultConnectorLabel>Not International</defaultConnectorLabel>
         <rules>
             <name>International</name>
             <conditionLogic>and</conditionLogic>
@@ -393,13 +377,11 @@
         <name>IsBTO</name>
         <label>Is BTO and put back as STO?</label>
         <locationX>182</locationX>
-        <locationY>
-        782</locationY>
+        <locationY>782</locationY>
         <defaultConnector>
             <targetReference>Update_Thread_Category</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Default
-        Outcome</defaultConnectorLabel>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>BTO</name>
             <conditionLogic>and</conditionLogic>
@@ -427,8 +409,7 @@
         <name>STO_Category_Picklist</name>
         <dataType>Picklist</dataType>
         <displayField xsi:nil="true" />
-        <object
-            xsi:nil="true" />
+        <object xsi:nil="true" />
         <picklistField>STO_Category__c</picklistField>
         <picklistObject>Case</picklistObject>
     </dynamicChoiceSets>
@@ -470,8 +451,7 @@
         <name>Get_Case_Record</name>
         <label>Get Case Record</label>
         <locationX>963</locationX>
-        <locationY>
-        134</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Case_Status</targetReference>
@@ -484,8 +464,7 @@
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>
-        true</getFirstRecordOnly>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Case</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
@@ -494,8 +473,7 @@
         <label>Get Thread</label>
         <locationX>182</locationX>
         <locationY>566</locationY>
-        <assignNullValuesIfNoRecordsFound>
-        false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_STO_Category</targetReference>
         </connector>
@@ -507,8 +485,7 @@
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>
-        true</getFirstRecordOnly>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Thread__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
@@ -517,8 +494,7 @@
         <label>Get Thread</label>
         <locationX>842</locationX>
         <locationY>566</locationY>
-        <assignNullValuesIfNoRecordsFound>
-        false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_STO_fields</targetReference>
         </connector>
@@ -530,8 +506,7 @@
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>
-        true</getFirstRecordOnly>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Thread__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
@@ -592,8 +567,7 @@
         <name>Case_Is_Put_Back_Screen</name>
         <label>Case Is Put Back Screen</label>
         <locationX>1282</locationX>
-        <locationY>
-        350</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -612,8 +586,7 @@
                 </width>
             </styleProperties>
         </fields>
-        <nextOrFinishButtonLabel>
-        OK</nextOrFinishButtonLabel>
+        <nextOrFinishButtonLabel>OK</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
@@ -621,8 +594,7 @@
         <name>Put_Back_Screen</name>
         <label>Put Back Screen</label>
         <locationX>644</locationX>
-        <locationY>
-        350</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -895,8 +867,7 @@
                 </conditions>
             </visibilityRule>
         </fields>
-        <nextOrFinishButtonLabel>Legg
-        tilbake</nextOrFinishButtonLabel>
+        <nextOrFinishButtonLabel>Legg tilbake</nextOrFinishButtonLabel>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
@@ -905,8 +876,7 @@
         <label>Refresh Tab</label>
         <locationX>842</locationX>
         <locationY>998</locationY>
-        <allowBack>
-        true</allowBack>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
@@ -925,8 +895,7 @@
                 </width>
             </styleProperties>
         </fields>
-        <showFooter>
-        false</showFooter>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
@@ -941,18 +910,15 @@
         <name>Prior_Incompetent_Values</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>
-        false</isInput>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
         <description>ID of the case to be assigned back to the original queue.</description>
-        <name>
-        recordId</name>
+        <name>recordId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
-        <isOutput>
-        false</isOutput>
+        <isOutput>false</isOutput>
     </variables>
 </Flow>
