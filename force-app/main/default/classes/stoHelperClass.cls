@@ -282,7 +282,7 @@ public with sharing class stoHelperClass {
                     LIMIT 1
                 )
             FROM Thread__c
-            WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES AND AND CRM_Account__c = :accountId
+            WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES AND CRM_Account__c = :accountId
         ];
 
         List<Thread__c> threadList = new List<Thread__c>();
