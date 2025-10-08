@@ -10,8 +10,7 @@ public with sharing class stoInboxHelper {
     }
 
     private static Id getAccountIdOfCurrentUser() {
-        Id accountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
-        return accountId;
+        return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
     }
 
     @AuraEnabled(cacheable=true)

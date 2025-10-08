@@ -20,8 +20,7 @@ public with sharing class stoHelperClass {
     }
 
     private static Id getAccountIdOfCurrentUser() {
-        Id accountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
-        return accountId;
+        return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
     }
 
     private static Map<String, Id> commonCodeMap {

@@ -21,23 +21,18 @@ public with sharing class stoInboxHelperTest {
 
     @isTest
     static void getThreadsTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
+        User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
+            u.AccountId,
+            u.ContactId,
             true,
             'STO',
             'Skriv til oss',
             'Arbeid'
         );
-        stoHelperClass.createMessage(t, 'Dette er en test melding', personContact.Id);
+        stoHelperClass.createMessage(t, 'Dette er en test melding', u.ContactId);
         t.CRM_Closed_Date__c = date.today().addDays(-1);
         update t;
 
