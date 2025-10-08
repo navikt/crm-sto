@@ -229,7 +229,6 @@ public with sharing class stoHelperClass {
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
                     WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
-                    AND CRM_Account__c = :accountId
                     ORDER BY CRM_Sent_Datetime_Formula__c DESC
                     LIMIT 1
                 )
@@ -238,6 +237,7 @@ public with sharing class stoHelperClass {
                 CRM_Is_Closed__C = FALSE
                 AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES
                 AND STO_Category__c = :category
+                AND CRM_Account__c = :accountId
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         if (openThreads.size() > 0) {
