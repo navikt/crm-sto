@@ -9,6 +9,20 @@ public with sharing class stoHelperClass {
         'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
     };
 
+    private static Id accountId {
+        get {
+            if (accountId == null) {
+                accountId = getAccountIdOfCurrentUser();
+            }
+            return accountId;
+        }
+    }
+
+    private static Id getAccountIdOfCurrentUser() {
+        Id accountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
+        return accountId;
+    }
+
     private static Map<String, Id> commonCodeMap {
         get {
             if (commonCodeMap == null) {
@@ -214,6 +228,7 @@ public with sharing class stoHelperClass {
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
                     WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
+                    AND CRM_Account__c = :accountId
                     ORDER BY CRM_Sent_Datetime_Formula__c DESC
                     LIMIT 1
                 )
@@ -267,7 +282,7 @@ public with sharing class stoHelperClass {
                     LIMIT 1
                 )
             FROM Thread__c
-            WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES
+            WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES AND AND CRM_Account__c = :accountId
         ];
 
         List<Thread__c> threadList = new List<Thread__c>();

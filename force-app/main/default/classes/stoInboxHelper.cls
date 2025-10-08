@@ -1,4 +1,18 @@
 public with sharing class stoInboxHelper {
+    private static Id accountId {
+        get {
+            if (accountId == null) {
+                accountId = getAccountIdOfCurrentUser();
+            }
+            return accountId;
+        }
+    }
+
+    private static Id getAccountIdOfCurrentUser() {
+        Id accountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
+        return accountId;
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<thread> getThreads() {
         List<thread> inboxlist = new List<thread>();
@@ -28,6 +42,7 @@ public with sharing class stoInboxHelper {
                 CRM_Number_of_unread_Messages__c = 0
                 AND CRM_Is_Closed__C = TRUE
                 AND CRM_Thread_Type__c IN ('STO', 'BTO', 'STB', 'CHAT')
+                AND CRM_Account__c = :accountId
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -43,6 +58,7 @@ public with sharing class stoInboxHelper {
                 Name
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
+            AND CRM_Account__c = :accountId
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -80,6 +96,7 @@ public with sharing class stoInboxHelper {
                 (CRM_Number_of_unread_Messages__c > 0
                 OR CRM_Is_Closed__c = FALSE)
                 AND CRM_Thread_Type__c IN ('STO', 'BTO', 'STB', 'CHAT')
+                AND CRM_Account__c = :accountId
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -95,6 +112,7 @@ public with sharing class stoInboxHelper {
                 Name
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
+            AND CRM_Account__c = :accountId
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
