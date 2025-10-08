@@ -9,12 +9,13 @@ public with sharing class stoHelperClass {
         'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
     };
 
+    private static Id cachedAccountId;
     private static Id accountId {
         get {
-            if (accountId == null) {
-                accountId = getAccountIdOfCurrentUser();
+            if (cachedAccountId == null) {
+                cachedAccountId = getAccountIdOfCurrentUser();
             }
-            return accountId;
+            return cachedAccountId;
         }
     }
 

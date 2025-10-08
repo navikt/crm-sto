@@ -1,10 +1,11 @@
 public with sharing class stoInboxHelper {
+    private static Id cachedAccountId;
     private static Id accountId {
         get {
-            if (accountId == null) {
-                accountId = getAccountIdOfCurrentUser();
+            if (cachedAccountId == null) {
+                cachedAccountId = getAccountIdOfCurrentUser();
             }
-            return accountId;
+            return cachedAccountId;
         }
     }
 
