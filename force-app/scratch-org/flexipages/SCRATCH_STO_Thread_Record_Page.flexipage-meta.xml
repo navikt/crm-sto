@@ -140,7 +140,7 @@
         <name>rightcol</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>SCRATCH STO Thread Record Page v. 2</masterLabel>
+    <masterLabel>SCRATCH STO Thread Record Page</masterLabel>
     <sobjectType>Thread__c</sobjectType>
     <template>
         <name>flexipage:recordHomeTwoColEqualHeaderTemplateDesktop</name>
