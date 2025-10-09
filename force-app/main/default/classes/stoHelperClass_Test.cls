@@ -25,12 +25,12 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void getOpenThreadsTest() {
-        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
+            u.AccountId,
+            u.ContactId,
             true,
             'STO',
             null,

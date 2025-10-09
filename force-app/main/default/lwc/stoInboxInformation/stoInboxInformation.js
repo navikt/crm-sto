@@ -86,7 +86,7 @@ export default class StoInboxInformation extends LightningElement {
 
     get infoText() {
         return this.closed
-            ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.'
+            ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/skriv-til-oss" target="_self">sende en ny melding</a>, kan du gjøre det her.'
             : 'Du kan svare på denne samtalen innen syv dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
     }
 
