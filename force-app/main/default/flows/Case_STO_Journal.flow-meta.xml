@@ -27,8 +27,8 @@
         </rules>
     </decisions>
     <environments>Default</environments>
-    <interviewLabel>Case STO Journal v. 2 {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Case STO Journal v. 2</label>
+    <interviewLabel>Case STO Journal {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Case STO Journal</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
