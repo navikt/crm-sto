@@ -12,9 +12,6 @@
                         <valueListItems>
                             <value>Case.CRM_Back_to_Queue</value>
                         </valueListItems>
-                        <valueListItems>
-                            <value>Case.Complete</value>
-                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>

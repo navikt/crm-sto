@@ -35,8 +35,6 @@ export default class StoMessagingContainer extends LightningElement {
     @api showClose = false;
     @api checkMedskriv = false;
 
-    @track singleThread = true;
-
     caseId;
     wiredCase;
     label;
@@ -135,7 +133,7 @@ export default class StoMessagingContainer extends LightningElement {
         }
     }
 
-    handleSubmit() {
+    handleMessageSentFromThreadViewer() {
         if (!this.completeDisabled) {
             this.resetButtonVisibility();
         }
@@ -170,7 +168,7 @@ export default class StoMessagingContainer extends LightningElement {
         }
     }
 
-    handleClosed() {
+    handleThreadClosed() {
         refreshApex(this.wiredCase);
     }
 

@@ -41,13 +41,12 @@
         <c-crm-sto-messaging
             record-id={recordId}
             object-api-name={objectApiName}
-            single-thread={singleThread}
+            single-thread
             card-title={cardTitle}
             show-close={showClose}
             check-medskriv={checkMedskriv}
-            onsubmitfromparent={handleSubmit}
-            onclosedevent={handleClosed}
-            new-design
+            onmessagesentonsubmit={handleMessageSentFromThreadViewer}
+            onthreadclosed={handleThreadClosed}
             is-thread={isThread}
             is-case-reserved={isCaseReserved}
             onsetcasetoinprogress={handleSetCaseToInProgress}
