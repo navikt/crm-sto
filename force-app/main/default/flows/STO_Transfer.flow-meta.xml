@@ -247,8 +247,8 @@
         <dataType>String</dataType>
         <expression>{!STO_Category_Picklist}</expression>
     </formulas>
-    <interviewLabel>STO Transfer v. 2 {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>STO Transfer v. 2</label>
+    <interviewLabel>STO Transfer {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>STO Transfer</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>

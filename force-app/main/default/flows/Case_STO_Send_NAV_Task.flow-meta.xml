@@ -376,8 +376,8 @@
         <dataType>String</dataType>
         <expression>{!NavTask.NKS_Theme__r.CRM_Code__c}</expression>
     </formulas>
-    <interviewLabel>Case STO Send NAV Task v. 2 {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Case STO Send NAV Task v. 2</label>
+    <interviewLabel>Case STO Send NAV Task {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Case STO Send NAV Task</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
