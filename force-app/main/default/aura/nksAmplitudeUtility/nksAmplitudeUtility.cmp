@@ -1,4 +1,4 @@
 <aura:component implements="flexipage:availableForAllPageTypes">
-    <c:amplitudeBackground aura:id="amplitudeBackground"></c:amplitudeBackground>
+    <!--<c:amplitudeBackground aura:id="amplitudeBackground"></c:amplitudeBackground>-->
     <c:nksGetStoUtility aura:id="stoUtility"></c:nksGetStoUtility>
 </aura:component>
