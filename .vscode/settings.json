@@ -34,5 +34,6 @@
         "Skriv_til_Oss",
         "Skriv_til_oss_Service_Cloud_tilgang",
         "Scratch_Permissions"
-    ]
+    ],
+    "xml.preferences.showSchemaDocumentationType": "none"
 }
