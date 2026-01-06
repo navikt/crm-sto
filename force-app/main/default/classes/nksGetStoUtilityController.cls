@@ -241,7 +241,7 @@ public without sharing class nksGetStoUtilityController {
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
         String userId = UserInfo.getUserID();
-        s
+        
         Set<Id> excludedPSRIds = new Set<Id>();
         for (SkillRequirement sr : [
             SELECT RelatedRecordId
