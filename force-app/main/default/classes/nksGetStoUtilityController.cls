@@ -240,28 +240,49 @@ public without sharing class nksGetStoUtilityController {
      * @return List<PendingServiceRouting>
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
-        String userId = '%' + UserInfo.getUserID() + '%';
-        return [
-            SELECT Id, WorkItemId
+        String userId = UserInfo.getUserID();
+        s
+        Set<Id> excludedPSRIds = new Set<Id>();
+        for (SkillRequirement sr : [
+            SELECT RelatedRecordId
+            FROM SkillRequirement
+            WHERE
+                (Skill.DeveloperName NOT IN :allUserSkills.userConfidentialMap.values()
+                AND Skill.DeveloperName IN :confidentialitySkills)
+                OR (Skill.DeveloperName NOT IN :allUserSkills.userOriginMap.values()
+                AND Skill.DeveloperName IN :originSkills)
+        ]) {
+            excludedPSRIds.add(sr.RelatedRecordId);
+        }
+        
+        List<PendingServiceRouting> allCandidates = [
+            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c
             FROM PendingServiceRouting
             WHERE
-                Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :allUserSkills.skillMap.keySet())
-                AND ID NOT IN (
-                    SELECT RelatedRecordId
-                    FROM SkillRequirement
-                    WHERE
-                        (Skill.DeveloperName NOT IN :allUserSkills.userConfidentialMap.values()
-                        AND Skill.DeveloperName IN :confidentialitySkills)
-                        OR (Skill.DeveloperName NOT IN :allUserSkills.userOriginMap.values()
-                        AND Skill.DeveloperName IN :originSkills)
-                )
-                AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
+                ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
                 AND isPushed = FALSE
-                AND (NOT WorkItem.NKS_Incompetent_IDs__c LIKE :userId)
+                AND Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :allUserSkills.skillMap.keySet())
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
-            LIMIT 1
         ];
+        
+        for (PendingServiceRouting psr : allCandidates) {
+            // Skip if user lacks required confidentiality/origin skills
+            if (excludedPSRIds.contains(psr.Id)) {
+                continue;
+            }
+            
+            // Skip if user is in the incompetent list
+            if (String.isNotBlank(psr.WorkItem.NKS_Incompetent_IDs__c) && 
+                psr.WorkItem.NKS_Incompetent_IDs__c.contains(userId)) {
+                continue;
+            }
+            
+            // Return first valid PSR
+            return new List<PendingServiceRouting>{ psr };
+        }
+        
+        return new List<PendingServiceRouting>();
     }
 
     public class GroupedSkills {
