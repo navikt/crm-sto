@@ -136,7 +136,7 @@ public without sharing class nksGetStoUtilityController {
 
     @AuraEnabled(cacheable=true)
     public static List<Record> getList() {
-        Id recordTypeId = [SELECT Id FROM RecordType WHERE DeveloperName = 'STO_Case'].Id;
+        Id recordTypeId = getSTORecordTypeId();
         List<Case> listtoreturn = [
             SELECT CreatedDate, toLabel(Status), STO_Category__c, CaseNumber
             FROM Case
@@ -271,5 +271,17 @@ public without sharing class nksGetStoUtilityController {
         public Map<Id, String> userConfidentialMap = new Map<Id, String>();
         @AuraEnabled
         public Map<Id, String> userOriginMap = new Map<Id, String>();
+    }
+
+    // Cache RecordTypeId to avoid repeated queries
+    private static Id stoRecordTypeId;
+    
+    private static Id getSTORecordTypeId() {
+        if (stoRecordTypeId == null) {
+            stoRecordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByDeveloperName()
+                .get('STO_Case')
+                .getRecordTypeId();
+        }
+        return stoRecordTypeId;
     }
 }
