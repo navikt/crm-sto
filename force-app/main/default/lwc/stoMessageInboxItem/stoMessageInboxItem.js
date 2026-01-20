@@ -64,15 +64,21 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get linkUrl() {
-        return this.objectName === 'beskjed-til-oss'
-            ? basepath + '/' + this.objectName + '/visning?samtale=' + this.thread.recordId
-            : basepath +
-                  '/' +
-                  this.objectName +
-                  '/' +
-                  this.thread.recordId +
-                  '/' +
-                  this.thread.recordName.replace(/[ -]+/g, '-');
+        let url = basepath;
+        if (this.objectName === 'beskjed-til-oss') {
+            url += '/' + this.objectName + '/visning?samtale=' + this.thread.recordId;
+        } else if (this.objectName === 'skriv-til-oss' || this.objectName === 'samtalereferat') {
+            url +=
+                '/' +
+                this.objectName +
+                '/' +
+                this.thread.recordId +
+                '/' +
+                this.thread.recordName.replace(/[ -]+/g, '-');
+        } else {
+            url += '/chat?id=' + this.thread.recordId;
+        }
+        return url;
     }
 
     get panelClass() {
