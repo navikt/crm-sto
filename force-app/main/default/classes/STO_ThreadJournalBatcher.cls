@@ -43,7 +43,7 @@ public without sharing class STO_ThreadJournalBatcher implements Database.Batcha
         }
 
         private String getJournalConditions() {
-            return 'CRM_Thread__r.CRM_isActive__c = false AND CRM_Thread__r.STO_Sensitive_Information__c = false AND CRM_Thread__r.CRM_Type__c IN (\'STO\', \'STB\', \'BTO\') AND Journal_Entry_Status__c = \'In Progress\'';
+            return 'CRM_Thread__r.STO_Sensitive_Information__c = false AND CRM_Thread__r.CRM_Type__c IN (\'STO\', \'STB\', \'BTO\') AND Journal_Entry_Status__c = \'In Progress\' AND (CRM_Thread__r.CRM_isActive__c = false OR (CRM_Thread__r.CRM_isActive__c = true AND CRM_Thread__r.CRM_Journal_Status__c = \'Journal Error\' AND CRM_Journal_Post_Type__c= \'NOTAT\'))';
         }
 
         public String getJournalEntriesToJournal() {
