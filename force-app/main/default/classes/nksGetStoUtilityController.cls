@@ -229,9 +229,10 @@ public without sharing class nksGetStoUtilityController {
             } else if (psr.size() == 0)
                 throw new NoCasesFoundException('NotFound');
             if (psr[0].workItem.Status = 'Closed') {
+                PendingServiceRouting psrToLog = [SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId FROM PendingServiceRouting WHERE Id = :psr[0].Id LIMIT 1];
                 logger.error(
-                'STO Case already closed: ' + psr[0].WorkItemId + ' - ' + psr[0].WorkItem.Status,
-                psr[0],
+                'PSR pushed where STO Case is status closed.',
+                psrToLog,
                 CRM_ApplicationDomain.Domain.NKS
                 );
                 logger.publish();
