@@ -228,7 +228,7 @@ public without sharing class nksGetStoUtilityController {
                 return [SELECT Id FROM Case LIMIT 1]?.Id;
             } else if (psr.size() == 0)
                 throw new NoCasesFoundException('NotFound');
-            if (psr[0].workItem.Status = 'Closed') {
+            if (psr[0].workItem.Status == 'Closed') {
                 PendingServiceRouting psrToLog = [SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId FROM PendingServiceRouting WHERE Id = :psr[0].Id LIMIT 1];
                 logger.error(
                 'PSR pushed where STO Case is status closed.',
