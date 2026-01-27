@@ -6,7 +6,7 @@
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
-    private LoggerUtility logger = new LoggerUtility('GET_STO');
+    private static LoggerUtility logger = new LoggerUtility('GET_STO');
     private final static Integer MAX_ATTEMPTS = 5;
     public class TooManyAttemptsException extends Exception {
     }
