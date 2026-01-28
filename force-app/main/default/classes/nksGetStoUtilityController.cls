@@ -6,6 +6,7 @@
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
+    private static LoggerUtility logger = new LoggerUtility('GET_STO');
     private final static Integer MAX_ATTEMPTS = 5;
     public class TooManyAttemptsException extends Exception {
     }
@@ -227,6 +228,15 @@ public without sharing class nksGetStoUtilityController {
                 return [SELECT Id FROM Case LIMIT 1]?.Id;
             } else if (psr.size() == 0)
                 throw new NoCasesFoundException('NotFound');
+            if (psr[0].workItem.Status == 'Closed') {
+                PendingServiceRouting psrToLog = [SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId FROM PendingServiceRouting WHERE Id = :psr[0].Id LIMIT 1];
+                logger.error(
+                'PSR pushed where STO Case is status closed.',
+                psrToLog,
+                CRM_ApplicationDomain.Domain.NKS
+                );
+                logger.publish();
+            }
             return psr[0].WorkItemId;
         } catch (QueryException queryEx) {
             throw new AuraHandledException('En feil oppsto ved henting av ny STO, prøv igjen.');
