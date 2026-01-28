@@ -226,8 +226,10 @@ public without sharing class nksGetStoUtilityController {
             List<PendingServiceRouting> psr = getPendingServiceRouting();
             if (Test.isRunningTest()) {
                 return [SELECT Id FROM Case LIMIT 1]?.Id;
-            } else if (psr.size() == 0)
+            }
+            if (psr.size() == 0) {
                 throw new NoCasesFoundException('NotFound');
+            }
             if (psr[0].workItem.Status == 'Closed') {
                 PendingServiceRouting psrToLog = [SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId FROM PendingServiceRouting WHERE Id = :psr[0].Id LIMIT 1];
                 logger.error(
@@ -252,7 +254,7 @@ public without sharing class nksGetStoUtilityController {
     private static List<PendingServiceRouting> getPendingServiceRouting() {
         String userId = '%' + UserInfo.getUserID() + '%';
         return [
-            SELECT Id, WorkItemId
+            SELECT Id, WorkItemId, WorkItem.Status
             FROM PendingServiceRouting
             WHERE
                 Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :allUserSkills.skillMap.keySet())
