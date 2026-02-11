@@ -150,16 +150,23 @@ public with sharing class STO_GroupMemberSkillService implements Callable {
     @SuppressWarnings('PMD.ApexCRUDViolation')
     private void handleSkillDeletion() {
         //Get list of skills to be deleted for users who are not longer members of the synced AD groups
-        List<ServiceResourceSkill> skillsToDelete = [
-            SELECT Id, ServiceResourceId, Skill.DeveloperName
+        List<ServiceResourceSkill> skillsToDelete = new List<ServiceResourceSkill>();
+        for (ServiceResourceSkill servSkill : [
+            SELECT Id, ServiceResourceId, ServiceResource.RelatedRecordId, Skill.DeveloperName
             FROM ServiceResourceSkill
             WHERE
                 ServiceResource.CRM_Domain__c = :srDomain
-                AND ((Skill.DeveloperName = :FORTOLIG_ADDRESSE_SKILL
-                AND ServiceResource.RelatedRecordId NOT IN :fortroligMembers)
-                OR (Skill.DeveloperName = :SKJERMEDE_PERSONER_SKILL
-                AND ServiceResource.RelatedRecordId NOT IN :skjermedeMembers))
-        ];
+                AND (Skill.DeveloperName = :FORTOLIG_ADDRESSE_SKILL
+                OR Skill.DeveloperName = :SKJERMEDE_PERSONER_SKILL)
+        ]) {
+            if (servSkill.Skill.DeveloperName == FORTOLIG_ADDRESSE_SKILL 
+                && !fortroligMembers.contains(servSkill.ServiceResource.RelatedRecordId)) {
+                skillsToDelete.add(servSkill);
+            } else if (servSkill.Skill.DeveloperName == SKJERMEDE_PERSONER_SKILL 
+                && !skjermedeMembers.contains(servSkill.ServiceResource.RelatedRecordId)) {
+                skillsToDelete.add(servSkill);
+            }
+        }
 
         if (!skillsToDelete.isEmpty()) {
             List<Database.DeleteResult> deleteResList = Database.delete(skillsToDelete, false);
