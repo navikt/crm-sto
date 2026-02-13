@@ -26,17 +26,17 @@ public without sharing class nksGetStoUtilityController {
         get {
             Schema.DescribeFieldResult fieldResult = Case.STO_Category__c.getDescribe();
             List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
-            List<String> retList = new List<String>();
+            List<String> skills = new List<String>();
             for (Schema.PicklistEntry pl : ple) {
                 if (stoThemeRenames.containsKey(pl.getLabel())) {
-                    retList.add(stoThemeRenames.get(pl.getLabel()));
+                    skills.add(stoThemeRenames.get(pl.getLabel()));
                 } else {
-                    retList.add(pl.getLabel());
+                    skills.add(pl.getLabel());
                 }
             }
-            retList.addAll(confidentialitySkills);
-            retList.addAll((originSkills));
-            return retList;
+            skills.addAll(confidentialitySkills);
+            skills.addAll((originSkills));
+            return skills;
         }
     }
 
@@ -79,7 +79,7 @@ public without sharing class nksGetStoUtilityController {
     public static Id getNewSTO() {
         try {
             Integer attempt = 0;
-            Id userId = UserInfo.getUserId();
+            Id userId = getCurrentUserId();
             allUserSkills = getServiceResourceSkillIds();
 
             do {
@@ -117,9 +117,9 @@ public without sharing class nksGetStoUtilityController {
             Map<String, Object> flowParams = new Map<String, Object>();
             flowParams.put('CaseId', caseId);
             if (Test.isRunningTest()) {
-                allUserSkills.userOriginMap.put('001xa000003DIlo', 'STO');
+                allUserSkills.originSkillsBySkillId.put('001xa000003DIlo', 'STO');
             }
-            flowParams.put('UserOriginSkills', allUserSkills.userOriginMap.values());
+            flowParams.put('UserOriginSkills', allUserSkills.originSkillsBySkillId.values());
 
             Flow.Interview.STO_Case_Set_Owner setOwnerFlow = new Flow.Interview.STO_Case_Set_Owner(flowParams);
             setOwnerFlow.start();
@@ -144,7 +144,7 @@ public without sharing class nksGetStoUtilityController {
             WHERE
                 Status IN ('New', 'In progress', 'Reserved')
                 AND RecordTypeId = :recordTypeId
-                AND OwnerId = :UserInfo.getUserID()
+                AND OwnerId = :getCurrentUserId()
             ORDER BY CreatedDate DESC
             LIMIT 5
         ];
@@ -158,7 +158,7 @@ public without sharing class nksGetStoUtilityController {
             WHERE
                 Status IN ('New', 'In progress')
                 AND RecordType.DeveloperName = 'STO_Case'
-                AND OwnerId = :UserInfo.getUserID()
+                AND OwnerId = :getCurrentUserId()
             LIMIT 1
         ];
         return casesInProgress.size() > 0 ? true : false;
@@ -193,8 +193,8 @@ public without sharing class nksGetStoUtilityController {
 
     @AuraEnabled(cacheable=true)
     public static GroupedSkills getServiceResourceSkillIds() {
-        Id userId = UserInfo.getUserId();
-        GroupedSkills retSkills = new GroupedSkills();
+        Id userId = getCurrentUserId();
+        GroupedSkills userSkills = new GroupedSkills();
 
         for (ServiceResourceSkill srs : [
             SELECT SkillId, Skill.DeveloperName, Skill.MasterLabel
@@ -209,16 +209,16 @@ public without sharing class nksGetStoUtilityController {
         ]) {
             //Separating domain skills and person access skills
             if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
-                retSkills.userConfidentialMap.put(srs.SkillId, srs.Skill.DeveloperName);
+                userSkills.confidentialitySkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
             } else if (originSkills.contains(srs.Skill.DeveloperName)) {
-                retSkills.userOriginMap.put(srs.SkillId, srs.Skill.DeveloperName);
+                userSkills.originSkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
             } else {
                 if (filteredSkillId == null || filteredSkillId == srs.SkillId) {
-                    retSkills.skillMap.put(srs.SkillId, srs.Skill.MasterLabel);
+                    userSkills.skillMap.put(srs.SkillId, srs.Skill.MasterLabel);
                 }
             }
         }
-        return retSkills;
+        return userSkills;
     }
 
     private static Id getNextSTOCase() {
@@ -252,39 +252,77 @@ public without sharing class nksGetStoUtilityController {
      * @return List<PendingServiceRouting>
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
-        String userId = '%' + UserInfo.getUserID() + '%';
-        return [
-            SELECT Id, WorkItemId, WorkItem.Status
+        String userId = getCurrentUserId();
+
+        Set<Id> includedPSRIds = new Set<Id>();
+        for (SkillRequirement sr : [
+            SELECT RelatedRecordId
+            FROM SkillRequirement
+            WHERE SkillId IN :allUserSkills.skillMap.keySet()
+        ]) {
+            includedPSRIds.add(sr.RelatedRecordId);
+        }
+        
+        Set<Id> excludedPSRIds = new Set<Id>();
+        for (SkillRequirement sr : [
+            SELECT RelatedRecordId
+            FROM SkillRequirement
+            WHERE
+                (Skill.DeveloperName IN :confidentialitySkills 
+                AND Skill.DeveloperName NOT IN :allUserSkills.confidentialitySkillsBySkillId.values())
+                OR (Skill.DeveloperName IN :originSkills 
+                AND Skill.DeveloperName NOT IN :allUserSkills.originSkillsBySkillId.values())
+        ]) {
+            excludedPSRIds.add(sr.RelatedRecordId);
+        }
+        
+        List<PendingServiceRouting> allCandidates = [
+            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status
             FROM PendingServiceRouting
             WHERE
-                Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :allUserSkills.skillMap.keySet())
-                AND ID NOT IN (
-                    SELECT RelatedRecordId
-                    FROM SkillRequirement
-                    WHERE
-                        (Skill.DeveloperName NOT IN :allUserSkills.userConfidentialMap.values()
-                        AND Skill.DeveloperName IN :confidentialitySkills)
-                        OR (Skill.DeveloperName NOT IN :allUserSkills.userOriginMap.values()
-                        AND Skill.DeveloperName IN :originSkills)
-                )
-                AND ServiceChannel.DeveloperName = 'Skriv_til_oss'
+                ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
                 AND isPushed = FALSE
-                AND (NOT WorkItem.NKS_Incompetent_IDs__c LIKE :userId)
+                AND Id IN :includedPSRIds
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
-            LIMIT 1
         ];
+        
+        for (PendingServiceRouting psr : allCandidates) {
+            // Skip if user lacks required confidentiality/origin skills
+            if (excludedPSRIds.contains(psr.Id)) {
+                continue;
+            }
+            
+            // Skip if user is in the incompetent list
+            if (String.isNotBlank(psr.WorkItem.NKS_Incompetent_IDs__c) && 
+                psr.WorkItem.NKS_Incompetent_IDs__c.contains(userId)) {
+                continue;
+            }
+            
+            // Return first valid PSR
+            return new List<PendingServiceRouting>{ psr };
+        }
+        
+        return new List<PendingServiceRouting>();
     }
 
     public class GroupedSkills {
         @AuraEnabled
         public Map<Id, String> skillMap = new Map<Id, String>();
         @AuraEnabled
-        public Map<Id, String> userConfidentialMap = new Map<Id, String>();
+        public Map<Id, String> confidentialitySkillsBySkillId = new Map<Id, String>();
         @AuraEnabled
-        public Map<Id, String> userOriginMap = new Map<Id, String>();
+        public Map<Id, String> originSkillsBySkillId = new Map<Id, String>();
     }
 
+    private static Id cachedUserId;    
+    private static Id getCurrentUserId() {
+        if (cachedUserId == null) {
+            cachedUserId = UserInfo.getUserId();
+        }
+        return cachedUserId;
+    }
+    
     // Cache RecordTypeId to avoid repeated queries
     private static Id stoRecordTypeId;
     
