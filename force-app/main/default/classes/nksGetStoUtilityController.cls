@@ -26,17 +26,17 @@ public without sharing class nksGetStoUtilityController {
         get {
             Schema.DescribeFieldResult fieldResult = Case.STO_Category__c.getDescribe();
             List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
-            List<String> retList = new List<String>();
+            List<String> skills = new List<String>();
             for (Schema.PicklistEntry pl : ple) {
                 if (stoThemeRenames.containsKey(pl.getLabel())) {
-                    retList.add(stoThemeRenames.get(pl.getLabel()));
+                    skills.add(stoThemeRenames.get(pl.getLabel()));
                 } else {
-                    retList.add(pl.getLabel());
+                    skills.add(pl.getLabel());
                 }
             }
-            retList.addAll(confidentialitySkills);
-            retList.addAll((originSkills));
-            return retList;
+            skills.addAll(confidentialitySkills);
+            skills.addAll((originSkills));
+            return skills;
         }
     }
 
@@ -117,9 +117,9 @@ public without sharing class nksGetStoUtilityController {
             Map<String, Object> flowParams = new Map<String, Object>();
             flowParams.put('CaseId', caseId);
             if (Test.isRunningTest()) {
-                allUserSkills.userOriginMap.put('001xa000003DIlo', 'STO');
+                allUserSkills.originSkillsBySkillId.put('001xa000003DIlo', 'STO');
             }
-            flowParams.put('UserOriginSkills', allUserSkills.userOriginMap.values());
+            flowParams.put('UserOriginSkills', allUserSkills.originSkillsBySkillId.values());
 
             Flow.Interview.STO_Case_Set_Owner setOwnerFlow = new Flow.Interview.STO_Case_Set_Owner(flowParams);
             setOwnerFlow.start();
@@ -194,7 +194,7 @@ public without sharing class nksGetStoUtilityController {
     @AuraEnabled(cacheable=true)
     public static GroupedSkills getServiceResourceSkillIds() {
         Id userId = getCurrentUserId();
-        GroupedSkills retSkills = new GroupedSkills();
+        GroupedSkills userSkills = new GroupedSkills();
 
         for (ServiceResourceSkill srs : [
             SELECT SkillId, Skill.DeveloperName, Skill.MasterLabel
@@ -209,16 +209,16 @@ public without sharing class nksGetStoUtilityController {
         ]) {
             //Separating domain skills and person access skills
             if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
-                retSkills.userConfidentialMap.put(srs.SkillId, srs.Skill.DeveloperName);
+                userSkills.confidentialitySkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
             } else if (originSkills.contains(srs.Skill.DeveloperName)) {
-                retSkills.userOriginMap.put(srs.SkillId, srs.Skill.DeveloperName);
+                userSkills.originSkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
             } else {
                 if (filteredSkillId == null || filteredSkillId == srs.SkillId) {
-                    retSkills.skillMap.put(srs.SkillId, srs.Skill.MasterLabel);
+                    userSkills.skillMap.put(srs.SkillId, srs.Skill.MasterLabel);
                 }
             }
         }
-        return retSkills;
+        return userSkills;
     }
 
     private static Id getNextSTOCase() {
@@ -269,9 +269,9 @@ public without sharing class nksGetStoUtilityController {
             FROM SkillRequirement
             WHERE
                 (Skill.DeveloperName IN :confidentialitySkills 
-                AND Skill.DeveloperName NOT IN :allUserSkills.userConfidentialMap.values())
+                AND Skill.DeveloperName NOT IN :allUserSkills.confidentialitySkillsBySkillId.values())
                 OR (Skill.DeveloperName IN :originSkills 
-                AND Skill.DeveloperName NOT IN :allUserSkills.userOriginMap.values())
+                AND Skill.DeveloperName NOT IN :allUserSkills.originSkillsBySkillId.values())
         ]) {
             excludedPSRIds.add(sr.RelatedRecordId);
         }
@@ -310,9 +310,9 @@ public without sharing class nksGetStoUtilityController {
         @AuraEnabled
         public Map<Id, String> skillMap = new Map<Id, String>();
         @AuraEnabled
-        public Map<Id, String> userConfidentialMap = new Map<Id, String>();
+        public Map<Id, String> confidentialitySkillsBySkillId = new Map<Id, String>();
         @AuraEnabled
-        public Map<Id, String> userOriginMap = new Map<Id, String>();
+        public Map<Id, String> originSkillsBySkillId = new Map<Id, String>();
     }
 
     private static Id cachedUserId;    
