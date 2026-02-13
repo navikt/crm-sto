@@ -253,16 +253,25 @@ public without sharing class nksGetStoUtilityController {
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
         String userId = getCurrentUserId();
+
+        Set<Id> includedPSRIds = new Set<Id>();
+        for (SkillRequirement sr : [
+            SELECT RelatedRecordId
+            FROM SkillRequirement
+            WHERE SkillId IN :allUserSkills.skillMap.keySet()
+        ]) {
+            includedPSRIds.add(sr.RelatedRecordId);
+        }
         
         Set<Id> excludedPSRIds = new Set<Id>();
         for (SkillRequirement sr : [
             SELECT RelatedRecordId
             FROM SkillRequirement
             WHERE
-                (Skill.DeveloperName NOT IN :allUserSkills.userConfidentialMap.values()
-                AND Skill.DeveloperName IN :confidentialitySkills)
-                OR (Skill.DeveloperName NOT IN :allUserSkills.userOriginMap.values()
-                AND Skill.DeveloperName IN :originSkills)
+                (Skill.DeveloperName IN :confidentialitySkills 
+                AND Skill.DeveloperName NOT IN :allUserSkills.userConfidentialMap.values())
+                OR (Skill.DeveloperName IN :originSkills 
+                AND Skill.DeveloperName NOT IN :allUserSkills.userOriginMap.values())
         ]) {
             excludedPSRIds.add(sr.RelatedRecordId);
         }
@@ -274,7 +283,7 @@ public without sharing class nksGetStoUtilityController {
                 ServiceChannel.DeveloperName = 'Skriv_til_oss'
                 AND IsReadyForRouting = TRUE
                 AND isPushed = FALSE
-                AND Id IN (SELECT RelatedRecordId FROM SkillRequirement WHERE SkillId IN :allUserSkills.skillMap.keySet())
+                AND Id IN :includedPSRIds
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
         ];
         
