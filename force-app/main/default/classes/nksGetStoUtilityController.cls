@@ -6,6 +6,7 @@
  * @last modified by  : mamikals
  **/
 public without sharing class nksGetStoUtilityController {
+    private static LoggerUtility logger = new LoggerUtility('GET_STO');
     private final static Integer MAX_ATTEMPTS = 5;
     public class TooManyAttemptsException extends Exception {
     }
@@ -136,7 +137,7 @@ public without sharing class nksGetStoUtilityController {
 
     @AuraEnabled(cacheable=true)
     public static List<Record> getList() {
-        Id recordTypeId = [SELECT Id FROM RecordType WHERE DeveloperName = 'STO_Case'].Id;
+        Id recordTypeId = getSTORecordTypeId();
         List<Case> listtoreturn = [
             SELECT CreatedDate, toLabel(Status), STO_Category__c, CaseNumber
             FROM Case
@@ -225,8 +226,19 @@ public without sharing class nksGetStoUtilityController {
             List<PendingServiceRouting> psr = getPendingServiceRouting();
             if (Test.isRunningTest()) {
                 return [SELECT Id FROM Case LIMIT 1]?.Id;
-            } else if (psr.size() == 0)
+            }
+            if (psr.size() == 0) {
                 throw new NoCasesFoundException('NotFound');
+            }
+            if (psr[0].workItem.Status == 'Closed') {
+                PendingServiceRouting psrToLog = [SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId FROM PendingServiceRouting WHERE Id = :psr[0].Id LIMIT 1];
+                logger.error(
+                'PSR pushed where STO Case is status closed.',
+                psrToLog,
+                CRM_ApplicationDomain.Domain.NKS
+                );
+                logger.publish();
+            }
             return psr[0].WorkItemId;
         } catch (QueryException queryEx) {
             throw new AuraHandledException('En feil oppsto ved henting av ny STO, prøv igjen.');
@@ -256,7 +268,7 @@ public without sharing class nksGetStoUtilityController {
         }
         
         List<PendingServiceRouting> allCandidates = [
-            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c
+            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status
             FROM PendingServiceRouting
             WHERE
                 ServiceChannel.DeveloperName = 'Skriv_til_oss'
@@ -292,5 +304,17 @@ public without sharing class nksGetStoUtilityController {
         public Map<Id, String> userConfidentialMap = new Map<Id, String>();
         @AuraEnabled
         public Map<Id, String> userOriginMap = new Map<Id, String>();
+    }
+
+    // Cache RecordTypeId to avoid repeated queries
+    private static Id stoRecordTypeId;
+    
+    private static Id getSTORecordTypeId() {
+        if (stoRecordTypeId == null) {
+            stoRecordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByDeveloperName()
+                .get('STO_Case')
+                .getRecordTypeId();
+        }
+        return stoRecordTypeId;
     }
 }
