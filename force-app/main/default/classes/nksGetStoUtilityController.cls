@@ -79,7 +79,7 @@ public without sharing class nksGetStoUtilityController {
     public static Id getNewSTO() {
         try {
             Integer attempt = 0;
-            Id userId = UserInfo.getUserId();
+            Id userId = getCurrentUserId();
             allUserSkills = getServiceResourceSkillIds();
 
             do {
@@ -144,7 +144,7 @@ public without sharing class nksGetStoUtilityController {
             WHERE
                 Status IN ('New', 'In progress', 'Reserved')
                 AND RecordTypeId = :recordTypeId
-                AND OwnerId = :UserInfo.getUserID()
+                AND OwnerId = :getCurrentUserId()
             ORDER BY CreatedDate DESC
             LIMIT 5
         ];
@@ -158,7 +158,7 @@ public without sharing class nksGetStoUtilityController {
             WHERE
                 Status IN ('New', 'In progress')
                 AND RecordType.DeveloperName = 'STO_Case'
-                AND OwnerId = :UserInfo.getUserID()
+                AND OwnerId = :getCurrentUserId()
             LIMIT 1
         ];
         return casesInProgress.size() > 0 ? true : false;
@@ -193,7 +193,7 @@ public without sharing class nksGetStoUtilityController {
 
     @AuraEnabled(cacheable=true)
     public static GroupedSkills getServiceResourceSkillIds() {
-        Id userId = UserInfo.getUserId();
+        Id userId = getCurrentUserId();
         GroupedSkills retSkills = new GroupedSkills();
 
         for (ServiceResourceSkill srs : [
@@ -252,7 +252,7 @@ public without sharing class nksGetStoUtilityController {
      * @return List<PendingServiceRouting>
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
-        String userId = UserInfo.getUserID();
+        String userId = getCurrentUserId();
         
         Set<Id> excludedPSRIds = new Set<Id>();
         for (SkillRequirement sr : [
@@ -306,6 +306,14 @@ public without sharing class nksGetStoUtilityController {
         public Map<Id, String> userOriginMap = new Map<Id, String>();
     }
 
+    private static Id cachedUserId;    
+    private static Id getCurrentUserId() {
+        if (cachedUserId == null) {
+            cachedUserId = UserInfo.getUserId();
+        }
+        return cachedUserId;
+    }
+    
     // Cache RecordTypeId to avoid repeated queries
     private static Id stoRecordTypeId;
     
