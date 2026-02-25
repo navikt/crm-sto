@@ -21,9 +21,14 @@ public without sharing class nksGetStoUtilityController {
 
     private static final Map<String, String> stoThemeRenames = new Map<String, String>{ 'Ufør' => 'Ufoeretrygd' };
 
+    private static List<String> cachedRelevantSkills;
+
     // Since Omni channel skills are org based, we want to only include skills that are used in STO
     public static final List<String> allRelevantSkills {
         get {
+            if (cachedRelevantSkills != null) {
+                return cachedRelevantSkills;
+            }
             Schema.DescribeFieldResult fieldResult = Case.STO_Category__c.getDescribe();
             List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
             List<String> skills = new List<String>();
@@ -35,8 +40,9 @@ public without sharing class nksGetStoUtilityController {
                 }
             }
             skills.addAll(confidentialitySkills);
-            skills.addAll((originSkills));
-            return skills;
+            skills.addAll(originSkills);
+            cachedRelevantSkills = skills;
+            return cachedRelevantSkills;
         }
     }
 
@@ -157,7 +163,7 @@ public without sharing class nksGetStoUtilityController {
             FROM Case
             WHERE
                 Status IN ('New', 'In progress')
-                AND RecordType.DeveloperName = 'STO_Case'
+                AND RecordTypeId = :getSTORecordTypeId()
                 AND OwnerId = :getCurrentUserId()
             LIMIT 1
         ];
