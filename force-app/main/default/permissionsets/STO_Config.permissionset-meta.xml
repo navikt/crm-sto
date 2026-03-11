@@ -23,6 +23,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>NavTask__c.NKS_Assignee__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>NavTask__c.NKS_Experience_Site_Source__c</field>
         <readable>true</readable>
