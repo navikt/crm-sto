@@ -144,19 +144,23 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     handleSetCaseToInProgress() {
-        const fields = {};
-        fields[ID_FIELD.fieldApiName] = this.caseId;
-        fields[STATUS_FIELD.fieldApiName] = CONSTANTS.IN_PROGRESS;
+        // Refresh first to see if case status was changed by for example Modia through API while Salesforce user 
+        // already had record open to avoid setting case to In Progress when it could in reality be Closed
+        refreshApex(this.wiredCase).then(() => {
+            if (this.status !== CONSTANTS.RESERVED) {
+                return;
+            }
 
-        const recordInput = { fields };
+            const fields = {};
+            fields[ID_FIELD.fieldApiName] = this.caseId;
+            fields[STATUS_FIELD.fieldApiName] = CONSTANTS.IN_PROGRESS;
 
-        updateRecord(recordInput)
-            .then(() => {
-                return refreshApex(this.wiredCase);
-            })
-            .catch((error) => {
-                console.error('Error updating case status:', error);
-            });
+            updateRecord({ fields })
+                .then(() => refreshApex(this.wiredCase))
+                .catch((error) => {
+                    console.error('Error updating case status:', error);
+                });
+        });
     }
 
     handleSubmitStatusChange(event) {
