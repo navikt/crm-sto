@@ -3,7 +3,7 @@
     <actionCalls>
         <name>Get_active_Nav_unit_of_Ident</name>
         <label>Get active Nav unit of Ident</label>
-        <locationX>1933</locationX>
+        <locationX>2040</locationX>
         <locationY>1356</locationY>
         <actionName>NKS_NOMController</actionName>
         <actionType>apex</actionType>
@@ -30,7 +30,7 @@
     <actionCalls>
         <name>Get_Nav_Unit_status</name>
         <label>Get Nav Unit status</label>
-        <locationX>2131</locationX>
+        <locationX>2304</locationX>
         <locationY>1032</locationY>
         <actionName>NKS_NavUnitSingleController</actionName>
         <actionType>apex</actionType>
@@ -53,7 +53,7 @@
     <assignments>
         <name>Assign_Ident</name>
         <label>Assign Ident</label>
-        <locationX>1801</locationX>
+        <locationX>1908</locationX>
         <locationY>1572</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Assignee__c</assignToReference>
@@ -69,7 +69,7 @@
     <assignments>
         <name>Assign_no_Ident</name>
         <label>Assign no Ident</label>
-        <locationX>2065</locationX>
+        <locationX>2172</locationX>
         <locationY>1572</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Assignee__c</assignToReference>
@@ -82,7 +82,7 @@
     <assignments>
         <name>Assign_no_nav_unit</name>
         <label>Assign no nav unit</label>
-        <locationX>2329</locationX>
+        <locationX>2568</locationX>
         <locationY>1248</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.CRM_NavUnit__c</assignToReference>
@@ -96,7 +96,7 @@
     <assignments>
         <name>Assign_old_Nav_Unit</name>
         <label>Assign old Nav Unit</label>
-        <locationX>1933</locationX>
+        <locationX>2040</locationX>
         <locationY>1248</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.CRM_NavUnit__c</assignToReference>
@@ -112,8 +112,8 @@
     <assignments>
         <name>Convert_theme_to_Bidrag</name>
         <label>Convert theme to Bidrag</label>
-        <locationX>1867</locationX>
-        <locationY>2172</locationY>
+        <locationX>1776</locationX>
+        <locationY>2088</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -128,8 +128,8 @@
     <assignments>
         <name>Inherit_Thread_Theme</name>
         <label>Inherit Thread Theme</label>
-        <locationX>2131</locationX>
-        <locationY>2064</locationY>
+        <locationX>2040</locationX>
+        <locationY>1980</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -144,7 +144,7 @@
     <assignments>
         <name>Set_case_status_to_new</name>
         <label>Set case status to new and run case assignment</label>
-        <locationX>1273</locationX>
+        <locationX>1248</locationX>
         <locationY>1032</locationY>
         <assignmentItems>
             <assignToReference>RelatedCase.CRM_Run_Case_Assignment__c</assignToReference>
@@ -167,8 +167,8 @@
     <assignments>
         <name>Set_KNA_Theme</name>
         <label>Set KNA Theme</label>
-        <locationX>2395</locationX>
-        <locationY>2172</locationY>
+        <locationX>2304</locationX>
+        <locationY>2088</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -183,8 +183,8 @@
     <assignments>
         <name>Set_New_Task_Fields</name>
         <label>Set New Task Fields</label>
-        <locationX>2131</locationX>
-        <locationY>2364</locationY>
+        <locationX>2040</locationX>
+        <locationY>2280</locationY>
         <assignmentItems>
             <assignToReference>Related_NAV_Task.NKS_Status__c</assignToReference>
             <operator>Assign</operator>
@@ -249,7 +249,7 @@
     <decisions>
         <name>Check_Case_Owner</name>
         <label>Check Case Owner</label>
-        <locationX>1009</locationX>
+        <locationX>984</locationX>
         <locationY>924</locationY>
         <defaultConnector>
             <targetReference>Set_case_status_to_new</targetReference>
@@ -283,7 +283,7 @@
     <decisions>
         <name>Check_if_Assignee_still_working_for_Unit</name>
         <label>Check if Assignee still working for Unit</label>
-        <locationX>1933</locationX>
+        <locationX>2040</locationX>
         <locationY>1464</locationY>
         <defaultConnector>
             <targetReference>Assign_no_Ident</targetReference>
@@ -310,7 +310,7 @@
             is handled in the thread flow</description>
         <name>Check_if_first_message</name>
         <label>Check if first message</label>
-        <locationX>662</locationX>
+        <locationX>687</locationX>
         <locationY>384</locationY>
         <defaultConnector>
             <targetReference>Get_Thread</targetReference>
@@ -332,7 +332,7 @@
     <decisions>
         <name>Check_if_Nav_Unit_is_Active</name>
         <label>Check if Nav Unit is Active</label>
-        <locationX>2131</locationX>
+        <locationX>2304</locationX>
         <locationY>1140</locationY>
         <defaultConnector>
             <targetReference>Assign_no_nav_unit</targetReference>
@@ -366,7 +366,7 @@
             should always have a related case</description>
         <name>Check_Routing</name>
         <label>Check Routing</label>
-        <locationX>1372</locationX>
+        <locationX>1446</locationX>
         <locationY>600</locationY>
         <defaultConnector>
             <targetReference>Get_Related_NAV_Task</targetReference>
@@ -393,8 +393,8 @@
             category</description>
         <name>Check_Thread_Theme</name>
         <label>Check Thread Theme</label>
-        <locationX>2131</locationX>
-        <locationY>1956</locationY>
+        <locationX>2040</locationX>
+        <locationY>1872</locationY>
         <defaultConnector>
             <targetReference>Get_Kontakt_NAV_Theme</targetReference>
         </defaultConnector>
@@ -433,7 +433,7 @@
     <decisions>
         <name>Is_Case_Null</name>
         <label>Is Case Null?</label>
-        <locationX>613</locationX>
+        <locationX>588</locationX>
         <locationY>816</locationY>
         <defaultConnector>
             <targetReference>Check_Case_Owner</targetReference>
@@ -522,7 +522,7 @@
     <recordCreates>
         <name>Create_Application_Log</name>
         <label>Create Application Log</label>
-        <locationX>1537</locationX>
+        <locationX>1512</locationX>
         <locationY>1248</locationY>
         <inputAssignments>
             <field>Application_Domain__c</field>
@@ -566,7 +566,7 @@
     <recordCreates>
         <name>Create_Application_Log3</name>
         <label>Create Application Log</label>
-        <locationX>481</locationX>
+        <locationX>456</locationX>
         <locationY>924</locationY>
         <inputAssignments>
             <field>Application_Domain__c</field>
@@ -607,7 +607,7 @@
     <recordCreates>
         <name>Create_Application_Log_Case_Null</name>
         <label>Create Application Log</label>
-        <locationX>217</locationX>
+        <locationX>192</locationX>
         <locationY>924</locationY>
         <inputAssignments>
             <field>Application_Domain__c</field>
@@ -651,8 +651,8 @@
     <recordLookups>
         <name>Get_BID_Theme</name>
         <label>Get BID Theme</label>
-        <locationX>1867</locationX>
-        <locationY>2064</locationY>
+        <locationX>1776</locationX>
+        <locationY>1980</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Convert_theme_to_Bidrag</targetReference>
@@ -680,7 +680,7 @@
     <recordLookups>
         <name>Get_case</name>
         <label>Get case</label>
-        <locationX>613</locationX>
+        <locationX>588</locationX>
         <locationY>708</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -703,8 +703,8 @@
     <recordLookups>
         <name>Get_FAR_Theme</name>
         <label>Get FAR Theme</label>
-        <locationX>2131</locationX>
-        <locationY>1848</locationY>
+        <locationX>2040</locationX>
+        <locationY>1764</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Thread_Theme</targetReference>
@@ -733,7 +733,7 @@
         <description>Run a query to get the first message in the thread</description>
         <name>Get_First_Message</name>
         <label>Get First Message</label>
-        <locationX>662</locationX>
+        <locationX>687</locationX>
         <locationY>276</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -757,8 +757,8 @@
     <recordLookups>
         <name>Get_Kontakt_NAV_Theme</name>
         <label>Get Kontakt NAV Theme</label>
-        <locationX>2395</locationX>
-        <locationY>2064</locationY>
+        <locationX>2304</locationX>
+        <locationY>1980</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Set_KNA_Theme</targetReference>
@@ -787,7 +787,7 @@
         <description>Check if the thread is related to a NAV task as process object</description>
         <name>Get_Related_NAV_Task</name>
         <label>Get Related NAV Task</label>
-        <locationX>2131</locationX>
+        <locationX>2304</locationX>
         <locationY>708</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -819,7 +819,7 @@
         <description>Get the reference to the NAV unit who initiated the dialogue</description>
         <name>Get_STB_NAV_Unit</name>
         <label>Get STB NAV Unit</label>
-        <locationX>2131</locationX>
+        <locationX>2304</locationX>
         <locationY>816</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -841,7 +841,7 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>1372</locationX>
+        <locationX>1446</locationX>
         <locationY>492</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -862,7 +862,7 @@
     <recordLookups>
         <name>Get_Vurder_Svar_Task_Type</name>
         <label>Get Vurder Svar Task Type</label>
-        <locationX>2131</locationX>
+        <locationX>2304</locationX>
         <locationY>924</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -891,7 +891,7 @@
     <recordUpdates>
         <name>Update_Related_Case</name>
         <label>Update Related Case</label>
-        <locationX>1273</locationX>
+        <locationX>1248</locationX>
         <locationY>1140</locationY>
         <faultConnector>
             <targetReference>Create_Application_Log</targetReference>
@@ -902,8 +902,8 @@
         <description>Updated the related object when the new nav task is generated</description>
         <name>Update_Thread_Reference_On_No_Task</name>
         <label>Update Thread Reference</label>
-        <locationX>2131</locationX>
-        <locationY>2580</locationY>
+        <locationX>2040</locationX>
+        <locationY>2496</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -966,8 +966,8 @@
     <subflows>
         <name>Send_NAV_Task_On_No_Task</name>
         <label>Send NAV Task</label>
-        <locationX>2131</locationX>
-        <locationY>2472</locationY>
+        <locationX>2040</locationX>
+        <locationY>2388</locationY>
         <connector>
             <targetReference>Update_Thread_Reference_On_No_Task</targetReference>
         </connector>
@@ -976,6 +976,12 @@
             <name>Created_By_Unit_Number</name>
             <value>
                 <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>LogCategory</name>
+            <value>
+                <stringValue>STB Oppgave</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>

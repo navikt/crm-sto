@@ -73,7 +73,6 @@ public without sharing class NKS_FedrekvotesakenController {
             );
             createMessage(thread, task.NKS_Comments__c);
         } catch (Exception e) {
-            System.debug('createNavTask error: ' + e.getMessage());
             logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
         } finally {
