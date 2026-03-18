@@ -24,6 +24,22 @@
                     "versionNumber": "0.35.0.LATEST"
                 },
                 {
+                    "package": "platform-data-model",
+                    "versionNumber": "0.1.2.LATEST"
+                },
+                {
+                    "package": "custom-metadata-dao",
+                    "versionNumber": "0.1.2.LATEST"
+                },
+                {
+                    "package": "custom-permission-helper",
+                    "versionNumber": "0.1.2.LATEST"
+                },
+                {
+                    "package": "feature-toggle",
+                    "versionNumber": "0.1.3.LATEST"
+                },
+                {
                     "package": "crm-platform-integration",
                     "versionNumber": "0.153.0.LATEST"
                 },
@@ -112,6 +128,16 @@
         "crm-nks-survey": "0Ho7U0000000014SAA",
         "crm-sf-saf": "0Ho7U0000000001SAA",
         "crm-thread-view": "0Ho7U000000000zSAA",
-        "crm-nks-integration": "0Ho2o000000fxX6CAI"
+        "crm-nks-integration": "0Ho2o000000fxX6CAI",
+        "platform-data-model": "0HoKB00000000010AA",
+        "custom-metadata-dao": "0HoKB000000000B0AQ",
+        "custom-permission-helper": "0HoKB000000000f0AA",
+        "feature-toggle": "0HoKB000000000V0AQ"
+    },
+    "packageKeyConfig": {
+        "platform-data-model": false,
+        "custom-metadata-dao": false,
+        "custom-permission-helper": false,
+        "feature-toggle": false
     }
 }
