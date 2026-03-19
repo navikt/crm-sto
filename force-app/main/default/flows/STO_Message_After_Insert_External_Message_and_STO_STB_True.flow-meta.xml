@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Get_active_Nav_unit_of_Ident</name>
-        <label>Get active Nav unit of Ident</label>
+        <name>Check_if_NavIdent_is_active_in_unit</name>
+        <label>Check if NavIdent is active in unit</label>
         <locationX>2040</locationX>
         <locationY>1356</locationY>
-        <actionName>NKS_NOMController</actionName>
+        <actionName>NKS_EntraController</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Check_if_Assignee_still_working_for_Unit</targetReference>
@@ -23,7 +23,7 @@
                 <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
             </value>
         </inputParameters>
-        <nameSegment>NKS_NOMController</nameSegment>
+        <nameSegment>NKS_EntraController</nameSegment>
         <offset>0</offset>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
@@ -106,7 +106,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Get_active_Nav_unit_of_Ident</targetReference>
+            <targetReference>Check_if_NavIdent_is_active_in_unit</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -293,7 +293,7 @@
             <name>Assignee_still_active</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_active_Nav_unit_of_Ident</leftValueReference>
+                <leftValueReference>Check_if_NavIdent_is_active_in_unit</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
