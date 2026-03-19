@@ -543,6 +543,12 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <name>LogCategory</name>
+            <value>
+                <stringValue>STB Oppgave</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <name>NAV_Task</name>
             <value>
                 <elementReference>NAV_TASK_TO_CREATE</elementReference>
