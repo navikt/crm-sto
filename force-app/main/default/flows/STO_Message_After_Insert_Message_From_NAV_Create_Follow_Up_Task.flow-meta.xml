@@ -346,6 +346,11 @@
     <description>Record triggered flow to determine if a message has not been responded after 4 days
         and should generate a task to the one &quot;owning&quot; the conversation.</description>
     <environments>Default</environments>
+    <formulas>
+        <name>Is_Nav_Unit_Active</name>
+        <dataType>Boolean</dataType>
+        <expression>{!Get_Nav_Unit_status.unit.status} = &quot;Aktiv&quot;</expression>
+    </formulas>
     <interviewLabel>Message - After Insert - Message From NAV - Create Follow Up Task
         {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Message - After Insert - Message From NAV - Create Follow Up Task</label>
@@ -642,6 +647,12 @@
             <name>NAV_Task</name>
             <value>
                 <elementReference>NAV_TASK_TO_CREATE</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>NavUnit_Active</name>
+            <value>
+                <elementReference>Is_Nav_Unit_Active</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>

@@ -493,10 +493,9 @@
     </decisions>
     <environments>Default</environments>
     <formulas>
-        <description>Checks if the thread is older than 2 months, to determine if it needs to validate the unit/assignee assignment</description>
-        <name>Old_thread</name>
+        <name>Is_Nav_Unit_Active</name>
         <dataType>Boolean</dataType>
-        <expression>{!Get_Thread.CRM_Date_Time_Registered__c} &lt;= NOW() - 60</expression>
+        <expression>{!Get_Nav_Unit_status.unit.status} = &quot;Aktiv&quot;</expression>
     </formulas>
     <interviewLabel>Message - After Insert {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Message - After Insert - External Message and STO/STB True</label>
@@ -988,6 +987,12 @@
             <name>NAV_Task</name>
             <value>
                 <elementReference>Related_NAV_Task</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>NavUnit_Active</name>
+            <value>
+                <elementReference>Is_Nav_Unit_Active</elementReference>
             </value>
         </inputAssignments>
         <storeOutputAutomatically>true</storeOutputAutomatically>
