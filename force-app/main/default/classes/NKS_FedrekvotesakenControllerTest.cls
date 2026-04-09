@@ -29,12 +29,13 @@ private class NKS_FedrekvotesakenControllerTest {
     }
 
     @isTest
-    static void testCreateNavTask() {
+    static void testpostTask() {
+        ApiMock.setTestMock('POST_CREATE_OPPGAVE', 200, 'OK');
         NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
         String jsonData = JSON.serialize(fedrekvoteData);
 
         Test.startTest();
-        NKS_FedrekvotesakenController.createNavTask(jsonData);
+        NKS_FedrekvotesakenController.postTask(jsonData);
         Test.stopTest();
 
         List<NavTask__c> navTasks = [SELECT Id FROM NavTask__c LIMIT 1];
@@ -42,35 +43,35 @@ private class NKS_FedrekvotesakenControllerTest {
     }
 
     @isTest
-    static void testCreateNavTaskHasExistingNavTasksError() {
-        NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
-        String jsonData = JSON.serialize(fedrekvoteData);
-        Exception ex;
-
-        Test.startTest();
-        try {
-            NKS_FedrekvotesakenController.createNavTask(jsonData);
-            NKS_FedrekvotesakenController.createNavTask(jsonData);
-        } catch (Exception e) {
-            ex = e;
-        }
-        Test.stopTest();
-
-        Assert.areNotEqual(null, ex);
-    }
-
-    @isTest
-    static void testFormatComment() {
+    static void testFormatBeskrivelse() {
         NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
 
         Test.startTest();
-        String comment = NKS_FedrekvotesakenController.formatComment(fedrekvoteData);
+        String comment = NKS_FedrekvotesakenController.formatBeskrivelse(fedrekvoteData);
         Test.stopTest();
 
         Assert.areNotEqual(null, comment, 'Comment should not be null');
         Assert.areNotEqual('', comment, 'Comment should not be empty');
         Assert.areNotEqual(0, comment.length(), 'Comment should have > 0 length');
     }
+    /* // TODO: Query oppgave to see if existing task for Fedrekvotesaken exists
+    @isTest
+    static void testPostTaskHasExistingNavTasksError() {
+        NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
+        String jsonData = JSON.serialize(fedrekvoteData);
+        Exception ex;
+
+        Test.startTest();
+        try {
+            NKS_FedrekvotesakenController.postTask(jsonData);
+            NKS_FedrekvotesakenController.postTask(jsonData);
+        } catch (Exception e) {
+            ex = e;
+        }
+        Test.stopTest();
+
+        Assert.areNotEqual(null, ex);
+    }*/
 
     @isTest
     static void testHasExistingNavTasks() {

@@ -1,30 +1,19 @@
 public without sharing class NKS_FedrekvotesakenController {
     private static LoggerUtility logger = new LoggerUtility('Fedrekvotesaken');
 
-    private static User accountAndContactId {
+    private static User userRecord {
         get {
-            if (accountAndContactId == null) {
-                accountAndContactId = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+            if (userRecord == null) {
+                userRecord = [SELECT AccountId, ContactId, CRM_Person__r.Name FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
             }
-            return accountAndContactId;
-        }
-        set {
-        }
-    }
-
-    private static NavUnit__c navUnit {
-        get {
-            if (navUnit == null) {
-                navUnit = [SELECT Id, INT_UnitNumber__c FROM NavUnit__c WHERE INT_UnitNumber__c = '4863' LIMIT 1];
-            }
-            return navUnit;
+            return userRecord;
         }
         set {
         }
     }
 
     @AuraEnabled
-    public static Id createNavTask(String jsonData) {
+    public static void postTask(String jsonData) {
         if (hasExistingNavTasks()) {
             logger.error(
                 'User already has exsisting Nav task related to fedrekvotesaken',
@@ -43,45 +32,35 @@ public without sharing class NKS_FedrekvotesakenController {
         }
 
         Common_Code__c commonCode = getThemeAndSubTheme();
+        String beskrivelse = formatBeskrivelse(fedrekvoteData);
 
-        NavTask__c task = new NavTask__c();
-        task.Name = 'Vurder henvendelse';
-        task.CRM_NoPersonInformation__c = false;
-        task.CRM_Account__c = accountAndContactId?.AccountId;
-        task.NKS_Theme__c = commonCode?.CRM_Parent_Code__c;
-        task.NKS_TaskType__c = getType();
-        task.CRM_Priority__c = 'LAV';
-        task.NKS_Subtheme__c = commonCode?.CRM_Subtheme__c;
-        task.CRM_NavUnit__c = navUnit?.Id;
-        task.NKS_Comments__c = formatComment(fedrekvoteData);
-        task.OwnerId = UserInfo.getUserId();
-        task.NKS_Experience_Site_Source__c = 'Fedrekvotesaken';
+        OppgaveManager.OppgaveRequest taskRequest = new OppgaveManager.OppgaveRequest();
+        taskRequest.tildeltEnhetsnr = '4863';
+        taskRequest.aktoerId = userRecord?.CRM_Person__r?.Name;
+        taskRequest.oppgavetype = 'VURD_HENV';
+        taskRequest.tema = commonCode?.CRM_Parent_Code__r?.CRM_Code__c;
+        taskRequest.behandlingstema = commonCode?.CRM_Subtheme__r?.CRM_Code__c;
+        taskRequest.prioritet = 'LAV';
+        taskRequest.beskrivelse = beskrivelse;
 
-        Thread__c thread;
         try {
-            Map<String, Object> flowInputs = new Map<String, Object>{ 'NAV_Task' => task };
-            Flow.Interview flow = Flow.Interview.createInterview('CRM_Send_NAV_Task_Auto', flowInputs);
-            flow.start();
+            Oppgave oppgave = OppgaveManager.postTask(taskRequest);
+            // TODO: Create record to retry posting on fail - NKS-1969
+            if (oppgave == null || oppgave.id == null) {
+                throw new FedrekvoteException('Failed to create oppgave via API');
+            }
 
-            NavTask__c outputTask = (NavTask__c) flow.getVariableValue('NAV_Task');
-
-            thread = createSTBThread(
-                outputTask.Id,
-                accountAndContactId,
-                navUnit.INT_UnitNumber__c,
-                commonCode.CRM_Parent_Code__c
-            );
-            createMessage(thread, task.NKS_Comments__c);
+            Thread__c thread = createSTBThread(commonCode.CRM_Parent_Code__c);
+            createMessage(thread, beskrivelse);
         } catch (Exception e) {
-            logger.error('Failed to insert task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
+            logger.error('Failed to post task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             throw new FedrekvoteException(e);
         } finally {
             logger.publish();
         }
-        return thread?.Id;
     }
 
-    public static String formatComment(Fedrekvote fedrekvoteData) {
+    public static String formatBeskrivelse(Fedrekvote fedrekvoteData) {
         String comment = '';
         Map<String, String> englishToNorwegianMap = new Map<String, String>{
             'yes' => 'Ja',
@@ -114,36 +93,22 @@ public without sharing class NKS_FedrekvotesakenController {
         return comment;
     }
 
-    // Max create 1 NavTask per user. Filter on createddate as extra security.
+    // TODO: Query oppgave to see if existing task for Fedrekvotesaken exists
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
-        Id accountId = accountAndContactId?.AccountId;
-        Id navUnit = navUnit?.Id;
-        List<NavTask__c> existingNavTasks = [
-            SELECT Id
-            FROM NavTask__c
-            WHERE
-                CRM_Account__c = :accountId
-                AND CRM_NavUnit__c = :navUnit
-                AND NKS_Experience_Site_Source__c = 'Fedrekvotesaken'
-        ];
-        return existingNavTasks.size() > 0;
-    }
-
-    private static Id getType() {
-        return [SELECT Id FROM Common_Code__c WHERE Name = 'Vurder henvendelse' LIMIT 1]?.Id;
+        return false;
     }
 
     private static Common_Code__c getThemeAndSubTheme() {
         return [
-            SELECT Id, CRM_Subtheme__c, CRM_Parent_Code__c
+            SELECT Id, CRM_Parent_Code__c, CRM_Subtheme__r.CRM_Code__c, CRM_Parent_Code__r.CRM_Code__c
             FROM Common_Code__c
             WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Gjelder'
             LIMIT 1
         ];
     }
 
-    private static Thread__c createSTBThread(String relatedObjId, User personUser, String unitNumber, Id theme) {
+    private static Thread__c createSTBThread(Id theme) {
         Id themeGroup = [
             SELECT Id
             FROM Common_Code__c
@@ -153,10 +118,9 @@ public without sharing class NKS_FedrekvotesakenController {
         ?.Id;
 
         Thread__c thread = new Thread__c();
-        thread.CRM_Related_Object__c = relatedObjId;
-        thread.CRM_Contact__c = personUser?.ContactId;
-        thread.CRM_Account__c = personUser?.AccountId;
-        thread.CRM_Created_By_NAV_Unit__c = unitNumber;
+        thread.CRM_Contact__c = userRecord?.ContactId;
+        thread.CRM_Account__c = userRecord?.AccountId;
+        thread.CRM_Created_By_NAV_Unit__c = '4863';
         thread.CRM_Theme_Group__c = themeGroup; // Familie
         thread.CRM_Theme__c = theme; // Foreldre- og svangerskapspenger
         thread.Name = 'Skriv til bruker';
@@ -177,14 +141,14 @@ public without sharing class NKS_FedrekvotesakenController {
         return thread;
     }
 
-    private static void createMessage(Thread__c thread, String comments) {
+    private static void createMessage(Thread__c thread, String beskrivelse) {
         Message__c message = new Message__c();
         message.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg. Vi behandler mottatte henvendelser så raskt vi kan, og vi forventer at alle får svar i løpet av 2025.';
         message.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
         message.CRM_Thread__c = thread.Id;
 
-        String modifiedComments = comments.replace('Bruker hatt', 'Har du hatt').replace('Brukers', 'Ditt');
-        message.CRM_Message_Text__c += '\n\nDu har oppgitt følgende informasjon: \n\n' + modifiedComments;
+        String modifiedbeskrivelse = beskrivelse.replace('Bruker hatt', 'Har du hatt').replace('Brukers', 'Ditt');
+        message.CRM_Message_Text__c += '\n\nDu har oppgitt følgende informasjon: \n\n' + modifiedbeskrivelse;
 
         try {
             insert message;

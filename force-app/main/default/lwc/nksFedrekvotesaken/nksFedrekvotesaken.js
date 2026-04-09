@@ -1,7 +1,7 @@
 import { LightningElement } from 'lwc';
 import PlusCircle from '@salesforce/resourceUrl/PlusCircle';
 import LoggerUtility from 'c/loggerUtility';
-import createNavTask from '@salesforce/apex/NKS_FedrekvotesakenController.createNavTask';
+import postTask from '@salesforce/apex/NKS_FedrekvotesakenController.postTask';
 import hasExistingNavTasks from '@salesforce/apex/NKS_FedrekvotesakenController.hasExistingNavTasks';
 
 const textMapping = {
@@ -73,7 +73,7 @@ export default class NksFedrekvotesaken extends LightningElement {
         };
         this.loading = true;
 
-        createNavTask({ jsonData: JSON.stringify(fedrekvoteData) })
+        postTask({ jsonData: JSON.stringify(fedrekvoteData) })
             .then(() => {
                 this.hasNavTask = true;
                 this.title = 'Foreldrepenger: Kvittering';
