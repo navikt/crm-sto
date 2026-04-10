@@ -12,7 +12,6 @@ import { resolve } from 'c/nksComponentsUtils';
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import COMPANY_NAME from '@salesforce/schema/User.CompanyName';
 import PERSON_FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
-import PERSON_MIDDLE_NAME from '@salesforce/schema/Person__c.INT_MiddleName__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
@@ -140,7 +139,7 @@ export default class CrmStoMessaging extends LightningElement {
 
     @wire(getRecord, {
         recordId: '$personId',
-        fields: [PERSON_FIRST_NAME, PERSON_MIDDLE_NAME]
+        fields: [PERSON_FIRST_NAME]
     })
     wiredPerson({ error, data }) {
         if (error) {
@@ -148,16 +147,7 @@ export default class CrmStoMessaging extends LightningElement {
         } else if (data) {
             if (this.accountId && this.personId) {
                 let firstName = getFieldValue(data, PERSON_FIRST_NAME);
-                let middleName = getFieldValue(data, PERSON_MIDDLE_NAME);
-
-                firstName = this.toTitleCaseName(firstName);
-                middleName = this.toTitleCaseName(middleName);
-
-                this.userName = firstName;
-
-                if (middleName) {
-                    this.userName = `${this.userName} ${middleName}`.trim();
-                }
+                this.userName = this.toTitleCaseName(firstName);
             }
         }
     }
