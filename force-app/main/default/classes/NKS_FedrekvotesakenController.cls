@@ -1,10 +1,31 @@
 public without sharing class NKS_FedrekvotesakenController {
     private static LoggerUtility logger = new LoggerUtility('Fedrekvotesaken');
 
+    private static Common_Code__c commonCode {
+        get {
+            if (commonCode == null) {
+                commonCode = [
+                    SELECT Id, CRM_Parent_Code__c, CRM_Subtheme__r.CRM_Code__c, CRM_Parent_Code__r.CRM_Code__c
+                    FROM Common_Code__c
+                    WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Gjelder'
+                    LIMIT 1
+                ];
+            }
+            return commonCode;
+        }
+        set {
+        }
+    }
+
     private static User userRecord {
         get {
             if (userRecord == null) {
-                userRecord = [SELECT AccountId, ContactId, CRM_Person__r.Name FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+                userRecord = [
+                    SELECT AccountId, ContactId, CRM_Person__r.Name
+                    FROM User
+                    WHERE Id = :UserInfo.getUserId()
+                    LIMIT 1
+                ];
             }
             return userRecord;
         }
@@ -31,7 +52,6 @@ public without sharing class NKS_FedrekvotesakenController {
             return '';
         }
 
-        Common_Code__c commonCode = getThemeAndSubTheme();
         String beskrivelse = formatBeskrivelse(fedrekvoteData);
 
         OppgaveManager.OppgaveRequest taskRequest = new OppgaveManager.OppgaveRequest();
@@ -93,19 +113,18 @@ public without sharing class NKS_FedrekvotesakenController {
         return comment;
     }
 
-    // TODO: Query oppgave to see if existing task for Fedrekvotesaken exists
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
-        return false;
-    }
+        CRM_OppgaveQueryList query = new CRM_OppgaveQueryList();
+        query.aktoerId = new List<String>{ userRecord?.CRM_Person__r?.Name };
+        query.tema = new List<String>{ commonCode?.CRM_Parent_Code__r?.CRM_Code__c };
+        query.behandlingstema = commonCode?.CRM_Subtheme__r?.CRM_Code__c;
+        query.tildeltEnhetsnr = '4863';
+        query.oppgavetype = new List<String>{ 'VURD_HENV' };
+        query.returnLimit = 1;
 
-    private static Common_Code__c getThemeAndSubTheme() {
-        return [
-            SELECT Id, CRM_Parent_Code__c, CRM_Subtheme__r.CRM_Code__c, CRM_Parent_Code__r.CRM_Code__c
-            FROM Common_Code__c
-            WHERE Name = 'Fedrekvote' AND CRM_Code_Set__c = 'Gjelder'
-            LIMIT 1
-        ];
+        List<Oppgave> oppgaver = OppgaveManager.getOppgaver(query);
+        return oppgaver != null && !oppgaver.isEmpty();
     }
 
     private static Thread__c createSTBThread(Id theme) {
