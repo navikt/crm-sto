@@ -11,8 +11,7 @@ import { resolve } from 'c/nksComponentsUtils';
 
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import COMPANY_NAME from '@salesforce/schema/User.CompanyName';
-import PERSON_FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
-import PERSON_MIDDLE_NAME from '@salesforce/schema/Person__c.INT_MiddleName__c';
+import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
@@ -140,24 +139,15 @@ export default class CrmStoMessaging extends LightningElement {
 
     @wire(getRecord, {
         recordId: '$personId',
-        fields: [PERSON_FIRST_NAME, PERSON_MIDDLE_NAME]
+        fields: [PERSON_FULL_NAME]
     })
     wiredPerson({ error, data }) {
         if (error) {
             console.error('wiredPerson failed', error);
         } else if (data) {
             if (this.accountId && this.personId) {
-                let firstName = getFieldValue(data, PERSON_FIRST_NAME);
-                let middleName = getFieldValue(data, PERSON_MIDDLE_NAME);
-
-                firstName = this.toTitleCaseName(firstName);
-                middleName = this.toTitleCaseName(middleName);
-
-                this.userName = firstName;
-
-                if (middleName) {
-                    this.userName = `${this.userName} ${middleName}`.trim();
-                }
+                let fullName = getFieldValue(data, PERSON_FULL_NAME);
+                this.userName = fullName ? fullName.split(' ').shift() : '';
             }
         }
     }
@@ -399,20 +389,6 @@ export default class CrmStoMessaging extends LightningElement {
             console.error('Problem getting English company name: ' + error);
             return '';
         }
-    }
-
-    toTitleCaseName(value) {
-        return (value || '')
-            .trim()
-            .toLowerCase()
-            .split(/\s+/)
-            .map((word) =>
-                word
-                    .split('-')
-                    .map((part) => (part ? part.charAt(0).toUpperCase() + part.slice(1) : ''))
-                    .join('-')
-            )
-            .join(' ');
     }
 
     get textTemplate() {
