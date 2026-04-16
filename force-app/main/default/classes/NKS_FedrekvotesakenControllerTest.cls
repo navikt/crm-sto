@@ -54,35 +54,16 @@ private class NKS_FedrekvotesakenControllerTest {
         Assert.areNotEqual('', comment, 'Comment should not be empty');
         Assert.areNotEqual(0, comment.length(), 'Comment should have > 0 length');
     }
-    /* // TODO: Query oppgave to see if existing task for Fedrekvotesaken exists
-    @isTest
-    static void testPostTaskHasExistingNavTasksError() {
-        NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
-        String jsonData = JSON.serialize(fedrekvoteData);
-        Exception ex;
-
-        Test.startTest();
-        try {
-            NKS_FedrekvotesakenController.postTask(jsonData);
-            NKS_FedrekvotesakenController.postTask(jsonData);
-        } catch (Exception e) {
-            ex = e;
-        }
-        Test.stopTest();
-
-        Assert.areNotEqual(null, ex);
-    }*/
 
     @isTest
     static void testHasExistingNavTasks() {
-        Account testAccount = new Account(Name = 'Test Account');
-        insert testAccount;
+        ApiMock.setTestMock('GET_OPPGAVE_BY_ID', 200, 'Ok');
 
         Test.startTest();
         Boolean hasTasks = NKS_FedrekvotesakenController.hasExistingNavTasks();
         Test.stopTest();
 
-        Assert.areEqual(false, hasTasks, 'Expected zero existing NavTasks');
+        Assert.areEqual(true, hasTasks, 'Expected one existing NavTasks');
     }
 
     private static NKS_FedrekvotesakenController.Fedrekvote makeTestData() {

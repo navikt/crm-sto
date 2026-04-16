@@ -21,7 +21,7 @@ public without sharing class NKS_FedrekvotesakenController {
         get {
             if (userRecord == null) {
                 userRecord = [
-                    SELECT AccountId, ContactId, CRM_Person__r.Name
+                    SELECT AccountId, ContactId, CRM_Person__r.INT_ActorId__c
                     FROM User
                     WHERE Id = :UserInfo.getUserId()
                     LIMIT 1
@@ -35,28 +35,18 @@ public without sharing class NKS_FedrekvotesakenController {
 
     @AuraEnabled
     public static void postTask(String jsonData) {
-        if (hasExistingNavTasks()) {
-            logger.error(
-                'User already has exsisting Nav task related to fedrekvotesaken',
-                null,
-                CRM_ApplicationDomain.Domain.NKS
-            );
-            logger.publish();
-            return '';
-        }
-
         Fedrekvote fedrekvoteData = (Fedrekvote) JSON.deserialize(jsonData, Fedrekvote.class);
         if (fedrekvoteData == null) {
             logger.error('Fedrekvotedata from LWC was null.', null, CRM_ApplicationDomain.Domain.NKS);
             logger.publish();
-            return '';
+            return;
         }
 
         String beskrivelse = formatBeskrivelse(fedrekvoteData);
 
         OppgaveManager.OppgaveRequest taskRequest = new OppgaveManager.OppgaveRequest();
         taskRequest.tildeltEnhetsnr = '4863';
-        taskRequest.aktoerId = userRecord?.CRM_Person__r?.Name;
+        taskRequest.aktoerId = userRecord?.CRM_Person__r?.INT_ActorId__c;
         taskRequest.oppgavetype = 'VURD_HENV';
         taskRequest.tema = commonCode?.CRM_Parent_Code__r?.CRM_Code__c;
         taskRequest.behandlingstema = commonCode?.CRM_Subtheme__r?.CRM_Code__c;
@@ -65,7 +55,6 @@ public without sharing class NKS_FedrekvotesakenController {
 
         try {
             Oppgave oppgave = OppgaveManager.postTask(taskRequest);
-            // TODO: Create record to retry posting on fail - NKS-1969
             if (oppgave == null || oppgave.id == null) {
                 throw new FedrekvoteException('Failed to create oppgave via API');
             }
@@ -74,6 +63,7 @@ public without sharing class NKS_FedrekvotesakenController {
             createMessage(thread, beskrivelse);
         } catch (Exception e) {
             logger.error('Failed to post task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
+            OppgaveRetry.createScheduledRequest('Post', JSON.serialize(taskRequest));
             throw new FedrekvoteException(e);
         } finally {
             logger.publish();
@@ -116,15 +106,25 @@ public without sharing class NKS_FedrekvotesakenController {
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
         CRM_OppgaveQueryList query = new CRM_OppgaveQueryList();
-        query.aktoerId = new List<String>{ userRecord?.CRM_Person__r?.Name };
+        query.aktoerId = new List<String>{ userRecord?.CRM_Person__r?.INT_ActorId__c };
         query.tema = new List<String>{ commonCode?.CRM_Parent_Code__r?.CRM_Code__c };
         query.behandlingstema = commonCode?.CRM_Subtheme__r?.CRM_Code__c;
         query.tildeltEnhetsnr = '4863';
         query.oppgavetype = new List<String>{ 'VURD_HENV' };
         query.returnLimit = 1;
 
-        List<Oppgave> oppgaver = OppgaveManager.getOppgaver(query);
-        return oppgaver != null && !oppgaver.isEmpty();
+        try {
+            List<Oppgave> oppgaver = OppgaveManager.getOppgaver(query);
+            return oppgaver != null && !oppgaver.isEmpty();
+        } catch (Exception e) {
+            logger.error(
+                'Failed to check existing Nav tasks: ' + e.getMessage(),
+                null,
+                CRM_ApplicationDomain.Domain.NKS
+            );
+            logger.publish();
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     private static Thread__c createSTBThread(Id theme) {
