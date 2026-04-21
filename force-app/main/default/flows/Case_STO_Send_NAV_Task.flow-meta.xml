@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Post_Nav_Task_Case</name>
         <label>Post Nav Task</label>
-        <locationX>446</locationX>
-        <locationY>566</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>OppgaveManager</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -90,8 +90,8 @@
     <actionCalls>
         <name>Post_Nav_Task_Thread</name>
         <label>Post Nav Task</label>
-        <locationX>1238</locationX>
-        <locationY>458</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>OppgaveManager</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -174,13 +174,13 @@
         <offset>0</offset>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>58.0</apiVersion>
+    <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Set_Publish_Notification_To_True</name>
         <label>Set Publish Notification To True</label>
-        <locationX>314</locationX>
-        <locationY>782</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>Publish_Notification</assignToReference>
             <operator>Assign</operator>
@@ -192,8 +192,8 @@
     <assignments>
         <name>Set_Publish_Notification_To_True_Thread</name>
         <label>Set Publish Notification To True</label>
-        <locationX>1106</locationX>
-        <locationY>674</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>Publish_Notification</assignToReference>
             <operator>Assign</operator>
@@ -205,8 +205,8 @@
     <decisions>
         <name>Check_Record_Id</name>
         <label>Check Record Id</label>
-        <locationX>743</locationX>
-        <locationY>134</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>Get_Thread</targetReference>
         </defaultConnector>
@@ -230,8 +230,8 @@
     <decisions>
         <name>Validate_Account</name>
         <label>Validate Account</label>
-        <locationX>248</locationX>
-        <locationY>350</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>Case_NAV_Task_Input_Screen</targetReference>
         </defaultConnector>
@@ -255,8 +255,8 @@
     <decisions>
         <name>Verify_Task_Post</name>
         <label>Verify Task Post</label>
-        <locationX>446</locationX>
-        <locationY>674</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>Post_Error_Screen_Case</targetReference>
         </defaultConnector>
@@ -280,8 +280,8 @@
     <decisions>
         <name>Verify_Task_Post_Thread</name>
         <label>Verify Task Post</label>
-        <locationX>1238</locationX>
-        <locationY>566</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>Post_Error_Screen_Thread</targetReference>
         </defaultConnector>
@@ -353,8 +353,8 @@
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
-        <locationX>248</locationX>
-        <locationY>242</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Validate_Account</targetReference>
@@ -378,8 +378,8 @@
         <description>Query the thread to relate the NAV Task to.</description>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>1238</locationX>
-        <locationY>242</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Thread_NAV_Task_Input_Screen</targetReference>
@@ -400,8 +400,8 @@
     <screens>
         <name>Case_NAV_Task_Input_Screen</name>
         <label>Case NAV Task Input Screen</label>
-        <locationX>446</locationX>
-        <locationY>458</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -572,8 +572,8 @@
     <screens>
         <name>Post_Error_Screen</name>
         <label>Post Error Screen</label>
-        <locationX>50</locationX>
-        <locationY>458</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -631,8 +631,8 @@
     <screens>
         <name>Post_Error_Screen_Case</name>
         <label>Post Error Screen Case</label>
-        <locationX>578</locationX>
-        <locationY>782</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -725,8 +725,8 @@
     <screens>
         <name>Post_Error_Screen_Thread</name>
         <label>Post Error Screen Thread</label>
-        <locationX>1370</locationX>
-        <locationY>674</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -819,8 +819,8 @@
     <screens>
         <name>Thread_NAV_Task_Input_Screen</name>
         <label>Thread NAV Task Input Screen</label>
-        <locationX>1238</locationX>
-        <locationY>350</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -989,7 +989,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>617</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Check_Record_Id</targetReference>
@@ -999,8 +999,8 @@
     <subflows>
         <name>Create_App_Log</name>
         <label>Create App Log</label>
-        <locationX>842</locationX>
-        <locationY>350</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <flowName>Flow_Create_Application_Log</flowName>
         <inputAssignments>
             <name>Error_Payload</name>
