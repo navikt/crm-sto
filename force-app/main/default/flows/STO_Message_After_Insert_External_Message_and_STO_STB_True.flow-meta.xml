@@ -1,191 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <actionCalls>
-        <name>Check_if_NavIdent_is_active_in_unit</name>
-        <label>Check if NavIdent is active in unit</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <actionName>NKS_EntraController</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>Check_if_Assignee_still_working_for_Unit</targetReference>
-        </connector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>navIdent</name>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>unitNumber</name>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>NKS_EntraController</nameSegment>
-        <offset>0</offset>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
-    <actionCalls>
-        <name>Get_Nav_Unit_status</name>
-        <label>Get Nav Unit status</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <actionName>NKS_NavUnitSingleController</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>Check_if_Nav_Unit_is_Active</targetReference>
-        </connector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>navUnitNumber</name>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>NKS_NavUnitSingleController</nameSegment>
-        <offset>0</offset>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
-    <actionCalls>
-        <name>Post_Nav_Task</name>
-        <label>Post Nav Task</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <actionName>OppgaveManager</actionName>
-        <actionType>apex</actionType>
-        <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters>
-            <name>aktoerId</name>
-            <value>
-                <elementReference>Get_Thread.CRM_Account__r.CRM_Person__r.INT_ActorId__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>eksternHenvendelseId</name>
-            <value>
-                <elementReference>Get_Thread.CRM_API_Reference__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>logCategory</name>
-            <value>
-                <stringValue>STB Oppgave</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>methodType</name>
-            <value>
-                <stringValue>POST</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>oppgavetype</name>
-            <value>
-                <stringValue>VUR_SVAR</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>opprettetAvEnhetsnr</name>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>prioritet</name>
-            <value>
-                <stringValue>HOY</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>tema</name>
-            <value>
-                <elementReference>Oppgave_Theme_Code</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>tildeltEnhetsnr</name>
-            <value>
-                <elementReference>Oppgave_Unit</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>tilordnetRessurs</name>
-            <value>
-                <elementReference>Oppgave_Assignee</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>OppgaveManager</nameSegment>
-        <offset>0</offset>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
     <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
-    <assignments>
-        <name>Assign_Ident</name>
-        <label>Assign Ident</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>Oppgave_Assignee</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Get_FAR_Theme</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_old_Nav_Unit</name>
-        <label>Assign old Nav Unit</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>Oppgave_Unit</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Check_if_NavIdent_is_active_in_unit</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Convert_theme_to_Bidrag</name>
-        <label>Convert theme to Bidrag</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>Oppgave_Theme_Code</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>BID</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Post_Nav_Task</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Inherit_Thread_Theme</name>
-        <label>Inherit Thread Theme</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>Oppgave_Theme_Code</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_Theme__r.CRM_Code__c</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Post_Nav_Task</targetReference>
-        </connector>
-    </assignments>
     <assignments>
         <name>Set_case_status_to_new</name>
         <label>Set case status to new and run case assignment</label>
@@ -207,22 +23,6 @@
         </assignmentItems>
         <connector>
             <targetReference>Update_Related_Case</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Set_KNA_Theme</name>
-        <label>Set KNA Theme</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>Oppgave_Theme_Code</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>KNA</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Post_Nav_Task</targetReference>
         </connector>
     </assignments>
     <decisions>
@@ -260,31 +60,6 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Check_if_Assignee_still_working_for_Unit</name>
-        <label>Check if Assignee still working for Unit</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Get_FAR_Theme</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Assignee_still_active</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Check_if_NavIdent_is_active_in_unit</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_Ident</targetReference>
-            </connector>
-            <label>Assignee still active</label>
-        </rules>
-    </decisions>
-    <decisions>
         <description>If this if the first message in the thread, then the case or nav task routing
             is handled in the thread flow</description>
         <name>Check_if_first_message</name>
@@ -309,38 +84,6 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Check_if_Nav_Unit_is_Active</name>
-        <label>Check if Nav Unit is Active</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Get_FAR_Theme</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Unit no longer exists</defaultConnectorLabel>
-        <rules>
-            <name>Unit_is_active</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Nav_Unit_status.unit</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>Get_Nav_Unit_status.unit.status</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Aktiv</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_old_Nav_Unit</targetReference>
-            </connector>
-            <label>Unit is active</label>
-        </rules>
-    </decisions>
-    <decisions>
         <description>If the Assignee NAV Unit is not set. The thread is to be handled by NKS and
             should always have a related case</description>
         <name>Check_Routing</name>
@@ -348,7 +91,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>Get_Nav_Unit_status</targetReference>
+            <targetReference>Create_STB_Oppgave</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Other routing</defaultConnectorLabel>
         <rules>
@@ -365,48 +108,6 @@
                 <targetReference>Get_case</targetReference>
             </connector>
             <label>Is NKS routing</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <description>Verify if the thread theme has been set and the task should inherit this
-            category</description>
-        <name>Check_Thread_Theme</name>
-        <label>Check Thread Theme</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Set_KNA_Theme</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Set Default Theme</defaultConnectorLabel>
-        <rules>
-            <name>Theme_is_FAR</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Thread.CRM_Theme__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Get_FAR_Theme.Id</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Convert_theme_to_Bidrag</targetReference>
-            </connector>
-            <label>Theme is FAR</label>
-        </rules>
-        <rules>
-            <name>Thread_has_Theme</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Thread.CRM_Theme__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Inherit_Thread_Theme</targetReference>
-            </connector>
-            <label>Thread has Theme</label>
         </rules>
     </decisions>
     <decisions>
@@ -471,11 +172,6 @@
         </rules>
     </decisions>
     <environments>Default</environments>
-    <formulas>
-        <name>Is_Nav_Unit_Active</name>
-        <dataType>Boolean</dataType>
-        <expression>{!Get_Nav_Unit_status.unit.status} = &quot;Aktiv&quot;</expression>
-    </formulas>
     <interviewLabel>Message - After Insert {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Message - After Insert - External Message and STO/STB True</label>
     <processMetadataValues>
@@ -650,35 +346,6 @@
         <queriedFields>Status</queriedFields>
     </recordLookups>
     <recordLookups>
-        <name>Get_FAR_Theme</name>
-        <label>Get FAR Theme</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Check_Thread_Theme</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Code_Set__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Tema</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>FAR</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Common_Code__c</object>
-        <queriedFields>Id</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <description>Run a query to get the first message in the thread</description>
         <name>Get_First_Message</name>
         <label>Get First Message</label>
@@ -777,33 +444,31 @@
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
-    <variables>
-        <name>Oppgave_Assignee</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <stringValue></stringValue>
-        </value>
-    </variables>
-    <variables>
-        <name>Oppgave_Theme_Code</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>Oppgave_Unit</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <stringValue></stringValue>
-        </value>
-    </variables>
+    <subflows>
+        <name>Create_STB_Oppgave</name>
+        <label>Create STB Oppgave</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <flowName>Create_STB_Oppgave</flowName>
+        <inputAssignments>
+            <name>Oppgave_Type</name>
+            <value>
+                <stringValue>VUR_SVAR</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Optional_Log_Category</name>
+            <value>
+                <stringValue>STB Oppgave</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Thread</name>
+            <value>
+                <elementReference>Get_Thread</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
     <variables>
         <name>RelatedCase</name>
         <dataType>SObject</dataType>
