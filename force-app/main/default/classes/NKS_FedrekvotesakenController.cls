@@ -44,7 +44,7 @@ public without sharing class NKS_FedrekvotesakenController {
 
         String beskrivelse = formatBeskrivelse(fedrekvoteData);
 
-        OppgaveManager.OppgaveRequest taskRequest = new OppgaveManager.OppgaveRequest();
+        OppgaveRequest taskRequest = new OppgaveRequest();
         taskRequest.tildeltEnhetsnr = '4863';
         taskRequest.aktoerId = userRecord?.CRM_Person__r?.INT_ActorId__c;
         taskRequest.oppgavetype = 'VURD_HENV';
