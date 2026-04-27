@@ -21,7 +21,7 @@ public without sharing class NKS_FedrekvotesakenController {
         get {
             if (userRecord == null) {
                 userRecord = [
-                    SELECT AccountId, ContactId, CRM_Person__r.INT_ActorId__c
+                    SELECT AccountId, ContactId, Account.CRM_Person__r.INT_ActorId__c
                     FROM User
                     WHERE Id = :UserInfo.getUserId()
                     LIMIT 1
@@ -46,7 +46,7 @@ public without sharing class NKS_FedrekvotesakenController {
 
         OppgaveRequest taskRequest = new OppgaveRequest();
         taskRequest.tildeltEnhetsnr = '4863';
-        taskRequest.aktoerId = userRecord?.CRM_Person__r?.INT_ActorId__c;
+        taskRequest.aktoerId = userRecord?.Account?.CRM_Person__r?.INT_ActorId__c;
         taskRequest.oppgavetype = 'VURD_HENV';
         taskRequest.tema = commonCode?.CRM_Parent_Code__r?.CRM_Code__c;
         taskRequest.behandlingstema = commonCode?.CRM_Subtheme__r?.CRM_Code__c;
@@ -106,7 +106,7 @@ public without sharing class NKS_FedrekvotesakenController {
     @AuraEnabled
     public static Boolean hasExistingNavTasks() {
         CRM_OppgaveQueryList query = new CRM_OppgaveQueryList();
-        query.aktoerId = new List<String>{ userRecord?.CRM_Person__r?.INT_ActorId__c };
+        query.aktoerId = new List<String>{ userRecord?.Account?.CRM_Person__r?.INT_ActorId__c };
         query.tema = new List<String>{ commonCode?.CRM_Parent_Code__r?.CRM_Code__c };
         query.behandlingstema = commonCode?.CRM_Subtheme__r?.CRM_Code__c;
         query.tildeltEnhetsnr = '4863';
