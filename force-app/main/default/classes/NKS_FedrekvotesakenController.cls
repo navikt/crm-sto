@@ -54,7 +54,7 @@ public without sharing class NKS_FedrekvotesakenController {
         taskRequest.beskrivelse = beskrivelse;
 
         try {
-            OppgaveResponse oppgave = OppgaveManager.postTask(taskRequest).oppgave;
+            Oppgave oppgave = OppgaveManager.postTask(taskRequest)?.oppgave;
             if (oppgave == null || oppgave.id == null) {
                 throw new FedrekvoteException('Failed to create oppgave via API');
             }
