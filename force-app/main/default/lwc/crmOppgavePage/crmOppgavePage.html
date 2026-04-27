@@ -1,0 +1,33 @@
+<template>
+    <div class="oppgave-detail-page">
+        <c-crm-oppgave-header
+            status={oppgave.status}
+            is-loading={isLoading}
+            is-saving={isSaving}
+            error-message={headerErrorMessage}
+            onfinishoppgave={handleFinishOppgave}
+            lwc:if={oppgave}
+        ></c-crm-oppgave-header>
+        <lightning-spinner lwc:if={isLoading} variant="brand" size="small"></lightning-spinner>
+
+        <div lwc:if={oppgave} class="slds-box slds-theme_default slds-var-m-bottom_small">
+            <c-crm-nav-oppgave-detail-form
+                oppgave={oppgave}
+                onsave={handleSave}
+                is-saving={isSaving}
+                error-message={formErrorMessage}
+            ></c-crm-nav-oppgave-detail-form>
+        </div>
+
+        <div lwc:if={oppgave} class="bottom-sections">
+            <div lwc:if={hasExternalReference} class="bottom-section slds-box slds-theme_default">
+                <c-nks-dialogue-viewer
+                    external-api-reference={oppgave.metadata.EKSTERN_HENVENDELSE_ID}
+                ></c-nks-dialogue-viewer>
+            </div>
+            <div class="bottom-section slds-box slds-theme_default">
+                <c-crm-oppgave-comments kommentarer={oppgave.kommentarer}></c-crm-oppgave-comments>
+            </div>
+        </div>
+    </div>
+</template>
