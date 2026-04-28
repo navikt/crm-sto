@@ -696,18 +696,9 @@
             <targetReference>Case_NAV_Task_Input_Screen</targetReference>
         </connector>
         <fields>
-            <name>Error_Header_Case</name>
-            <extensionName>c:nksHeader</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>input</name>
-                <value>
-                    <stringValue>Oppgaveopprettelse feilet</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <name>Error_Text</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 18px; color: rgb(231, 21, 21);&quot;&gt;Oppgaveopprettelse feilet&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
                     <stringValue>top</stringValue>
