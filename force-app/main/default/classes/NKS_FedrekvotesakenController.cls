@@ -52,10 +52,11 @@ public without sharing class NKS_FedrekvotesakenController {
         taskRequest.behandlingstema = commonCode?.CRM_Subtheme__r?.CRM_Code__c;
         taskRequest.prioritet = 'LAV';
         taskRequest.beskrivelse = beskrivelse;
+        taskRequest.POST_AS_SYSTEM = true;
 
         try {
-            Oppgave oppgave = OppgaveManager.postTask(taskRequest)?.oppgave;
-            if (oppgave == null || oppgave.id == null) {
+            OppgaveResponse oppgaveResp = OppgaveManager.postTask(taskRequest);
+            if (oppgaveResp == null || oppgaveResp.oppgave == null || oppgaveResp.oppgave.id == null) {
                 throw new FedrekvoteException('Failed to create oppgave via API');
             }
 
@@ -64,7 +65,7 @@ public without sharing class NKS_FedrekvotesakenController {
         } catch (Exception e) {
             logger.error('Failed to post task: ' + e.getMessage(), null, CRM_ApplicationDomain.Domain.NKS);
             OppgaveRetry.createScheduledRequest('Post', JSON.serialize(taskRequest));
-            throw new FedrekvoteException(e);
+            throw new AuraHandledException(e.getMessage());
         } finally {
             logger.publish();
         }

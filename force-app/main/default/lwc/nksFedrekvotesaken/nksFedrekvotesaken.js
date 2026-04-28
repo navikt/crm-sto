@@ -83,7 +83,7 @@ export default class NksFedrekvotesaken extends LightningElement {
                     'NKS',
                     'Fedrekvote',
                     e,
-                    'Failed inserting NAV Task for fedrekvote, user input: ' + JSON.stringify(fedrekvoteData),
+                    'Failed posting oppgave for Fedrekvote, user input: ' + JSON.stringify(fedrekvoteData),
                     null
                 );
             })
