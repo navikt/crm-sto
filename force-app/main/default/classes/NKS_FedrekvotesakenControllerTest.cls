@@ -63,7 +63,7 @@ private class NKS_FedrekvotesakenControllerTest {
 
     @isTest
     static void testHasExistingNavTasks() {
-        ApiMock.setTestMock('GET_OPPGAVE', 200, 'Ok');
+        ApiMock.setTestMock('GET_OPPGAVE', 200, 'OK');
 
         Test.startTest();
         Boolean hasTasks = NKS_FedrekvotesakenController.hasExistingNavTasks();
