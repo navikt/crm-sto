@@ -1,22 +1,22 @@
 <template>
     <div class="oppgave-detail-page">
-        <c-crm-oppgave-header
+        <c-nks-oppgave-header
             status={oppgave.status}
             is-loading={isLoading}
             is-saving={isSaving}
             error-message={headerErrorMessage}
             onfinishoppgave={handleFinishOppgave}
             lwc:if={oppgave}
-        ></c-crm-oppgave-header>
+        ></c-nks-oppgave-header>
         <lightning-spinner lwc:if={isLoading} variant="brand" size="small"></lightning-spinner>
 
         <div lwc:if={oppgave} class="slds-box slds-theme_default slds-var-m-bottom_small">
-            <c-crm-nav-oppgave-detail-form
+            <c-nks-oppgave-detail-form
                 oppgave={oppgave}
                 onsave={handleSave}
                 is-saving={isSaving}
                 error-message={formErrorMessage}
-            ></c-crm-nav-oppgave-detail-form>
+            ></c-nks-oppgave-detail-form>
         </div>
 
         <div lwc:if={oppgave} class="bottom-sections">
@@ -26,7 +26,7 @@
                 ></c-nks-dialogue-viewer>
             </div>
             <div class="bottom-section slds-box slds-theme_default">
-                <c-crm-oppgave-comments kommentarer={oppgave.kommentarer}></c-crm-oppgave-comments>
+                <c-nks-oppgave-comments kommentarer={oppgave.kommentarer}></c-nks-oppgave-comments>
             </div>
         </div>
     </div>

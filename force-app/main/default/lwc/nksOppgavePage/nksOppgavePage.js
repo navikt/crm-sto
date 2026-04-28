@@ -2,7 +2,7 @@ import { LightningElement, api } from 'lwc';
 import getOppgaveById from '@salesforce/apex/OppgaveManager.getOppgaveById';
 import patchEditTaskFromLwc from '@salesforce/apex/OppgaveManager.patchEditTaskFromLwc';
 
-export default class CrmOppgavePage extends LightningElement {
+export default class NksOppgavePage extends LightningElement {
     @api oppgaveId;
 
     oppgave;
