@@ -38,8 +38,14 @@ private class NKS_FedrekvotesakenControllerTest {
         NKS_FedrekvotesakenController.postTask(jsonData);
         Test.stopTest();
 
-        List<NavTask__c> navTasks = [SELECT Id FROM NavTask__c LIMIT 1];
-        Assert.areNotEqual(0, navTasks.size(), 'NavTask record should be created');
+        List<Application_Log__c> logList = [
+            SELECT Id
+            FROM Application_Log__c
+            WHERE Category__c = 'Fedrekvotesaken'
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+        Assert.areEqual(0, logList.size(), 'Application_Log__c record should not be created');
     }
 
     @isTest
@@ -57,13 +63,13 @@ private class NKS_FedrekvotesakenControllerTest {
 
     @isTest
     static void testHasExistingNavTasks() {
-        ApiMock.setTestMock('GET_OPPGAVE_BY_ID', 200, 'Ok');
+        ApiMock.setTestMock('GET_OPPGAVE', 200, 'Ok');
 
         Test.startTest();
         Boolean hasTasks = NKS_FedrekvotesakenController.hasExistingNavTasks();
         Test.stopTest();
 
-        Assert.areEqual(true, hasTasks, 'Expected one existing NavTasks');
+        Assert.areEqual(true, hasTasks, 'Expected one existing Oppgave in response');
     }
 
     private static NKS_FedrekvotesakenController.Fedrekvote makeTestData() {
