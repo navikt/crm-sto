@@ -8,6 +8,12 @@
     font-size: 0.875rem;
 }
 
+.description {
+    display: block;
+    padding-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
 .error-message-box {
     display: flex;
     align-items: flex-start;

@@ -13,6 +13,7 @@
                     <div class="slds-col slds-p-top_small slds-size_1-of-4">
                         <c-crm-task-type-picklist
                             theme={formData.tema}
+                            selected-task-type-id={oppgavetypeId}
                             showcomponent="true"
                             use-picklist
                             onchange={handleEdited}
@@ -77,18 +78,24 @@
             </div>
             <div class="slds-col slds-p-top_small slds-size_2-of-6">
                 <div class="slds-form-element">
-                    <label class="slds-form-element__label" for="beskrivelse">Oppgavebeskrivelse</label>
+                    <label class="slds-form-element__label" for="kommentar">Legg til kommentar</label>
                     <div class="slds-form-element__control">
                         <textarea
-                            id="beskrivelse"
+                            id="kommentar"
                             class="slds-textarea beskrivelse-textarea"
                             oninput={handleFieldChange}
-                            data-field="beskrivelse"
+                            data-field="kommentar"
                             disabled={isCompleted}
-                        >
-{formData.beskrivelse}</textarea
-                        >
+                        ></textarea>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-col slds-p-top_small slds-size_4-of-6 slds-p-left_medium">
+            <div class="slds-form-element slds-m-bottom_small">
+                <label class="slds-form-element__label">Oppgavebeskrivelse</label>
+                <div class="slds-form-element__control slds-p-top_small">
+                    <span class="description">{formData.beskrivelse}</span>
                 </div>
             </div>
         </div>

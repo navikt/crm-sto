@@ -1,6 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorizationByThemeSet';
 import getUserNavUnit from '@salesforce/apex/CRM_NavTaskWorkAllocationController.getUserNavUnit';
+import getTaskTypes from '@salesforce/apex/CRM_NAVTaskTypeController.getTaskTypes';
 
 const PRIORITET_OPTIONS = [
     { label: 'Høy', value: 'HOY' },
@@ -29,6 +30,14 @@ export default class NksOppgaveDetailForm extends LightningElement {
     showForm = true;
     _oppgave;
     unitNumber;
+    taskTypeCommoncodes = [];
+
+    @wire(getTaskTypes, { themeCode: '$formData.tema' })
+    wiredTaskTypes({ data }) {
+        if (data) {
+            this.taskTypeCommoncodes = data;
+        }
+    }
 
     @wire(getCategorization, { themeSet: 'ARCHIVE_THEMES' })
     wiredCategories({ data }) {
@@ -43,6 +52,12 @@ export default class NksOppgaveDetailForm extends LightningElement {
         if (data) {
             this.navUnitId = data.Id;
         }
+    }
+
+    get oppgavetypeId() {
+        if (!this.formData.oppgavetype || !this.taskTypeCommoncodes?.length) return null;
+        const match = this.taskTypeCommoncodes.find((tt) => tt.commoncode === this.formData.oppgavetype);
+        return match ? match.id : null;
     }
 
     getCurrentTheme() {
@@ -72,7 +87,8 @@ export default class NksOppgaveDetailForm extends LightningElement {
             tilordnetRessurs: this._oppgave.fordeling?.medarbeider?.navident,
             fristDato: this._oppgave.fristDato ? this._oppgave.fristDato.substring(0, 10) : null,
             beskrivelse: this._oppgave.beskrivelse,
-            opprettetTidspunkt: this._oppgave.opprettet?.tidspunkt
+            opprettetTidspunkt: this._oppgave.opprettet?.tidspunkt,
+            kommentar: ''
         };
         this.getCurrentTheme();
         this.isEdited = false;
@@ -136,7 +152,8 @@ export default class NksOppgaveDetailForm extends LightningElement {
                 tilordnetRessurs: value.fordeling?.medarbeider?.navident,
                 fristDato: value.fristDato ? value.fristDato.substring(0, 10) : null,
                 beskrivelse: value.beskrivelse,
-                opprettetTidspunkt: value.opprettet?.tidspunkt
+                opprettetTidspunkt: value.opprettet?.tidspunkt,
+                kommentar: ''
             };
             this.isEdited = false;
             this.getCurrentTheme();

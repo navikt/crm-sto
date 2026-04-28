@@ -43,7 +43,7 @@ export default class NksOppgavePage extends LightningElement {
             };
             const response = await patchEditTaskFromLwc({ requestJson: JSON.stringify(request) });
             if (response?.isSuccess) {
-                this.oppgave = { ...this.oppgave, status: 'FERDIGSTILT', versjon: response.oppgave.versjon };
+                this.oppgave = { ...this.oppgave, status: 'FERDIGSTILT', versjon: response.versjon };
                 this.headerErrorMessage = null;
             } else {
                 this.headerErrorMessage = { errorMessage: response?.errorMessage, isRetry: response?.isRetry };
@@ -61,24 +61,23 @@ export default class NksOppgavePage extends LightningElement {
     async patch(fields, errorTarget) {
         this.isSaving = true;
         try {
+            // Map from OppgaveV2 structure to flat Oppgave (V1) request
             const request = {
                 id: this.oppgave.id,
                 versjon: this.oppgave.versjon,
+                prioritet: fields.prioritet ?? this.oppgave.prioritet,
+                beskrivelse: fields.kommentar,
                 tema: fields.tema ?? this.oppgave.kategorisering?.tema?.kode,
                 oppgavetype: fields.oppgavetype ?? this.oppgave.kategorisering?.oppgavetype?.kode,
                 behandlingstema: fields.behandlingstema ?? this.oppgave.kategorisering?.behandlingstema?.kode,
                 behandlingstype: fields.behandlingstype ?? this.oppgave.kategorisering?.behandlingstype?.kode,
-                prioritet: fields.prioritet ?? this.oppgave.prioritet,
-                beskrivelse: fields.beskrivelse ?? this.oppgave.beskrivelse,
                 tildeltEnhetsnr: fields.tildeltEnhetsnr ?? this.oppgave.fordeling?.enhet?.nr,
                 tilordnetRessurs: fields.tilordnetRessurs ?? this.oppgave.fordeling?.medarbeider?.navident,
-                fristFerdigstillelse: fields.fristDato ?? this.oppgave.fristDato,
-                status: fields.status ?? this.oppgave.status,
-                aktoerId: this.oppgave.bruker?.ident
+                fristFerdigstillelse: fields.fristDato ?? this.oppgave.fristDato
             };
             const response = await patchEditTaskFromLwc({ requestJson: JSON.stringify(request) });
             if (response?.isSuccess) {
-                this.oppgave = { ...this.oppgave, ...fields, versjon: response.oppgave.versjon };
+                this.oppgave = { ...this.oppgave, ...fields, versjon: response.versjon };
                 this.formErrorMessage = null;
                 this.headerErrorMessage = null;
             } else {

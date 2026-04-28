@@ -1,8 +1,8 @@
 <template>
-    <h2 class="slds-text-heading_small slds-var-m-bottom_small">Oppfølgingskommentarer</h2>
+    <h2 class="slds-text-heading_small slds-var-m-bottom_small">Kommentarer</h2>
     <template lwc:if={hasComments}>
         <template for:each={formattedComments} for:item="item">
-            <div key={item.tekst} class="slds-m-bottom_x-small">
+            <div key={item.tekst} class="slds-m-bottom_x-small slds-p-top_medium">
                 <p>{item.tekst}</p>
                 <p class="slds-text-color_weak slds-text-body_small">
                     {item.opprettetAv} - {item.opprettetTidspunktFormatted}
