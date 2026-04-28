@@ -2,5 +2,5 @@
     <aura:attribute name="pageReference" type="Object" />
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
     <lightning:workspaceAPI aura:id="workspace" />
-    <c:crmOppgavePage aura:id="oppgavePage" />
+    <c:nksOppgavePage aura:id="oppgavePage" />
 </aura:component>

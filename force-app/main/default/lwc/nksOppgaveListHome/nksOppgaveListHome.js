@@ -5,6 +5,7 @@ import USER_ID from '@salesforce/user/Id';
 import USER_NAV_IDENT_FIELD from '@salesforce/schema/User.CRM_NAV_Ident__c';
 import getAllAssignedOpenOppgaver from '@salesforce/apex/OppgaveManager.getAllAssignedOpenOppgaver';
 import getPersonInfo from '@salesforce/apex/OppgaveManager.getPersonInfo';
+import getCodeToNameMap from '@salesforce/apex/stoHelperClass.getCodeToNameMap';
 
 const DATE_FORMAT = { day: '2-digit', month: '2-digit', year: 'numeric' };
 
@@ -13,9 +14,16 @@ const DATE_FORMAT = { day: '2-digit', month: '2-digit', year: 'numeric' };
 export default class NksOppgaveListHome extends NavigationMixin(LightningElement) {
     oppgaver = [];
     personData = {};
+    codeToNameMap = {};
     isRefreshDisabled = false;
     isLoading = false;
     navIdent = '1234'; // TODO: Harcoded value to match test data in Mock. Remove hardcoded value once connected to real user data.
+
+    @wire(getCodeToNameMap)
+    wiredCodeToNameMap({ data, error }) {
+        if (data) this.codeToNameMap = data;
+        else if (error) console.error('Error fetching code to name map:', error);
+    }
 
     @wire(getRecord, { recordId: USER_ID, fields: [USER_NAV_IDENT_FIELD] })
     wiredUser({ data, error }) {
@@ -45,6 +53,8 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
                     fristFormatted: oppgave.fristFerdigstillelse
                         ? new Date(oppgave.fristFerdigstillelse).toLocaleDateString('nb-NO', DATE_FORMAT)
                         : '',
+                    tema: this.codeToNameMap[oppgave.tema] ?? oppgave.tema,
+                    oppgavetype: this.codeToNameMap[oppgave.oppgavetype] ?? oppgave.oppgavetype,
                     brukerIdent:
                         oppgave.bruker?.type === 'PERSON' ? oppgave.bruker.ident : (oppgave.personIdent ?? null)
                 }));
