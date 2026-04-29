@@ -65,8 +65,8 @@ export default class NksOppgavePage extends LightningElement {
             const request = {
                 id: this.oppgave.id,
                 versjon: this.oppgave.versjon,
-                prioritet: fields.prioritet ?? this.oppgave.prioritet,
-                beskrivelse: fields.kommentar,
+                prioritet: (fields.prioritet ?? this.oppgave.prioritet)?.replace('NORMAL', 'NORM'),
+                kommentarTekst: fields.kommentar,
                 tema: fields.tema ?? this.oppgave.kategorisering?.tema?.kode,
                 oppgavetype: fields.oppgavetype ?? this.oppgave.kategorisering?.oppgavetype?.kode,
                 behandlingstema: fields.behandlingstema ?? this.oppgave.kategorisering?.behandlingstema?.kode,
@@ -77,7 +77,7 @@ export default class NksOppgavePage extends LightningElement {
             };
             const response = await patchEditTaskFromLwc({ requestJson: JSON.stringify(request) });
             if (response?.isSuccess) {
-                this.oppgave = { ...this.oppgave, ...fields, versjon: response.versjon };
+                await this.loadOppgave();
                 this.formErrorMessage = null;
                 this.headerErrorMessage = null;
             } else {

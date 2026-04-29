@@ -82,7 +82,7 @@ export default class NksOppgaveDetailForm extends LightningElement {
         this.formData = {
             tema: this._oppgave.kategorisering?.tema?.kode,
             oppgavetype: this._oppgave.kategorisering?.oppgavetype?.kode,
-            prioritet: this._oppgave.prioritet,
+            prioritet: this._oppgave.prioritet === 'NORM' ? 'NORMAL' : this._oppgave.prioritet,
             tildeltEnhetsnr: this._oppgave.fordeling?.enhet?.nr,
             tilordnetRessurs: this._oppgave.fordeling?.medarbeider?.navident,
             fristDato: this._oppgave.fristDato ? this._oppgave.fristDato.substring(0, 10) : null,
@@ -147,7 +147,7 @@ export default class NksOppgaveDetailForm extends LightningElement {
             this.formData = {
                 tema: value.kategorisering?.tema?.kode,
                 oppgavetype: value.kategorisering?.oppgavetype?.kode,
-                prioritet: value.prioritet,
+                prioritet: value.prioritet === 'NORM' ? 'NORMAL' : value.prioritet,
                 tildeltEnhetsnr: value.fordeling?.enhet?.nr,
                 tilordnetRessurs: value.fordeling?.medarbeider?.navident,
                 fristDato: value.fristDato ? value.fristDato.substring(0, 10) : null,
