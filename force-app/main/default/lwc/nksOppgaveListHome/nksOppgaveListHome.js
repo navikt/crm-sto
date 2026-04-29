@@ -9,15 +9,13 @@ import getCodeToNameMap from '@salesforce/apex/stoHelperClass.getCodeToNameMap';
 
 const DATE_FORMAT = { day: '2-digit', month: '2-digit', year: 'numeric' };
 
-// TODO: Add this component to Home page
-
 export default class NksOppgaveListHome extends NavigationMixin(LightningElement) {
     oppgaver = [];
     personData = {};
     codeToNameMap = {};
     isRefreshDisabled = false;
     isLoading = false;
-    navIdent = '1234'; // TODO: Harcoded value to match test data in Mock. Remove hardcoded value once connected to real user data.
+    navIdent;
 
     @wire(getCodeToNameMap)
     wiredCodeToNameMap({ data, error }) {
