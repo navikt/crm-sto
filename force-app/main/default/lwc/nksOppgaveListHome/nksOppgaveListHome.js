@@ -27,7 +27,6 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
     wiredUser({ data, error }) {
         if (data) {
             this.navIdent = getFieldValue(data, USER_NAV_IDENT_FIELD) ?? this.navIdent;
-            console.log('Fetched user navIdent:', this.navIdent);
             this.loadOppgaver();
         } else if (error) {
             console.error('Error fetching user:', error);
