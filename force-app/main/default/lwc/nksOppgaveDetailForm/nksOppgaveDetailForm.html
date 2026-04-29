@@ -6,6 +6,8 @@
                     <div class="slds-size_2-of-4">
                         <c-nks-oppgave-theme-categorization
                             theme={currentThemeId}
+                            subtheme-code={formData.behandlingstema}
+                            subtype-code={formData.behandlingstype}
                             onchange={handleEdited}
                             disabled={isCompleted}
                         ></c-nks-oppgave-theme-categorization>

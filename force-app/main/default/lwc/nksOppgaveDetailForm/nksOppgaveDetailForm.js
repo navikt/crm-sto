@@ -1,4 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import INT_UNIT_NUMBER_FIELD from '@salesforce/schema/NavUnit__c.INT_UnitNumber__c';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorizationByThemeSet';
 import getUserNavUnit from '@salesforce/apex/CRM_NavTaskWorkAllocationController.getUserNavUnit';
 import getTaskTypes from '@salesforce/apex/CRM_NAVTaskTypeController.getTaskTypes';
@@ -31,6 +33,14 @@ export default class NksOppgaveDetailForm extends LightningElement {
     _oppgave;
     unitNumber;
     taskTypeCommoncodes = [];
+
+    @wire(getRecord, { recordId: '$navUnitId', fields: [INT_UNIT_NUMBER_FIELD] })
+    wiredNavUnitRecord({ data }) {
+        if (data) {
+            const unitNumber = getFieldValue(data, INT_UNIT_NUMBER_FIELD);
+            this.formData = { ...this.formData, tildeltEnhetsnr: unitNumber };
+        }
+    }
 
     @wire(getTaskTypes, { themeCode: '$formData.tema' })
     wiredTaskTypes({ data }) {
@@ -88,6 +98,8 @@ export default class NksOppgaveDetailForm extends LightningElement {
             fristDato: this._oppgave.fristDato ? this._oppgave.fristDato.substring(0, 10) : null,
             beskrivelse: this._oppgave.beskrivelse,
             opprettetTidspunkt: this._oppgave.opprettet?.tidspunkt,
+            behandlingstema: this._oppgave.kategorisering?.behandlingstema?.kode,
+            behandlingstype: this._oppgave.kategorisering?.behandlingstype?.kode,
             kommentar: ''
         };
         this.getCurrentTheme();
@@ -107,11 +119,7 @@ export default class NksOppgaveDetailForm extends LightningElement {
     }
 
     handleNavUnitChange(event) {
-        const recordId = event.detail?.recordId;
-        this.navUnitId = recordId;
-        const record = event.detail?.record;
-        const unitNumber = record?.fields?.INT_UnitNumber__c?.value ?? null;
-        this.formData = { ...this.formData, tildeltEnhetsnr: unitNumber };
+        this.navUnitId = event.detail?.recordId ?? null;
         this.isEdited = true;
     }
 
@@ -153,6 +161,8 @@ export default class NksOppgaveDetailForm extends LightningElement {
                 fristDato: value.fristDato ? value.fristDato.substring(0, 10) : null,
                 beskrivelse: value.beskrivelse,
                 opprettetTidspunkt: value.opprettet?.tidspunkt,
+                behandlingstema: value.kategorisering?.behandlingstema?.kode,
+                behandlingstype: value.kategorisering?.behandlingstype?.kode,
                 kommentar: ''
             };
             this.isEdited = false;

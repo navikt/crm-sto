@@ -1,21 +1,21 @@
 import { LightningElement, api, wire } from 'lwc';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorizationByThemeSet';
 
+const THEME_SET = 'ARCHIVE_THEMES';
+
 export default class NksOppgaveThemeCategorization extends LightningElement {
     @api disabled = false;
-
-    themeSet = 'ARCHIVE_THEMES';
 
     gjelderMap;
     themeMap;
     chosenTheme;
     chosenGjelder;
-    chosenSubtheme;
-    chosenSubtype;
     gjelderList;
     themes;
+    _initialSubthemeCode;
+    _initialSubtypeCode;
 
-    @wire(getCategorization, { themeSet: '$themeSet' })
+    @wire(getCategorization, { themeSet: THEME_SET })
     categoryResults({ data, error }) {
         if (data) {
             this.themeMap = data.themeMap;
@@ -23,22 +23,7 @@ export default class NksOppgaveThemeCategorization extends LightningElement {
             this.filterThemes();
             if (this.chosenTheme) {
                 this.filterGjelder();
-                if (this.chosenSubtheme || this.chosenSubtype) {
-                    this.chosenGjelder = '';
-                    const validGjelder =
-                        this.gjelderMap && Object.prototype.hasOwnProperty.call(this.gjelderMap, this.theme)
-                            ? this.gjelderMap[this.theme]
-                            : [];
-                    for (let gjelder of validGjelder) {
-                        if (
-                            (this.chosenSubtheme == null || gjelder.CRM_Subtheme__c === this.chosenSubtheme) &&
-                            (this.chosenSubtype == null || gjelder.CRM_Subtype__c === this.chosenSubtype)
-                        ) {
-                            this.chosenGjelder = gjelder.Id;
-                            break;
-                        }
-                    }
-                }
+                this.resolveInitialGjelder();
             }
         } else if (error) {
             console.error('Problem on getCategorization(): ', JSON.stringify(error, null, 2));
@@ -49,16 +34,12 @@ export default class NksOppgaveThemeCategorization extends LightningElement {
     handleThemeChange(event) {
         this.chosenTheme = event.detail.value;
         this.chosenGjelder = null;
-        this.chosenSubtheme = null;
-        this.chosenSubtype = null;
         this.filterGjelder();
         this.dispatchEvent(new CustomEvent('change'));
     }
 
     handleGjelderChange(event) {
         this.chosenGjelder = event.detail.value;
-        this.chosenSubtheme = this.subthemeId;
-        this.chosenSubtype = this.subtypeId;
         this.dispatchEvent(new CustomEvent('change'));
     }
 
@@ -92,6 +73,23 @@ export default class NksOppgaveThemeCategorization extends LightningElement {
         this.gjelderList = returnGjelder;
     }
 
+    resolveInitialGjelder() {
+        if (!this.gjelderMap || !this.chosenTheme) return;
+        if (!this._initialSubthemeCode && !this._initialSubtypeCode) return;
+        const validGjelder = Object.prototype.hasOwnProperty.call(this.gjelderMap, this.chosenTheme)
+            ? this.gjelderMap[this.chosenTheme]
+            : [];
+        for (let gjelder of validGjelder) {
+            if (
+                (this._initialSubthemeCode == null || gjelder.CRM_Subtheme_Code__c === this._initialSubthemeCode) &&
+                (this._initialSubtypeCode == null || gjelder.CRM_Subtype_Code__c === this._initialSubtypeCode)
+            ) {
+                this.chosenGjelder = gjelder.Id;
+                break;
+            }
+        }
+    }
+
     // #### GETTERS / SETTERS ####
     @api
     get theme() {
@@ -99,6 +97,10 @@ export default class NksOppgaveThemeCategorization extends LightningElement {
     }
     set theme(themeValue) {
         this.chosenTheme = themeValue;
+        if (this.gjelderMap) {
+            this.filterGjelder();
+            this.resolveInitialGjelder();
+        }
     }
 
     @api
@@ -110,45 +112,33 @@ export default class NksOppgaveThemeCategorization extends LightningElement {
                 themes = [...themes, ...values];
             });
         }
-        return themes.find((t) => t.Id === this.theme)?.CRM_Code__c ?? '';
+        return themes.find((t) => t.Id === this.chosenTheme)?.CRM_Code__c ?? '';
     }
 
     @api
     get subthemeCode() {
-        if (!this.chosenGjelder) return '';
-        const validGjelder =
-            this.theme && this.gjelderMap && Object.prototype.hasOwnProperty.call(this.gjelderMap, this.theme)
-                ? this.gjelderMap[this.theme]
-                : [];
+        if (!this.chosenGjelder || !this.gjelderMap || !this.chosenTheme) return '';
+        const validGjelder = Object.prototype.hasOwnProperty.call(this.gjelderMap, this.chosenTheme)
+            ? this.gjelderMap[this.chosenTheme]
+            : [];
         return validGjelder.find((g) => g.Id === this.chosenGjelder)?.CRM_Subtheme_Code__c ?? '';
+    }
+    set subthemeCode(value) {
+        this._initialSubthemeCode = value;
+        this.resolveInitialGjelder();
     }
 
     @api
     get subtypeCode() {
-        if (!this.chosenGjelder) return '';
-        const validGjelder =
-            this.theme && this.gjelderMap && Object.prototype.hasOwnProperty.call(this.gjelderMap, this.theme)
-                ? this.gjelderMap[this.theme]
-                : [];
+        if (!this.chosenGjelder || !this.gjelderMap || !this.chosenTheme) return '';
+        const validGjelder = Object.prototype.hasOwnProperty.call(this.gjelderMap, this.chosenTheme)
+            ? this.gjelderMap[this.chosenTheme]
+            : [];
         return validGjelder.find((g) => g.Id === this.chosenGjelder)?.CRM_Subtype_Code__c ?? '';
     }
-
-    get subthemeId() {
-        if (!this.chosenGjelder) return '';
-        const validGjelder =
-            this.theme && this.gjelderMap && Object.prototype.hasOwnProperty.call(this.gjelderMap, this.theme)
-                ? this.gjelderMap[this.theme]
-                : [];
-        return validGjelder.find((g) => g.Id === this.chosenGjelder)?.CRM_Subtheme__c ?? '';
-    }
-
-    get subtypeId() {
-        if (!this.chosenGjelder) return '';
-        const validGjelder =
-            this.theme && this.gjelderMap && Object.prototype.hasOwnProperty.call(this.gjelderMap, this.theme)
-                ? this.gjelderMap[this.theme]
-                : [];
-        return validGjelder.find((g) => g.Id === this.chosenGjelder)?.CRM_Subtype__c ?? '';
+    set subtypeCode(value) {
+        this._initialSubtypeCode = value;
+        this.resolveInitialGjelder();
     }
 
     get gjelderPlaceholder() {
@@ -160,9 +150,5 @@ export default class NksOppgaveThemeCategorization extends LightningElement {
 
     get gjelderDisabled() {
         return this.disabled || !this.chosenTheme || !this.gjelderMap || !(this.chosenTheme in this.gjelderMap);
-    }
-
-    get gjelderLabel() {
-        return 'Gjelder';
     }
 }
