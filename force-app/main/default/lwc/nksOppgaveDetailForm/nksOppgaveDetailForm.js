@@ -131,6 +131,8 @@ export default class NksOppgaveDetailForm extends LightningElement {
         const taskTypeCmp = this.template.querySelector('c-crm-task-type-picklist');
         const oppgavetype = taskTypeCmp ? taskTypeCmp.selectedTaskType : null;
         this.isEdited = false;
+        const textarea = this.template.querySelector('textarea[data-field="kommentar"]');
+        if (textarea) textarea.value = '';
         this.dispatchEvent(
             new CustomEvent('save', {
                 detail: {
