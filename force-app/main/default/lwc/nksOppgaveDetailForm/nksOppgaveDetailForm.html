@@ -13,14 +13,14 @@
                         ></c-nks-oppgave-theme-categorization>
                     </div>
                     <div class="slds-col slds-p-top_small slds-size_1-of-4">
-                        <c-crm-task-type-picklist
-                            theme={formData.tema}
-                            selected-task-type-id={oppgavetypeId}
-                            showcomponent="true"
-                            use-picklist
-                            onchange={handleEdited}
+                        <lightning-combobox
+                            label="Oppgavetype"
+                            value={formData.oppgavetype}
+                            options={oppgavetypeOptions}
+                            onchange={handleFieldChange}
+                            data-field="oppgavetype"
                             disabled={isCompleted}
-                        ></c-crm-task-type-picklist>
+                        ></lightning-combobox>
                     </div>
                     <div class="slds-col slds-p-top_small slds-size_1-of-4">
                         <lightning-combobox
@@ -60,7 +60,7 @@
                                 <div class="slds-form-element">
                                     <label class="slds-form-element__label">Registrert</label>
                                     <div class="slds-form-element__control">
-                                        <span class="static-value">{registrertFormatted}</span>
+                                        <span class="static-value slds-p-top_xx-small">{registrertFormatted}</span>
                                     </div>
                                 </div>
                             </div>

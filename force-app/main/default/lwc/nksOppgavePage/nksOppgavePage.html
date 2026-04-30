@@ -22,7 +22,7 @@
         <div lwc:if={oppgave} class="bottom-sections">
             <div lwc:if={hasExternalReference} class="bottom-section slds-box slds-theme_default">
                 <c-nks-dialogue-viewer
-                    external-api-reference={oppgave.metadata.EKSTERN_HENVENDELSE_ID}
+                    external-api-reference={oppgave.utvidelser.henvendelseId}
                 ></c-nks-dialogue-viewer>
             </div>
             <div class="bottom-section slds-box slds-theme_default">

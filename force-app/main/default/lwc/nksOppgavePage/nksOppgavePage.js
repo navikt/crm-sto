@@ -106,6 +106,6 @@ export default class NksOppgavePage extends LightningElement {
     }
 
     get hasExternalReference() {
-        return !!this.oppgave?.metadata?.EKSTERN_HENVENDELSE_ID;
+        return !!this.oppgave?.utvidelser?.henvendelseId;
     }
 }

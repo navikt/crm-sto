@@ -64,10 +64,26 @@ export default class NksOppgaveDetailForm extends LightningElement {
         }
     }
 
-    get oppgavetypeId() {
-        if (!this.formData.oppgavetype || !this.taskTypeCommoncodes?.length) return null;
-        const match = this.taskTypeCommoncodes.find((tt) => tt.commoncode === this.formData.oppgavetype);
-        return match ? match.id : null;
+    get oppgavetypeOptions() {
+        const options = [];
+
+        if (this.taskTypeCommoncodes?.length) {
+            options.push(
+                ...this.taskTypeCommoncodes.map((taskType) => ({
+                    label: taskType.name || taskType.commoncode,
+                    value: taskType.commoncode
+                }))
+            );
+        }
+
+        if (this.formData.oppgavetype && !options.some((opt) => opt.value === this.formData.oppgavetype)) {
+            options.push({
+                label: this._oppgave?.kategorisering?.oppgavetype?.term || this.formData.oppgavetype,
+                value: this.formData.oppgavetype
+            });
+        }
+
+        return options;
     }
 
     getCurrentTheme() {
@@ -128,10 +144,8 @@ export default class NksOppgaveDetailForm extends LightningElement {
         const tema = themeCmp && themeCmp.themeCode ? themeCmp.themeCode : null;
         const behandlingstema = themeCmp ? themeCmp.subthemeCode : null;
         const behandlingstype = themeCmp ? themeCmp.subtypeCode : null;
-        const taskTypeCmp = this.template.querySelector('c-crm-task-type-picklist');
-        const oppgavetype = taskTypeCmp ? taskTypeCmp.selectedTaskType : null;
-        this.isEdited = false;
         const textarea = this.template.querySelector('textarea[data-field="kommentar"]');
+        this.isEdited = false;
         if (textarea) textarea.value = '';
         this.dispatchEvent(
             new CustomEvent('save', {
@@ -140,7 +154,7 @@ export default class NksOppgaveDetailForm extends LightningElement {
                     tema,
                     behandlingstema,
                     behandlingstype,
-                    oppgavetype
+                    oppgavetype: this.formData.oppgavetype
                 }
             })
         );
