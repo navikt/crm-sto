@@ -1,6 +1,8 @@
 import { LightningElement, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { subscribe, unsubscribe, APPLICATION_SCOPE, MessageContext } from 'lightning/messageService';
+import OPPGAVE_CREATED_CHANNEL from '@salesforce/messageChannel/oppgaveCreated__c';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAV_IDENT_FIELD from '@salesforce/schema/User.CRM_NAV_Ident__c';
 import getAllAssignedOpenOppgaver from '@salesforce/apex/OppgaveManager.getAllAssignedOpenOppgaver';
@@ -16,6 +18,9 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
     isRefreshDisabled = false;
     isLoading = false;
     navIdent;
+    oppgaveCreatedSubscription;
+
+    @wire(MessageContext) messageContext;
 
     @wire(getCodeToNameMap)
     wiredCodeToNameMap({ data, error }) {
@@ -31,6 +36,29 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
         } else if (error) {
             console.error('Error fetching user:', error);
         }
+    }
+
+    connectedCallback() {
+        this.subscribeToOppgaveCreated();
+    }
+
+    disconnectedCallback() {
+        if (this.oppgaveCreatedSubscription) {
+            unsubscribe(this.oppgaveCreatedSubscription);
+            this.oppgaveCreatedSubscription = null;
+        }
+    }
+
+    subscribeToOppgaveCreated() {
+        if (this.oppgaveCreatedSubscription) return;
+        this.oppgaveCreatedSubscription = subscribe(
+            this.messageContext,
+            OPPGAVE_CREATED_CHANNEL,
+            () => {
+                this.loadOppgaver();
+            },
+            { scope: APPLICATION_SCOPE }
+        );
     }
 
     async loadOppgaver() {

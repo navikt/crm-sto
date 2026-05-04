@@ -188,6 +188,9 @@
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
+        <connector>
+            <targetReference>Publish_Oppgave_created_LMS_event</targetReference>
+        </connector>
     </assignments>
     <assignments>
         <name>Set_Publish_Notification_To_True_Thread</name>
@@ -868,6 +871,33 @@
         </fields>
         <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Publish_Oppgave_created_LMS_event</name>
+        <label>Publish Oppgave created LMS event</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>nksOppgaveCreatedPublisher</name>
+            <extensionName>c:nksOppgaveCreatedPublisher</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
