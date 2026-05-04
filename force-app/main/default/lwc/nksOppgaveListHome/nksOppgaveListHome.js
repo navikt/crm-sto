@@ -121,7 +121,15 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
     }
 
     navigateToOppgaveTable() {
-        // TODO: Legg inn navigering til tabellen som JR lager.
+        this[NavigationMixin.Navigate]({
+            type: 'standard__component',
+            attributes: { componentName: 'c__nksOppgaveTableRedirect' },
+            state: {
+                c__personIdent: null,
+                c__actorId: null,
+                c__ownedByRunningUser: 'true'
+            }
+        });
     }
 
     get hasOppgaver() {
