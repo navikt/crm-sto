@@ -127,7 +127,7 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
             state: {
                 c__personIdent: null,
                 c__actorId: null,
-                c__ownedByRunningUser: 'true'
+                c__ownedByRunningUser: true
             }
         });
     }
