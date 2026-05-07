@@ -54,7 +54,8 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
         this.oppgaveCreatedSubscription = subscribe(
             this.messageContext,
             OPPGAVE_CREATED_CHANNEL,
-            () => {
+            (message) => {
+                if (message?.assignedResource !== this.navIdent) return;
                 this.loadOppgaver();
             },
             { scope: APPLICATION_SCOPE }
