@@ -4,4 +4,8 @@
     <isExposed>true</isExposed>
     <description>Application-scoped message channel notifying subscribers that a NAV oppgave has
         been created.</description>
+    <lightningMessageFields>
+        <description>NAV ident of the resource the new oppgave was assigned to, if any.</description>
+        <fieldName>assignedResource</fieldName>
+    </lightningMessageFields>
 </MessageChannel>

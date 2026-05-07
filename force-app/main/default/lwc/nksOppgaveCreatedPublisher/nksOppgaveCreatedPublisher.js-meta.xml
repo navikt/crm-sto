@@ -7,4 +7,15 @@
     <targets>
         <target>lightning__FlowScreen</target>
     </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property
+                name="assignedResource"
+                label="Assigned Resource (NAV ident)"
+                type="String"
+                description="NAV ident of the resource the new oppgave is assigned to. Included in the published LMS message so subscribers can decide whether to refresh."
+                role="inputOnly"
+            />
+        </targetConfig>
+    </targetConfigs>
 </LightningComponentBundle>
