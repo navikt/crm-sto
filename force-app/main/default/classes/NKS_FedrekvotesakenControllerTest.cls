@@ -30,7 +30,7 @@ private class NKS_FedrekvotesakenControllerTest {
 
     @isTest
     static void testpostTask() {
-        ApiMock.setTestMock('POST_CREATE_OPPGAVE', 200, 'OK');
+        ApiMock.setTestMock('POST_CREATE_OPPGAVE', 201, 'Created');
         NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
         String jsonData = JSON.serialize(fedrekvoteData);
 
