@@ -6,13 +6,15 @@ import OPPGAVE_CREATED_CHANNEL from '@salesforce/messageChannel/oppgaveCreated__
 export default class NksOppgaveCreatedPublisher extends LightningElement {
     @api availableActions = [];
     @api assignedResource;
+    @api actorId;
 
     @wire(MessageContext) messageContext;
 
     connectedCallback() {
         try {
             publish(this.messageContext, OPPGAVE_CREATED_CHANNEL, {
-                assignedResource: this.assignedResource ?? null
+                assignedResource: this.assignedResource ?? null,
+                actorId: this.actorId ?? null
             });
         } catch (error) {
             console.error('Error publishing oppgaveCreated message:', error);

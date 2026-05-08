@@ -8,4 +8,8 @@
         <description>NAV ident of the resource the new oppgave was assigned to, if any.</description>
         <fieldName>assignedResource</fieldName>
     </lightningMessageFields>
+    <lightningMessageFields>
+        <description>ActorId of the user the new oppgave was created on, if any.</description>
+        <fieldName>actorId</fieldName>
+    </lightningMessageFields>
 </MessageChannel>

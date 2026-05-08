@@ -16,6 +16,13 @@
                 description="NAV ident of the resource the new oppgave is assigned to. Included in the published LMS message so subscribers can decide whether to refresh."
                 role="inputOnly"
             />
+            <property
+                name="actorId"
+                label="Actor ID"
+                type="String"
+                description="ActorId of the user the new oppgave was created on. Included in the published LMS message so subscribers can decide whether to refresh."
+                role="inputOnly"
+            />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
