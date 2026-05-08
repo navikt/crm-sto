@@ -17,6 +17,10 @@ export default class NksOppgavePage extends LightningElement {
         }
     }
 
+    renderedCallback() {
+        window.scrollTo(0, 0);
+    }
+
     async loadOppgave() {
         this.isLoading = true;
         try {
