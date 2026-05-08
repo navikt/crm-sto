@@ -12,8 +12,14 @@ private class NKS_FedrekvotesakenControllerTest {
             CRM_Code_Set__c = 'Behandlingstema',
             CRM_Code__c = 'ab0342'
         );
+        Common_Code__c temagruppe = new Common_Code__c(
+            Name = 'Familie',
+            CRM_Code_Set__c = 'Temagrupper',
+            CRM_Code__c = 'FMLI'
+        );
         insert tema;
         insert behandlingstema;
+        insert temagruppe;
 
         Common_Code__c gjelder = new Common_Code__c(
             Name = 'Fedrekvote',
