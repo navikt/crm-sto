@@ -93,18 +93,17 @@
                 </div>
             </div>
         </div>
-        <div class="slds-col slds-p-top_small slds-size_4-of-6 slds-p-left_medium">
-            <div class="slds-form-element slds-m-bottom_small">
-                <label class="slds-form-element__label">Oppgavebeskrivelse</label>
-                <div class="slds-form-element__control slds-p-top_small">
-                    <span class="description">{formData.beskrivelse}</span>
+        <div class="slds-grid slds-gutters slds-p-around_small">
+            <div class="slds-col slds-size_4-of-6 slds-p-left_medium">
+                <div class="slds-form-element slds-m-bottom_small">
+                    <label class="slds-form-element__label">Oppgavebeskrivelse</label>
+                    <div class="slds-form-element__control slds-p-top_small">
+                        <span class="description">{formData.beskrivelse}</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="slds-p-around_medium slds-grid slds-gutters">
-            <div class="slds-col slds-size_4-of-6"></div>
             <div class="slds-col slds-size_2-of-6">
-                <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="slds-grid slds-grid_vertical-align-start">
                     <template lwc:if={errorText}>
                         <div class="slds-col error-message-box">
                             <lightning-icon
