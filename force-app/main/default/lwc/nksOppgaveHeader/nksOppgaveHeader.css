@@ -4,6 +4,12 @@
     min-height: 5.5rem;
 }
 
+.header-title {
+    color: #000;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
 .header-title-col {
     flex: 1 1 auto;
     min-width: 0;

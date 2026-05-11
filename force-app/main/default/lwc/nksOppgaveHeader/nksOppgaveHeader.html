@@ -1,18 +1,18 @@
 <template>
     <div class="card-wrapper slds-var-m-bottom_small">
         <lightning-spinner lwc:if={isLoading} variant="brand" size="small"></lightning-spinner>
-        <div class="header-row slds-var-p-horizontal_medium">
+        <div class="header-row slds-var-p-horizontal_small">
             <div class="header-title-col">
                 <div class="slds-media slds-media_center">
                     <div class="slds-media__figure">
                         <span class="slds-icon_container">
-                            <lightning-icon icon-name="custom:custom45" size="small"></lightning-icon>
+                            <lightning-icon icon-name="custom:custom45" size="medium"></lightning-icon>
                         </span>
                     </div>
                     <div class="slds-media__body">
                         <div class="slds-page-header__name-title slds-grid slds-grid_vertical-align-center slds-wrap">
                             <h1 class="slds-m-right_xx-large slds-truncate">
-                                <span class="slds-page-header__title">Oppgave</span>
+                                <span class="header-title">Oppgave</span>
                             </h1>
                             <div lwc:if={status} class="slds-m-right_xx-large">
                                 <div class="slds-text-title slds-p-bottom_xx-small">Status</div>
