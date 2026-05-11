@@ -53,7 +53,10 @@ export default class NksOppgaveDetailForm extends LightningElement {
     wiredCategories({ data }) {
         if (data) {
             this.themeMap = data.themeMap;
+            console.log('themeMap', this.themeMap);
             this.getCurrentTheme();
+            console.log(this._oppgave.kategorisering?.tema?.kode);
+            console.log(this.currentThemeId);
         }
     }
 
@@ -98,9 +101,26 @@ export default class NksOppgaveDetailForm extends LightningElement {
                 return;
             }
         }
+        this.currentThemeId = null;
     }
 
+    get themeNotFound() {
+        return (
+            this.themeMap != null &&
+            this._oppgave?.kategorisering?.tema?.kode != null &&
+            this.currentThemeId == null &&
+            !this.themeDismissed
+        );
+    }
+
+    themeDismissed = false;
+
     handleEdited() {
+        this.isEdited = true;
+    }
+
+    handleThemeChange() {
+        this.themeDismissed = true;
         this.isEdited = true;
     }
 
@@ -119,6 +139,7 @@ export default class NksOppgaveDetailForm extends LightningElement {
             kommentar: ''
         };
         this.getCurrentTheme();
+        this.themeDismissed = false;
         this.isEdited = false;
         this.showForm = false;
         // eslint-disable-next-line @lwc/lwc/no-async-operation
@@ -182,6 +203,7 @@ export default class NksOppgaveDetailForm extends LightningElement {
                 kommentar: ''
             };
             this.isEdited = false;
+            this.themeDismissed = false;
             this.getCurrentTheme();
         }
     }

@@ -8,9 +8,14 @@
                             theme={currentThemeId}
                             subtheme-code={formData.behandlingstema}
                             subtype-code={formData.behandlingstype}
-                            onchange={handleEdited}
+                            onchange={handleThemeChange}
                             disabled={isCompleted}
                         ></c-nks-oppgave-theme-categorization>
+                        <template lwc:if={themeNotFound}>
+                            <div class="slds-text-color_error slds-p-top_xx-small slds-p-horizontal_small" role="alert">
+                                Kunne ikke finne tema i Salesforce
+                            </div>
+                        </template>
                     </div>
                     <div class="slds-col slds-p-top_small slds-size_1-of-4">
                         <lightning-combobox
