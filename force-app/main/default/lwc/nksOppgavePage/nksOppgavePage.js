@@ -42,6 +42,7 @@ export default class NksOppgavePage extends LightningElement {
         try {
             const request = {
                 id: this.oppgave.id,
+                personIdent: this.oppgave.bruker?.ident,
                 versjon: this.oppgave.versjon,
                 status: 'FERDIGSTILT'
             };
@@ -69,6 +70,7 @@ export default class NksOppgavePage extends LightningElement {
             const request = {
                 id: this.oppgave.id,
                 versjon: this.oppgave.versjon,
+                personIdent: this.oppgave.bruker?.ident,
                 prioritet: (fields.prioritet ?? this.oppgave.prioritet)?.replace('NORMAL', 'NORM'),
                 kommentarTekst: fields.kommentar,
                 tema: fields.tema ?? this.oppgave.kategorisering?.tema?.kode,
