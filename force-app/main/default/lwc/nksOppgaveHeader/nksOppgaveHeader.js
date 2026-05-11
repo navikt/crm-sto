@@ -1,16 +1,20 @@
 import { LightningElement, api } from 'lwc';
 
 const STATUS_LABELS = {
-    OPPRETTET: 'Opprettet',
+    AVSLUTTET: 'Ferdigstilt',
+    OPPRETTET: 'Åpen',
     AAPEN: 'Åpen',
+    AAPNET: 'Åpen',
     UNDER_BEHANDLING: 'Under behandling',
     FERDIGSTILT: 'Ferdigstilt',
     FEILREGISTRERT: 'Feilregistrert'
 };
 
 const STATUS_THEME = {
+    AVSLUTTET: 'slds-badge slds-theme_success',
     OPPRETTET: 'slds-badge slds-badge_lightest',
     AAPEN: 'slds-badge slds-theme_info',
+    AAPNET: 'slds-badge slds-theme_info',
     UNDER_BEHANDLING: 'slds-badge slds-theme_warning',
     FERDIGSTILT: 'slds-badge slds-theme_success',
     FEILREGISTRERT: 'slds-badge slds-theme_error'
@@ -23,6 +27,8 @@ export default class NksOppgaveHeader extends LightningElement {
     @api errorMessage;
 
     get statusLabel() {
+        console.log('status', this.status);
+        console.log('statusLabel', STATUS_LABELS[this.status]);
         return STATUS_LABELS[this.status] ?? this.status;
     }
 
