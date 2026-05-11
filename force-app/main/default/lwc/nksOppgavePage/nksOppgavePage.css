@@ -16,3 +16,17 @@
     flex: 1;
     overflow-y: auto;
 }
+
+.oppgave-detail-page .slds-box {
+    padding-block: var(--slds-g-spacing-var-block-3);
+    padding-inline: var(--slds-g-spacing-var-inline-4);
+    background: var(--slds-c-card-color-background, var(--slds-g-color-surface-container-1));
+    border-width: var(--slds-c-card-sizing-border, var(--slds-g-sizing-border-1));
+    border-style: solid;
+    border-color: var(--slds-c-card-color-border, var(--slds-s-container-color-border, var(--slds-g-color-border-1)));
+    border-radius: var(
+        --slds-c-card-radius-border,
+        var(--slds-s-container-radius-border, var(--slds-g-radius-border-2))
+    );
+    box-shadow: var(--slds-c-card-shadow, var(--slds-s-container-shadow, var(--slds-g-shadow-2)));
+}

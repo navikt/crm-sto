@@ -1,13 +1,14 @@
 <template>
     <div class="oppgave-detail-page">
-        <c-nks-oppgave-header
-            status={oppgave.status}
-            is-loading={isLoading}
-            is-saving={isSaving}
-            error-message={headerErrorMessage}
-            onfinishoppgave={handleFinishOppgave}
-            lwc:if={oppgave}
-        ></c-nks-oppgave-header>
+        <div lwc:if={oppgave} class="slds-box slds-theme_default slds-var-m-bottom_small">
+            <c-nks-oppgave-header
+                status={oppgave.status}
+                is-loading={isLoading}
+                is-saving={isSaving}
+                error-message={headerErrorMessage}
+                onfinishoppgave={handleFinishOppgave}
+            ></c-nks-oppgave-header>
+        </div>
         <lightning-spinner lwc:if={isLoading} variant="brand" size="small"></lightning-spinner>
 
         <div lwc:if={oppgave} class="slds-box slds-theme_default slds-var-m-bottom_small">
