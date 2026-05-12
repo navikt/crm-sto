@@ -1,8 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import getCategorization from '@salesforce/apex/CRM_ThemeUtils.getCategorizationByThemeSet';
 
-const THEME_SET = 'ARCHIVE_THEMES';
-
 export default class NksOppgaveThemeCategorization extends LightningElement {
     @api disabled = false;
 
@@ -15,7 +13,7 @@ export default class NksOppgaveThemeCategorization extends LightningElement {
     _initialSubthemeCode;
     _initialSubtypeCode;
 
-    @wire(getCategorization, { themeSet: THEME_SET })
+    @wire(getCategorization, { themeSet: '' })
     categoryResults({ data, error }) {
         if (data) {
             this.themeMap = data.themeMap;

@@ -49,14 +49,11 @@ export default class NksOppgaveDetailForm extends LightningElement {
         }
     }
 
-    @wire(getCategorization, { themeSet: 'ARCHIVE_THEMES' })
+    @wire(getCategorization, { themeSet: '' })
     wiredCategories({ data }) {
         if (data) {
             this.themeMap = data.themeMap;
-            console.log('themeMap', this.themeMap);
             this.getCurrentTheme();
-            console.log(this._oppgave.kategorisering?.tema?.kode);
-            console.log(this.currentThemeId);
         }
     }
 
