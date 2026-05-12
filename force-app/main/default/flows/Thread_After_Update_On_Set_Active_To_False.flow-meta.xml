@@ -15,7 +15,7 @@
         <inputParameters>
             <name>category</name>
             <value>
-                <stringValue>Thread - After Update - On Set Active To False</stringValue>
+                <stringValue>Thread Flow - Active To False</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
