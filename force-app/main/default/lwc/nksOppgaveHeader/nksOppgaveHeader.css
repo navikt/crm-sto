@@ -1,9 +1,7 @@
 .header-row {
     display: flex;
     align-items: center;
-    min-height: 3.5rem;
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
+    min-height: 2.75rem;
 }
 
 .header-title {
