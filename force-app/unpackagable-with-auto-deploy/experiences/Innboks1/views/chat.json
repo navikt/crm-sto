@@ -1,0 +1,132 @@
+{
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "componentName" : "community_layout:sldsFlexibleLayout",
+  "dataProviders" : [ ],
+  "id" : "a213cb8c-2a62-48b8-83e8-1739473a3df9",
+  "label" : "Chat",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "componentSpacerSize" : "",
+        "layoutDirectionDesktop" : "row",
+        "layoutDirectionMobile" : "column",
+        "layoutDirectionTablet" : "column",
+        "maxContentWidth" : "",
+        "sectionColumnGutterWidth" : "",
+        "sectionConfig" : "{\"UUID\":\"7a8ac759-7773-4209-8036-a40c507522c0\",\"columns\":[{\"UUID\":\"aded179b-cdde-4983-a04b-0f1260334273\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+        "sectionMinHeight" : "",
+        "sectionVerticalAlign" : "flex-start"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "7a8ac759-7773-4209-8036-a40c507522c0",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "firstLevel" : "Privatperson",
+            "firstLevelLink" : "https://nav.no",
+            "leafnode" : "Chat",
+            "secondLevel" : "Min side",
+            "secondLevelLink" : "https://www.nav.no/minside/",
+            "thirdLevel" : "Innboks",
+            "thirdLevelLink" : "https://innboks.nav.no/"
+          },
+          "componentName" : "c:communityBreadCrumb",
+          "id" : "9b2ffe38-0766-4816-9fc8-c16b82e153b4",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "aded179b-cdde-4983-a04b-0f1260334273",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "scopedBrandingSetId" : null,
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "componentSpacerSize" : "",
+        "layoutDirectionDesktop" : "row",
+        "layoutDirectionMobile" : "column",
+        "layoutDirectionTablet" : "column",
+        "maxContentWidth" : "",
+        "sectionColumnGutterWidth" : "",
+        "sectionConfig" : "{\"UUID\":\"0401b81e-4e00-4280-b767-04b8aacbfa4e\",\"columns\":[{\"UUID\":\"e37e01dc-46c5-4c3f-9bc9-ec015d11e1c9\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"39204785-12e9-4e41-89e5-b3a95aff67b4\",\"columnName\":\"Column 2\",\"columnKey\":\"b93d6\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"59332e86-b6c2-4d67-9459-263139398c9a\",\"columnName\":\"Column 3\",\"columnKey\":\"02dbd\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}",
+        "sectionMinHeight" : "",
+        "sectionVerticalAlign" : "flex-start"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "0401b81e-4e00-4280-b767-04b8aacbfa4e",
+      "regions" : [ {
+        "id" : "e37e01dc-46c5-4c3f-9bc9-ec015d11e1c9",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:mainContent",
+          "id" : "25408094-b6bc-4078-945b-70e5a4eec79d",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        }, {
+          "componentAttributes" : {
+            "recordId" : ""
+          },
+          "componentName" : "c:nksChatView",
+          "id" : "92970651-ac50-4081-84a9-98ccb3db83ea",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "39204785-12e9-4e41-89e5-b3a95aff67b4",
+        "regionLabel" : "Column 2",
+        "regionName" : "b93d6",
+        "renditionMap" : { },
+        "type" : "region"
+      }, {
+        "id" : "59332e86-b6c2-4d67-9459-263139398c9a",
+        "regionLabel" : "Column 3",
+        "regionName" : "02dbd",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "scopedBrandingSetId" : null,
+      "type" : "component"
+    } ],
+    "id" : "4283756f-7093-4fcd-bfe5-b30732d3f198",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "pageTitle" : "Chat",
+        "recordId" : "{!recordId}"
+      },
+      "componentName" : "community_builder:seoAssistant",
+      "id" : "d0a30375-2b07-4802-a78a-80d8bf9cdbcb",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "f6f3c826-9f81-4727-add7-cc45c369d5c4",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "WCompXJ5BWo8oQWvuL5ZUeqgyqYhhB",
+  "type" : "view",
+  "viewType" : "custom-chat"
+}
