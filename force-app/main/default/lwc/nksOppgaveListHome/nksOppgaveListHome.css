@@ -1,0 +1,13 @@
+.column-headers {
+    border-bottom: 1px solid #a9a9a9;
+    padding: 0.4rem 0.5rem 0.4rem 3rem;
+}
+
+h2.slds-text-heading_medium {
+    line-height: 1.35;
+    padding-bottom: 0.125rem;
+}
+
+.oppgave-body {
+    padding: 0.5rem 1rem 0.75rem 1rem;
+}

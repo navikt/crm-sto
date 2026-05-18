@@ -1,0 +1,144 @@
+<template>
+    <template lwc:if={showForm}>
+        <div class="slds-grid slds-gutters slds-p-around_small">
+            <div class="slds-col slds-size_4-of-6">
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-size_2-of-4">
+                        <c-nks-oppgave-theme-categorization
+                            theme={currentThemeId}
+                            subtheme-code={formData.behandlingstema}
+                            subtype-code={formData.behandlingstype}
+                            onchange={handleThemeChange}
+                            disabled={isCompleted}
+                        ></c-nks-oppgave-theme-categorization>
+                        <template lwc:if={themeNotFound}>
+                            <div class="slds-text-color_error slds-p-top_xx-small slds-p-horizontal_small" role="alert">
+                                Kunne ikke finne tema i Salesforce
+                            </div>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                        <lightning-combobox
+                            label="Oppgavetype"
+                            value={formData.oppgavetype}
+                            options={oppgavetypeOptions}
+                            onchange={handleFieldChange}
+                            data-field="oppgavetype"
+                            disabled={isCompleted}
+                        ></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                        <lightning-combobox
+                            label="Prioritet"
+                            value={formData.prioritet}
+                            options={prioritetOptions}
+                            onchange={handleFieldChange}
+                            data-field="prioritet"
+                            disabled={isCompleted}
+                        ></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="slds-grid slds-gutters slds-m-top_small">
+                            <div class="slds-col slds-size_1-of-4">
+                                <lightning-record-picker
+                                    label="Nav enhet"
+                                    object-api-name="NavUnit__c"
+                                    placeholder="Søk NAV-enheter"
+                                    value={navUnitId}
+                                    display-info={navUnitDisplayInfo}
+                                    matching-info={navUnitMatchingInfo}
+                                    filter={navUnitFilter}
+                                    onchange={handleNavUnitChange}
+                                    disabled={isCompleted}
+                                ></lightning-record-picker>
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                <lightning-input
+                                    label="Saksbehandler"
+                                    value={formData.tilordnetRessurs}
+                                    onchange={handleFieldChange}
+                                    data-field="tilordnetRessurs"
+                                    disabled="true"
+                                ></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">Registrert</label>
+                                    <div class="slds-form-element__control">
+                                        <span class="static-value slds-p-top_xx-small">{registrertFormatted}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                <lightning-input
+                                    type="date"
+                                    label="Frist"
+                                    value={formData.fristDato}
+                                    onchange={handleFieldChange}
+                                    data-field="fristDato"
+                                    disabled={isCompleted}
+                                ></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-p-top_small slds-size_2-of-6">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="kommentar">Legg til kommentar</label>
+                    <div class="slds-form-element__control">
+                        <textarea
+                            id="kommentar"
+                            class="slds-textarea beskrivelse-textarea"
+                            oninput={handleFieldChange}
+                            data-field="kommentar"
+                            disabled={isCompleted}
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters slds-p-around_small">
+            <div class="slds-col slds-size_4-of-6 slds-p-left_medium">
+                <div class="slds-form-element slds-m-bottom_small">
+                    <label class="slds-form-element__label">Oppgavebeskrivelse</label>
+                    <div class="slds-form-element__control slds-p-top_small">
+                        <span class="description">{formData.beskrivelse}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-size_2-of-6">
+                <div class="slds-grid slds-grid_vertical-align-start">
+                    <template lwc:if={errorText}>
+                        <div class="slds-col error-message-box">
+                            <lightning-icon
+                                icon-name="utility:warning"
+                                variant="error"
+                                size="x-small"
+                                class="warning-icon"
+                            ></lightning-icon>
+                            <strong class="error-text">{errorText}</strong>
+                        </div>
+                    </template>
+                    <div class="slds-no-flex slds-grid slds-col_bump-left">
+                        <template lwc:if={isEdited}>
+                            <lightning-button
+                                label="Avbryt"
+                                variant="neutral"
+                                class="slds-m-right_small"
+                                onclick={handleReset}
+                                disabled={isCompleted}
+                            ></lightning-button>
+                        </template>
+                        <lightning-button
+                            label="Lagre endringer"
+                            variant="brand"
+                            onclick={handleSave}
+                            disabled={isSaveDisabled}
+                        ></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

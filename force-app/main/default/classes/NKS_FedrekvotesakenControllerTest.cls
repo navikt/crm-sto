@@ -12,8 +12,14 @@ private class NKS_FedrekvotesakenControllerTest {
             CRM_Code_Set__c = 'Behandlingstema',
             CRM_Code__c = 'ab0342'
         );
+        Common_Code__c temagruppe = new Common_Code__c(
+            Name = 'Familie',
+            CRM_Code_Set__c = 'Temagrupper',
+            CRM_Code__c = 'FMLI'
+        );
         insert tema;
         insert behandlingstema;
+        insert temagruppe;
 
         Common_Code__c gjelder = new Common_Code__c(
             Name = 'Fedrekvote',
@@ -29,42 +35,31 @@ private class NKS_FedrekvotesakenControllerTest {
     }
 
     @isTest
-    static void testCreateNavTask() {
+    static void testpostTask() {
+        ApiMock.setTestMock('POST_CREATE_OPPGAVE', 201, 'Created');
         NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
         String jsonData = JSON.serialize(fedrekvoteData);
 
         Test.startTest();
-        NKS_FedrekvotesakenController.createNavTask(jsonData);
+        NKS_FedrekvotesakenController.postTask(jsonData);
         Test.stopTest();
 
-        List<NavTask__c> navTasks = [SELECT Id FROM NavTask__c LIMIT 1];
-        Assert.areNotEqual(0, navTasks.size(), 'NavTask record should be created');
+        List<Application_Log__c> logList = [
+            SELECT Id
+            FROM Application_Log__c
+            WHERE Category__c = 'Fedrekvotesaken'
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+        Assert.areEqual(0, logList.size(), 'Application_Log__c record should not be created');
     }
 
     @isTest
-    static void testCreateNavTaskHasExistingNavTasksError() {
-        NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
-        String jsonData = JSON.serialize(fedrekvoteData);
-        Exception ex;
-
-        Test.startTest();
-        try {
-            NKS_FedrekvotesakenController.createNavTask(jsonData);
-            NKS_FedrekvotesakenController.createNavTask(jsonData);
-        } catch (Exception e) {
-            ex = e;
-        }
-        Test.stopTest();
-
-        Assert.areNotEqual(null, ex);
-    }
-
-    @isTest
-    static void testFormatComment() {
+    static void testFormatBeskrivelse() {
         NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
 
         Test.startTest();
-        String comment = NKS_FedrekvotesakenController.formatComment(fedrekvoteData);
+        String comment = NKS_FedrekvotesakenController.formatBeskrivelse(fedrekvoteData);
         Test.stopTest();
 
         Assert.areNotEqual(null, comment, 'Comment should not be null');
@@ -74,14 +69,13 @@ private class NKS_FedrekvotesakenControllerTest {
 
     @isTest
     static void testHasExistingNavTasks() {
-        Account testAccount = new Account(Name = 'Test Account');
-        insert testAccount;
+        ApiMock.setTestMock('GET_OPPGAVE', 200, 'OK');
 
         Test.startTest();
         Boolean hasTasks = NKS_FedrekvotesakenController.hasExistingNavTasks();
         Test.stopTest();
 
-        Assert.areEqual(false, hasTasks, 'Expected zero existing NavTasks');
+        Assert.areEqual(true, hasTasks, 'Expected one existing Oppgave in response');
     }
 
     private static NKS_FedrekvotesakenController.Fedrekvote makeTestData() {

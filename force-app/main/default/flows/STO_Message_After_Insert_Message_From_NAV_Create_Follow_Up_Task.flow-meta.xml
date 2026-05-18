@@ -1,323 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <actionCalls>
-        <name>Check_if_NavIdent_is_active_in_unit</name>
-        <label>Check if NavIdent is active in unit</label>
-        <locationX>314</locationX>
-        <locationY>1140</locationY>
-        <actionName>NKS_EntraController</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>Check_if_Assignee_still_working_for_Unit</targetReference>
-        </connector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>navIdent</name>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>unitNumber</name>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>NKS_EntraController</nameSegment>
-        <offset>0</offset>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
-    <actionCalls>
-        <name>Get_Nav_Unit_status</name>
-        <label>Get Nav Unit status</label>
-        <locationX>578</locationX>
-        <locationY>816</locationY>
-        <actionName>NKS_NavUnitSingleController</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>Check_if_Nav_Unit_is_Active</targetReference>
-        </connector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>navUnitNumber</name>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>NKS_NavUnitSingleController</nameSegment>
-        <offset>0</offset>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
-    <apiVersion>53.0</apiVersion>
+    <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
-    <assignments>
-        <name>Assign_Ident</name>
-        <label>Assign Ident</label>
-        <locationX>182</locationX>
-        <locationY>1356</locationY>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_Assignee__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee__c</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Get_FAR_Theme</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_no_Ident</name>
-        <label>Assign no Ident</label>
-        <locationX>446</locationX>
-        <locationY>1356</locationY>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_Assignee__c</assignToReference>
-            <operator>Assign</operator>
-        </assignmentItems>
-        <connector>
-            <targetReference>Get_FAR_Theme</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_no_nav_unit</name>
-        <label>Assign no nav unit</label>
-        <locationX>842</locationX>
-        <locationY>1032</locationY>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.CRM_NavUnit__c</assignToReference>
-            <operator>Assign</operator>
-        </assignmentItems>
-        <connector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Assign_no_Ident</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_old_Nav_Unit</name>
-        <label>Assign old Nav Unit</label>
-        <locationX>314</locationX>
-        <locationY>1032</locationY>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.CRM_NavUnit__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_NAV_Unit_Record.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Check_if_NavIdent_is_active_in_unit</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Convert_theme_to_Bidrag</name>
-        <label>Convert theme to Bidrag</label>
-        <locationX>50</locationX>
-        <locationY>1872</locationY>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_Theme__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_BID_Theme.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Set_NAV_Task_Values</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Inherit_Thread_Theme</name>
-        <label>Inherit Thread Theme</label>
-        <locationX>314</locationX>
-        <locationY>1764</locationY>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_Theme__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_Theme__c</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Set_NAV_Task_Values</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Set_KNA</name>
-        <label>Set KNA</label>
-        <locationX>578</locationX>
-        <locationY>1872</locationY>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_Theme__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_KNA_Theme.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Set_NAV_Task_Values</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Set_NAV_Task_Values</name>
-        <label>Set NAV Task Values</label>
-        <locationX>314</locationX>
-        <locationY>2064</locationY>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.CRM_Account__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_Account__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_Theme_Group__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_Theme_Group__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_TaskType__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Ikke_Svar_Task_Type.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.CRM_Priority__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>HOY</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.CRM_NoPersonInformation__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_Henvendelse_BehandlingsId__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_API_Reference__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NAV_TASK_TO_CREATE.NKS_Comments__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>Automatisk generert oppgave (Salesforce)</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Send_NAV_Task</targetReference>
-        </connector>
-    </assignments>
-    <decisions>
-        <name>Check_if_Assignee_still_working_for_Unit</name>
-        <label>Check if Assignee still working for Unit</label>
-        <locationX>314</locationX>
-        <locationY>1248</locationY>
-        <defaultConnector>
-            <targetReference>Assign_no_Ident</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Assignee_still_active</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Check_if_NavIdent_is_active_in_unit</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_Ident</targetReference>
-            </connector>
-            <label>Assignee still active</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Check_if_Nav_Unit_is_Active</name>
-        <label>Check if Nav Unit is Active</label>
-        <locationX>578</locationX>
-        <locationY>924</locationY>
-        <defaultConnector>
-            <targetReference>Assign_no_nav_unit</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Unit no longer exists</defaultConnectorLabel>
-        <rules>
-            <name>Unit_is_active</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Nav_Unit_status.unit</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>Get_Nav_Unit_status.unit.status</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Aktiv</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_old_Nav_Unit</targetReference>
-            </connector>
-            <label>Unit is active</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Check_Thread_Theme</name>
-        <label>Check Thread Theme</label>
-        <locationX>314</locationX>
-        <locationY>1656</locationY>
-        <defaultConnector>
-            <targetReference>Get_KNA_Theme</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Set Default Theme</defaultConnectorLabel>
-        <rules>
-            <name>Theme_is_FAR</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Thread.CRM_Theme__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>Get_FAR_Theme.Id</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Get_BID_Theme</targetReference>
-            </connector>
-            <label>Theme is FAR</label>
-        </rules>
-        <rules>
-            <name>Thread_has_Theme</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Thread.CRM_Theme__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Inherit_Thread_Theme</targetReference>
-            </connector>
-            <label>Thread has Theme</label>
-        </rules>
-    </decisions>
     <decisions>
         <description>Verify if a follow up task should be sent or not. If there is new external
             messages in this thread no follow up task is needed.</description>
         <name>Follow_up_Task_Check</name>
         <label>Follow up Task Check</label>
-        <locationX>842</locationX>
+        <locationX>374</locationX>
         <locationY>492</locationY>
         <defaultConnectorLabel>Do Nothing</defaultConnectorLabel>
         <rules>
@@ -338,7 +28,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Ikke_Svar_Task_Type</targetReference>
+                <targetReference>Create_STB_Oppgave</targetReference>
             </connector>
             <label>Send Follow Up Task</label>
         </rules>
@@ -346,11 +36,6 @@
     <description>Record triggered flow to determine if a message has not been responded after 4 days
         and should generate a task to the one &quot;owning&quot; the conversation.</description>
     <environments>Default</environments>
-    <formulas>
-        <name>Is_Nav_Unit_Active</name>
-        <dataType>Boolean</dataType>
-        <expression>{!Get_Nav_Unit_status.unit.status} = &quot;Aktiv&quot;</expression>
-    </formulas>
     <interviewLabel>Message - After Insert - Message From NAV - Create Follow Up Task
         {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Message - After Insert - Message From NAV - Create Follow Up Task</label>
@@ -374,126 +59,9 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>Get_BID_Theme</name>
-        <label>Get BID Theme</label>
-        <locationX>50</locationX>
-        <locationY>1764</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Convert_theme_to_Bidrag</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Code_Set__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Tema</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>BID</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Common_Code__c</object>
-        <queriedFields>Id</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <description>Farskap is not a valid theme for NavTask (yet), so BID is used for now.</description>
-        <name>Get_FAR_Theme</name>
-        <label>Get FAR Theme</label>
-        <locationX>314</locationX>
-        <locationY>1548</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Check_Thread_Theme</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Code_Set__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Tema</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>FAR</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Common_Code__c</object>
-        <queriedFields>Id</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Ikke_Svar_Task_Type</name>
-        <label>Get Ikke Svar Task Type</label>
-        <locationX>578</locationX>
-        <locationY>600</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_NAV_Unit_Record</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>SVAR_IK_MOT</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code_Set__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Oppgavetyper</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Common_Code__c</object>
-        <queriedFields>Id</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_KNA_Theme</name>
-        <label>Get KNA Theme</label>
-        <locationX>578</locationX>
-        <locationY>1764</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Set_KNA</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>KNA</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Code_Set__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Tema</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Common_Code__c</object>
-        <queriedFields>Id</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Last_Message</name>
         <label>Get Last Message</label>
-        <locationX>842</locationX>
+        <locationX>374</locationX>
         <locationY>276</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -523,32 +91,9 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <description>Get the thread assigned NAV unit</description>
-        <name>Get_NAV_Unit_Record</name>
-        <label>Get NAV Unit Record</label>
-        <locationX>578</locationX>
-        <locationY>708</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_Nav_Unit_status</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>INT_UnitNumber__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>NavUnit__c</object>
-        <queriedFields>Id</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>842</locationX>
+        <locationX>374</locationX>
         <locationY>384</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -576,7 +121,7 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
-        <locationX>188</locationX>
+        <locationX>50</locationX>
         <locationY>0</locationY>
         <filterLogic>and</filterLogic>
         <filters>
@@ -625,43 +170,29 @@
     </start>
     <status>Active</status>
     <subflows>
-        <description>Performs the outbound callout to store the NAV task for conversation follow up.</description>
-        <name>Send_NAV_Task</name>
-        <label>Send NAV Task</label>
-        <locationX>314</locationX>
-        <locationY>2172</locationY>
-        <flowName>CRM_Send_NAV_Task_Auto</flowName>
+        <name>Create_STB_Oppgave</name>
+        <label>Create STB Oppgave</label>
+        <locationX>242</locationX>
+        <locationY>600</locationY>
+        <flowName>Create_STB_Oppgave</flowName>
         <inputAssignments>
-            <name>Created_By_Unit_Number</name>
+            <name>Oppgave_Type</name>
             <value>
-                <elementReference>Get_Thread.CRM_Assignee_NAV_Unit__c</elementReference>
+                <stringValue>SVAR_IK_MOT</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
-            <name>LogCategory</name>
+            <name>Optional_Log_Category</name>
             <value>
                 <stringValue>STB Oppgave</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
-            <name>NAV_Task</name>
+            <name>Thread</name>
             <value>
-                <elementReference>NAV_TASK_TO_CREATE</elementReference>
+                <elementReference>Get_Thread</elementReference>
             </value>
         </inputAssignments>
-        <inputAssignments>
-            <name>NavUnit_Active</name>
-            <value>
-                <elementReference>Is_Nav_Unit_Active</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>SYSTEM_CONTEXT</name>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </inputAssignments>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
     </subflows>
     <variables>
         <description>NavTask__c record to create for conversation follow up.</description>
