@@ -41,6 +41,20 @@ public with sharing class stoHelperClass {
         set {
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getCodeToNameMap() {
+        Map<String, String> codeToName = new Map<String, String>();
+        for (Common_Code__c code : [
+            SELECT CRM_Code__c, Name
+            FROM Common_Code__c
+            WHERE CRM_Code_Set__c IN ('Tema', 'Oppgavetyper', 'Behandlingstema', 'Behandlingstype')
+        ]) {
+            codeToName.put(code.CRM_Code__c, code.Name);
+        }
+        return codeToName;
+    }
+
     /**
      * Get themes from custom metadata
      * @Author Lars Petter Johnsen
@@ -282,7 +296,11 @@ public with sharing class stoHelperClass {
                     LIMIT 1
                 )
             FROM Thread__c
-            WHERE CRM_Is_Closed__C = FALSE AND STO_Category__c = :theme AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES AND CRM_Account__c = :accountId
+            WHERE
+                CRM_Is_Closed__C = FALSE
+                AND STO_Category__c = :theme
+                AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES
+                AND CRM_Account__c = :accountId
         ];
 
         List<Thread__c> threadList = new List<Thread__c>();

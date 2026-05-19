@@ -26,16 +26,7 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void getOpenThreadsTest() {
         User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        Thread__c t = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            u.AccountId,
-            u.ContactId,
-            true,
-            'STO',
-            null,
-            null
-        );
+        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', u.AccountId, u.ContactId, true, 'STO', null, null);
         Test.startTest();
         Assert.areNotEqual(null, stoHelperClass.getOpenThreads('Arbeid', 'STO'), 'Expected to get a thread');
         Test.stopTest();
@@ -291,5 +282,14 @@ public with sharing class stoHelperClass_Test {
                 'Should return false if canUserCloseThread returns false even if NKS_Close_Intent__c is true'
             );
         }
+    }
+
+    @isTest
+    static void getCodeToNameMapTest() {
+        Test.startTest();
+        Map<String, String> result = stoHelperClass.getCodeToNameMap();
+        Test.stopTest();
+
+        Assert.isFalse(result.isEmpty());
     }
 }

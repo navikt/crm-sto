@@ -10,6 +10,7 @@ const CONV_NOTE_TYPE = 'Conversation_Note__c';
 export default class NksDialogueViewer extends LightningElement {
     @api recordId;
     @api objectApiName;
+    @api externalApiReference;
 
     threadId;
     convNoteId;
@@ -23,7 +24,11 @@ export default class NksDialogueViewer extends LightningElement {
     }
 
     connectedCallback() {
-        this.getRelatedDialogue();
+        if (this.externalApiReference) {
+            this.apiReference = this.externalApiReference;
+        } else {
+            this.getRelatedDialogue();
+        }
     }
 
     getRelatedDialogue() {

@@ -1,10 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
+        <name>Post_Nav_Task</name>
+        <label>Post Nav Task</label>
+        <locationX>50</locationX>
+        <locationY>242</locationY>
+        <actionName>OppgaveManager</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Set_Assignee_Nav_Unit_on_Thread</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>aktoerId</name>
+            <value>
+                <elementReference>Thread.CRM_Account__r.CRM_Person__r.INT_ActorId__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>eksternHenvendelseId</name>
+            <value>
+                <elementReference>Thread.CRM_API_Reference__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>methodType</name>
+            <value>
+                <stringValue>POST</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>oppgavetype</name>
+            <value>
+                <stringValue>SPM_OG_SVR</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>prioritet</name>
+            <value>
+                <stringValue>NORM</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>tema</name>
+            <value>
+                <stringValue>KNA</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>OppgaveManager</nameSegment>
+        <offset>0</offset>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <actionCalls>
         <name>Schedule_Rerun</name>
         <label>Schedule Rerun</label>
         <locationX>974</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <actionName>STO_RerunCreateTaskOrCaseOnFaultSchd</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -17,14 +68,17 @@
                 <elementReference>Thread.Id</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>STO_RerunCreateTaskOrCaseOnFaultSchd</nameSegment>
+        <offset>0</offset>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>53.0</apiVersion>
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
         <name>Is_Case_Routing</name>
         <label>Is Case Routing</label>
         <locationX>314</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <defaultConnector>
             <targetReference>Create_STO_Case</targetReference>
         </defaultConnector>
@@ -47,7 +101,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Create_STO_NAV_Task</targetReference>
+                <targetReference>Post_Nav_Task</targetReference>
             </connector>
             <label>No</label>
         </rules>
@@ -56,7 +110,7 @@
         <name>Is_Scheduled</name>
         <label>Is Scheduled</label>
         <locationX>974</locationX>
-        <locationY>758</locationY>
+        <locationY>674</locationY>
         <defaultConnector>
             <targetReference>Scheduler_Error_Log</targetReference>
         </defaultConnector>
@@ -100,7 +154,7 @@
         <name>Create_Error_Log</name>
         <label>Create Error Log</label>
         <locationX>974</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <connector>
             <targetReference>Schedule_Rerun</targetReference>
         </connector>
@@ -154,7 +208,7 @@
         <name>Scheduler_Error_Log</name>
         <label>Scheduler Error Log</label>
         <locationX>1106</locationX>
-        <locationY>878</locationY>
+        <locationY>782</locationY>
         <inputAssignments>
             <field>Application_Domain__c</field>
             <value>
@@ -194,32 +248,11 @@
         <object>Application_Log__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
-    <recordLookups>
-        <name>Get_Nav_Task</name>
-        <label>Get Nav Task</label>
-        <locationX>50</locationX>
-        <locationY>398</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Set_related_record_NAV_Task</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Create_STO_NAV_Task.NavTaskId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>NavTask__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <recordUpdates>
-        <name>Set_related_record_NAV_Task</name>
-        <label>Set related record NAV Task</label>
+        <name>Set_Assignee_Nav_Unit_on_Thread</name>
+        <label>Set Assignee Nav Unit on Thread</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>350</locationY>
         <faultConnector>
             <isGoTo>true</isGoTo>
             <targetReference>Create_Error_Log</targetReference>
@@ -235,13 +268,7 @@
         <inputAssignments>
             <field>CRM_Assignee_NAV_Unit__c</field>
             <value>
-                <elementReference>Get_Nav_Task.CRM_NavUnit__r.INT_UnitNumber__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CRM_Related_Object__c</field>
-            <value>
-                <elementReference>Create_STO_NAV_Task.NavTaskId</elementReference>
+                <elementReference>Post_Nav_Task.oppgave.tildeltEnhetsnr</elementReference>
             </value>
         </inputAssignments>
         <object>Thread__c</object>
@@ -250,7 +277,7 @@
         <name>Set_Related_Record_STO_Case</name>
         <label>Set Related Record STO Case</label>
         <locationX>578</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <faultConnector>
             <targetReference>Create_Error_Log</targetReference>
         </faultConnector>
@@ -288,28 +315,11 @@
         <name>Create_STO_Case</name>
         <label>Create STO Case</label>
         <locationX>578</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <connector>
             <targetReference>Set_Related_Record_STO_Case</targetReference>
         </connector>
         <flowName>STO_Thread_Subflow_CreateSTOCase</flowName>
-        <inputAssignments>
-            <name>Thread</name>
-            <value>
-                <elementReference>Thread</elementReference>
-            </value>
-        </inputAssignments>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </subflows>
-    <subflows>
-        <name>Create_STO_NAV_Task</name>
-        <label>Create STO NAV Task</label>
-        <locationX>50</locationX>
-        <locationY>278</locationY>
-        <connector>
-            <targetReference>Get_Nav_Task</targetReference>
-        </connector>
-        <flowName>STO_Thread_Subflow_CreateNavTask</flowName>
         <inputAssignments>
             <name>Thread</name>
             <value>
