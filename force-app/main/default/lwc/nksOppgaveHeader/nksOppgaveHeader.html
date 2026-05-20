@@ -18,6 +18,13 @@
                                 <div class="slds-text-title slds-p-bottom_xx-small">Status</div>
                                 <span class={statusClass}>{statusLabel}</span>
                             </div>
+                            <div lwc:if={personName} class="slds-m-right_xx-large">
+                                <div class="slds-text-title slds-p-bottom_xx-small">Navn</div>
+                                <a lwc:if={personAccountId} onclick={navigateToPersonAccount} class="person-name-link"
+                                    >{personName}</a
+                                >
+                                <span lwc:else>{personName}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
