@@ -1,4 +1,5 @@
 import { LightningElement, api } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 
 const STATUS_LABELS = {
     AVSLUTTET: 'Ferdigstilt',
@@ -20,15 +21,15 @@ const STATUS_THEME = {
     FEILREGISTRERT: 'slds-badge slds-theme_error'
 };
 
-export default class NksOppgaveHeader extends LightningElement {
+export default class NksOppgaveHeader extends NavigationMixin(LightningElement) {
     @api status;
     @api isLoading = false;
     @api isSaving = false;
     @api errorMessage;
+    @api personName;
+    @api personAccountId;
 
     get statusLabel() {
-        console.log('status', this.status);
-        console.log('statusLabel', STATUS_LABELS[this.status]);
         return STATUS_LABELS[this.status] ?? this.status;
     }
 
@@ -56,5 +57,16 @@ export default class NksOppgaveHeader extends LightningElement {
 
     handleFinishOppgave() {
         this.dispatchEvent(new CustomEvent('finishoppgave'));
+    }
+
+    navigateToPersonAccount() {
+        if (!this.personAccountId) return;
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.personAccountId,
+                actionName: 'view'
+            }
+        });
     }
 }

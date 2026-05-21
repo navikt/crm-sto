@@ -1,11 +1,15 @@
 import { LightningElement, api } from 'lwc';
 import getOppgaveById from '@salesforce/apex/OppgaveManager.getOppgaveById';
 import patchEditTaskFromLwc from '@salesforce/apex/OppgaveManager.patchEditTaskFromLwc';
+import getPersonInfo from '@salesforce/apex/OppgaveManager.getPersonInfo';
 
 export default class NksOppgavePage extends LightningElement {
     @api oppgaveId;
+    @api showPersonInfo = false;
 
     oppgave;
+    personName;
+    personAccountId;
     isLoading = false;
     isSaving = false;
     formErrorMessage;
@@ -25,6 +29,12 @@ export default class NksOppgavePage extends LightningElement {
         this.isLoading = true;
         try {
             this.oppgave = await getOppgaveById({ oppgaveId: this.oppgaveId });
+            const personIdent = this.oppgave?.bruker?.ident ?? null;
+            if (personIdent && this.showPersonInfo) {
+                const personData = await getPersonInfo({ personIdents: [personIdent] });
+                this.personName = personData[personIdent]?.CRM_FullName__c ?? null;
+                this.personAccountId = personData[personIdent]?.CRM_Account__c ?? null;
+            }
         } catch (error) {
             console.error('loadOppgave error:', error);
         } finally {

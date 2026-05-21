@@ -40,3 +40,17 @@
     font-size: 0.8rem;
     white-space: pre-line;
 }
+
+.person-name-link {
+    cursor: pointer;
+    color: #0070d2;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    line-height: 1.5rem;
+    display: inline-block;
+}
+
+.person-name-link:hover {
+    text-decoration: underline;
+}

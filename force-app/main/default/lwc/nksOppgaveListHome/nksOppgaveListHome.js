@@ -116,7 +116,8 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
             },
             state: {
                 c__oppgaveId: oppgaveId,
-                c__oppgavetype: oppgavetype
+                c__oppgavetype: oppgavetype,
+                c__fromOppgaveListHome: true
             }
         });
     }
@@ -143,8 +144,9 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
 
     get oppgaverWithPersonData() {
         return this.oppgaver.map((oppgave) => {
-            const fullName = this.personData[oppgave.brukerIdent]?.CRM_FullName__c ?? oppgave.brukerIdent;
-            const age = this.personData[oppgave.brukerIdent]?.CRM_Age__c;
+            const person = this.personData[oppgave.brukerIdent];
+            const fullName = person?.CRM_FullName__c ?? oppgave.brukerIdent;
+            const age = person?.CRM_Age__c;
             return {
                 ...oppgave,
                 personNameAndAge: age ? `${fullName} (${age} år)` : fullName
