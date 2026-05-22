@@ -2,7 +2,6 @@ import { LightningElement, wire, api } from 'lwc';
 import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExperience.getGroupedMessagesFromThread';
 import markAsRead from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import { refreshApex } from '@salesforce/apex';
-import getContactId from '@salesforce/apex/CRM_MessageHelperExperience.getUserContactId';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createMessage from '@salesforce/apex/CRM_MessageHelperExperience.createMessage';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
@@ -26,7 +25,6 @@ export default class CommunityThreadViewer extends LightningElement {
     wiredMessages;
     buttonDisabled = false;
     messageValue;
-    userContactId;
     thread;
     wiredThread;
     messageGroups;
@@ -38,13 +36,6 @@ export default class CommunityThreadViewer extends LightningElement {
         this.referrer = document.referrer.toLowerCase();
 
         markAsRead({ threadId: this.recordId });
-        getContactId({})
-            .then((contactId) => {
-                this.userContactId = contactId;
-            })
-            .catch((error) => {
-                console.error('Problem on getting contact id: ', error);
-            });
     }
 
     renderedCallback() {
@@ -94,12 +85,6 @@ export default class CommunityThreadViewer extends LightningElement {
      * @Author lars Petter Johnsen
      */
     handlesuccess() {
-        const inputFields = this.template.querySelectorAll('.messageText');
-        if (inputFields) {
-            inputFields.forEach((field) => {
-                field.reset();
-            });
-        }
         const textBoks = this.template.querySelector('c-community-textarea');
         textBoks.clearText();
         this.buttonDisabled = false;
@@ -129,7 +114,7 @@ export default class CommunityThreadViewer extends LightningElement {
             this.buttonDisabled = false;
             return;
         }
-        createMessage({ threadId: this.recordId, messageText: this.messageValue, fromContactId: this.userContactId })
+        createMessage({ threadId: this.recordId, messageText: this.messageValue })
             .then((result) => {
                 if (result) {
                     this.handlesuccess();
