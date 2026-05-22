@@ -1,32 +1,32 @@
-import { LightningElement, wire, api, track } from 'lwc';
-
+import { LightningElement, wire, api } from 'lwc';
 import getThreads from '@salesforce/apex/stoInboxHelper.getThreads';
 import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads';
+import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
 
 export default class StoMessageInbox extends LightningElement {
     @api title;
-    @track threads;
-    @track recentthreads;
+
+    threads;
+    recentthreads;
     wthreads;
     wrthreads;
     showthreads = false;
     showrecentthreads = false;
 
+    renderedCallback() {
+        setDecoratorParams('Innboks', 'Innboks', '');
+    }
+
     @wire(getThreads, {})
     wirethreads(result) {
         if (result.error) {
-            console.log(result.error);
+            console.error(result.error);
         } else if (result.data) {
             this.wthreads = result.data;
             this.setThreads();
         }
     }
-    setThreads() {
-        if (this.wthreads) {
-            this.threads = [...this.wthreads].sort(this.sortByDate);
-            this.showthreads = this.wthreads.length > 0;
-        }
-    }
+
     @wire(getRecentThreads, {})
     wirerecentthreads(result) {
         if (result.error) {
@@ -36,15 +36,19 @@ export default class StoMessageInbox extends LightningElement {
             this.setRecentThreads();
         }
     }
+
+    setThreads() {
+        if (this.wthreads) {
+            this.threads = [...this.wthreads].sort(this.sortByDate);
+            this.showthreads = this.wthreads.length > 0;
+        }
+    }
+
     setRecentThreads() {
         if (this.wrthreads) {
             this.recentthreads = [...this.wrthreads].sort(this.sortByDate);
             this.showrecentthreads = this.wrthreads.length > 0;
         }
-    }
-
-    get noItems() {
-        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
     }
 
     sortByDate(t1, t2) {
@@ -57,5 +61,27 @@ export default class StoMessageInbox extends LightningElement {
             return 1;
         }
         return 0;
+    }
+
+    handleDocumentArchiveClick() {
+        logNavigationEvent(
+            getComponentName(this.template),
+            'brev og vedtak',
+            'https://www.nav.no/dokumentarkiv',
+            'brev og vedtak'
+        );
+    }
+
+    handleContactUsClick() {
+        logNavigationEvent(
+            getComponentName(this.template),
+            'kontakt oss',
+            'https://www.nav.no/kontaktoss',
+            'Kontakt oss'
+        );
+    }
+
+    get noItems() {
+        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
     }
 }

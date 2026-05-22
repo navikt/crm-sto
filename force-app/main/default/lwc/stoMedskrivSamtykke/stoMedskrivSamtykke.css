@@ -1,0 +1,8 @@
+.button {
+    margin-top: var(--a-spacing-5);
+}
+
+.navds-panel {
+    padding: 0;
+    margin-bottom: var(--a-spacing-10);
+}

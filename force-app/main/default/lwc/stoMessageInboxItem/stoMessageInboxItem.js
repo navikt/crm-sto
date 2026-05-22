@@ -1,60 +1,66 @@
 import { LightningElement, api } from 'lwc';
-import navlogos from '@salesforce/resourceUrl/navsvglogos';
 import basepath from '@salesforce/community/basePath';
+import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class StoMessageInboxItem extends LightningElement {
     @api thread;
-    dialog = navlogos + '/send.svg';
-    latestmessage;
+    @api closeIntent = false;
+
     latestText;
     objectName;
     isExternal;
     isOpen;
-    threadId;
-    hasunread = false;
-    unreadmessage = 'lest';
+    hasUnread = true;
+    unreadMessage = 'lest';
 
-    className = 'lenkepanel dialog read iconclass overrides';
-    statuscolor;
-    get itemTitle() {
-        if (this.objectName === 'samtalereferat') return this.thread.name;
-        if (this.objectName === 'skriv-til-oss' || this.objectName === 'beskjed-til-oss') {
-            if (this.isOpen) {
-                if (this.isExternal === true) {
-                    return this.thread.name + ': Du sendte en melding';
-                }
-                return this.thread.name + ': Nav sendte en melding';
-            }
-            return this.thread.name;
-        }
-        if (this.objectName === 'chat') {
-            if (this.isExternal === true) {
-                return this.thread.name + ': Du sendte en melding';
-            }
-            return this.thread.name + ': Nav sendte en melding';
-        }
-        return this.thread.name;
-    }
     connectedCallback() {
         this.objectName = this.thread.objectName;
+
         if (this.thread.status === 'Åpen') {
-            this.statuscolor = 'greenfont';
             this.isOpen = true;
         }
-        if (this.objectName === 'samtalereferat') this.dialog = navlogos + '/FileContent.svg';
-        if (this.objectName === 'chat') this.dialog = navlogos + '/dialog.svg';
+
         if (Number(this.thread.numberOfUnreadMessages) > 0) {
-            this.hasunread = true;
-            this.unreadmessage = 'ulest';
-            this.className = 'lenkepanel dialog unread iconclass';
+            this.hasUnread = true;
+            this.unreadMessage = 'Ulest';
         }
-        this.latestmessage = this.thread.latestmessage;
+
         this.latestText = this.thread.latestmessage.messageText;
         this.isExternal = this.thread.latestmessage.isExternal;
     }
 
+    handleNavigation(event) {
+        logNavigationEvent(getComponentName(this.template), 'valgt henvendelse', event.target.href, this.itemTitle);
+    }
+
+    get itemTitle() {
+        if (this.objectName === 'samtalereferat') return this.thread.name;
+
+        if (['skriv-til-oss', 'beskjed-til-oss', 'chat'].includes(this.objectName)) {
+            const sender = this.isExternal ? 'Du sendte en melding' : 'Nav sendte en melding';
+            return this.isOpen ? `${this.thread.name}: ${sender}` : this.thread.name;
+        }
+
+        return this.thread.name;
+    }
+
     get showStatus() {
         return this.objectName !== 'samtalereferat';
+    }
+
+    get showReadStatus() {
+        return this.unreadMessage === 'Ulest';
+    }
+
+    get statusText() {
+        return this.thread.status;
+    }
+
+    get statusClass() {
+        return (
+            'navds-tag navds-tag--success navds-tag--small navds-body-short navds-body-short--small ' +
+            (this.thread.status === 'Åpen' ? 'navds-tag--success' : 'navds-tag--alt1')
+        );
     }
 
     get linkUrl() {
@@ -73,5 +79,25 @@ export default class StoMessageInboxItem extends LightningElement {
             url += '/chat?id=' + this.thread.recordId;
         }
         return url;
+    }
+
+    get panelClass() {
+        return `panel ${this.closeIntent ? 'no-bottom-radius' : 'border-radius'}`;
+    }
+
+    get formattedLatestMessageDate() {
+        if (!this.thread?.latestMessageDate) return '';
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        return new Intl.DateTimeFormat('nb-NO', options).format(new Date(this.thread.latestMessageDate));
+    }
+
+    get linkSummary() {
+        return `${this.formattedLatestMessageDate}. ${this.showReadStatus ? this.unreadMessage : ''} . ${this.showStatus ? this.statusText : ''} . ${this.itemTitle} . ${this.latestText}`;
     }
 }

@@ -2,6 +2,7 @@
 public with sharing class nksGetStoUtilityControllerTest {
     @TestSetup
     static void makeData() {
+        myTriggers.disable(PersonAccessHandler.class);
         List<Person__c> persons = STO_TestDataFactory.createPersons(2);
         List<Id> personIds = new List<Id>();
         for (Person__c p : persons) {

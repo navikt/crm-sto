@@ -1,0 +1,31 @@
+.header {
+    text-align: left;
+    width: 100%;
+    margin-bottom: 1em;
+}
+.text-left {
+    text-align: left;
+    background-color: #fff;
+    display: block;
+    border-radius: 4px;
+}
+
+.navds-list__item {
+    margin-block-end: 0.5rem;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: auto 1fr;
+}
+
+.navds-list__item-marker {
+    width: 1.5rem;
+    padding-left: 0.8rem;
+}
+
+.navds-body-short {
+    margin-bottom: 1rem;
+}
+
+.top-div {
+    margin-bottom: 4rem;
+}

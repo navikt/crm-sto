@@ -1,0 +1,101 @@
+.header {
+    margin-bottom: var(--a-spacing-6);
+}
+
+.container {
+    margin: var(--a-spacing-05) auto var(--a-spacing-20) auto;
+    max-width: 640px;
+}
+
+.theme-radio-button,
+.medskriv-radio-button,
+.text-area,
+.vilkar-container,
+.subheader {
+    margin-top: var(--a-spacing-10);
+}
+
+.vilkar-container {
+    margin-bottom: var(--a-spacing-10);
+}
+
+.vilkar-link {
+    align-self: start;
+    justify-self: start;
+    border: none;
+    margin-top: 0.75rem;
+    background-color: transparent;
+}
+
+.vilkar-link:hover,
+.vilkar-link:focus {
+    text-decoration: none;
+}
+
+.vilkar-link:active,
+.vilkar-link:focus {
+    background-color: #014486;
+}
+
+.vilkar-link:active,
+.vilkar-link:hover {
+    outline: none;
+}
+
+.vilkar-link:focus {
+    color: #ffffff;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.new-message-button {
+    margin-top: var(--a-spacing-10);
+}
+
+.subheader {
+    margin-bottom: var(--a-spacing-3);
+}
+
+.errorBox {
+    margin-bottom: var(--a-spacing-5);
+}
+
+.inbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--a-spacing-5);
+}
+
+.spinner {
+    outline: none;
+}
+
+.send-sto-button {
+    margin-top: var(--a-spacing-4);
+}
+
+@media only screen and (max-width: 576px) {
+    .vilkar-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .vilkar-container .vilkar-link {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .button-width {
+        width: 100%;
+    }
+
+    .container {
+        margin-left: var(--a-spacing-4);
+        margin-right: var(--a-spacing-4);
+    }
+}

@@ -1,5 +1,17 @@
 public with sharing class stoInboxHelper {
-    //TODO: Use custom labels
+    private static Id cachedAccountId;
+    private static Id accountId {
+        get {
+            if (cachedAccountId == null) {
+                cachedAccountId = getAccountIdOfCurrentUser();
+            }
+            return cachedAccountId;
+        }
+    }
+
+    private static Id getAccountIdOfCurrentUser() {
+        return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
+    }
 
     @AuraEnabled(cacheable=true)
     public static List<thread> getThreads() {
@@ -16,6 +28,8 @@ public with sharing class stoInboxHelper {
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
                 Name,
+                NKS_Inbox_Title__c,
+                NKS_Inbox_Theme__c,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -28,6 +42,7 @@ public with sharing class stoInboxHelper {
                 CRM_Number_of_unread_Messages__c = 0
                 AND CRM_Is_Closed__C = TRUE
                 AND CRM_Thread_Type__c IN ('STO', 'BTO', 'STB', 'CHAT')
+                AND CRM_Account__c = :accountId
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -43,6 +58,7 @@ public with sharing class stoInboxHelper {
                 Name
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
+            AND CRM_Account__c = :accountId
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -66,6 +82,8 @@ public with sharing class stoInboxHelper {
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
                 Name,
+                NKS_Inbox_Title__c,
+                NKS_Inbox_Theme__c,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -78,6 +96,7 @@ public with sharing class stoInboxHelper {
                 (CRM_Number_of_unread_Messages__c > 0
                 OR CRM_Is_Closed__c = FALSE)
                 AND CRM_Thread_Type__c IN ('STO', 'BTO', 'STB', 'CHAT')
+                AND CRM_Account__c = :accountId
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
         for (Thread__c t : threadList) {
@@ -93,6 +112,7 @@ public with sharing class stoInboxHelper {
                 Name
             FROM Conversation_Note__c
             WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
+            AND CRM_Account__c = :accountId
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -123,6 +143,8 @@ public with sharing class stoInboxHelper {
                 .replaceAll('(\\r|\\n)+', ' ');
             message.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
             thread.latestmessage = message;
+            thread.inboxTitle = t.NKS_Inbox_Title__c;
+            thread.inboxTheme = t.NKS_Inbox_Theme__c;
             return thread;
         }
         return null;
@@ -167,6 +189,10 @@ public with sharing class stoInboxHelper {
         public message latestmessage;
         @AuraEnabled
         public String recordName;
+        @AuraEnabled
+        public String inboxTitle;
+        @AuraEnabled
+        public String inboxTheme;
     }
 
     public class Message {

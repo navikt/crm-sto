@@ -1,6 +1,8 @@
 <template>
-    <c-crm-messaging-community-thread-viewer
+    <c-community-thread-viewer
         record-id={_recordId}
         max-length={maxLength}
-    ></c-crm-messaging-community-thread-viewer>
+        log-amplitude-event
+        onlogevent={logAmplitudeEvent}
+    ></c-community-thread-viewer>
 </template>

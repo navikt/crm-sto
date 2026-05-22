@@ -1,40 +1,35 @@
 {
-    "appPageId": "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
-    "componentName": "community_layout:sldsFlexibleLayout",
-    "id": "1dd24a6f-83f4-45e4-8b61-5215b58cf4ad",
-    "label": "Chat Transcript List",
-    "regions": [
-        {
-            "components": [
-                {
-                    "componentAttributes": {
-                        "backgroundImageConfig": "",
-                        "backgroundImageOverlay": "rgba(0,0,0,0)",
-                        "sectionConfig": "{\"UUID\":\"109d45eb-9e88-4ffa-9c82-b72dd74134f9\",\"columns\":[{\"UUID\":\"06ed618c-a120-48fe-89fe-bc9a47e49368\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
-                    },
-                    "componentName": "community_layout:section",
-                    "id": "109d45eb-9e88-4ffa-9c82-b72dd74134f9",
-                    "regions": [
-                        {
-                            "id": "06ed618c-a120-48fe-89fe-bc9a47e49368",
-                            "regionLabel": "Column 1",
-                            "regionName": "col1",
-                            "renditionMap": {},
-                            "type": "region"
-                        }
-                    ],
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "scopedBrandingSetId": null,
-                    "type": "component"
-                }
-            ],
-            "id": "c66e24bd-5853-4c75-a7cc-5c1d1a6d7947",
-            "regionName": "content",
-            "type": "region"
-        }
-    ],
-    "themeLayoutType": "Inner",
-    "type": "view",
-    "viewType": "list-570"
+  "appPageId" : "b4f60626-b2f1-47ed-9705-d0bc11ddf574",
+  "componentName" : "community_layout:sldsFlexibleLayout",
+  "dataProviders" : [ ],
+  "id" : "1dd24a6f-83f4-45e4-8b61-5215b58cf4ad",
+  "label" : "Chat Transcript List",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "backgroundImageConfig" : "",
+        "backgroundImageOverlay" : "rgba(0,0,0,0)",
+        "sectionConfig" : "{\"UUID\":\"109d45eb-9e88-4ffa-9c82-b72dd74134f9\",\"columns\":[{\"UUID\":\"06ed618c-a120-48fe-89fe-bc9a47e49368\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+      },
+      "componentName" : "community_layout:section",
+      "id" : "109d45eb-9e88-4ffa-9c82-b72dd74134f9",
+      "regions" : [ {
+        "id" : "06ed618c-a120-48fe-89fe-bc9a47e49368",
+        "regionLabel" : "Column 1",
+        "regionName" : "col1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "scopedBrandingSetId" : null,
+      "type" : "component"
+    } ],
+    "id" : "c66e24bd-5853-4c75-a7cc-5c1d1a6d7947",
+    "regionName" : "content",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "hT8VFi3ALt5MPMauN9StcpW046Z5yh",
+  "type" : "view",
+  "viewType" : "list-570"
 }

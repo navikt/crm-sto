@@ -14,24 +14,21 @@ public with sharing class stoHelperClass_Test {
         );
     }
 
-    @isTest
-    static void getOpenThreadsTest() {
-        Contact personContact = [
+    private static Contact getContactBasedOnPersonIdent(String personIdent) {
+        return [
             SELECT Id, AccountId
             FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
+            WHERE Account.CRM_Person__r.Name = :personIdent
             LIMIT 1
         ];
-        Thread__c t = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
-            true,
-            'STO'
-        );
+    }
+
+    @isTest
+    static void getOpenThreadsTest() {
+        User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', u.AccountId, u.ContactId, true, 'STO', null, null);
         Test.startTest();
-        System.assertNotEquals(null, stoHelperClass.getOpenThreads('Arbeid'), 'Expected to get a thread');
+        Assert.areNotEqual(null, stoHelperClass.getOpenThreads('Arbeid', 'STO'), 'Expected to get a thread');
         Test.stopTest();
     }
 
@@ -39,20 +36,15 @@ public with sharing class stoHelperClass_Test {
     static void getThemesTest() {
         Test.startTest();
         List<STO_Category__mdt> themes = stoHelperClass.getThemes('no');
-        List<STO_Category__mdt> themesen = stoHelperClass.getThemes('en-US');
+        List<STO_Category__mdt> themesEn = stoHelperClass.getThemes('en-US');
         Test.stopTest();
-        System.assertEquals(themes.isEmpty(), false, 'Missing metadata setup - initiate STO Category Themes');
+
+        Assert.areEqual(themes.isEmpty(), false, 'Missing metadata setup - initiate STO Category Themes');
     }
 
     @isTest
     static void createThreadCaseTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Test.startTest();
         Thread__c t = stoHelperClass.createThread(
             null,
@@ -60,100 +52,244 @@ public with sharing class stoHelperClass_Test {
             personContact.AccountId,
             personContact.Id,
             true,
-            'STO'
+            'STO',
+            null,
+            null
         );
         Test.stopTest();
-        System.assertNotEquals(null, t.Id);
+
+        Assert.areNotEqual(null, t.Id, 'Thread should have been created and have an Id');
     }
+
     @isTest
     static void createMessageTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
             personContact.AccountId,
             personContact.Id,
             true,
-            'STO'
+            'STO',
+            null,
+            null
         );
         Test.startTest();
         stoHelperClass.createMessage(t, 'this is a test message', personContact.Id);
         Test.stopTest();
         List<Message__c> m = [SELECT CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c = :t.Id];
-        System.assertEquals('this is a test message', m.get(0).CRM_Message_Text__c);
+
+        Assert.areEqual('this is a test message', m[0].CRM_Message_Text__c, 'Message text should match');
     }
 
     @isTest
     static void createThreadWithCaseTest() {
         Test.startTest();
-        Thread__c thread = stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+        Thread__c thread = stoHelperClass.createThreadWithCase(
+            'Arbeid',
+            'This is the message',
+            true,
+            'STO',
+            null,
+            null
+        );
         Test.stopTest();
         List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
-        System.assertEquals(1, msgList.size());
+
+        Assert.areEqual(1, msgList.size(), 'Thread should contain exactly one message');
     }
 
     @isTest
     static void createThreadWithCaseMoreThanThreeThreadsErrorTest() {
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
         Exception ex;
 
         Test.startTest();
         try {
-            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO');
+            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
         } catch (Exception e) {
             ex = e;
         }
         Test.stopTest();
 
-        Assert.areNotEqual(null, ex);
+        Assert.areNotEqual(null, ex, 'Exception expected when creating more than three threads');
     }
 
     @isTest
-    static void getSTONewsTest() {
+    static void getNewsBasedOnThemeSTOTest() {
         Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'STO');
-        System.assertEquals(newsList.isEmpty(), false);
+        List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Skriv til oss', 'Pensjon');
         Test.stopTest();
+
+        Assert.isTrue(!newsList.isEmpty(), 'Expected at least one news item for STO theme');
     }
 
     @isTest
-    static void getBTONewsTest() {
+    static void getNewsBasedOnThemeBTOTest() {
         Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getCategoryNews('Pensjon', 'BTO');
-        System.assertEquals(newsList.isEmpty(), false);
+        List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Beskjed til oss', 'Pensjon');
         Test.stopTest();
+
+        Assert.isTrue(!newsList.isEmpty(), 'Expected at least one news item for BTO theme');
     }
 
     @isTest
     static void closeThreadTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
             null,
             'Arbeid',
             personContact.AccountId,
             personContact.Id,
             true,
-            'STO'
+            'STO',
+            null,
+            null
         );
-
         Test.startTest();
         stoHelperClass.closeThread(t.Id);
         Test.stopTest();
 
-        Assert.areEqual(false, t.CRM_isActive__c);
+        Assert.areEqual(false, t.CRM_isActive__c, 'Thread should be closed');
+    }
+
+    @isTest
+    static void testPutCloseIntent_GreaterThanOrEqualTo3() {
+        User u = [SELECT Id, NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        System.runAs(u) {
+            Test.startTest();
+            stoHelperClass.putCloseIntent(3);
+            Test.stopTest();
+
+            User updatedUser = [SELECT NKS_Close_Intent__c FROM User WHERE Id = :u.Id];
+            Assert.areEqual(true, updatedUser.NKS_Close_Intent__c, 'Close intent should be true when count >= 3');
+        }
+    }
+
+    @isTest
+    static void testPutCloseIntent_LessThan3() {
+        User u = [SELECT Id, NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        System.runAs(u) {
+            Test.startTest();
+            stoHelperClass.putCloseIntent(2);
+            Test.stopTest();
+
+            User updatedUser = [SELECT NKS_Close_Intent__c FROM User WHERE Id = :u.Id];
+            Assert.areEqual(false, updatedUser.NKS_Close_Intent__c, 'Close intent should be false when count < 3');
+        }
+    }
+
+    @isTest
+    static void testGetCloseIntent_True() {
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        u.NKS_Close_Intent__c = true;
+        update u;
+
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        List<Thread__c> threads = new List<Thread__c>();
+        for (Integer i = 0; i < 3; i++) {
+            threads.add(
+                stoHelperClass.createThread(
+                    null,
+                    'Arbeid',
+                    personContact.AccountId,
+                    personContact.Id,
+                    true,
+                    'STO',
+                    null,
+                    null
+                )
+            );
+        }
+
+        System.runAs(u) {
+            Test.startTest();
+            Boolean result = stoHelperClass.getCloseIntent('Arbeid');
+            Test.stopTest();
+
+            Assert.areEqual(
+                true,
+                result,
+                'Should return true if NKS_Close_Intent__c is true and canUserCloseThread returns true'
+            );
+        }
+    }
+
+    @isTest
+    static void testGetCloseIntent_FalseDueToFlag() {
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        u.NKS_Close_Intent__c = false;
+        update u;
+
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        List<Thread__c> threads = new List<Thread__c>();
+        for (Integer i = 0; i < 3; i++) {
+            threads.add(
+                stoHelperClass.createThread(
+                    null,
+                    'Arbeid',
+                    personContact.AccountId,
+                    personContact.Id,
+                    true,
+                    'STO',
+                    null,
+                    null
+                )
+            );
+        }
+
+        System.runAs(u) {
+            Test.startTest();
+            Boolean result = stoHelperClass.getCloseIntent('Arbeid');
+            Test.stopTest();
+
+            Assert.areEqual(
+                false,
+                result,
+                'Should return false if NKS_Close_Intent__c is false even if canUserCloseThread returns true'
+            );
+        }
+    }
+
+    @isTest
+    static void testGetCloseIntent_FalseDueToCount() {
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        u.NKS_Close_Intent__c = true;
+        update u;
+
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        Thread__c testThread = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            personContact.AccountId,
+            personContact.Id,
+            true,
+            'STO',
+            null,
+            null
+        );
+
+        System.runAs(u) {
+            Test.startTest();
+            Boolean result = stoHelperClass.getCloseIntent('Arbeid');
+            Test.stopTest();
+
+            Assert.areEqual(
+                false,
+                result,
+                'Should return false if canUserCloseThread returns false even if NKS_Close_Intent__c is true'
+            );
+        }
+    }
+
+    @isTest
+    static void getCodeToNameMapTest() {
+        Test.startTest();
+        Map<String, String> result = stoHelperClass.getCodeToNameMap();
+        Test.stopTest();
+
+        Assert.isFalse(result.isEmpty());
     }
 }

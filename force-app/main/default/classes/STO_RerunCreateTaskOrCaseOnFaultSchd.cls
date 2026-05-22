@@ -55,7 +55,7 @@ public with sharing class STO_RerunCreateTaskOrCaseOnFaultSchd implements Databa
         }
         String cronJobName = JOB_NAME_PREFIX + String.valueOf(threads[0]);
         List<CronTrigger> jobs = [
-            SELECT Id, CronJobDetail.Name, NextFireTime, State
+            SELECT Id, State
             FROM CronTrigger
             WHERE CronJobDetail.Name = :cronJobName
         ];

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>53.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Assign_NAV_task_Id</name>
         <label>Assign NAV task Id</label>
@@ -173,7 +174,7 @@
             <targetReference>KNA_Common_Code</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Obsolete</status>
     <subflows>
         <name>Send_Nav_task</name>
         <label>Send Nav task</label>
@@ -186,7 +187,7 @@
         <inputAssignments>
             <name>Created_By_Unit_Number</name>
             <value>
-                <stringValue/>
+                <stringValue></stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>

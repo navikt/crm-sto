@@ -6,7 +6,6 @@ import getStoWithSkill from '@salesforce/apex/nksGetStoUtilityController.getStoW
 import getServiceResourceSkillIds from '@salesforce/apex/nksGetStoUtilityController.getServiceResourceSkillIds';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { publishToAmplitude } from 'c/amplitude';
 
 export default class NksGetStoUtility extends NavigationMixin(LightningElement) {
     records = [];
@@ -39,7 +38,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     connectedCallback() {
-        publishToAmplitude('STO', { type: 'STO Utility opened' });
+        //publishToAmplitude('STO', { type: 'STO Utility opened' });
         this.getUtilityId();
         this.setNavigationUrl();
     }
@@ -95,7 +94,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     async getNewSTOHandler() {
-        publishToAmplitude('STO', { type: 'getNewSTOHandler' });
+        //publishToAmplitude('STO', { type: 'getNewSTOHandler' });
         this.showSpinner = true;
 
         try {
@@ -157,7 +156,7 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     }
 
     navigateToList() {
-        publishToAmplitude('STO', { type: 'navigateToList' });
+        //publishToAmplitude('STO', { type: 'navigateToList' });
         this[NavigationMixin.Navigate]({
             type: 'standard__objectPage',
             attributes: {
@@ -173,9 +172,9 @@ export default class NksGetStoUtility extends NavigationMixin(LightningElement) 
     async refreshComponent(doNotPublish) {
         this.showSpinner = true;
         this.isRefreshDisabled = true;
-        if (!doNotPublish) {
+        /*if (!doNotPublish) {
             publishToAmplitude('STO', { type: 'refreshComponent' });
-        }
+        }*/
         await refreshApex(this.getListResult);
         this.showSpinner = false;
         // eslint-disable-next-line @lwc/lwc/no-async-operation

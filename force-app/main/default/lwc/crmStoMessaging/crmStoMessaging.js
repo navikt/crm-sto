@@ -1,19 +1,24 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import userId from '@salesforce/user/Id';
+import { refreshApex } from '@salesforce/apex';
+import { subscribe, MessageContext } from 'lightning/messageService';
+import TAB_REFRESH from '@salesforce/messageChannel/tabRefresh__c';
+
 import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
+import { resolve } from 'c/nksComponentsUtils';
+
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import COMPANY_NAME from '@salesforce/schema/User.CompanyName';
-import PERSON_FULL_NAME from '@salesforce/schema/Person__c.NKS_Full_Name__c';
+import PERSON_FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
 import MEDSKRIV_TEXT from '@salesforce/label/c.STO_Medskriv_Text';
 import MEDSKRIV_LABEL from '@salesforce/label/c.STO_Medskriv_Label';
-import userId from '@salesforce/user/Id';
-import newDesignTemplate from './newDesignTemplate.html';
-import oldDesignTemplate from './oldDesignTemplate.html';
-import { resolve } from 'c/nksComponentsUtils';
+import SUBMIT_BTO_LABEL from '@salesforce/label/c.BTO_Submit';
+import SHARE_WITH_USER_LABEL from '@salesforce/label/c.STO_Share_With_User';
 
 const englishCompanyTranslations = {
     'DIR ytelsesavdelingen': 'Benefits department, Directorate of Labour and Welfare',
@@ -36,17 +41,18 @@ const englishCompanyTranslations = {
 };
 
 export default class CrmStoMessaging extends LightningElement {
+    @wire(MessageContext) messageContext;
+
     @api recordId;
     @api objectApiName;
     @api singleThread;
     @api cardTitle;
     @api showClose = false;
     @api checkMedskriv = false;
-    @api newDesign = false;
     @api submitButtonLabel;
     @api isThread;
+    @api isCaseReserved;
 
-    wireField;
     accountId;
     userId;
     personId;
@@ -61,61 +67,24 @@ export default class CrmStoMessaging extends LightningElement {
     acceptedMedskriv = false;
     medskriv = false;
     threadType;
+    userInput;
+    showLanguageChangeModal = false;
+    resetTemplate = false;
+    closeLanguageModal = false;
     isThreadIdNull = false;
+    wiredThreadResult;
 
     labels = {
         MEDSKRIV_TEXT,
-        MEDSKRIV_LABEL
+        MEDSKRIV_LABEL,
+        SUBMIT_BTO_LABEL,
+        SHARE_WITH_USER_LABEL
     };
 
-    render() {
-        return this.newDesign ? newDesignTemplate : oldDesignTemplate;
-    }
-
     connectedCallback() {
-        if (!this.newDesign) {
-            this.template.addEventListener('toolbaraction', (event) => {
-                let flowInputs = [];
-                //logic to validate and create correct flowInputs for the flow to be triggered
-                switch (event.detail.flowName) {
-                    case 'CRM_Case_Journal_STO_Thread':
-                        flowInputs = [
-                            {
-                                name: 'Thread_ID',
-                                type: 'String',
-                                value: event.threadId
-                            }
-                        ];
-                        //Adding the flowInputs parameters to the event
-                        event.detail.flowInputs = flowInputs;
-                        break;
-                    case 'CRM_STO_transfer':
-                        flowInputs = [
-                            {
-                                name: 'recordId',
-                                type: 'String',
-                                value: this.recordId
-                            },
-                            {
-                                name: 'Thread_ID',
-                                type: 'String',
-                                value: event.threadId
-                            }
-                        ];
-                        break;
-                    default:
-                        break;
-                }
-                //Adding the flowInputs parameters to the event
-                event.detail.flowInputs = flowInputs;
-
-                this.dispatchStoToolbarAction(event); //Forwards the event to parent
-            });
-        }
-        this.wireField =
-            this.objectApiName === 'Case'
-                ? [this.objectApiName + '.Id', CASE_THREAD_API_REFERENCE]
-                : [this.objectApiName + '.Id'];
+        this.subscription = subscribe(this.messageContext, TAB_REFRESH, () => {
+            refreshApex(this.wiredThreadResult);
+        });
         this.userId = userId;
         this.accountApiName = this.getAccountApiName();
     }
@@ -170,15 +139,15 @@ export default class CrmStoMessaging extends LightningElement {
 
     @wire(getRecord, {
         recordId: '$personId',
-        fields: [PERSON_FULL_NAME]
+        fields: [PERSON_FIRST_NAME]
     })
     wiredPerson({ error, data }) {
         if (error) {
             console.error('wiredPerson failed', error);
         } else if (data) {
             if (this.accountId && this.personId) {
-                let fullName = getFieldValue(data, PERSON_FULL_NAME);
-                this.userName = fullName ? fullName.split(' ').shift() : '';
+                let firstName = getFieldValue(data, PERSON_FIRST_NAME);
+                this.userName = this.toTitleCaseName(firstName);
             }
         }
     }
@@ -203,7 +172,9 @@ export default class CrmStoMessaging extends LightningElement {
     }
 
     @wire(getRecord, { recordId: '$threadId', fields: [THREAD_MEDSKRIV_REFERENCE, THREAD_TYPE] })
-    wiredThread({ error, data }) {
+    wiredThread(result) {
+        this.wiredThreadResult = result;
+        const { data, error } = result;
         if (error) {
             console.error('wiredThread failed: ', error);
         }
@@ -213,65 +184,18 @@ export default class CrmStoMessaging extends LightningElement {
         }
     }
 
-    // Event Handlers
-    handleEnglishEventTwo(event) {
-        this.englishTextTemplate = event.detail;
+    refreshThread() {
+        refreshApex(this.wiredThreadResult);
     }
 
     handleMedskrivClick() {
         this.acceptedMedskriv = true;
+        if (this.isCaseReserved) {
+            this.dispatchEvent(new CustomEvent('setcasetoinprogress'));
+        }
         const child = this.template.querySelector('c-crm-messaging-message-component');
         child.checkSlotChange('messages');
         child.focus();
-    }
-
-    handleSubmit() {
-        this.dispatchEvent(new CustomEvent('submitfromparent'));
-    }
-
-    forwardEvent(event) {
-        this.dispatchEvent(new CustomEvent(event.type));
-    }
-
-    // Getters
-    get textTemplate() {
-        let salutation = this.userName == null ? 'Hei,' : 'Hei, ' + this.userName;
-        let regards = 'Med vennlig hilsen';
-
-        if (this.englishTextTemplate === true) {
-            salutation = this.userName == null ? 'Hi,' : 'Hi ' + this.userName + ',';
-            regards = 'Kind regards';
-        }
-
-        return `${salutation}\n\n\n\n${regards}\n${this.supervisorName}\n${
-            this.englishTextTemplate === true ? this.englishCompanyName : this.norwegianCompanyName
-        }`;
-    }
-
-    get computeClasses() {
-        return this.threadType === 'BTO' ? 'greenHeader' : '';
-    }
-
-    get actualCardTitle() {
-        if (['BTO', 'STO'].includes(this.threadType))
-            return this.threadType === 'STO' ? 'Skriv til oss' : 'Beskjed til oss';
-        else if (this.isThread && this.threadType === 'CHAT') {
-            return 'Chat';
-        }
-
-        return this.cardTitle;
-    }
-
-    get iconName() {
-        return this.isThread && this.threadType === 'CHAT'
-            ? 'standard:live_chat'
-            : this.threadType === 'BTO'
-            ? 'standard:contact_request'
-            : 'standard:messaging_user';
-    }
-
-    get showMedskrivBlocker() {
-        return this.checkMedskriv === true && this.acceptedMedskriv === false && this.medskriv === false;
     }
 
     getAccountApiName() {
@@ -393,6 +317,13 @@ export default class CrmStoMessaging extends LightningElement {
         }
     }
 
+    handleEnglishEventTwo(event) {
+        this.englishTextTemplate = event.detail.englishTextTemplate;
+        this.userInput = event.detail.userInput;
+        this.resetTemplate = event.detail.resetTemplate;
+        this.closeLanguageModal = event.detail.closeLanguageModal;
+    }
+
     getEnglishCompanyName() {
         try {
             const normalizedCompanyName = this.norwegianCompanyName.trim();
@@ -458,5 +389,90 @@ export default class CrmStoMessaging extends LightningElement {
             console.error('Problem getting English company name: ' + error);
             return '';
         }
+    }
+
+    toTitleCaseName(value) {
+        return (value || '')
+            .trim()
+            .toLowerCase()
+            .split(/\s+/)
+            .map((word) =>
+                word
+                    .split('-')
+                    .map((part) => (part ? part.charAt(0).toUpperCase() + part.slice(1) : ''))
+                    .join('-')
+            )
+            .join(' ');
+    }
+
+    get textTemplate() {
+        const isEnglish = this.englishTextTemplate;
+        const defaultSalutation = isEnglish ? 'Hi,' : 'Hei,';
+        const defaultRegards = isEnglish ? 'Kind regards' : 'Med vennlig hilsen';
+        const companyName = isEnglish ? this.englishCompanyName : this.norwegianCompanyName;
+        const salutation = this.userName ? `${defaultSalutation} ${this.userName}` : defaultSalutation;
+        let userText = '';
+
+        if (!this.resetTemplate && this.userInput) {
+            const regCompanyName = isEnglish ? this.norwegianCompanyName : this.englishCompanyName;
+            const regStart = this.userName
+                ? `^(?:Hi,|Hei,)(?: ${this.userName}\\s*\\n)`
+                : '^(?:Hi,\\s*\\n|Hei,\\s*\\n)';
+            const regEnd = `.*?([\\s\\S]*?)\\n+(?:Kind regards\\s*|Med vennlig hilsen\\s*)(?:${this.supervisorName}\\s*)(?:${regCompanyName}\\s*)$`;
+
+            const regex = new RegExp(`${regStart}${regEnd}`);
+            const match = this.userInput.match(regex);
+
+            if (match) {
+                userText = match[1].trim();
+                this.showLanguageChangeModal = false;
+            } else {
+                this.showLanguageChangeModal = true;
+            }
+
+            if (this.showLanguageChangeModal) {
+                if (this.closeLanguageModal) {
+                    this.showLanguageChangeModal = false;
+                }
+                return this.userInput;
+            }
+        } else {
+            this.showLanguageChangeModal = false;
+        }
+
+        return `${salutation}\n\n${userText}\n\n${defaultRegards}\n${this.supervisorName}\n${companyName}`;
+    }
+
+    get computeClasses() {
+        return this.threadType === 'BTO' ? 'greenHeader' : '';
+    }
+
+    get actualCardTitle() {
+        if (this.threadType === 'STO') return 'Skriv til oss';
+        if (this.threadType === 'BTO') return 'Meld fra om endring';
+        if (this.isThread && this.threadType === 'CHAT') return 'Chat';
+        return this.cardTitle;
+    }
+
+    get iconName() {
+        return this.isThread && this.threadType === 'CHAT'
+            ? 'standard:live_chat'
+            : this.threadType === 'BTO'
+              ? 'standard:contact_request'
+              : 'standard:messaging_user';
+    }
+
+    get showMedskrivBlocker() {
+        return this.checkMedskriv && !this.acceptedMedskriv && !this.medskriv;
+    }
+
+    get buttonLabel() {
+        return this.threadType === 'BTO' ? this.labels.SUBMIT_BTO_LABEL : this.labels.SHARE_WITH_USER_LABEL;
+    }
+
+    get wireField() {
+        return this.objectApiName === 'Case'
+            ? [this.objectApiName + '.Id', CASE_THREAD_API_REFERENCE]
+            : [this.objectApiName + '.Id'];
     }
 }

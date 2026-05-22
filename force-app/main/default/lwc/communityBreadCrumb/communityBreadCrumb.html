@@ -3,22 +3,36 @@
         <div class="decorator-utils-container">
             <div class="decorator-utils-content">
                 <nav class="brodsmulesti" aria-label="Brødsmulesti" itemprop="breadcrumb">
-                    <a href="https://www.nav.no" target="_self" class="lenke brodsmulesti__home typo-normal"
+                    <a
+                        href="https://www.nav.no"
+                        target="_self"
+                        class="lenke brodsmulesti__home typo-normal"
+                        onclick={handleClick}
                         ><img src={homelogo} alt="" class="homeicon" /><span>nav.no</span></a
                     >
                     <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
                     <template if:true={firstLevel}>
-                        <a href={firstLevelLink} target="_self" class="lenke typo-normal"><span>{firstLevel}</span></a>
+                        <a href={firstLevelLink} target="_self" class="lenke typo-normal" onclick={handleClick}
+                            ><span>{firstLevel}</span></a
+                        >
                         <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
                     </template>
                     <template if:true={secondLevel}>
-                        <a href={secondLevelLink} target="_self" class="lenke brodsmulesti__transfor typo-normal"
+                        <a
+                            href={secondLevelLink}
+                            target="_self"
+                            class="lenke brodsmulesti__transfor typo-normal"
+                            onclick={handleClick}
                             ><span>{secondLevel}</span></a
                         >
                         <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>
                     </template>
                     <template if:true={thirdLevel}>
-                        <a href={thirdLevelLink} target="_self" class="lenke brodsmulesti__transform typo-normal"
+                        <a
+                            href={thirdLevelLink}
+                            target="_self"
+                            class="lenke brodsmulesti__transform typo-normal"
+                            onclick={handleClick}
                             ><span>{thirdLevel}</span></a
                         >
                         <span class="nav-frontend-chevron chevronboks chevron--hoyre"></span>

@@ -24,7 +24,7 @@ export default class NksFedrekvotesakenChild extends LightningElement {
     ];
 
     radioChange(event) {
-        this.chosenOption = event.detail;
+        this.chosenOption = event.detail?.value;
     }
 
     @api

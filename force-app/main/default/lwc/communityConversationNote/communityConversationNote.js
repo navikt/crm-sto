@@ -1,5 +1,4 @@
 import { LightningElement, api, wire } from 'lwc';
-import veiledericon from '@salesforce/resourceUrl/female';
 import markasread from '@salesforce/apex/stoInboxHelper.markAsRead';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedConversations from '@salesforce/apex/relatedConversationNoteHelper.getRelatedConversations';
@@ -10,34 +9,45 @@ import DATE_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_Registered_D
 import BEHANDLINGSKJEDE_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_Henvendelse_BehandlingskjedeId__c';
 import BEHANDLINGSID_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_Henvendelse_BehandlingsId__c';
 import APIREFERENCE_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_API_Reference__c';
+import THEMEGROUPNAME_FIELD from '@salesforce/schema/Conversation_Note__c.CRM_Theme_Group_Name__c';
+import { setDecoratorParams } from 'c/inboxAmplitude';
 
-const fields = [NAME_FIELD, NOTE_FIELD, DATE_FIELD, BEHANDLINGSKJEDE_FIELD, BEHANDLINGSID_FIELD, APIREFERENCE_FIELD]; //Extract the name of the thread record
+const fields = [
+    NAME_FIELD,
+    NOTE_FIELD,
+    DATE_FIELD,
+    BEHANDLINGSKJEDE_FIELD,
+    BEHANDLINGSID_FIELD,
+    APIREFERENCE_FIELD,
+    THEMEGROUPNAME_FIELD
+]; //Extract the name of the thread record
 
 export default class CommunityConversationNote extends LightningElement {
     @api recordId;
     @api title;
+
     name;
     note;
     date;
     relatedNotes;
-
-    get navIcon() {
-        return veiledericon;
-    }
+    themeGroup;
 
     connectedCallback() {
         markasread({ conversationNoteId: this.recordId });
     }
 
     @wire(getRecord, { recordId: '$recordId', fields })
-    wireData({ error, data }) {
+    wiredRecord({ error, data }) {
         if (data) {
             this.name = getFieldValue(data, NAME_FIELD);
             this.note = getFieldValue(data, NOTE_FIELD);
             this.date = getFieldValue(data, DATE_FIELD);
+            this.themeGroup = getFieldValue(data, THEMEGROUPNAME_FIELD);
+
             const behandlingskjede = getFieldValue(data, BEHANDLINGSKJEDE_FIELD);
             const behandlingsId = getFieldValue(data, BEHANDLINGSID_FIELD);
             const apiRef = getFieldValue(data, APIREFERENCE_FIELD);
+            setDecoratorParams('Samtalereferat', 'Samtalereferat', this.themeGroup);
             getRelatedConversations({
                 behandlingskjede: behandlingskjede,
                 behandlingsId: behandlingsId,
@@ -47,9 +57,8 @@ export default class CommunityConversationNote extends LightningElement {
                     this.relatedNotes = conv;
                 })
                 .catch((err) => console.log(err));
-        }
-        if (error) {
-            console.log(error);
+        } else if (error) {
+            console.error('Error on getting Conversation Note: ', error);
         }
     }
 

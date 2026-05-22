@@ -1,7 +1,7 @@
 import { LightningElement } from 'lwc';
 import PlusCircle from '@salesforce/resourceUrl/PlusCircle';
 import LoggerUtility from 'c/loggerUtility';
-import createNavTask from '@salesforce/apex/NKS_FedrekvotesakenController.createNavTask';
+import postTask from '@salesforce/apex/NKS_FedrekvotesakenController.postTask';
 import hasExistingNavTasks from '@salesforce/apex/NKS_FedrekvotesakenController.hasExistingNavTasks';
 
 const textMapping = {
@@ -21,11 +21,17 @@ export default class NksFedrekvotesaken extends LightningElement {
 
     loading = true;
     hasNavTask = false;
+    title = '';
 
     connectedCallback() {
         hasExistingNavTasks()
             .then((res) => {
                 this.hasNavTask = res;
+                this.title = this.hasNavTask ? 'Berørt av feilen?' : 'Er du berørt av feilen Nav har gjort?';
+            })
+            .catch((err) => {
+                console.error('Failed to fetch nav tasks', err);
+                this.title = 'Er du berørt av feilen Nav har gjort?';
             })
             .finally(() => {
                 this.loading = false;
@@ -67,16 +73,17 @@ export default class NksFedrekvotesaken extends LightningElement {
         };
         this.loading = true;
 
-        createNavTask({ jsonData: JSON.stringify(fedrekvoteData) })
+        postTask({ jsonData: JSON.stringify(fedrekvoteData) })
             .then(() => {
                 this.hasNavTask = true;
+                this.title = 'Foreldrepenger: Kvittering';
             })
             .catch((e) => {
                 LoggerUtility.logError(
                     'NKS',
                     'Fedrekvote',
                     e,
-                    'Failed inserting NAV Task for fedrekvote, user input: ' + JSON.stringify(fedrekvoteData),
+                    'Failed posting oppgave for Fedrekvote, user input: ' + JSON.stringify(fedrekvoteData),
                     null
                 );
             })

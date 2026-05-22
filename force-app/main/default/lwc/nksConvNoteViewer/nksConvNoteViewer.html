@@ -1,8 +1,8 @@
 <template>
     <div class="slds-card slds-is-relative">
-        <lightning-spinner if:true={isLoading} size="medium" variant="brand" alternative-text="Laster samtalereferat">
+        <lightning-spinner lwc:if={isLoading} size="medium" variant="brand" alternative-text="Laster samtalereferat">
         </lightning-spinner>
-        <div if:false={isLoading} class="conv-note-details slds-p-bottom_small">
+        <div lwc:else class="conv-note-details slds-p-bottom_small">
             <lightning-record-view-form object-api-name="Conversation_Note__c" record-id={recordId}>
                 <h2 class="slds-text-heading_large slds-text-title_bold slds-border_bottom slds-p-around_small">
                     Samtalereferat
@@ -38,7 +38,7 @@
 
                     <lightning-layout-item size="12" padding="horizontal-small">
                         <strong>
-                            <div if:true={conversationNote.CRM_Read_Date__c}>
+                            <div lwc:if={conversationNote.CRM_Read_Date__c}>
                                 Lest: &nbsp;
                                 <lightning-formatted-date-time
                                     month="long"
@@ -49,7 +49,7 @@
                                     value={conversationNote.CRM_Read_Date__c}
                                 ></lightning-formatted-date-time>
                             </div>
-                            <div if:false={conversationNote.CRM_Read_Date__c}>Ikke lest</div>
+                            <div lwc:else>Ikke lest</div>
                         </strong>
                     </lightning-layout-item>
 
@@ -59,7 +59,8 @@
                             <lightning-layout-item class="slds-p-left_small">
                                 <lightning-output-field
                                     variant="label-hidden"
-                                    field-name="CRM_Journal_Status_Formula__c"
+                                    field-name="CRM_Journal_Status_Formula_Icons__c"
+                                    class="img-reset"
                                 >
                                 </lightning-output-field>
                             </lightning-layout-item>

@@ -1,33 +1,51 @@
-import { LightningElement, api, wire, track } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import THREAD_IS_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
-import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
-import THREAD_RELATED_OBJECT_FIELD from '@salesforce/schema/Thread__c.CRM_Related_Object__c';
+import { LightningElement, api, wire } from 'lwc';
 import getSurvey from '@salesforce/apex/STO_SurveyHelper.getSurveyLink';
 import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
+import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
+import getThread from '@salesforce/apex/stoHelperClass.getThread';
+import { CurrentPageReference } from 'lightning/navigation';
 
 export default class StoInboxInformation extends LightningElement {
+    @api recordId;
+
     type;
-    closed = false;
+    closed;
     caseId;
     url;
     surveyLink;
+    completed = false;
+    _recordId;
 
-    @api recordId;
-    @track completed = false;
+    connectedCallback() {
+        getURL()
+            .then((url) => {
+                this.url = url;
+            })
+            .catch((error) => {
+                console.error('Problem getting Base URL for Feedback Community: ' + JSON.stringify(error, null, 2));
+            });
+    }
 
-    @wire(getRecord, {
-        recordId: '$recordId',
-        fields: [THREAD_IS_CLOSED_FIELD, THREAD_TYPE_FIELD, THREAD_RELATED_OBJECT_FIELD]
-    })
-    wiredThread({ data, error }) {
-        if (data) {
-            this.type = getFieldValue(data, THREAD_TYPE_FIELD);
-            this.closed = getFieldValue(data, THREAD_IS_CLOSED_FIELD);
-            this.caseId = getFieldValue(data, THREAD_RELATED_OBJECT_FIELD);
-        } else if (error) {
-            console.log('Problem getting thread: ' + error);
+    @wire(CurrentPageReference)
+    async getStateParameters(currentPageReference) {
+        const newRecordId = currentPageReference?.state?.samtale || this.recordId;
+        if (newRecordId && newRecordId !== this._recordId) {
+            this._recordId = newRecordId;
+            await this.fetchThreadData();
+        }
+    }
+
+    async fetchThreadData() {
+        try {
+            const data = await getThread({ recordId: this._recordId });
+            if (data) {
+                this.type = data.CRM_Thread_Type__c;
+                this.closed = data.CRM_Is_Closed__c;
+                this.caseId = data.CRM_Related_Object__c;
+            }
+        } catch (error) {
+            console.error('Problem getting thread:', error);
         }
     }
 
@@ -36,18 +54,8 @@ export default class StoInboxInformation extends LightningElement {
         if (data && this.caseId) {
             this.surveyLink = data;
         } else if (error) {
-            console.log('Problem getting surveyLink: ' + error);
+            console.error('Problem getting surveyLink: ' + error);
         }
-    }
-
-    connectedCallback() {
-        getURL()
-            .then((url) => {
-                this.url = url;
-            })
-            .catch((error) => {
-                console.log('Problem getting Base URL for Feedback Community: ' + JSON.stringify(error, null, 2));
-            });
     }
 
     navigateToSurvey() {
@@ -67,19 +75,19 @@ export default class StoInboxInformation extends LightningElement {
                     window.open(this.surveyLink);
                 }
             });
-    }
 
-    get isClosedSTOorBTO() {
-        return (this.type === 'STO' || this.type === 'BTO') && this.closed;
+        logNavigationEvent(
+            getComponentName(this.template),
+            'undersøkelse',
+            this.completed ? this.url : this.surveyLink,
+            'Klikk her for å svare'
+        );
     }
 
     get infoText() {
-        if (this.closed) {
-            return this.type === 'BTO'
-                ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/send-beskjed">sende en ny melding</a>, kan du gjøre det her.'
-                : 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her.';
-        }
-        return 'Hvis du vil kan du svare på denne samtalen innen 7 dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
+        return this.closed
+            ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/skriv-til-oss" target="_self">sende en ny melding</a>, kan du gjøre det her.'
+            : 'Du kan svare på denne samtalen innen syv dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
     }
 
     get showSurveyButton() {

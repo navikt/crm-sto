@@ -21,6 +21,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>OppgaveManager</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>STO_SurveyHelper</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -58,17 +62,17 @@
     </customMetadataTypeAccesses>
     <fieldPermissions>
         <editable>false</editable>
-        <field>CRM_FAQ__c.CRM_Category__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>CRM_FAQ__c.CRM_Content__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>CRM_FAQ__c.CRM_Shown__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>CRM_FAQ__c.CRM_Theme__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -118,11 +122,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Conversation_Note__c.CRM_Date_Registered__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Conversation_Note__c.CRM_Date_Time_Registered__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -148,17 +147,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Conversation_Note__c.CRM_Last_Edited_By__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Conversation_Note__c.CRM_Read_Date__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Conversation_Note__c.CRM_Registered_Datetime_Formula__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Conversation_Note__c.CRM_Theme_Group_Name__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -358,7 +357,22 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Thread__c.NKS_Inbox_Theme__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.NKS_Inbox_Title__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Thread__c.STO_Medskriv__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.STO_Category__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
@@ -435,4 +449,8 @@
         <object>Thread__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <recordTypeVisibilities>
+        <recordType>Thread__c.NKS_Thread</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
 </PermissionSet>

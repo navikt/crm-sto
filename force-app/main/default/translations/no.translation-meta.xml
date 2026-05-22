@@ -21,6 +21,10 @@
         <name>STO_Share_With_User</name>
     </customLabels>
     <customLabels>
+        <label>Send og avslutt</label>
+        <name>BTO_Submit</name>
+    </customLabels>
+    <customLabels>
         <label>Vis melding</label>
         <name>STO_Medskriv_Label</name>
     </customLabels>
@@ -40,7 +44,7 @@
     <customLabels>
         <label>Send oss opplysninger som gjelder saken din. Du får en kvittering på at vi har
             mottatt beskjeden din.</label>
-        <name>Beskjed_til_oss_intro_text</name>
+        <name>Beskjed_til_oss_Default_ingress</name>
     </customLabels>
     <customLabels>
         <label>
@@ -150,10 +154,10 @@
     </customLabels>
     <customLabels>
         <label>Du kan lese mer &lt;a
-            href=&quot;https://www.nav.no/no/nav-og-samfunn/om-nav/personvern-i-arbeids-og-velferdsetaten/personvernerklaering-for-arbeids-og-velferdsetaten&quot;&gt;om
+            href=&quot;https://www.nav.no/personvernerklaering&quot;&gt;om
             hva personopplysninger brukes til i Nav, i vår personvernerklæring&lt;/a&gt;. &lt;br
             /&gt; &lt;br /&gt;
-            Kontakt oss på chat eller telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 33
+            Kontakt oss på telefon &lt;a href=&quot;tel:55553333&quot;&gt;55 55 33
             33&lt;/a&gt; (tastevalg 1) hvis henvendelsen gjelder kommunale tjenester som økonomisk
             sosialhjelp, bostøtte, midlertidig botilbud, kvalifiseringsprogrammet, eller økonomisk
             rådgivning.
@@ -185,10 +189,10 @@
         <name>Skriv_til_oss_headline</name>
     </customLabels>
     <customLabels>
-        <label>Send bare spørsmål eller opplysninger som gjelder din sak. Husk å få med alle
-            opplysninger som kan være relevant for saken. Du kan skrive maksimalt 2000 tegn. Det er
-            cirka en A4-side.</label>
-        <name>Skriv_til_oss_intro_text</name>
+        <label>Skriv bare spørsmål eller opplysninger som gjelder deg selv. Du kan ikke skrive for
+            andre. Hvis du vil kontakte oss på vegne av andre, må du ringe oss og ha muntlig eller
+            skriftlig fullmakt.</label>
+        <name>Skriv_til_oss_Default_ingress</name>
     </customLabels>
     <customLabels>
         <label>Send kun saksrelevant informasjon</label>
@@ -260,12 +264,6 @@
         </label>
         <name>fflib_security_error_object_not_updateable</name>
     </customLabels>
-    <customTabs>
-        <label>
-            <!-- API Transactions -->
-        </label>
-        <name>API_Transactions</name>
-    </customTabs>
     <flowDefinitions>
         <flows />
         <fullName>CRM_Create_Thread_Event</fullName>
@@ -285,23 +283,6 @@
     <flowDefinitions>
         <flows />
         <fullName>POST_JOURNAL_AUTO_TEMPLATE</fullName>
-    </flowDefinitions>
-    <flowDefinitions>
-        <flows>
-            <screens>
-                <fields>
-                    <name>Error_Message</name>
-                </fields>
-                <name>Error_Screen</name>
-            </screens>
-            <screens>
-                <fields>
-                    <name>Journal_Case_Overview</name>
-                </fields>
-                <name>Theme_Input_Screen</name>
-            </screens>
-        </flows>
-        <fullName>POST_JOURNAL_TEMPLATE</fullName>
     </flowDefinitions>
     <flowDefinitions>
         <flows />

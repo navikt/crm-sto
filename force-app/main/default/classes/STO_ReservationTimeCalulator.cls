@@ -1,17 +1,25 @@
 global without sharing class STO_ReservationTimeCalulator implements Support.MilestoneTriggerTimeCalculator {
-    private Id STO_BUSINESS_HOURS_ID {
-        get {
+    private static Id STO_BUSINESS_HOURS_ID;
+    // Returns cached BusinessHours Id (queried once per transaction)
+    private static Id getBusinessHoursId() {
+        if (STO_BUSINESS_HOURS_ID == null) {
+            STO_BUSINESS_HOURS_ID = [
+                SELECT Id
+                FROM BusinessHours
+                WHERE Name = 'STO Business Hours'
+                LIMIT 1
+            ]?.Id;
+            
             if (STO_BUSINESS_HOURS_ID == null) {
-                Id stoBusId = [SELECT Id FROM BusinessHours WHERE Name = 'STO Business Hours']?.Id;
-                if (stoBusId == null) {
-                    stoBusId = [SELECT Id FROM BusinessHours WHERE IsDefault = TRUE]?.Id;
-                }
-                STO_BUSINESS_HOURS_ID = stoBusId;
+                STO_BUSINESS_HOURS_ID = [
+                    SELECT Id
+                    FROM BusinessHours
+                    WHERE IsDefault = TRUE
+                    LIMIT 1
+                ]?.Id;
             }
-            return STO_BUSINESS_HOURS_ID;
         }
-        private set {
-        }
+        return STO_BUSINESS_HOURS_ID;
     }
 
     /**
@@ -41,10 +49,10 @@ global without sharing class STO_ReservationTimeCalulator implements Support.Mil
         // nextStartDate method: Starting from the specified target date, returns the next date when business hours are open.
         // If the specified target date falls within business hours, this target date is returned.
         Datetime nextStartDate = BusinessHours.nextStartDate(
-            STO_BUSINESS_HOURS_ID,
+            getBusinessHoursId(),
             Datetime.newInstance(Datetime.now().date().addDays(1), Time.newInstance(0, 0, 0, 0))
         );
-        Long diff = BusinessHours.diff(STO_BUSINESS_HOURS_ID, Datetime.now(), nextStartDate);
+        Long diff = BusinessHours.diff(getBusinessHoursId(), Datetime.now(), nextStartDate);
         Integer diffTime = (diff / 1000 / 60).intValue();
         if (diffTime < 1) {
             return 1;
