@@ -3,7 +3,7 @@ import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExpe
 import markAsRead from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import createMessage from '@salesforce/apex/CRM_MessageHelperExperience.createMessage';
+import createThreadMessage from '@salesforce/apex/CRM_MessageHelperExperience.createThreadMessage';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import getCloseIntent from '@salesforce/apex/stoHelperClass.getCloseIntent';
 
@@ -114,7 +114,7 @@ export default class CommunityThreadViewer extends LightningElement {
             this.buttonDisabled = false;
             return;
         }
-        createMessage({ threadId: this.recordId, messageText: this.messageValue })
+        createThreadMessage({ threadId: this.recordId, messageText: this.messageValue })
             .then((result) => {
                 if (result) {
                     this.handlesuccess();
