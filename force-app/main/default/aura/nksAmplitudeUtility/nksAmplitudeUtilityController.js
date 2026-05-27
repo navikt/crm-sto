@@ -1,7 +1,7 @@
 ({
     getBobFeature: function (component) {
         var action = component.get('c.isFeatureEnabled');
-        action.setParams({ featureName: 'Bob_Reporting_Data', toogleType: 'FEATURE_FLAG' });
+        action.setParams({ featureName: 'Bob_Reporting_Data', toggleType: 'FEATURE_FLAG' });
         action.setCallback(this, function (response) {
             var state = response.getState();
             if (state === 'SUCCESS') {
