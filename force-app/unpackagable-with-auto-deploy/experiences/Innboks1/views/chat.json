@@ -80,7 +80,7 @@
           "type" : "component"
         }, {
           "componentAttributes" : {
-            "recordId" : ""
+            "recordId" : "{!recordId}"
           },
           "componentName" : "c:nksChatView",
           "id" : "92970651-ac50-4081-84a9-98ccb3db83ea",
@@ -126,7 +126,7 @@
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],
-  "themeLayoutType" : "WCompXJ5BWo8oQWvuL5ZUeqgyqYhhB",
+  "themeLayoutType" : "hT8VFi3ALt5MPMauN9StcpW046Z5yh",
   "type" : "view",
   "viewType" : "custom-chat"
 }
