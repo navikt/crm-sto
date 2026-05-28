@@ -7,8 +7,8 @@
             messages in this thread no follow up task is needed.</description>
         <name>Follow_up_Task_Check</name>
         <label>Follow up Task Check</label>
-        <locationX>374</locationX>
-        <locationY>492</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnectorLabel>Do Nothing</defaultConnectorLabel>
         <rules>
             <name>Send_Follow_Up_Task</name>
@@ -61,8 +61,8 @@
     <recordLookups>
         <name>Get_Last_Message</name>
         <label>Get Last Message</label>
-        <locationX>374</locationX>
-        <locationY>276</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -93,8 +93,8 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>374</locationX>
-        <locationY>384</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Follow_up_Task_Check</targetReference>
@@ -118,10 +118,11 @@
         <queriedFields>CRM_Account__c</queriedFields>
         <queriedFields>CRM_isActive__c</queriedFields>
         <queriedFields>CRM_Date_Time_Registered__c</queriedFields>
+        <queriedFields>CRM_Theme_Code__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <filterLogic>and</filterLogic>
         <filters>
@@ -172,8 +173,8 @@
     <subflows>
         <name>Create_STB_Oppgave</name>
         <label>Create STB Oppgave</label>
-        <locationX>242</locationX>
-        <locationY>600</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <flowName>Create_STB_Oppgave</flowName>
         <inputAssignments>
             <name>Oppgave_Type</name>

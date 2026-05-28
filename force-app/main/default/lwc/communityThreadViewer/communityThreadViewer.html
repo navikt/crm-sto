@@ -56,10 +56,6 @@
         <slot name="messageArea">
             <template lwc:if={closed}></template>
             <template lwc:else>
-                <lightning-input-field
-                    class="slds-hidden messageText"
-                    field-name="CRM_Message_Text__c"
-                ></lightning-input-field>
                 <div class="text-area">
                     <c-community-textarea
                         label="Ny melding"
@@ -80,13 +76,6 @@
                 <template lwc:if={showOpenWarning}>
                     <c-community-alert alert-type="info" alert-text={openAlertText}></c-community-alert>
                 </template>
-                <lightning-input-field
-                    field-name="CRM_From_Contact__c"
-                    value={userContactId}
-                    class="slds-hidden"
-                ></lightning-input-field>
-                <lightning-input-field field-name="CRM_Thread__c" value={recordId} class="slds-hidden">
-                </lightning-input-field>
             </template>
         </slot>
         <c-sto-end-dialogue-modal lwc:ref="childRef" onclosethread={handleCloseThread}></c-sto-end-dialogue-modal>
