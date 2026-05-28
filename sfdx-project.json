@@ -89,7 +89,7 @@
                 },
                 {
                     "package": "crm-nks-chat",
-                    "versionNumber": "0.75.0.LATEST"
+                    "versionNumber": "0.75.0"
                 }
             ]
         }
