@@ -54,3 +54,12 @@
 .person-name-link:hover {
     text-decoration: underline;
 }
+
+.copy-icon {
+    padding-left: 2px;
+}
+
+.person-number-row {
+    display: flex;
+    align-items: center;
+}
