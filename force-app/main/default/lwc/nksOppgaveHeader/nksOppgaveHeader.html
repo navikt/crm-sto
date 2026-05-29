@@ -25,6 +25,21 @@
                                 >
                                 <span lwc:else>{personName}</span>
                             </div>
+                            <div lwc:if={formattedDateOfBirth} class="slds-m-right_xx-large">
+                                <div class="slds-text-title slds-p-bottom_xx-small">Fødselsdato</div>
+                                <div class="person-number-row">
+                                    <span>{formattedDateOfBirth}</span>
+                                    <lightning-button-icon
+                                        value={formattedDateOfBirth}
+                                        icon-name="utility:copy"
+                                        variant="bare"
+                                        onclick={handleCopy}
+                                        alternative-text="Kopier fødselsdato"
+                                        title="Kopier fødselsdato"
+                                        class="copy-icon"
+                                    ></lightning-button-icon>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

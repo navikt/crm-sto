@@ -9,6 +9,7 @@ export default class NksOppgavePage extends LightningElement {
 
     oppgave;
     personName;
+    personDateOfBirth;
     personAccountId;
     isLoading = false;
     isSaving = false;
@@ -29,10 +30,12 @@ export default class NksOppgavePage extends LightningElement {
         this.isLoading = true;
         try {
             this.oppgave = await getOppgaveById({ oppgaveId: this.oppgaveId });
+            console.log(this.oppgave);
             const personIdent = this.oppgave?.bruker?.ident ?? null;
             if (personIdent && this.showPersonInfo) {
                 const personData = await getPersonInfo({ personIdents: [personIdent] });
                 this.personName = personData[personIdent]?.CRM_FullName__c ?? null;
+                this.personDateOfBirth = personData[personIdent]?.INT_DateOfBirth__c ?? null;
                 this.personAccountId = personData[personIdent]?.CRM_Account__c ?? null;
             }
         } catch (error) {
