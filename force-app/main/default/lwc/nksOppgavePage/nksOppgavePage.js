@@ -30,7 +30,6 @@ export default class NksOppgavePage extends LightningElement {
         this.isLoading = true;
         try {
             this.oppgave = await getOppgaveById({ oppgaveId: this.oppgaveId });
-            console.log(this.oppgave);
             const personIdent = this.oppgave?.bruker?.ident ?? null;
             if (personIdent && this.showPersonInfo) {
                 const personData = await getPersonInfo({ personIdents: [personIdent] });
