@@ -27,7 +27,14 @@ export default class NksOppgaveHeader extends NavigationMixin(LightningElement) 
     @api isSaving = false;
     @api errorMessage;
     @api personName;
+    @api personDateOfBirth;
     @api personAccountId;
+
+    get formattedDateOfBirth() {
+        if (!this.personDateOfBirth) return null;
+        const [year, month, day] = this.personDateOfBirth.split('-');
+        return `${day}.${month}.${year}`;
+    }
 
     get statusLabel() {
         return STATUS_LABELS[this.status] ?? this.status;
@@ -68,5 +75,22 @@ export default class NksOppgaveHeader extends NavigationMixin(LightningElement) 
                 actionName: 'view'
             }
         });
+    }
+
+    handleCopy(event) {
+        const hiddenInput = document.createElement('input');
+        const eventValue = event.currentTarget.value;
+        hiddenInput.value = eventValue;
+        document.body.appendChild(hiddenInput);
+        hiddenInput.focus();
+        hiddenInput.select();
+        try {
+            // eslint-disable-next-line @locker/locker/distorted-document-exec-command
+            document.execCommand('copy');
+        } catch (err) {
+            console.error('Copy failed', err);
+        }
+        document.body.removeChild(hiddenInput);
+        event.currentTarget.focus();
     }
 }

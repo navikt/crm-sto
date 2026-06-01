@@ -9,6 +9,7 @@ export default class NksOppgavePage extends LightningElement {
 
     oppgave;
     personName;
+    personDateOfBirth;
     personAccountId;
     isLoading = false;
     isSaving = false;
@@ -33,6 +34,7 @@ export default class NksOppgavePage extends LightningElement {
             if (personIdent && this.showPersonInfo) {
                 const personData = await getPersonInfo({ personIdents: [personIdent] });
                 this.personName = personData[personIdent]?.CRM_FullName__c ?? null;
+                this.personDateOfBirth = personData[personIdent]?.INT_DateOfBirth__c ?? null;
                 this.personAccountId = personData[personIdent]?.CRM_Account__c ?? null;
             }
         } catch (error) {
