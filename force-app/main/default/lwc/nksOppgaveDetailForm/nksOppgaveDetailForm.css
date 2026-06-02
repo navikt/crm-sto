@@ -10,9 +10,14 @@
 
 .description {
     display: block;
+    width: 100%;
     padding-bottom: 0.5rem;
     font-size: 0.875rem;
-    white-space: pre-wrap;
+    resize: none;
+    border: none;
+    background: transparent;
+    outline: none;
+    field-sizing: content;
 }
 
 .error-message-box {
