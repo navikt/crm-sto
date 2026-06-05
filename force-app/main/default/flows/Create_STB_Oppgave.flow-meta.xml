@@ -93,6 +93,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>POST_AS_SYSTEM</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>prioritet</name>
             <value>
                 <stringValue>HOY</stringValue>
