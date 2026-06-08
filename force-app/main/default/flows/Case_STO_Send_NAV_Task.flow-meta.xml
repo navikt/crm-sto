@@ -8,7 +8,7 @@
         <actionName>OppgaveManager</actionName>
         <actionType>apex</actionType>
         <connector>
-            <targetReference>Update_Thread_Theme</targetReference>
+            <targetReference>Update_Thread_Theme_1</targetReference>
         </connector>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
@@ -95,7 +95,7 @@
         <actionName>OppgaveManager</actionName>
         <actionType>apex</actionType>
         <connector>
-            <targetReference>Update_Thread_Theme_2</targetReference>
+            <targetReference>Update_Thread_Theme</targetReference>
         </connector>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
@@ -454,37 +454,6 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Verify_Task_Post</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Case__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Case.Id</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Theme__c</field>
-            <operator>IsNull</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>CRM_Theme__c</field>
-            <value>
-                <elementReference>Theme_Categorization_1.theme</elementReference>
-            </value>
-        </inputAssignments>
-        <object>Thread__c</object>
-    </recordUpdates>
-    <recordUpdates>
-        <name>Update_Thread_Theme_2</name>
-        <label>Update Thread Theme</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <connector>
             <targetReference>Verify_Task_Post_Thread</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
@@ -506,6 +475,37 @@
             <field>CRM_Theme__c</field>
             <value>
                 <elementReference>Theme_Categorization.theme</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Thread__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Thread_Theme_1</name>
+        <label>Update Thread Theme</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Verify_Task_Post</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Case.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Theme__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>CRM_Theme__c</field>
+            <value>
+                <elementReference>Theme_Categorization_1.theme</elementReference>
             </value>
         </inputAssignments>
         <object>Thread__c</object>
