@@ -37,8 +37,7 @@ import STO_HJELPEMIDLER_INGRESS from '@salesforce/label/c.Skriv_til_oss_Hjelpemi
 import BTO_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Default_ingress';
 import ENDRING_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring_Default_ingress';
 import ENDRING_PENSJON_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring_Pensjon_ingress';
-import ENDRING_INTERNASJONAL_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring_Internasjonal_ingress';
-import ENDRING_YRKESSKADE_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring_Yrkesskade_ingress';
+import ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Endring_Internasjonal_Yrkesskade_ingress';
 import TREKK_SOKNAD_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Trekk_soknad_Default_ingress';
 import BESKJED_INTERNASJONAL_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Internasjonal_ingress';
 import BESKJED_DEFAULT_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Default_ingress';
@@ -198,8 +197,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         'Meld fra om endring': {
             default: ENDRING_DEFAULT_INGRESS,
             'AFP i offentlig sektor': ENDRING_PENSJON_INGRESS,
-            'Bor eller jobber i utlandet': ENDRING_INTERNASJONAL_INGRESS,
-            Yrkesskade: ENDRING_YRKESSKADE_INGRESS
+            'Bor eller jobber i utlandet': ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS,
+            Yrkesskade: ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS
         },
         'Trekke en søknad': {
             default: TREKK_SOKNAD_DEFAULT_INGRESS
