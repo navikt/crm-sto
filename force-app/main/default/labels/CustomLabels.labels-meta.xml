@@ -85,6 +85,14 @@
             skal du melde endringer rett til tjeneste-pensjonsordningen, og ikke til Nav.</value>
     </labels>
     <labels>
+        <fullName>Beskjed_til_oss_Endring_Internasjonal_Yrkesskade_ingress</fullName>
+        <categories>Beskjed til oss, Ingress</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Beskjed til oss - Endring - Internasjonal/Yrkesskade ingress</shortDescription>
+        <value>Meld bare inn endringer eller opplysninger som gjelder deg selv. Du kan ikke skrive for andre. Hvis du vil kontakte oss på vegne av andre, må du ringe oss og ha muntlig eller skriftlig fullmakt.</value>
+    </labels>
+    <labels>
         <fullName>Beskjed_til_oss_Trekk_soknad_Default_ingress</fullName>
         <categories>Beskjed til oss, Ingress</categories>
         <language>en_US</language>
