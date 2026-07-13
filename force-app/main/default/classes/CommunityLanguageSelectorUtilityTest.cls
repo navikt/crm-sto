@@ -71,4 +71,10 @@ public with sharing class CommunityLanguageSelectorUtilityTest {
             Assert.areEqual('en_US', updatedUser.LanguageLocaleKey, 'The LanguageLocaleKey should be set to en_US.');
         }
     }
+
+    @isTest
+    static void testSetLanguageFailure() {
+        Boolean result = CommunityLanguageSelectorUtility.setLanguageForUser('Norwegian', '005000000000000AAA');
+        Assert.isFalse(result, 'The setLanguage method should return false when DML fails.');
+    }
 }
