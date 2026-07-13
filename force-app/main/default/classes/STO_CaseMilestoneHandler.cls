@@ -3,13 +3,16 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
     private static final String RESPOND_BTO_TYPE_NAME = 'Respond BTO';
     private static final String HANDLING_TIME_TYPE_NAME = 'Handling Time';
     private static final String HANDLING_TIME_BTO_TYPE_NAME = 'Handling Time BTO';
+
     private static final Set<String> milestoneTypes = new Set<String>{
         RESPOND_STO_TYPE_NAME,
         RESPOND_BTO_TYPE_NAME,
         HANDLING_TIME_TYPE_NAME,
         HANDLING_TIME_BTO_TYPE_NAME
     };
+
     private static final Set<String> responseTypes = new Set<String>{ RESPOND_STO_TYPE_NAME, RESPOND_BTO_TYPE_NAME };
+
     private static final Set<String> triggerStatuses = new Set<String>{
         'On Hold',
         'Forwarded',
@@ -17,6 +20,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
         'New',
         'Reserved'
     };
+
     private static LoggerUtility logger = new LoggerUtility('STO/BTO Milestones');
     private static final CRM_ApplicationDomain.Domain domain = CRM_ApplicationDomain.Domain.NKS;
 
@@ -41,6 +45,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
                 );
             }
         }
+
         closeCaseMilestones(casesToHandle);
     }
 
@@ -49,14 +54,8 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
         List<ReportingData__c> repDataList = new List<ReportingData__c>();
         List<CaseMilestone> milestoneList = Test.isRunningTest()
             ? new List<CaseMilestone>{ new CaseMilestone() }
-            : [
-                  SELECT Id, CaseId, MilestoneType.Name
-                  FROM CaseMilestone
-                  WHERE
-                      CaseId IN :casesToHandle.keySet()
-                      AND IsCompleted = FALSE
-                      AND MilestoneType.Name IN :milestoneTypes
-              ];
+            : getOpenMilestones(casesToHandle.keySet());
+
         for (CaseMilestone milestoneCase : milestoneList) {
             CaseWrapper wrapper = casesToHandle.containsKey(milestoneCase.CaseId)
                 ? casesToHandle.get(milestoneCase.CaseId)
@@ -64,7 +63,6 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             Case casy = wrapper?.relatedCase;
             Boolean hasChangedOrigin = wrapper?.hasChangedOrigin;
 
-            // Close all milestones except Respond STO/BTO cases that were forwarded but remained on the same origin
             if (Test.isRunningTest()) {
             } else if (
                 casy != null &&
@@ -90,11 +88,13 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             }
         }
 
-        if (!repDataList.isEmpty())
+        if (!repDataList.isEmpty()) {
             handleReportingData(repDataList);
+        }
 
-        if (!Test.isRunningTest())
+        if (!Test.isRunningTest()) {
             update milestoneList;
+        }
     }
 
     private static void handleReportingData(List<ReportingData__c> repDataList) {
@@ -115,5 +115,14 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             this.relatedCase = relatedCase;
             this.hasChangedOrigin = hasChangedOrigin;
         }
+    }
+
+    @TestVisible
+    private static List<CaseMilestone> getOpenMilestones(Set<Id> caseIds) {
+        return [
+            SELECT Id, CaseId, MilestoneType.Name
+            FROM CaseMilestone
+            WHERE CaseId IN :caseIds AND IsCompleted = FALSE AND MilestoneType.Name IN :milestoneTypes
+        ];
     }
 }
