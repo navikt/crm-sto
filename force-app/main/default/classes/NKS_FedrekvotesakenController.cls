@@ -1,5 +1,9 @@
 public without sharing class NKS_FedrekvotesakenController {
     private static LoggerUtility logger = new LoggerUtility('Fedrekvotesaken');
+    @TestVisible
+    private static Boolean throwOnThreadInsert = false;
+    @TestVisible
+    private static Boolean throwOnMessageInsert = false;
 
     private static Common_Code__c commonCode {
         get {
@@ -148,6 +152,9 @@ public without sharing class NKS_FedrekvotesakenController {
         thread.NKS_Experience_Site_Source__c = 'Fedrekvotesaken';
 
         try {
+            if (throwOnThreadInsert) {
+                throw new DmlException('Simulated thread insert failure');
+            }
             insert thread;
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
@@ -171,6 +178,9 @@ public without sharing class NKS_FedrekvotesakenController {
         message.CRM_Message_Text__c += '\n\nDu har oppgitt følgende informasjon: \n\n' + modifiedbeskrivelse;
 
         try {
+            if (throwOnMessageInsert) {
+                throw new DmlException('Simulated message insert failure');
+            }
             insert message;
         } catch (DmlException e) {
             logger.exception(e, CRM_ApplicationDomain.Domain.NKS);
