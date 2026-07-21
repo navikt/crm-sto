@@ -155,10 +155,6 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>allSectionsOpenOnLoad</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
                     <name>boxLayout</name>
                     <value>false</value>
                 </componentInstanceProperties>
