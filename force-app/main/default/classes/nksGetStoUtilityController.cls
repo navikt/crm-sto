@@ -278,7 +278,7 @@ public without sharing class nksGetStoUtilityController {
         Long tStart = System.currentTimeMillis();
         try {
             List<PendingServiceRouting> psr = getPendingServiceRouting();
-            perf('getNextSTOCase: getPendingServiceRouting done, found=' + psr.size(), tStart);
+            logElapsedTime('getNextSTOCase: getPendingServiceRouting done, found=' + psr.size(), tStart);
             if (Test.isRunningTest()) {
                 return [SELECT Id FROM Case LIMIT 1]?.Id;
             }
@@ -348,7 +348,7 @@ public without sharing class nksGetStoUtilityController {
                 AND Id IN :includedPSRIds
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
         ];
-        perf('getPendingServiceRouting: allCandidates queried, size=' + allCandidates.size(), tCandidates);
+        logElapsedTime('getPendingServiceRouting: allCandidates queried, size=' + allCandidates.size(), tCandidates);
 
         Long tLoop = System.currentTimeMillis();
         Integer skipped = 0;
@@ -391,7 +391,7 @@ public without sharing class nksGetStoUtilityController {
     private static void logElapsedTime(String label, Long startMillis) {
         System.debug(
             LoggingLevel.INFO,
-            'STO_PERF | ' + label + ' | elapsedMs=' + (System.currentTimeMillis() - startMillis)
+            'STO_PERFORMANCE | ' + label + ' | elapsedMs=' + (System.currentTimeMillis() - startMillis)
         );
     }
 
