@@ -58,59 +58,91 @@ public without sharing class nksGetStoUtilityController {
 
     @AuraEnabled
     public static List<Record> getSto() {
+        Long tStart = System.currentTimeMillis();
         List<Record> records = new List<Record>();
         if (hasInProgress())
             throw new AuraHandledException('hasInProgress');
+        logElapsedTime('getSto: hasInProgress done', tStart);
 
+        Long tNewSto = System.currentTimeMillis();
         Record newStoRecord = new Record();
         newStoRecord.recordId = getNewSTO();
         newStoRecord.status = 'In Progress';
         records.add(newStoRecord);
+        logElapsedTime('getSto: getNewSTO done', tNewSto);
+
+        Long tRelated = System.currentTimeMillis();
         Set<Id> relatedStoIds = new Set<Id>();
         try {
             relatedStoIds.addAll(getRelatedSTO(newStoRecord.recordId));
         } catch (Exception e) {
             // exception on finding related stos
         }
+        logElapsedTime('getSto: getRelatedSTO done, relatedCount=' + relatedStoIds.size(), tRelated);
         for (Id relatedStoId : relatedStoIds) {
             Record relatedStoRecord = new Record();
             relatedStoRecord.recordId = relatedStoId;
             relatedStoRecord.status = 'Reserved';
             records.add(relatedStoRecord);
         }
+        logElapsedTime('getSto: TOTAL', tStart);
         return records;
     }
 
     @AuraEnabled
     public static Id getNewSTO() {
+        Long tStart = System.currentTimeMillis();
         try {
             Integer attempt = 0;
             Id userId = getCurrentUserId();
+
+            Long tSkills = System.currentTimeMillis();
             allUserSkills = getServiceResourceSkillIds();
+            logElapsedTime(
+                'getNewSTO: getServiceResourceSkillIds done, skillCount=' + allUserSkills.skillMap.size(),
+                tSkills
+            );
 
             do {
+                Long tAttempt = System.currentTimeMillis();
                 Id nextCaseId = getNextSTOCase();
-                if (takeOwnership(nextCaseId, userId)) {
+                logElapsedTime(
+                    'getNewSTO: attempt=' + attempt + ' getNextSTOCase done, caseId=' + nextCaseId,
+                    tAttempt
+                );
+
+                Long tOwnership = System.currentTimeMillis();
+                Boolean owned = takeOwnership(nextCaseId, userId);
+                logElapsedTime('getNewSTO: attempt=' + attempt + ' takeOwnership done, owned=' + owned, tOwnership);
+                if (owned) {
+                    logElapsedTime('getNewSTO: TOTAL (success on attempt=' + attempt + ')', tStart);
                     return nextCaseId;
                 }
                 attempt += 1;
             } while (attempt < MAX_ATTEMPTS);
+            logElapsedTime('getNewSTO: TOTAL (max attempts exceeded)', tStart);
             throw new TooManyAttemptsException('Max Attempt Count Exceeded: ' + MAX_ATTEMPTS);
         } catch (Exception e) {
+            logElapsedTime('getNewSTO: TOTAL (exception=' + e.getMessage() + ')', tStart);
             throw new AuraHandledException(e.getMessage());
         }
     }
 
     private static Boolean takeOwnership(Id caseId, Id userId) {
+        Long tStart = System.currentTimeMillis();
         try {
             Case c = [SELECT Id, OwnerId, Owner.Type, Status FROM Case WHERE Id = :caseId LIMIT 1 FOR UPDATE];
+            logElapsedTime('takeOwnership: FOR UPDATE select done', tStart);
             if (c.Owner.Type != 'Queue') {
                 return false;
             }
             c.OwnerId = userId;
             c.Status = 'In progress';
+            Long tUpdate = System.currentTimeMillis();
             update c;
+            logElapsedTime('takeOwnership: update done', tUpdate);
         } catch (Exception e) {
+            logElapsedTime('takeOwnership: exception=' + e.getMessage(), tStart);
             return false;
         }
         return true;
@@ -118,6 +150,7 @@ public without sharing class nksGetStoUtilityController {
 
     @AuraEnabled
     public static List<Id> getRelatedSTO(Id caseId) {
+        Long tStart = System.currentTimeMillis();
         List<Id> relatedCaseIds = new List<Id>();
         try {
             Map<String, Object> flowParams = new Map<String, Object>();
@@ -127,8 +160,10 @@ public without sharing class nksGetStoUtilityController {
             }
             flowParams.put('UserOriginSkills', allUserSkills.originSkillsBySkillId.values());
 
+            Long tFlow = System.currentTimeMillis();
             Flow.Interview.STO_Case_Set_Owner setOwnerFlow = new Flow.Interview.STO_Case_Set_Owner(flowParams);
             setOwnerFlow.start();
+            logElapsedTime('getRelatedSTO: flow interview done', tFlow);
             List<Case> relatedCases = (List<Case>) setOwnerFlow.getVariableValue('ReturnVar');
             if (relatedCases == null)
                 return relatedCaseIds;
@@ -136,8 +171,10 @@ public without sharing class nksGetStoUtilityController {
                 relatedCaseIds.add(c.Id);
             }
         } catch (Exception e) {
+            logElapsedTime('getRelatedSTO: exception=' + e.getMessage(), tStart);
             throw new AuraHandledException(e.getMessage());
         }
+        logElapsedTime('getRelatedSTO: TOTAL, relatedCount=' + relatedCaseIds.size(), tStart);
         return relatedCaseIds;
     }
 
@@ -199,6 +236,7 @@ public without sharing class nksGetStoUtilityController {
 
     @AuraEnabled(cacheable=true)
     public static GroupedSkills getServiceResourceSkillIds() {
+        Long tStart = System.currentTimeMillis();
         Id userId = getCurrentUserId();
         GroupedSkills userSkills = new GroupedSkills();
 
@@ -224,12 +262,23 @@ public without sharing class nksGetStoUtilityController {
                 }
             }
         }
+        logElapsedTime(
+            'getServiceResourceSkillIds: skillMap=' +
+                userSkills.skillMap.size() +
+                ' confidentialitySkills=' +
+                userSkills.confidentialitySkillsBySkillId.values() +
+                ' originSkills=' +
+                userSkills.originSkillsBySkillId.values(),
+            tStart
+        );
         return userSkills;
     }
 
     private static Id getNextSTOCase() {
+        Long tStart = System.currentTimeMillis();
         try {
             List<PendingServiceRouting> psr = getPendingServiceRouting();
+            perf('getNextSTOCase: getPendingServiceRouting done, found=' + psr.size(), tStart);
             if (Test.isRunningTest()) {
                 return [SELECT Id FROM Case LIMIT 1]?.Id;
             }
@@ -237,12 +286,13 @@ public without sharing class nksGetStoUtilityController {
                 throw new NoCasesFoundException('NotFound');
             }
             if (psr[0].workItem.Status == 'Closed') {
-                PendingServiceRouting psrToLog = [SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId FROM PendingServiceRouting WHERE Id = :psr[0].Id LIMIT 1];
-                logger.error(
-                'PSR pushed where STO Case is status closed.',
-                psrToLog,
-                CRM_ApplicationDomain.Domain.NKS
-                );
+                PendingServiceRouting psrToLog = [
+                    SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId
+                    FROM PendingServiceRouting
+                    WHERE Id = :psr[0].Id
+                    LIMIT 1
+                ];
+                logger.error('PSR pushed where STO Case is status closed.', psrToLog, CRM_ApplicationDomain.Domain.NKS);
                 logger.publish();
             }
             return psr[0].WorkItemId;
@@ -258,8 +308,10 @@ public without sharing class nksGetStoUtilityController {
      * @return List<PendingServiceRouting>
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
+        Long tStart = System.currentTimeMillis();
         String userId = getCurrentUserId();
 
+        Long tIncluded = System.currentTimeMillis();
         Set<Id> includedPSRIds = new Set<Id>();
         for (SkillRequirement sr : [
             SELECT RelatedRecordId
@@ -268,20 +320,24 @@ public without sharing class nksGetStoUtilityController {
         ]) {
             includedPSRIds.add(sr.RelatedRecordId);
         }
-        
+        logElapsedTime('getPendingServiceRouting: includedPSRIds built, size=' + includedPSRIds.size(), tIncluded);
+
+        Long tExcluded = System.currentTimeMillis();
         Set<Id> excludedPSRIds = new Set<Id>();
         for (SkillRequirement sr : [
             SELECT RelatedRecordId
             FROM SkillRequirement
             WHERE
-                (Skill.DeveloperName IN :confidentialitySkills 
+                (Skill.DeveloperName IN :confidentialitySkills
                 AND Skill.DeveloperName NOT IN :allUserSkills.confidentialitySkillsBySkillId.values())
-                OR (Skill.DeveloperName IN :originSkills 
+                OR (Skill.DeveloperName IN :originSkills
                 AND Skill.DeveloperName NOT IN :allUserSkills.originSkillsBySkillId.values())
         ]) {
             excludedPSRIds.add(sr.RelatedRecordId);
         }
-        
+        logElapsedTime('getPendingServiceRouting: excludedPSRIds built, size=' + excludedPSRIds.size(), tExcluded);
+
+        Long tCandidates = System.currentTimeMillis();
         List<PendingServiceRouting> allCandidates = [
             SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status
             FROM PendingServiceRouting
@@ -292,23 +348,34 @@ public without sharing class nksGetStoUtilityController {
                 AND Id IN :includedPSRIds
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
         ];
-        
+        perf('getPendingServiceRouting: allCandidates queried, size=' + allCandidates.size(), tCandidates);
+
+        Long tLoop = System.currentTimeMillis();
+        Integer skipped = 0;
         for (PendingServiceRouting psr : allCandidates) {
             // Skip if user lacks required confidentiality/origin skills
             if (excludedPSRIds.contains(psr.Id)) {
+                skipped += 1;
                 continue;
             }
-            
+
             // Skip if user is in the incompetent list
-            if (String.isNotBlank(psr.WorkItem.NKS_Incompetent_IDs__c) && 
-                psr.WorkItem.NKS_Incompetent_IDs__c.contains(userId)) {
+            if (
+                String.isNotBlank(psr.WorkItem.NKS_Incompetent_IDs__c) &&
+                psr.WorkItem.NKS_Incompetent_IDs__c.contains(userId)
+            ) {
+                skipped += 1;
                 continue;
             }
-            
+
             // Return first valid PSR
+            logElapsedTime('getPendingServiceRouting: loop found match after skipping=' + skipped, tLoop);
+            logElapsedTime('getPendingServiceRouting: TOTAL', tStart);
             return new List<PendingServiceRouting>{ psr };
         }
-        
+
+        logElapsedTime('getPendingServiceRouting: loop found no match after skipping=' + skipped, tLoop);
+        logElapsedTime('getPendingServiceRouting: TOTAL (no match)', tStart);
         return new List<PendingServiceRouting>();
     }
 
@@ -321,17 +388,23 @@ public without sharing class nksGetStoUtilityController {
         public Map<Id, String> originSkillsBySkillId = new Map<Id, String>();
     }
 
-    private static Id cachedUserId;    
+    private static void logElapsedTime(String label, Long startMillis) {
+        System.debug(
+            LoggingLevel.INFO,
+            'STO_PERF | ' + label + ' | elapsedMs=' + (System.currentTimeMillis() - startMillis)
+        );
+    }
+
+    private static Id cachedUserId;
     private static Id getCurrentUserId() {
         if (cachedUserId == null) {
             cachedUserId = UserInfo.getUserId();
         }
         return cachedUserId;
     }
-    
+
     // Cache RecordTypeId to avoid repeated queries
     private static Id stoRecordTypeId;
-    
     private static Id getSTORecordTypeId() {
         if (stoRecordTypeId == null) {
             stoRecordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByDeveloperName()
