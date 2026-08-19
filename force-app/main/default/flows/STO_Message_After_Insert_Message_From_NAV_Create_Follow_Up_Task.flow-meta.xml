@@ -177,6 +177,12 @@
         <locationY>0</locationY>
         <flowName>Create_STB_Oppgave</flowName>
         <inputAssignments>
+            <name>Oppgave_Beskrivelse</name>
+            <value>
+                <stringValue>Bruker har ikke svart på henvendelsen. Vurder saken og avslutt tråden ved behov.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <name>Oppgave_Type</name>
             <value>
                 <stringValue>SVAR_IK_MOT</stringValue>
