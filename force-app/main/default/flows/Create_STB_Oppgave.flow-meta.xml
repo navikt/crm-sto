@@ -63,6 +63,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>beskrivelse</name>
+            <value>
+                <elementReference>Oppgave_Beskrivelse</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>eksternHenvendelseId</name>
             <value>
                 <elementReference>Thread.CRM_API_Reference__c</elementReference>
@@ -370,6 +376,16 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Oppgave_Beskrivelse</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <stringValue></stringValue>
+        </value>
     </variables>
     <variables>
         <name>Oppgave_Theme</name>
