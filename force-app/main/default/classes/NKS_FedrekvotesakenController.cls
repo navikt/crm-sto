@@ -56,8 +56,10 @@ public without sharing class NKS_FedrekvotesakenController {
 
         try {
             OppgaveResponse oppgaveResp = OppgaveManager.postTask(taskRequest);
-            if (oppgaveResp == null || oppgaveResp.oppgave == null || oppgaveResp.oppgave.id == null) {
-                throw new FedrekvoteException('Failed to create oppgave via API');
+            if (oppgaveResp.isSuccess == false) {
+                throw new FedrekvoteException(
+                    'Failed to create oppgave via API with error message: ' + oppgaveResp.errorMessage
+                );
             }
 
             Thread__c thread = createSTBThread(commonCode.CRM_Parent_Code__c);
