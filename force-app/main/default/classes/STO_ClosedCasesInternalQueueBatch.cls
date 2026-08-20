@@ -2,7 +2,15 @@ public with sharing class STO_ClosedCasesInternalQueueBatch implements Database.
     public static final String QUEUE_DEVELOPER_NAME = 'Closed_STO_Cases_Internal';
 
     public void execute(SchedulableContext context) {
-        Database.executeBatch(new STO_ClosedCasesInternalQueueBatch(), 2000);
+        // Reassigning ~2M cases causes heavy sharing recalculation, so only run on weekends
+        if (isWeekend()) {
+            Database.executeBatch(new STO_ClosedCasesInternalQueueBatch(), 2000);
+        }
+    }
+
+    private static Boolean isWeekend() {
+        String dayOfWeek = Datetime.now().format('EEEE');
+        return dayOfWeek == 'Saturday' || dayOfWeek == 'Sunday';
     }
 
     public Database.QueryLocator start(Database.BatchableContext BC) {
