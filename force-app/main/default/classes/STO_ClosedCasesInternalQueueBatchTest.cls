@@ -7,8 +7,10 @@ private class STO_ClosedCasesInternalQueueBatchTest {
             DeveloperName = 'Closed_STO_Cases_Internal',
             Type = 'Queue'
         );
-        insert queue;
-        insert new QueueSobject(QueueId = queue.Id, SobjectType = 'Case');
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert queue;
+            insert new QueueSobject(QueueId = queue.Id, SobjectType = 'Case');
+        }
 
         Case testCase = new Case(Status = 'Closed');
         insert testCase;
@@ -32,8 +34,10 @@ private class STO_ClosedCasesInternalQueueBatchTest {
             DeveloperName = 'Closed_STO_Cases_Internal',
             Type = 'Queue'
         );
-        insert queue;
-        insert new QueueSobject(QueueId = queue.Id, SobjectType = 'Case');
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert queue;
+            insert new QueueSobject(QueueId = queue.Id, SobjectType = 'Case');
+        }
 
         Test.startTest();
         System.schedule(
