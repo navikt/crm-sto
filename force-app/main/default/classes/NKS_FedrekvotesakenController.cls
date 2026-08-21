@@ -165,7 +165,7 @@ public without sharing class NKS_FedrekvotesakenController {
 
     private static void createMessage(Thread__c thread, String beskrivelse) {
         Message__c message = new Message__c();
-        message.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg. Vi behandler mottatte henvendelser så raskt vi kan, og vi forventer at alle får svar i løpet av 2025.';
+        message.CRM_Message_Text__c = 'Takk for informasjonen vedrørende Fedrekvotesaken. Vi tar kontakt hvis vi trenger flere opplysninger fra deg. Vi behandler mottatte henvendelser så raskt vi kan.';
         message.CRM_From_NAV_Unit__c = thread.CRM_Created_By_NAV_Unit__c;
         message.CRM_Thread__c = thread.Id;
 
