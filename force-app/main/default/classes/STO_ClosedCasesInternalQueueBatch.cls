@@ -3,9 +3,23 @@ public with sharing class STO_ClosedCasesInternalQueueBatch implements Database.
 
     public void execute(SchedulableContext context) {
         // Reassigning ~2M cases causes heavy sharing recalculation, so only run outside of office hours
-        if (isWeekend() || isEvening()) {
-            Database.executeBatch(new STO_ClosedCasesInternalQueueBatch(), 2000);
+        if ((isWeekend() || isEvening()) && !isAlreadyRunning()) {
+            Database.executeBatch(new STO_ClosedCasesInternalQueueBatch(), 200);
         }
+    }
+
+    // Prevents overlapping runs (e.g. a previous run still processing when the 3-hour cron fires again)
+    // from concurrently reassigning the same Cases, which causes UNABLE_TO_LOCK_ROW
+    private static Boolean isAlreadyRunning() {
+        return ![
+                SELECT Id
+                FROM AsyncApexJob
+                WHERE
+                    ApexClass.Name = :STO_ClosedCasesInternalQueueBatch.class.getName()
+                    AND JobType = 'BatchApex'
+                    AND Status IN ('Processing', 'Preparing', 'Queued', 'Holding')
+            ]
+            .isEmpty();
     }
 
     private static Boolean isWeekend() {
@@ -30,7 +44,7 @@ public with sharing class STO_ClosedCasesInternalQueueBatch implements Database.
         for (Case c : cases) {
             c.OwnerId = queue.Id;
         }
-        update cases;
+        Database.update(cases, false);
     }
 
     public void finish(Database.BatchableContext BC) {
