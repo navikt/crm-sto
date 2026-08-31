@@ -184,6 +184,11 @@
         <field>Thread__c.STO_Sensitive_Information__c</field>
         <readable>true</readable>
     </fieldPermissions>
+     <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.CRM_Journal_Case_Reference__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Skriv til oss - Service Cloud tilgang</label>
     <objectPermissions>
