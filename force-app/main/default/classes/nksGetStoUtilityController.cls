@@ -99,10 +99,6 @@ public without sharing class nksGetStoUtilityController {
 
             do {
                 Id nextCaseId = getNextSTOCase();
-                if (nextCaseId == null) {
-                    attempt += 1;
-                    continue;
-                }
                 if (takeOwnership(nextCaseId, userId)) {
                     return nextCaseId;
                 }
@@ -116,6 +112,9 @@ public without sharing class nksGetStoUtilityController {
 
     private static Boolean takeOwnership(Id caseId, Id userId) {
         try {
+            if (caseId == null) {
+                return false;
+            }
             Case c = [SELECT Id, OwnerId, Owner.Type, Status FROM Case WHERE Id = :caseId LIMIT 1 FOR UPDATE];
             if (c.Owner.Type != 'Queue') {
                 return false;
