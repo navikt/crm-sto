@@ -4,18 +4,15 @@ import { NavigationMixin } from 'lightning/navigation';
 export default class CommunityConversationNoteRelatedItem extends NavigationMixin(LightningElement) {
     @api note;
 
-    url;
-
-    connectedCallback() {
-        this[NavigationMixin.GenerateUrl]({
+    handleClick(event) {
+        event.preventDefault();
+        this[NavigationMixin.Navigate]({
             type: 'standard__recordPage',
             attributes: {
                 recordId: this.note.Id,
                 objectApiName: 'Conversation_Note__c',
                 actionName: 'view'
             }
-        }).then((url) => {
-            this.url = url;
         });
     }
 
