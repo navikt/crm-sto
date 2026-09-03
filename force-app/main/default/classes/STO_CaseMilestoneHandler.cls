@@ -52,9 +52,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
     private void closeCaseMilestones(Map<Id, CaseWrapper> casesToHandle) {
         Datetime completionTime = Datetime.now();
         List<ReportingData__c> repDataList = new List<ReportingData__c>();
-        List<CaseMilestone> milestoneList = Test.isRunningTest()
-            ? new List<CaseMilestone>{ new CaseMilestone() }
-            : getOpenMilestones(casesToHandle.keySet());
+        List<CaseMilestone> milestoneList = getOpenMilestones(casesToHandle.keySet());
 
         for (CaseMilestone milestoneCase : milestoneList) {
             CaseWrapper wrapper = casesToHandle.containsKey(milestoneCase.CaseId)
@@ -63,8 +61,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
             Case casy = wrapper?.relatedCase;
             Boolean hasChangedOrigin = wrapper?.hasChangedOrigin;
 
-            if (Test.isRunningTest()) {
-            } else if (
+            if (
                 casy != null &&
                 hasChangedOrigin != null &&
                 !hasChangedOrigin &&
@@ -76,7 +73,7 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
                 milestoneCase.CompletionDate = completionTime;
             }
 
-            if (milestoneCase.CompletionDate != null || Test.isRunningTest()) {
+            if (milestoneCase.CompletionDate != null) {
                 repDataList.add(
                     new ReportingData__c(
                         CRM_Category__c = casy?.Origin,
@@ -89,22 +86,16 @@ global without sharing class STO_CaseMilestoneHandler extends MyTriggers {
         }
 
         if (!repDataList.isEmpty()) {
-            handleReportingData(repDataList);
+            try {
+                insert repDataList;
+            } catch (Exception ex) {
+                logger.critical(JSON.serializePretty(repDataList), null, domain);
+            } finally {
+                logger.publish();
+            }
         }
 
-        if (!Test.isRunningTest()) {
-            update milestoneList;
-        }
-    }
-
-    private static void handleReportingData(List<ReportingData__c> repDataList) {
-        try {
-            insert repDataList;
-        } catch (Exception ex) {
-            logger.critical(JSON.serializePretty(repDataList), null, domain);
-        } finally {
-            logger.publish();
-        }
+        update milestoneList;
     }
 
     public class CaseWrapper {

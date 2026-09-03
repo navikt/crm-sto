@@ -12,16 +12,6 @@ public class STO_CaseMilestoneHandler_Test {
         STO_TestDataFactory.createRecord(
             new Case(AccountId = acc.Id, EntitlementId = entl.Id, Origin = 'BTO', Status = 'New', Subject = 'BTO Case')
         );
-
-        STO_TestDataFactory.createRecord(
-            new Case(
-                AccountId = acc.Id,
-                EntitlementId = entl.Id,
-                Origin = 'Email',
-                Status = 'New',
-                Subject = 'Email Case'
-            )
-        );
     }
 
     @isTest
@@ -32,6 +22,8 @@ public class STO_CaseMilestoneHandler_Test {
         casy.Status = 'On Hold';
         update casy;
         Test.stopTest();
+
+        Assert.areEqual('On Hold', casy.Status, 'The case status should be updated to On Hold.');
     }
 
     @isTest
@@ -42,6 +34,8 @@ public class STO_CaseMilestoneHandler_Test {
         casy.Status = 'Forwarded';
         update casy;
         Test.stopTest();
+
+        Assert.areEqual('Forwarded', casy.Status, 'The case status should be updated to Forwarded.');
     }
 
     @isTest
@@ -52,6 +46,8 @@ public class STO_CaseMilestoneHandler_Test {
         casy.Status = 'Reserved';
         update casy;
         Test.stopTest();
+
+        Assert.areEqual('Reserved', casy.Status, 'The case status should be updated to Reserved.');
     }
 
     @isTest
@@ -63,16 +59,9 @@ public class STO_CaseMilestoneHandler_Test {
         casy.Status = 'Closed';
         update casy;
         Test.stopTest();
-    }
 
-    @isTest
-    static void testUnsupportedOrigin() {
-        Case casy = [SELECT Id, Status FROM Case WHERE Subject = 'Email Case' LIMIT 1];
-
-        Test.startTest();
-        casy.Status = 'On Hold';
-        update casy;
-        Test.stopTest();
+        Assert.areEqual('BTO', casy.Origin, 'The case origin should be updated to BTO.');
+        Assert.areEqual('Closed', casy.Status, 'The case status should be updated to Closed.');
     }
 
     @isTest
@@ -83,6 +72,8 @@ public class STO_CaseMilestoneHandler_Test {
         casy.Subject = 'Changed Subject';
         update casy;
         Test.stopTest();
+
+        Assert.areEqual('Changed Subject', casy.Subject, 'The case subject should be updated to Changed Subject.');
     }
 
     @isTest

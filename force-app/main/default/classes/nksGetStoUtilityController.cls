@@ -13,12 +13,11 @@ public without sharing class nksGetStoUtilityController {
     public class NoCasesFoundException extends Exception {
     }
 
-    private static final List<String> confidentialitySkills = new List<String>{
+    private static final List<String> additionalSkills = new List<String>{
         'Fortrolig_addresse',
         'Skjermede_personer',
-        'Serviceklager'
+        'Serviceklage'
     };
-    private static final String SERVICEKLAGER_SKILL = 'Serviceklager';
     private static final List<String> originSkills = new List<String>{ 'BTO', 'STO' };
 
     private static final Map<String, String> stoThemeRenames = new Map<String, String>{ 'Ufør' => 'Ufoeretrygd' };
@@ -41,7 +40,7 @@ public without sharing class nksGetStoUtilityController {
                     skills.add(pl.getLabel());
                 }
             }
-            skills.addAll(confidentialitySkills);
+            skills.addAll(additionalSkills);
             skills.addAll(originSkills);
             cachedRelevantSkills = skills;
             return cachedRelevantSkills;
@@ -49,6 +48,7 @@ public without sharing class nksGetStoUtilityController {
     }
 
     private static Id filteredSkillId;
+
     private static GroupedSkills allUserSkills = new GroupedSkills();
 
     @AuraEnabled
@@ -60,27 +60,20 @@ public without sharing class nksGetStoUtilityController {
     @AuraEnabled
     public static List<Record> getSto() {
         List<Record> records = new List<Record>();
-        if (hasInProgress())
+        if (hasInProgress()) {
             throw new AuraHandledException('hasInProgress');
-
-        allUserSkills = getServiceResourceSkillIds();
+        }
 
         Record newStoRecord = new Record();
-        Id newStoId = getNewSTO();
-        if (newStoId == null) {
-            throw new AuraHandledException('NotFound');
-        }
-        newStoRecord.recordId = newStoId;
+        newStoRecord.recordId = getNewSTO();
         newStoRecord.status = 'In Progress';
         records.add(newStoRecord);
-
         Set<Id> relatedStoIds = new Set<Id>();
         try {
             relatedStoIds.addAll(getRelatedSTO(newStoRecord.recordId));
         } catch (Exception e) {
             // exception on finding related stos
         }
-
         for (Id relatedStoId : relatedStoIds) {
             Record relatedStoRecord = new Record();
             relatedStoRecord.recordId = relatedStoId;
@@ -112,9 +105,6 @@ public without sharing class nksGetStoUtilityController {
 
     private static Boolean takeOwnership(Id caseId, Id userId) {
         try {
-            if (caseId == null) {
-                return false;
-            }
             Case c = [SELECT Id, OwnerId, Owner.Type, Status FROM Case WHERE Id = :caseId LIMIT 1 FOR UPDATE];
             if (c.Owner.Type != 'Queue') {
                 return false;
@@ -142,8 +132,9 @@ public without sharing class nksGetStoUtilityController {
             Flow.Interview.STO_Case_Set_Owner setOwnerFlow = new Flow.Interview.STO_Case_Set_Owner(flowParams);
             setOwnerFlow.start();
             List<Case> relatedCases = (List<Case>) setOwnerFlow.getVariableValue('ReturnVar');
-            if (relatedCases == null)
+            if (relatedCases == null) {
                 return relatedCaseIds;
+            }
             for (Case c : relatedCases) {
                 relatedCaseIds.add(c.Id);
             }
@@ -171,8 +162,8 @@ public without sharing class nksGetStoUtilityController {
                 AND ServiceResource.IsActive = TRUE
         ]) {
             //Separating domain skills and person access skills
-            if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
-                userSkills.confidentialitySkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
+            if (additionalSkills.contains(srs.Skill.DeveloperName)) {
+                userSkills.additionalSkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
             } else if (originSkills.contains(srs.Skill.DeveloperName)) {
                 userSkills.originSkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
             } else {
@@ -187,6 +178,7 @@ public without sharing class nksGetStoUtilityController {
     private static Id getNextSTOCase() {
         try {
             List<PendingServiceRouting> psr = getPendingServiceRouting();
+
             if (psr.size() == 0) {
                 throw new NoCasesFoundException('NotFound');
             }
@@ -207,57 +199,53 @@ public without sharing class nksGetStoUtilityController {
     }
 
     /**
-     * @description       : Queries the highest-priority PSR in the user's skill pool and enforces
-     *                     confidentiality/origin access, incompetent-user exclusion, and serviceklager case restriction.
+     * Queries the PSR with highest priority within your skill pool and ensures you have access to the person,
+     * that the case relates to
      * @author Stian Ruud Schikora | 07-19-2022
-     * @updated           : 07-06-2026 | Sara Mohammadi | Enforced full per-PSR skill matching and datetime-valid user skills
      * @return List<PendingServiceRouting>
      **/
     private static List<PendingServiceRouting> getPendingServiceRouting() {
         String userId = getCurrentUserId();
 
-        Set<String> userSkillDeveloperNames = new Set<String>();
-        userSkillDeveloperNames.addAll(allUserSkills.skillMap.values());
-        userSkillDeveloperNames.addAll(allUserSkills.confidentialitySkillsBySkillId.values());
-        userSkillDeveloperNames.addAll(allUserSkills.originSkillsBySkillId.values());
+        Set<Id> includedPSRIds = new Set<Id>();
+        for (SkillRequirement sr : [
+            SELECT RelatedRecordId
+            FROM SkillRequirement
+            WHERE SkillId IN :allUserSkills.skillMap.keySet()
+        ]) {
+            includedPSRIds.add(sr.RelatedRecordId);
+        }
 
-        // Candidate PSRs in priority order
+        Set<Id> excludedPSRIds = new Set<Id>();
+        for (SkillRequirement sr : [
+            SELECT RelatedRecordId
+            FROM SkillRequirement
+            WHERE
+                (Skill.DeveloperName IN :additionalSkills
+                AND Skill.DeveloperName NOT IN :allUserSkills.additionalSkillsBySkillId.values())
+                OR (Skill.DeveloperName IN :originSkills
+                AND Skill.DeveloperName NOT IN :allUserSkills.originSkillsBySkillId.values())
+        ]) {
+            excludedPSRIds.add(sr.RelatedRecordId);
+        }
+
         List<PendingServiceRouting> allCandidates = [
             SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status
             FROM PendingServiceRouting
-            WHERE ServiceChannel.DeveloperName = 'Skriv_til_oss' AND IsReadyForRouting = TRUE AND IsPushed = FALSE
+            WHERE
+                ServiceChannel.DeveloperName = 'Skriv_til_oss'
+                AND IsReadyForRouting = TRUE
+                AND isPushed = FALSE
+                AND Id IN :includedPSRIds
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
         ];
 
-        if (allCandidates.isEmpty()) {
-            return new List<PendingServiceRouting>();
-        }
-
-        Set<Id> candidatePsrIds = new Set<Id>();
-        Set<Id> caseIds = new Set<Id>();
         for (PendingServiceRouting psr : allCandidates) {
-            candidatePsrIds.add(psr.Id);
-            if (psr.WorkItemId != null) {
-                caseIds.add(psr.WorkItemId);
+            // Skip if user lacks required confidentiality/origin skills
+            if (excludedPSRIds.contains(psr.Id)) {
+                continue;
             }
-        }
 
-        // Required skills per PSR
-        Map<Id, Set<String>> requiredSkillDevNamesByPsrId = new Map<Id, Set<String>>();
-        for (SkillRequirement sr : [
-            SELECT RelatedRecordId, Skill.DeveloperName
-            FROM SkillRequirement
-            WHERE RelatedRecordId IN :candidatePsrIds
-        ]) {
-            if (!requiredSkillDevNamesByPsrId.containsKey(sr.RelatedRecordId)) {
-                requiredSkillDevNamesByPsrId.put(sr.RelatedRecordId, new Set<String>());
-            }
-            requiredSkillDevNamesByPsrId.get(sr.RelatedRecordId).add(sr.Skill.DeveloperName);
-        }
-
-        Map<Id, Case> casesById = getCasesByIdsWithServiceklagerFlag(caseIds);
-
-        for (PendingServiceRouting psr : allCandidates) {
             // Skip if user is in the incompetent list
             if (
                 String.isNotBlank(psr.WorkItem.NKS_Incompetent_IDs__c) &&
@@ -266,33 +254,12 @@ public without sharing class nksGetStoUtilityController {
                 continue;
             }
 
-            // Defensive check against case field
-            Case c = casesById.get(psr.WorkItemId);
+            // Skip serviceklage cases if user lacks serviceklage skill
             if (
-                c != null &&
-                c.STO_Requires_Serviceklager_Skill__c == true &&
-                !userSkillDeveloperNames.contains(SERVICEKLAGER_SKILL)
+                psr.WorkItem.STO_Additional_Skills__c == 'Serviceklage' &&
+                !allUserSkills.additionalSkillsBySkillId.values().contains('Serviceklage')
             ) {
                 continue;
-            }
-
-            // Enforce ALL required PSR skills:
-            // - STO case => requires STO
-            // - BTO case => requires BTO
-            // - Serviceklager case => requires Serviceklager
-            // - Combined cases require all combined skills
-            Set<String> required = requiredSkillDevNamesByPsrId.get(psr.Id);
-            if (required != null && !required.isEmpty()) {
-                Boolean missingSkill = false;
-                for (String reqDevName : required) {
-                    if (!userSkillDeveloperNames.contains(reqDevName)) {
-                        missingSkill = true;
-                        break;
-                    }
-                }
-                if (missingSkill) {
-                    continue;
-                }
             }
 
             // Return first valid PSR
@@ -302,24 +269,11 @@ public without sharing class nksGetStoUtilityController {
         return new List<PendingServiceRouting>();
     }
 
-    private static Map<Id, Case> getCasesByIdsWithServiceklagerFlag(Set<Id> caseIds) {
-        if (caseIds == null || caseIds.isEmpty()) {
-            return new Map<Id, Case>();
-        }
-        return new Map<Id, Case>(
-            [
-                SELECT Id, STO_Requires_Serviceklager_Skill__c
-                FROM Case
-                WHERE Id IN :caseIds
-            ]
-        );
-    }
-
     public class GroupedSkills {
         @AuraEnabled
         public Map<Id, String> skillMap = new Map<Id, String>();
         @AuraEnabled
-        public Map<Id, String> confidentialitySkillsBySkillId = new Map<Id, String>();
+        public Map<Id, String> additionalSkillsBySkillId = new Map<Id, String>();
         @AuraEnabled
         public Map<Id, String> originSkillsBySkillId = new Map<Id, String>();
     }
@@ -334,6 +288,7 @@ public without sharing class nksGetStoUtilityController {
 
     // Cache RecordTypeId to avoid repeated queries
     private static Id stoRecordTypeId;
+
     private static Id getSTORecordTypeId() {
         if (stoRecordTypeId == null) {
             stoRecordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByDeveloperName()
@@ -341,19 +296,6 @@ public without sharing class nksGetStoUtilityController {
                 .getRecordTypeId();
         }
         return stoRecordTypeId;
-    }
-
-    public class Record {
-        @AuraEnabled
-        public String recordId;
-        @AuraEnabled
-        public String name;
-        @AuraEnabled
-        public Datetime modifiedDate;
-        @AuraEnabled
-        public String status;
-        @AuraEnabled
-        public String casenumber;
     }
 
     @AuraEnabled(cacheable=true)
@@ -383,6 +325,19 @@ public without sharing class nksGetStoUtilityController {
             LIMIT 1
         ];
         return casesInProgress.size() > 0;
+    }
+
+    public class Record {
+        @AuraEnabled
+        public String recordId;
+        @AuraEnabled
+        public String name;
+        @AuraEnabled
+        public Datetime modifiedDate;
+        @AuraEnabled
+        public String status;
+        @AuraEnabled
+        public String casenumber;
     }
 
     private static List<Record> createRecords(List<Case> listofrecords) {
