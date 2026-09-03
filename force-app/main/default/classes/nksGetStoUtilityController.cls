@@ -2,8 +2,8 @@
  * @description       :
  * @author            : mamikals
  * @group             :
- * @last modified on  : 13-02-2024
- * @last modified by  : mamikals
+ * @last modified on  : 07-06-2026
+ * @last modified by  : Sara Mohammadi
  **/
 public without sharing class nksGetStoUtilityController {
     private static LoggerUtility logger = new LoggerUtility('GET_STO');
@@ -13,9 +13,10 @@ public without sharing class nksGetStoUtilityController {
     public class NoCasesFoundException extends Exception {
     }
 
-    private static final List<String> confidentialitySkills = new List<String>{
+    private static final List<String> additionalSkills = new List<String>{
         'Fortrolig_addresse',
-        'Skjermede_personer'
+        'Skjermede_personer',
+        'Serviceklage'
     };
     private static final List<String> originSkills = new List<String>{ 'BTO', 'STO' };
 
@@ -39,7 +40,7 @@ public without sharing class nksGetStoUtilityController {
                     skills.add(pl.getLabel());
                 }
             }
-            skills.addAll(confidentialitySkills);
+            skills.addAll(additionalSkills);
             skills.addAll(originSkills);
             cachedRelevantSkills = skills;
             return cachedRelevantSkills;
@@ -59,8 +60,9 @@ public without sharing class nksGetStoUtilityController {
     @AuraEnabled
     public static List<Record> getSto() {
         List<Record> records = new List<Record>();
-        if (hasInProgress())
+        if (hasInProgress()) {
             throw new AuraHandledException('hasInProgress');
+        }
 
         Record newStoRecord = new Record();
         newStoRecord.recordId = getNewSTO();
@@ -130,8 +132,9 @@ public without sharing class nksGetStoUtilityController {
             Flow.Interview.STO_Case_Set_Owner setOwnerFlow = new Flow.Interview.STO_Case_Set_Owner(flowParams);
             setOwnerFlow.start();
             List<Case> relatedCases = (List<Case>) setOwnerFlow.getVariableValue('ReturnVar');
-            if (relatedCases == null)
+            if (relatedCases == null) {
                 return relatedCaseIds;
+            }
             for (Case c : relatedCases) {
                 relatedCaseIds.add(c.Id);
             }
@@ -139,6 +142,160 @@ public without sharing class nksGetStoUtilityController {
             throw new AuraHandledException(e.getMessage());
         }
         return relatedCaseIds;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static GroupedSkills getServiceResourceSkillIds() {
+        Id userId = getCurrentUserId();
+        GroupedSkills userSkills = new GroupedSkills();
+        Datetime nowDt = System.now();
+
+        for (ServiceResourceSkill srs : [
+            SELECT SkillId, Skill.DeveloperName, Skill.MasterLabel
+            FROM ServiceResourceSkill
+            WHERE
+                ServiceResource.RelatedRecordId = :userId
+                AND Skill.DeveloperName IN :allRelevantSkills
+                AND EffectiveStartDate <= :nowDt
+                AND (EffectiveEndDate = NULL
+                OR EffectiveEndDate >= :nowDt)
+                AND ServiceResource.IsActive = TRUE
+        ]) {
+            //Separating domain skills and person access skills
+            if (additionalSkills.contains(srs.Skill.DeveloperName)) {
+                userSkills.additionalSkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
+            } else if (originSkills.contains(srs.Skill.DeveloperName)) {
+                userSkills.originSkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
+            } else {
+                if (filteredSkillId == null || filteredSkillId == srs.SkillId) {
+                    userSkills.skillMap.put(srs.SkillId, srs.Skill.DeveloperName);
+                }
+            }
+        }
+        return userSkills;
+    }
+
+    private static Id getNextSTOCase() {
+        try {
+            List<PendingServiceRouting> psr = getPendingServiceRouting();
+
+            if (psr.size() == 0) {
+                throw new NoCasesFoundException('NotFound');
+            }
+            if (psr[0].workItem.Status == 'Closed') {
+                PendingServiceRouting psrToLog = [
+                    SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId
+                    FROM PendingServiceRouting
+                    WHERE Id = :psr[0].Id
+                    LIMIT 1
+                ];
+                logger.error('PSR pushed where STO Case is status closed.', psrToLog, CRM_ApplicationDomain.Domain.NKS);
+                logger.publish();
+            }
+            return psr[0].WorkItemId;
+        } catch (QueryException queryEx) {
+            throw new AuraHandledException('En feil oppsto ved henting av ny STO, prøv igjen.');
+        }
+    }
+
+    /**
+     * Queries the PSR with highest priority within your skill pool and ensures you have access to the person,
+     * that the case relates to
+     * @author Stian Ruud Schikora | 07-19-2022
+     * @return List<PendingServiceRouting>
+     **/
+    private static List<PendingServiceRouting> getPendingServiceRouting() {
+        String userId = getCurrentUserId();
+
+        Set<Id> includedPSRIds = new Set<Id>();
+        for (SkillRequirement sr : [
+            SELECT RelatedRecordId
+            FROM SkillRequirement
+            WHERE SkillId IN :allUserSkills.skillMap.keySet()
+        ]) {
+            includedPSRIds.add(sr.RelatedRecordId);
+        }
+
+        Set<Id> excludedPSRIds = new Set<Id>();
+        for (SkillRequirement sr : [
+            SELECT RelatedRecordId
+            FROM SkillRequirement
+            WHERE
+                (Skill.DeveloperName IN :additionalSkills
+                AND Skill.DeveloperName NOT IN :allUserSkills.additionalSkillsBySkillId.values())
+                OR (Skill.DeveloperName IN :originSkills
+                AND Skill.DeveloperName NOT IN :allUserSkills.originSkillsBySkillId.values())
+        ]) {
+            excludedPSRIds.add(sr.RelatedRecordId);
+        }
+
+        List<PendingServiceRouting> allCandidates = [
+            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status
+            FROM PendingServiceRouting
+            WHERE
+                ServiceChannel.DeveloperName = 'Skriv_til_oss'
+                AND IsReadyForRouting = TRUE
+                AND isPushed = FALSE
+                AND Id IN :includedPSRIds
+            ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
+        ];
+
+        for (PendingServiceRouting psr : allCandidates) {
+            // Skip if user lacks required confidentiality/origin skills
+            if (excludedPSRIds.contains(psr.Id)) {
+                continue;
+            }
+
+            // Skip if user is in the incompetent list
+            if (
+                String.isNotBlank(psr.WorkItem.NKS_Incompetent_IDs__c) &&
+                psr.WorkItem.NKS_Incompetent_IDs__c.contains(userId)
+            ) {
+                continue;
+            }
+
+            // Skip serviceklage cases if user lacks serviceklage skill
+            if (
+                psr.WorkItem.STO_Additional_Skills__c == 'Serviceklage' &&
+                !allUserSkills.additionalSkillsBySkillId.values().contains('Serviceklage')
+            ) {
+                continue;
+            }
+
+            // Return first valid PSR
+            return new List<PendingServiceRouting>{ psr };
+        }
+
+        return new List<PendingServiceRouting>();
+    }
+
+    public class GroupedSkills {
+        @AuraEnabled
+        public Map<Id, String> skillMap = new Map<Id, String>();
+        @AuraEnabled
+        public Map<Id, String> additionalSkillsBySkillId = new Map<Id, String>();
+        @AuraEnabled
+        public Map<Id, String> originSkillsBySkillId = new Map<Id, String>();
+    }
+
+    private static Id cachedUserId;
+    private static Id getCurrentUserId() {
+        if (cachedUserId == null) {
+            cachedUserId = UserInfo.getUserId();
+        }
+        return cachedUserId;
+    }
+
+    // Cache RecordTypeId to avoid repeated queries
+    private static Id stoRecordTypeId;
+
+    private static Id getSTORecordTypeId() {
+        if (stoRecordTypeId == null) {
+            stoRecordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByDeveloperName()
+                .get('STO_Case')
+                .getRecordTypeId();
+        }
+        return stoRecordTypeId;
     }
 
     @AuraEnabled(cacheable=true)
@@ -167,7 +324,7 @@ public without sharing class nksGetStoUtilityController {
                 AND OwnerId = :getCurrentUserId()
             LIMIT 1
         ];
-        return casesInProgress.size() > 0 ? true : false;
+        return casesInProgress.size() > 0;
     }
 
     public class Record {
@@ -195,149 +352,5 @@ public without sharing class nksGetStoUtilityController {
             records.add(record);
         }
         return records;
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static GroupedSkills getServiceResourceSkillIds() {
-        Id userId = getCurrentUserId();
-        GroupedSkills userSkills = new GroupedSkills();
-
-        for (ServiceResourceSkill srs : [
-            SELECT SkillId, Skill.DeveloperName, Skill.MasterLabel
-            FROM ServiceResourceSkill
-            WHERE
-                ServiceResource.RelatedRecordId = :userId
-                AND Skill.DeveloperName IN :allRelevantSkills
-                AND EffectiveStartDate <= TODAY
-                AND (EffectiveEndDate >= TODAY
-                OR EffectiveEndDate = NULL)
-                AND ServiceResource.IsActive = TRUE
-        ]) {
-            //Separating domain skills and person access skills
-            if (confidentialitySkills.contains(srs.Skill.DeveloperName)) {
-                userSkills.confidentialitySkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
-            } else if (originSkills.contains(srs.Skill.DeveloperName)) {
-                userSkills.originSkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
-            } else {
-                if (filteredSkillId == null || filteredSkillId == srs.SkillId) {
-                    userSkills.skillMap.put(srs.SkillId, srs.Skill.MasterLabel);
-                }
-            }
-        }
-        return userSkills;
-    }
-
-    private static Id getNextSTOCase() {
-        try {
-            List<PendingServiceRouting> psr = getPendingServiceRouting();
-            if (Test.isRunningTest()) {
-                return [SELECT Id FROM Case LIMIT 1]?.Id;
-            }
-            if (psr.size() == 0) {
-                throw new NoCasesFoundException('NotFound');
-            }
-            if (psr[0].workItem.Status == 'Closed') {
-                PendingServiceRouting psrToLog = [SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId FROM PendingServiceRouting WHERE Id = :psr[0].Id LIMIT 1];
-                logger.error(
-                'PSR pushed where STO Case is status closed.',
-                psrToLog,
-                CRM_ApplicationDomain.Domain.NKS
-                );
-                logger.publish();
-            }
-            return psr[0].WorkItemId;
-        } catch (QueryException queryEx) {
-            throw new AuraHandledException('En feil oppsto ved henting av ny STO, prøv igjen.');
-        }
-    }
-
-    /**
-     * Queries the PSR with highest priority within your skill pool and ensures you have access to the person,
-     * that the case relates to
-     * @author Stian Ruud Schikora | 07-19-2022
-     * @return List<PendingServiceRouting>
-     **/
-    private static List<PendingServiceRouting> getPendingServiceRouting() {
-        String userId = getCurrentUserId();
-
-        Set<Id> includedPSRIds = new Set<Id>();
-        for (SkillRequirement sr : [
-            SELECT RelatedRecordId
-            FROM SkillRequirement
-            WHERE SkillId IN :allUserSkills.skillMap.keySet()
-        ]) {
-            includedPSRIds.add(sr.RelatedRecordId);
-        }
-        
-        Set<Id> excludedPSRIds = new Set<Id>();
-        for (SkillRequirement sr : [
-            SELECT RelatedRecordId
-            FROM SkillRequirement
-            WHERE
-                (Skill.DeveloperName IN :confidentialitySkills 
-                AND Skill.DeveloperName NOT IN :allUserSkills.confidentialitySkillsBySkillId.values())
-                OR (Skill.DeveloperName IN :originSkills 
-                AND Skill.DeveloperName NOT IN :allUserSkills.originSkillsBySkillId.values())
-        ]) {
-            excludedPSRIds.add(sr.RelatedRecordId);
-        }
-        
-        List<PendingServiceRouting> allCandidates = [
-            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status
-            FROM PendingServiceRouting
-            WHERE
-                ServiceChannel.DeveloperName = 'Skriv_til_oss'
-                AND IsReadyForRouting = TRUE
-                AND isPushed = FALSE
-                AND Id IN :includedPSRIds
-            ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
-        ];
-        
-        for (PendingServiceRouting psr : allCandidates) {
-            // Skip if user lacks required confidentiality/origin skills
-            if (excludedPSRIds.contains(psr.Id)) {
-                continue;
-            }
-            
-            // Skip if user is in the incompetent list
-            if (String.isNotBlank(psr.WorkItem.NKS_Incompetent_IDs__c) && 
-                psr.WorkItem.NKS_Incompetent_IDs__c.contains(userId)) {
-                continue;
-            }
-            
-            // Return first valid PSR
-            return new List<PendingServiceRouting>{ psr };
-        }
-        
-        return new List<PendingServiceRouting>();
-    }
-
-    public class GroupedSkills {
-        @AuraEnabled
-        public Map<Id, String> skillMap = new Map<Id, String>();
-        @AuraEnabled
-        public Map<Id, String> confidentialitySkillsBySkillId = new Map<Id, String>();
-        @AuraEnabled
-        public Map<Id, String> originSkillsBySkillId = new Map<Id, String>();
-    }
-
-    private static Id cachedUserId;    
-    private static Id getCurrentUserId() {
-        if (cachedUserId == null) {
-            cachedUserId = UserInfo.getUserId();
-        }
-        return cachedUserId;
-    }
-    
-    // Cache RecordTypeId to avoid repeated queries
-    private static Id stoRecordTypeId;
-    
-    private static Id getSTORecordTypeId() {
-        if (stoRecordTypeId == null) {
-            stoRecordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByDeveloperName()
-                .get('STO_Case')
-                .getRecordTypeId();
-        }
-        return stoRecordTypeId;
     }
 }
