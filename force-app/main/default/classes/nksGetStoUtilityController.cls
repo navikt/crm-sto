@@ -124,6 +124,10 @@ public without sharing class nksGetStoUtilityController {
         try {
             Map<String, Object> flowParams = new Map<String, Object>();
             flowParams.put('CaseId', caseId);
+            flowParams.put(
+                'HasServiceklageSkill',
+                allUserSkills.additionalSkillsBySkillId.values().contains('Serviceklage')
+            );
             if (Test.isRunningTest()) {
                 allUserSkills.originSkillsBySkillId.put('001xa000003DIlo', 'STO');
             }
@@ -230,7 +234,7 @@ public without sharing class nksGetStoUtilityController {
         }
 
         List<PendingServiceRouting> allCandidates = [
-            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status
+            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status, WorkItem.STO_Additional_Skills__c
             FROM PendingServiceRouting
             WHERE
                 ServiceChannel.DeveloperName = 'Skriv_til_oss'
