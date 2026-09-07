@@ -13,9 +13,17 @@ export default class StoMessageInbox extends LightningElement {
     wrthreads;
     showthreads = false;
     showrecentthreads = false;
+    hasRefreshed = false;
 
     renderedCallback() {
         setDecoratorParams('Innboks', 'Innboks', '');
+
+        if (this.hasRefreshed) return;
+        if (!this.wthreads || !this.wrthreads) return;
+
+        this.hasRefreshed = true;
+        refreshApex(this.wthreads);
+        refreshApex(this.wrthreads);
     }
 
     @wire(getThreads, {})
@@ -36,11 +44,6 @@ export default class StoMessageInbox extends LightningElement {
         } else if (result.data) {
             this.setRecentThreads();
         }
-    }
-
-    connectedCallback() {
-        refreshApex(this.wthreads);
-        refreshApex(this.wrthreads);
     }
 
     setThreads() {
