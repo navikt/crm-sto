@@ -4,6 +4,13 @@
     <masterLabel>STO Skill Routing</masterLabel>
     <relatedEntity>Case</relatedEntity>
     <workSkillRoutingAttributes>
+        <field>Case.STO_Additional_Skills__c</field>
+        <isAdditionalSkill>false</isAdditionalSkill>
+        <skill>Serviceklage</skill>
+        <skillLevel>0</skillLevel>
+        <value>Serviceklage</value>
+    </workSkillRoutingAttributes>
+    <workSkillRoutingAttributes>
         <field>Case.Origin</field>
         <isAdditionalSkill>false</isAdditionalSkill>
         <skill>BTO</skill>
