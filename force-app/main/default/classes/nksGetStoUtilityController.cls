@@ -234,7 +234,7 @@ public without sharing class nksGetStoUtilityController {
         }
 
         List<PendingServiceRouting> allCandidates = [
-            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status, WorkItem.STO_Additional_Skills__c
+            SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status
             FROM PendingServiceRouting
             WHERE
                 ServiceChannel.DeveloperName = 'Skriv_til_oss'
@@ -254,14 +254,6 @@ public without sharing class nksGetStoUtilityController {
             if (
                 String.isNotBlank(psr.WorkItem.NKS_Incompetent_IDs__c) &&
                 psr.WorkItem.NKS_Incompetent_IDs__c.contains(userId)
-            ) {
-                continue;
-            }
-
-            // Skip serviceklage cases if user lacks serviceklage skill
-            if (
-                psr.WorkItem.STO_Additional_Skills__c == 'Serviceklage' &&
-                !allUserSkills.additionalSkillsBySkillId.values().contains('Serviceklage')
             ) {
                 continue;
             }
