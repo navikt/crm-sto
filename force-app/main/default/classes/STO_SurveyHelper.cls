@@ -6,7 +6,13 @@ public without sharing class STO_SurveyHelper {
      */
     @AuraEnabled(cacheable=true)
     public static String getSurveyLink(Id caseId) {
-        return [SELECT InvitationLink FROM SurveyInvitation WHERE Case__c = :caseId OR Name = :caseId LIMIT 1]
+        Datetime currentTime = System.now();
+        return [
+            SELECT InvitationLink
+            FROM SurveyInvitation
+            WHERE (Case__c = :caseId OR Name = :caseId) AND InviteExpiryDateTime >= :currentTime
+            LIMIT 1
+        ]
         ?.InvitationLink;
     }
 
