@@ -85,11 +85,11 @@
                 },
                 {
                     "package": "crm-nks-survey",
-                    "versionNumber": "0.10.0.LATEST"
+                    "versionNumber": "0.12.0.LATEST"
                 },
                 {
                     "package": "crm-nks-chat",
-                    "versionNumber": "0.75.0.2"
+                    "versionNumber": "0.81.0.2"
                 }
             ]
         }
