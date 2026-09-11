@@ -91,6 +91,7 @@ public with sharing class stoHelperClass_Test {
             true,
             'STO',
             null,
+            null,
             null
         );
         Test.stopTest();
@@ -101,14 +102,14 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void createThreadWithCaseMoreThanThreeThreadsErrorTest() {
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null, null);
         Exception ex;
 
         Test.startTest();
         try {
-            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null, null);
         } catch (Exception e) {
             ex = e;
         }

@@ -83,7 +83,8 @@ public with sharing class stoHelperClass {
         Boolean medskriv,
         String type,
         String inboxTitle,
-        String inboxTheme
+        String inboxTheme,
+        Boolean stoDisabilityCampaign
     ) {
         String relatedObjId;
         Thread__c thread;
@@ -96,8 +97,13 @@ public with sharing class stoHelperClass {
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
         thread = createThread(null, theme, personUser, medskriv, type, inboxTitle, inboxTheme);
-        createMessage(thread, msgText, personUser.ContactId);
 
+        if (stoDisabilityCampaign == true) {
+            thread.STO_Disability_Campaign__c = true;
+            update thread;
+        }
+
+        createMessage(thread, msgText, personUser.ContactId);
         return thread;
     }
 
