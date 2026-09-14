@@ -96,12 +96,7 @@ public with sharing class stoHelperClass {
         }
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        thread = createThread(null, theme, personUser, medskriv, type, inboxTitle, inboxTheme);
-
-        if (disabilityCampaign == true) {
-            thread.NKS_Experience_Site_Source__c = 'Uforekampanje';
-            update thread;
-        }
+        thread = createThread(null, theme, personUser, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign);
 
         createMessage(thread, msgText, personUser.ContactId);
         return thread;
@@ -114,7 +109,8 @@ public with sharing class stoHelperClass {
         Boolean medskriv,
         String type,
         String inboxTitle,
-        String inboxTheme
+        String inboxTheme,
+        Boolean disabilityCampaign
     ) {
         return createThread(
             relatedObjId,
@@ -124,7 +120,8 @@ public with sharing class stoHelperClass {
             medskriv,
             type,
             inboxTitle,
-            inboxTheme
+            inboxTheme,
+            disabilityCampaign
         );
     }
 
@@ -142,7 +139,8 @@ public with sharing class stoHelperClass {
         Boolean medskriv,
         String type,
         String inboxTitle,
-        String inboxTheme
+        String inboxTheme,
+        Boolean disabilityCampaign
     ) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = relatedObjId;
@@ -154,6 +152,9 @@ public with sharing class stoHelperClass {
         thread.STO_Medskriv__c = medskriv;
         thread.NKS_Inbox_Title__c = inboxTitle;
         thread.NKS_Inbox_Theme__c = inboxTheme;
+        if (disabilityCampaign != null && disabilityCampaign) {
+            thread.NKS_Experience_Site_Source__c = 'Uforekampanje';
+        }
         List<RecordType> recordType = [
             SELECT Id
             FROM RecordType
