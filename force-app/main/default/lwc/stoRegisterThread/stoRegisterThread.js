@@ -427,7 +427,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         const medskriv = this.refs.medskrivRadiobuttons?.getValue();
         const radioButtonValue = this.refs.themeRadioButton?.getValue();
         const radioButtonExists = this.refs.themeRadioButton != null;
-        const stoDisabilityCampaign = radioButtonValue === 'true';
+        const disabilityCampaign = radioButtonValue === 'true';
 
         let theme = this.category;
         let inboxTheme = this.themeToShow;
@@ -466,7 +466,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 type: this.threadTypeToMake,
                 inboxTitle: this.title,
                 inboxTheme: inboxTheme,
-                stoDisabilityCampaign: stoDisabilityCampaign
+                disabilityCampaign: disabilityCampaign
             })
                 .then((thread) => {
                     this.showSpinner = false;

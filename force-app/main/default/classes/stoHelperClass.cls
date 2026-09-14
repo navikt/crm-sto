@@ -84,7 +84,7 @@ public with sharing class stoHelperClass {
         String type,
         String inboxTitle,
         String inboxTheme,
-        Boolean stoDisabilityCampaign
+        Boolean disabilityCampaign
     ) {
         String relatedObjId;
         Thread__c thread;
@@ -98,8 +98,8 @@ public with sharing class stoHelperClass {
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
         thread = createThread(null, theme, personUser, medskriv, type, inboxTitle, inboxTheme);
 
-        if (stoDisabilityCampaign == true) {
-            thread.STO_Disability_Campaign__c = true;
+        if (disabilityCampaign == true) {
+            thread.NKS_Experience_Site_Source__c = 'Uforekampanje';
             update thread;
         }
 
