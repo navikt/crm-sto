@@ -30,14 +30,15 @@ public with sharing class stoInboxHelperTest {
             true,
             'STO',
             'Skriv til oss',
-            'Arbeid'
+            'Arbeid',
+            false
         );
         stoHelperClass.createMessage(t, 'Dette er en test melding', u.ContactId);
-        t.CRM_Closed_Date__c = date.today().addDays(-1);
+        t.CRM_Closed_Date__c = Date.today().addDays(-1);
         update t;
 
         Conversation_Note__c cn = new Conversation_Note__c(
-            CRM_Is_read__c = true,
+            CRM_Is_Read__c = true,
             CRM_Created_by_Ident__c = 'A123456',
             CRM_Conversation_Note__c = 'this is a test message again'
         );
@@ -46,9 +47,11 @@ public with sharing class stoInboxHelperTest {
         Test.startTest();
         List<stoInboxHelper.thread> tList = stoInboxHelper.getThreads();
         Test.stopTest();
-        System.assertEquals(tList.isEmpty(), false);
-        System.assert(tList.size() == 2);
+
+        Assert.areEqual(false, tList.isEmpty());
+        Assert.areEqual(2, tList.size());
     }
+
     @isTest
     static void getRecentThreadsTest() {
         Contact personContact = [
@@ -65,14 +68,15 @@ public with sharing class stoInboxHelperTest {
             true,
             'STO',
             'Skriv til oss',
-            'Arbeid'
+            'Arbeid',
+            false
         );
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         insert m;
 
         Conversation_Note__c cn = new Conversation_Note__c(
-            CRM_Is_read__c = false,
+            CRM_Is_Read__c = false,
             CRM_Created_by_Ident__c = 'A123456',
             CRM_Conversation_Note__c = 'this is a test message again'
         );
@@ -81,16 +85,19 @@ public with sharing class stoInboxHelperTest {
         Test.startTest();
         List<stoInboxHelper.thread> tList = stoInboxHelper.getRecentThreads();
         Test.stopTest();
-        System.assertEquals(tList.isEmpty(), false);
+
+        Assert.areEqual(false, tList.isEmpty());
     }
 
     @isTest
     static void markAsReadTest() {
         Conversation_Note__c cn = [SELECT Id FROM Conversation_Note__c LIMIT 1];
+
         Test.startTest();
         stoInboxHelper.markAsRead(cn.Id);
         Test.stopTest();
-        Boolean updatedcn = [SELECT CRM_Is_Read__c FROM Conversation_Note__c WHERE Id = :cn.Id]?.CRM_Is_Read__c;
-        System.assertEquals(true, updatedcn, 'Conversation note not marked as read');
+
+        Boolean updatedCn = [SELECT CRM_Is_Read__c FROM Conversation_Note__c WHERE Id = :cn.Id]?.CRM_Is_Read__c;
+        Assert.areEqual(true, updatedCn, 'Conversation note not marked as read');
     }
 }
