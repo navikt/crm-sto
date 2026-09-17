@@ -92,6 +92,10 @@
                     "versionNumber": "0.75.0.2"
                 }
             ]
+        },
+        {
+            "path": "Packages",
+            "default": false
         }
     ],
     "namespace": "",
