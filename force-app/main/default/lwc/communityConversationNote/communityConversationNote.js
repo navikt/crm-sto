@@ -23,7 +23,6 @@ const fields = [
 ]; //Extract the name of the thread record
 
 export default class CommunityConversationNote extends LightningElement {
-    @api recordId;
     @api title;
 
     name;
@@ -31,9 +30,17 @@ export default class CommunityConversationNote extends LightningElement {
     date;
     relatedNotes;
     themeGroup;
+    _recordId;
 
-    connectedCallback() {
-        markasread({ conversationNoteId: this.recordId });
+    @api
+    get recordId() {
+        return this._recordId;
+    }
+    set recordId(value) {
+        this._recordId = value;
+        if (value) {
+            markasread({ conversationNoteId: value });
+        }
     }
 
     @wire(getRecord, { recordId: '$recordId', fields })
