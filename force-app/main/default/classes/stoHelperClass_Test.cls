@@ -292,4 +292,29 @@ public with sharing class stoHelperClass_Test {
 
         Assert.isFalse(result.isEmpty());
     }
+
+    @isTest
+    static void testGetThread() {
+        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+
+        Thread__c created = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            personContact.AccountId,
+            personContact.Id,
+            true,
+            'STO',
+            'Inbox title test',
+            'Inbox theme test'
+        );
+
+        Test.startTest();
+        Thread__c fetched = stoHelperClass.getThread(created.Id);
+        Test.stopTest();
+
+        Assert.isNotNull(fetched, 'Expected thread to be returned');
+        Assert.areEqual(created.Id, fetched.Id, 'Returned thread Id should match');
+        Assert.areEqual('STO', fetched.CRM_Thread_Type__c, 'Expected STO thread type');
+        Assert.areEqual('Arbeid', fetched.STO_Category__c, 'Expected category to match');
+    }
 }

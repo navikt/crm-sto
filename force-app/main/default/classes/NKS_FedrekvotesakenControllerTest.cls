@@ -104,4 +104,108 @@ private class NKS_FedrekvotesakenControllerTest {
         fedrekvoteData.children = children;
         return fedrekvoteData;
     }
+
+    @isTest
+    static void testPostTaskThrowsOnFailedOppgave() {
+        ApiMock.setTestMock('POST_CREATE_OPPGAVE', 500, 'Internal Server Error');
+        NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
+        String jsonData = JSON.serialize(fedrekvoteData);
+
+        Test.startTest();
+        try {
+            NKS_FedrekvotesakenController.postTask(jsonData);
+            Assert.fail('Expected AuraHandledException');
+        } catch (AuraHandledException e) {
+            Assert.isNotNull(e.getMessage(), 'Exception message should not be null');
+        }
+        Test.stopTest();
+
+        List<Application_Log__c> logList = [
+            SELECT Id
+            FROM Application_Log__c
+            WHERE Category__c = 'Fedrekvotesaken'
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+        Assert.areEqual(1, logList.size(), 'An error log should have been created');
+    }
+
+    @isTest
+    static void testPostTaskNullJson() {
+        Test.startTest();
+        NKS_FedrekvotesakenController.postTask('null');
+        Test.stopTest();
+
+        List<Application_Log__c> logList = [
+            SELECT Id
+            FROM Application_Log__c
+            WHERE Category__c = 'Fedrekvotesaken'
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+        Assert.areEqual(1, logList.size(), 'An error log should have been created for null fedrekvoteData');
+    }
+
+    @isTest
+    static void testHasExistingNavTasksThrowsOnFailure() {
+        Test.setMock(HttpCalloutMock.class, new CalloutExceptionMock());
+
+        Test.startTest();
+        try {
+            NKS_FedrekvotesakenController.hasExistingNavTasks();
+            Assert.fail('Expected AuraHandledException');
+        } catch (AuraHandledException e) {
+            Assert.isNotNull(e.getMessage(), 'Exception message should not be null');
+        }
+        Test.stopTest();
+
+        List<Application_Log__c> logList = [
+            SELECT Id
+            FROM Application_Log__c
+            WHERE Category__c = 'Fedrekvotesaken'
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+        Assert.areEqual(1, logList.size(), 'An error log should have been created');
+    }
+
+    @isTest
+    static void testCreateSTBThreadDmlException() {
+        ApiMock.setTestMock('POST_CREATE_OPPGAVE', 201, 'Created');
+        NKS_FedrekvotesakenController.throwOnThreadInsert = true;
+        NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
+        String jsonData = JSON.serialize(fedrekvoteData);
+
+        Test.startTest();
+        try {
+            NKS_FedrekvotesakenController.postTask(jsonData);
+            Assert.fail('Expected AuraHandledException');
+        } catch (AuraHandledException e) {
+            Assert.isNotNull(e.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    @isTest
+    static void testCreateMessageDmlException() {
+        ApiMock.setTestMock('POST_CREATE_OPPGAVE', 201, 'Created');
+        NKS_FedrekvotesakenController.throwOnMessageInsert = true;
+        NKS_FedrekvotesakenController.Fedrekvote fedrekvoteData = makeTestData();
+        String jsonData = JSON.serialize(fedrekvoteData);
+
+        Test.startTest();
+        NKS_FedrekvotesakenController.postTask(jsonData);
+        Test.stopTest();
+
+        List<Message__c> messages = [SELECT Id FROM Message__c];
+        Assert.areEqual(0, messages.size(), 'No message should have been inserted');
+    }
+
+    private class CalloutExceptionMock implements HttpCalloutMock {
+        public HTTPResponse respond(HTTPRequest req) {
+            CalloutException e = (CalloutException) CalloutException.class.newInstance();
+            e.setMessage('Simulated callout exception');
+            throw e;
+        }
+    }
 }

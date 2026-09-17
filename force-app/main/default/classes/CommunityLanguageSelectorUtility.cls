@@ -3,29 +3,28 @@ public with sharing class CommunityLanguageSelectorUtility {
      * Method to be able to change the language easily in community
      */
     @AuraEnabled
-    public static Boolean setLanguage(String language){
-        Id uId = UserInfo.getUserId();
-        User u = new User(Id = uId);
-        if(language.equals('Norwegian')){
+    public static Boolean setLanguage(String language) {
+        return setLanguageForUser(language, UserInfo.getUserId());
+    }
+
+    @TestVisible
+    private static Boolean setLanguageForUser(String language, Id userId) {
+        User u = new User(Id = userId);
+        if (language.equals('Norwegian')) {
             u.LanguageLocaleKey = 'no';
-        }
-        else if(language.equals('English')){
+        } else if (language.equals('English')) {
             u.LanguageLocaleKey = 'en_US';
         }
-        try{
+        try {
             update u;
             return true;
-        }
-        catch(DmlException e){
+        } catch (DmlException e) {
             return false;
         }
     }
-    /**
-     * Done in Apex in order to avoid cacheing
-     */
+
     @AuraEnabled
-    public static string getLanguage(){
-       String language = UserInfo.getLanguage();
-       return language;
+    public static String getLanguage() {
+        return UserInfo.getLanguage();
     }
 }
