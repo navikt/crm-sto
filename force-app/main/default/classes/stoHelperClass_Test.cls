@@ -95,7 +95,7 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void createThreadWithCaseTest() {
+    static void createThreadWithCaseLegacyTest() {
         Test.startTest();
         Thread__c thread = stoHelperClass.createThreadWithCase(
             'Arbeid',
@@ -103,19 +103,18 @@ public with sharing class stoHelperClass_Test {
             true,
             'STO',
             null,
-            null,
             null
         );
         Test.stopTest();
-        List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
 
+        List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
         Assert.areEqual(1, msgList.size(), 'Thread should contain exactly one message');
     }
 
     @isTest
-    static void createThreadWithCase_DisabilityCampaign_SetsSourceTest() {
+    static void createThreadWithCaseV2_DisabilityCampaign_SetsSourceTest() {
         Test.startTest();
-        Thread__c thread = stoHelperClass.createThreadWithCase(
+        Thread__c thread = stoHelperClass.createThreadWithCaseV2(
             'Arbeid',
             'This is the message',
             true,
@@ -137,9 +136,9 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void createThreadWithCase_DisabilityCampaign_NullSourceWhenFalseTest() {
+    static void createThreadWithCaseV2_DisabilityCampaign_NullSourceWhenFalseTest() {
         Test.startTest();
-        Thread__c thread = stoHelperClass.createThreadWithCase(
+        Thread__c thread = stoHelperClass.createThreadWithCaseV2(
             'Arbeid',
             'This is the message',
             true,
@@ -162,14 +161,14 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void createThreadWithCaseMoreThanThreeThreadsErrorTest() {
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null, null);
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null, null);
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
         Exception ex;
 
         Test.startTest();
         try {
-            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null, null);
+            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
         } catch (Exception e) {
             ex = e;
         }
