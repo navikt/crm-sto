@@ -26,7 +26,17 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void getOpenThreadsTest() {
         User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        Thread__c t = stoHelperClass.createThread(null, 'Arbeid', u.AccountId, u.ContactId, true, 'STO', null, null);
+        Thread__c t = stoHelperClass.createThread(
+            null,
+            'Arbeid',
+            u.AccountId,
+            u.ContactId,
+            true,
+            'STO',
+            null,
+            null,
+            false
+        );
         Test.startTest();
         Assert.areNotEqual(null, stoHelperClass.getOpenThreads('Arbeid', 'STO'), 'Expected to get a thread');
         Test.stopTest();
@@ -54,7 +64,8 @@ public with sharing class stoHelperClass_Test {
             true,
             'STO',
             null,
-            null
+            null,
+            false
         );
         Test.stopTest();
 
@@ -72,7 +83,8 @@ public with sharing class stoHelperClass_Test {
             true,
             'STO',
             null,
-            null
+            null,
+            false
         );
         Test.startTest();
         stoHelperClass.createMessage(t, 'this is a test message', personContact.Id);
@@ -83,7 +95,7 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void createThreadWithCaseTest() {
+    static void createThreadWithCaseLegacyTest() {
         Test.startTest();
         Thread__c thread = stoHelperClass.createThreadWithCase(
             'Arbeid',
@@ -94,9 +106,57 @@ public with sharing class stoHelperClass_Test {
             null
         );
         Test.stopTest();
-        List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
 
+        List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
         Assert.areEqual(1, msgList.size(), 'Thread should contain exactly one message');
+    }
+
+    @isTest
+    static void createThreadWithCaseV2_DisabilityCampaign_SetsSourceTest() {
+        Test.startTest();
+        Thread__c thread = stoHelperClass.createThreadWithCaseV2(
+            'Arbeid',
+            'This is the message',
+            true,
+            'STO',
+            null,
+            null,
+            true
+        );
+        Test.stopTest();
+
+        Thread__c insertedThread = [
+            SELECT NKS_Experience_Site_Source__c
+            FROM Thread__c
+            WHERE Id = :thread.Id
+            LIMIT 1
+        ];
+
+        Assert.areEqual('Uforekampanje', insertedThread.NKS_Experience_Site_Source__c);
+    }
+
+    @isTest
+    static void createThreadWithCaseV2_DisabilityCampaign_NullSourceWhenFalseTest() {
+        Test.startTest();
+        Thread__c thread = stoHelperClass.createThreadWithCaseV2(
+            'Arbeid',
+            'This is the message',
+            true,
+            'STO',
+            null,
+            null,
+            false
+        );
+        Test.stopTest();
+
+        Thread__c insertedThread = [
+            SELECT NKS_Experience_Site_Source__c
+            FROM Thread__c
+            WHERE Id = :thread.Id
+            LIMIT 1
+        ];
+
+        Assert.areEqual(null, insertedThread.NKS_Experience_Site_Source__c);
     }
 
     @isTest
@@ -146,7 +206,8 @@ public with sharing class stoHelperClass_Test {
             true,
             'STO',
             null,
-            null
+            null,
+            false
         );
         Test.startTest();
         stoHelperClass.closeThread(t.Id);
@@ -199,7 +260,8 @@ public with sharing class stoHelperClass_Test {
                     true,
                     'STO',
                     null,
-                    null
+                    null,
+                    false
                 )
             );
         }
@@ -235,7 +297,8 @@ public with sharing class stoHelperClass_Test {
                     true,
                     'STO',
                     null,
-                    null
+                    null,
+                    false
                 )
             );
         }
@@ -268,7 +331,8 @@ public with sharing class stoHelperClass_Test {
             true,
             'STO',
             null,
-            null
+            null,
+            false
         );
 
         System.runAs(u) {
