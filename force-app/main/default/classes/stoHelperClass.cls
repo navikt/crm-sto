@@ -51,6 +51,7 @@ public with sharing class stoHelperClass {
 
         return [SELECT Id, Label, STO_Category__c FROM STO_Category__mdt ORDER BY Id];
     }
+
     /**
      * Method to create case, thread and message when a user submits a write to us case. Case is created through
      * flow "On New STO Thread Create Task Or Case" on after-insert trigger.
@@ -66,9 +67,35 @@ public with sharing class stoHelperClass {
         String inboxTitle,
         String inboxTheme
     ) {
-        String relatedObjId;
-        Thread__c thread;
+        return createThreadWithCaseInternal(theme, msgText, medskriv, type, inboxTitle, inboxTheme, false);
+    }
 
+    /**
+     * New version with extra optional fields.
+     * Kept for compatibility with updated frontend while old cached Experience Site pages still call the legacy method.
+     */
+    @AuraEnabled
+    public static Thread__c createThreadWithCaseV2(
+        String theme,
+        String msgText,
+        Boolean medskriv,
+        String type,
+        String inboxTitle,
+        String inboxTheme,
+        Boolean disabilityCampaign
+    ) {
+        return createThreadWithCaseInternal(theme, msgText, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign);
+    }
+
+    private static Thread__c createThreadWithCaseInternal(
+        String theme,
+        String msgText,
+        Boolean medskriv,
+        String type,
+        String inboxTitle,
+        String inboxTheme,
+        Boolean disabilityCampaign
+    ) {
         if (isMaxThreadCount(theme, type)) {
             LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
@@ -76,9 +103,18 @@ public with sharing class stoHelperClass {
         }
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        thread = createThread(null, theme, personUser, medskriv, type, inboxTitle, inboxTheme);
-        createMessage(thread, msgText, personUser.ContactId);
+        Thread__c thread = createThread(
+            null,
+            theme,
+            personUser,
+            medskriv,
+            type,
+            inboxTitle,
+            inboxTheme,
+            disabilityCampaign
+        );
 
+        createMessage(thread, msgText, personUser.ContactId);
         return thread;
     }
 
@@ -89,7 +125,8 @@ public with sharing class stoHelperClass {
         Boolean medskriv,
         String type,
         String inboxTitle,
-        String inboxTheme
+        String inboxTheme,
+        Boolean disabilityCampaign
     ) {
         return createThread(
             relatedObjId,
@@ -99,7 +136,8 @@ public with sharing class stoHelperClass {
             medskriv,
             type,
             inboxTitle,
-            inboxTheme
+            inboxTheme,
+            disabilityCampaign
         );
     }
 
@@ -117,7 +155,8 @@ public with sharing class stoHelperClass {
         Boolean medskriv,
         String type,
         String inboxTitle,
-        String inboxTheme
+        String inboxTheme,
+        Boolean disabilityCampaign
     ) {
         Thread__c thread = new Thread__c();
         thread.CRM_Related_Object__c = relatedObjId;
@@ -129,6 +168,11 @@ public with sharing class stoHelperClass {
         thread.STO_Medskriv__c = medskriv;
         thread.NKS_Inbox_Title__c = inboxTitle;
         thread.NKS_Inbox_Theme__c = inboxTheme;
+
+        if (disabilityCampaign != null && disabilityCampaign) {
+            thread.NKS_Experience_Site_Source__c = 'Uforekampanje';
+        }
+
         List<RecordType> recordType = [
             SELECT Id
             FROM RecordType
@@ -138,6 +182,7 @@ public with sharing class stoHelperClass {
         if (!recordType.isEmpty()) {
             thread.recordTypeId = recordType[0].Id;
         }
+
         try {
             insert thread;
         } catch (DmlException e) {
