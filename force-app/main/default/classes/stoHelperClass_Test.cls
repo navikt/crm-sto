@@ -369,7 +369,8 @@ public with sharing class stoHelperClass_Test {
             true,
             'STO',
             'Inbox title test',
-            'Inbox theme test'
+            'Inbox theme test',
+            false
         );
 
         Test.startTest();
