@@ -86,17 +86,19 @@ public without sharing class nksGetStoUtilityController {
     @AuraEnabled
     public static Id getNewSTO() {
         try {
-            Integer attempt = 0;
             Id userId = getCurrentUserId();
             allUserSkills = getServiceResourceSkillIds();
 
-            do {
-                Id nextCaseId = getNextSTOCase();
+            Id nextCaseId = getNextSTOCase();
+
+            Integer attempt = 0;
+            while (attempt < MAX_ATTEMPTS) {
                 if (takeOwnership(nextCaseId, userId)) {
                     return nextCaseId;
                 }
-                attempt += 1;
-            } while (attempt < MAX_ATTEMPTS);
+                attempt++;
+            }
+
             throw new TooManyAttemptsException('Max Attempt Count Exceeded: ' + MAX_ATTEMPTS);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());

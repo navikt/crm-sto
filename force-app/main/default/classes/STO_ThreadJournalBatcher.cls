@@ -20,28 +20,6 @@ public without sharing class STO_ThreadJournalBatcher implements Database.Batcha
             super(false, false, false);
         }
 
-        public List<Schema.SObjectField> getSObjectFieldList() {
-            return new List<Schema.SObjectField>{
-                Journal_Entry__c.Id,
-                Journal_Entry__c.CRM_Thread__c,
-                Journal_Entry__c.CRM_Created_By_Ident__c,
-                Journal_Entry__c.CRM_Created_By_NAV_Unit__c,
-                Journal_Entry__c.NAV_Case_Reference__c,
-                Journal_Entry__c.CRM_Theme_Code__c,
-                Journal_Entry__c.CRM_Subtheme_Code__c,
-                Journal_Entry__c.Subtheme__c,
-                Journal_Entry__c.Theme__c,
-                Journal_Entry__c.CRM_NAV_Case_Legacy_System__c,
-                Journal_Entry__c.CRM_Journal_Post_Type__c,
-                Journal_Entry__c.Journal_Entry_Status__c,
-                Journal_Entry__c.Journal_Entry_ID__c
-            };
-        }
-
-        public Schema.SObjectType getSObjectType() {
-            return Journal_Entry__c.sObjectType;
-        }
-
         private String getJournalConditions() {
             return 'CRM_Thread__r.STO_Sensitive_Information__c = false AND CRM_Thread__r.CRM_Type__c IN (\'STO\', \'STB\', \'BTO\') AND Journal_Entry_Status__c = \'In Progress\' AND (CRM_Thread__r.CRM_isActive__c = false OR (CRM_Thread__r.CRM_isActive__c = true AND CRM_Thread__r.CRM_Journal_Status__c = \'Journal Error\' AND CRM_Journal_Post_Type__c= \'NOTAT\'))';
         }
