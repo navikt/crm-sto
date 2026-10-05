@@ -144,7 +144,7 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     handleSetCaseToInProgress() {
-        // Refresh first to see if case status was changed by for example Modia through API while Salesforce user 
+        // Refresh first to see if case status was changed by for example Modia through API while Salesforce user
         // already had record open to avoid setting case to In Progress when it could in reality be Closed
         refreshApex(this.wiredCase).then(() => {
             if (this.status !== CONSTANTS.RESERVED) {
@@ -290,7 +290,7 @@ export default class StoMessagingContainer extends LightningElement {
     }
 
     get transferDisabled() {
-        return !this.inQueue;
+        return !this.inQueue || this.status === CONSTANTS.CLOSED;
     }
 
     get notificationBoxTemplate() {
