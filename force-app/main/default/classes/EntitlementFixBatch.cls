@@ -21,7 +21,7 @@ public with sharing class EntitlementFixBatch implements Database.Batchable<SObj
 
     public void finish(Database.BatchableContext BC) {
         List<Entitlement> ents = [
-            SELECT Id, SlaProcessId
+            SELECT Id
             FROM Entitlement
             WHERE Name IN ('BTO Entitlement', 'STO Entitlement') AND SlaProcessId = NULL
         ];
