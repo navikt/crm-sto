@@ -6,35 +6,43 @@
 // so the Apex Language Server can suggest their symbols. Requires an authenticated
 // default org ("sf config get target-org") that has these packages installed.
 // If a default Dev Hub is also set, its newest released version per package is
-// logged for comparison (informational only).
+// logged for comparison (informational only). Packages are retrieved concurrently.
 
-const { execFileSync } = require('child_process');
+const { execFile } = require('child_process');
+const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
+
+const execFileAsync = promisify(execFile);
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const SFDX_PROJECT_PATH = path.join(PROJECT_ROOT, 'sfdx-project.json');
 const PACKAGES_DIR = path.join(PROJECT_ROOT, 'Packages');
+const MAX_BUFFER = 20 * 1024 * 1024;
 
-function runSfJson(args) {
-    const output = execFileSync('sf', [...args, '--json'], {
+async function runSfJson(args) {
+    const { stdout } = await execFileAsync('sf', [...args, '--json'], {
         cwd: PROJECT_ROOT,
-        encoding: 'utf8',
-        shell: true
+        shell: true,
+        maxBuffer: MAX_BUFFER
     });
-    const parsed = JSON.parse(output);
+    const parsed = JSON.parse(stdout);
     if (parsed.status !== 0) {
         throw new Error(parsed.message || `sf ${args.join(' ')} failed`);
     }
     return parsed.result;
 }
 
-function runSf(args) {
-    execFileSync('sf', args, {
+async function runSf(args) {
+    await execFileAsync('sf', args, {
         cwd: PROJECT_ROOT,
-        stdio: 'inherit',
-        shell: true
+        shell: true,
+        maxBuffer: MAX_BUFFER
     });
+}
+
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function getDependencies() {
@@ -48,8 +56,8 @@ function getDependencies() {
     return deps;
 }
 
-function getDefaultOrg() {
-    const result = runSfJson(['config', 'get', 'target-org']);
+async function getDefaultOrg() {
+    const result = await runSfJson(['config', 'get', 'target-org']);
     const entry = Array.isArray(result) ? result[0] : result;
     if (!entry || !entry.value) {
         throw new Error('No default org is set. Run "sf config set target-org=<alias>" (or "sf org login web") first.');
@@ -57,9 +65,9 @@ function getDefaultOrg() {
     return entry.value;
 }
 
-function getDefaultDevHub() {
+async function getDefaultDevHub() {
     try {
-        const result = runSfJson(['config', 'get', 'target-dev-hub']);
+        const result = await runSfJson(['config', 'get', 'target-dev-hub']);
         const entry = Array.isArray(result) ? result[0] : result;
         return entry && entry.value ? entry.value : null;
     } catch (err) {
@@ -67,10 +75,10 @@ function getDefaultDevHub() {
     }
 }
 
-function getLatestReleasedVersion(devHub, packageName) {
+async function getLatestReleasedVersion(devHub, packageName) {
     let versions;
     try {
-        versions = runSfJson([
+        versions = await runSfJson([
             'package',
             'version',
             'list',
@@ -98,63 +106,73 @@ function getLatestReleasedVersion(devHub, packageName) {
     });
 }
 
-function sleepSync(ms) {
-    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
-}
-
-function moveDir(src, dest, attempts = 5) {
+async function replaceDir(src, dest, attempts = 5) {
     for (let attempt = 1; attempt <= attempts; attempt++) {
         try {
-            fs.renameSync(src, dest);
+            fs.rmSync(dest, { recursive: true, force: true });
+            fs.cpSync(src, dest, { recursive: true, force: true });
+            fs.rmSync(src, { recursive: true, force: true });
             return;
         } catch (err) {
-            if (err.code !== 'EPERM' && err.code !== 'EXDEV' && err.code !== 'EBUSY') {
+            // Can fail on Windows if something (e.g. OneDrive, antivirus) briefly locks
+            // a just-created/removed directory. Retry the whole swap with a backoff.
+            if (attempt === attempts) {
                 throw err;
             }
-            // Rename can fail on Windows if something (e.g. OneDrive, antivirus) briefly
-            // locks a just-created directory. Fall back to copy + remove, retrying a bit.
-            try {
-                fs.cpSync(src, dest, { recursive: true });
-                fs.rmSync(src, { recursive: true, force: true });
-                return;
-            } catch (copyErr) {
-                if (attempt === attempts) {
-                    throw copyErr;
-                }
-                sleepSync(300 * attempt);
-            }
+            await sleep(300 * attempt);
         }
     }
 }
 
-function retrievePackage(targetOrg, packageName) {
+async function retrievePackage(targetOrg, packageName) {
     // --package-name can't be combined with --output-dir, so it retrieves into a
     // root-level folder named after the package; move that into Packages/<name>.
     const tempDir = path.join(PROJECT_ROOT, packageName);
     fs.rmSync(tempDir, { recursive: true, force: true });
 
-    runSf(['project', 'retrieve', 'start', '--package-name', packageName, '--target-org', targetOrg]);
+    await runSf(['project', 'retrieve', 'start', '--package-name', packageName, '--target-org', targetOrg]);
 
     if (!fs.existsSync(tempDir)) {
         throw new Error(`Expected retrieved metadata at "${packageName}", but it was not created.`);
     }
 
     const destDir = path.join(PACKAGES_DIR, packageName);
-    fs.rmSync(destDir, { recursive: true, force: true });
-    moveDir(tempDir, destDir);
+    await replaceDir(tempDir, destDir);
 }
 
-function main() {
+async function processPackage(targetOrg, devHub, packageName, pinnedVersion) {
+    const lines = [];
+
+    if (devHub) {
+        const latest = await getLatestReleasedVersion(devHub, packageName);
+        const latestLabel = latest
+            ? `${latest.MajorVersion}.${latest.MinorVersion}.${latest.PatchVersion}.${latest.BuildNumber}`
+            : 'no released version found on Dev Hub';
+        lines.push(`${packageName}: pinned ${pinnedVersion} -> latest released ${latestLabel}`);
+    } else {
+        lines.push(`${packageName}: pinned ${pinnedVersion}`);
+    }
+
+    try {
+        await retrievePackage(targetOrg, packageName);
+        return { packageName, ok: true, lines };
+    } catch (err) {
+        lines.push(`  Failed to retrieve "${packageName}": ${err.message}`);
+        return { packageName, ok: false, lines };
+    }
+}
+
+async function main() {
     const deps = getDependencies();
     if (deps.size === 0) {
         console.log('No dependencies found in sfdx-project.json.');
         return;
     }
 
-    const targetOrg = getDefaultOrg();
+    const targetOrg = await getDefaultOrg();
     console.log(`Using default org: ${targetOrg}`);
 
-    const devHub = getDefaultDevHub();
+    const devHub = await getDefaultDevHub();
     if (devHub) {
         console.log(`Using default Dev Hub for version check: ${devHub}\n`);
     } else {
@@ -163,25 +181,19 @@ function main() {
 
     fs.mkdirSync(PACKAGES_DIR, { recursive: true });
 
-    const failures = [];
-    for (const [packageName, pinnedVersion] of deps) {
-        if (devHub) {
-            const latest = getLatestReleasedVersion(devHub, packageName);
-            const latestLabel = latest
-                ? `${latest.MajorVersion}.${latest.MinorVersion}.${latest.PatchVersion}.${latest.BuildNumber}`
-                : 'no released version found on Dev Hub';
-            console.log(`${packageName}: pinned ${pinnedVersion} -> latest released ${latestLabel}`);
-        } else {
-            console.log(`${packageName}: pinned ${pinnedVersion}`);
-        }
+    const results = await Promise.all(
+        Array.from(deps, ([packageName, pinnedVersion]) =>
+            processPackage(targetOrg, devHub, packageName, pinnedVersion)
+        )
+    );
 
-        try {
-            retrievePackage(targetOrg, packageName);
-        } catch (err) {
-            console.warn(`  Failed to retrieve "${packageName}": ${err.message}`);
-            failures.push(packageName);
-        }
+    const failures = [];
+    for (const result of results) {
+        console.log(result.lines.join('\n'));
         console.log('');
+        if (!result.ok) {
+            failures.push(result.packageName);
+        }
     }
 
     if (failures.length) {
@@ -192,4 +204,7 @@ function main() {
     }
 }
 
-main();
+main().catch((err) => {
+    console.error(err.message);
+    process.exitCode = 1;
+});
