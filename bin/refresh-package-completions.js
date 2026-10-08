@@ -64,21 +64,38 @@ async function getDefaultOrg() {
     return entry.value;
 }
 
-async function replaceDir(src, dest, attempts = 5) {
+async function retryFileOperation(label, operation, attempts = 5) {
     for (let attempt = 1; attempt <= attempts; attempt++) {
         try {
-            fs.rmSync(dest, { recursive: true, force: true });
-            fs.cpSync(src, dest, { recursive: true, force: true });
-            fs.rmSync(src, { recursive: true, force: true });
+            operation();
             return;
         } catch (err) {
-            // Can fail on Windows if something (e.g. OneDrive, antivirus) briefly locks
-            // a just-created/removed directory. Retry the whole swap with a backoff.
-            if (attempt === attempts) {
-                throw err;
+            if (attempt === attempts || !['EPERM', 'EACCES', 'EBUSY', 'ENOTEMPTY'].includes(err.code)) {
+                throw new Error(
+                    `${label} failed after ${attempt} attempt(s): ${err.code ? `${err.code}: ` : ''}${err.message}`,
+                    { cause: err }
+                );
             }
             await sleep(300 * attempt);
         }
+    }
+}
+
+async function replaceDir(src, dest) {
+    await retryFileOperation(`Removing destination directory: ${dest}`, () =>
+        fs.rmSync(dest, { recursive: true, force: true })
+    );
+    await retryFileOperation(`Copying metadata: ${src} -> ${dest}`, () =>
+        fs.cpSync(src, dest, { recursive: true, force: true })
+    );
+    try {
+        await retryFileOperation(`Removing temporary directory: ${src}`, () =>
+            fs.rmSync(src, { recursive: true, force: true })
+        );
+        return true;
+    } catch (err) {
+        console.error(`  Metadata saved, but cleanup failed: ${err.message}`);
+        return false;
     }
 }
 
@@ -86,7 +103,9 @@ async function retrievePackage(targetOrg, packageName) {
     // --package-name can't be combined with --output-dir, so it retrieves into a
     // root-level folder named after the package; move that into Packages/<name>.
     const tempDir = path.join(PROJECT_ROOT, packageName);
-    fs.rmSync(tempDir, { recursive: true, force: true });
+    await retryFileOperation(`Removing existing temporary directory: ${tempDir}`, () =>
+        fs.rmSync(tempDir, { recursive: true, force: true })
+    );
 
     await runSf(['project', 'retrieve', 'start', '--package-name', packageName, '--target-org', targetOrg]);
 
@@ -95,21 +114,19 @@ async function retrievePackage(targetOrg, packageName) {
     }
 
     const destDir = path.join(PACKAGES_DIR, packageName);
-    console.log(`  Saving retrieved metadata to Packages/${packageName}...`);
-    await replaceDir(tempDir, destDir);
+    return replaceDir(tempDir, destDir);
 }
 
-async function processPackage(targetOrg, packageName, pinnedVersion) {
+async function processPackage(targetOrg, packageName) {
     const startedAt = Date.now();
-    console.log(`  Pinned version: ${pinnedVersion}`);
 
     try {
-        console.log(`  Retrieving metadata for "${packageName}"...`);
-        await retrievePackage(targetOrg, packageName);
-        console.log(`  Completed "${packageName}" in ${((Date.now() - startedAt) / 1000).toFixed(1)}s.`);
-        return { packageName, ok: true };
+        const cleanupOk = await retrievePackage(targetOrg, packageName);
+        const status = cleanupOk ? 'Completed' : 'Metadata saved, cleanup failed for';
+        console.log(`  ${status} "${packageName}" in ${((Date.now() - startedAt) / 1000).toFixed(1)}s.`);
+        return { packageName, ok: true, cleanupOk };
     } catch (err) {
-        console.error(`  Failed to retrieve "${packageName}": ${err.message}`);
+        console.error(`  Failed to refresh "${packageName}": ${err.message}`);
         return { packageName, ok: false };
     }
 }
@@ -129,14 +146,16 @@ async function main() {
 
     console.log(`Refreshing ${deps.size} packages sequentially...`);
     const failures = [];
+    const cleanupFailures = [];
     let completed = 0;
     for (const [packageName, pinnedVersion] of deps) {
-        console.log(`[${completed + 1}/${deps.size}] ${packageName}`);
-        const result = await processPackage(targetOrg, packageName, pinnedVersion);
+        console.log(`[${completed + 1}/${deps.size}] ${packageName} (pinned ${pinnedVersion})`);
+        const result = await processPackage(targetOrg, packageName);
         completed++;
-        console.log('');
         if (!result.ok) {
             failures.push(result.packageName);
+        } else if (!result.cleanupOk) {
+            cleanupFailures.push(result.packageName);
         }
     }
 
@@ -144,14 +163,17 @@ async function main() {
         `Refreshed ${completed - failures.length}/${deps.size} packages in ${((Date.now() - startedAt) / 1000).toFixed(1)}s.`
     );
     if (failures.length) {
-        console.log(`Done, with failures retrieving: ${failures.join(', ')}`);
+        console.error(`Failed to refresh: ${failures.join(', ')}`);
+    }
+    if (cleanupFailures.length) {
+        console.error(`Metadata saved, but temporary directory cleanup failed for: ${cleanupFailures.join(', ')}`);
+    }
+    if (failures.length || cleanupFailures.length) {
         process.exitCode = 1;
-    } else {
-        console.log('Done.');
     }
 }
 
 main().catch((err) => {
-    console.error(err.message);
+    console.error(`Package refresh failed: ${err.message}`);
     process.exitCode = 1;
 });
