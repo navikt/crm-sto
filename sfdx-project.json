@@ -94,7 +94,7 @@
             ]
         },
         {
-            "path": "Packages",
+            "path": "packages",
             "default": false
         }
     ],
