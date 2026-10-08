@@ -101,6 +101,29 @@ public with sharing class stoHelperClass {
         return thread;
     }
 
+    @AuraEnabled
+    public static Thread__c createThreadForChild(
+        String theme,
+        String msgText,
+        Boolean medskriv,
+        String type,
+        String inboxTitle,
+        String inboxTheme,
+        String childPid
+    ) {
+        // We need to validate that the parent has a valid relation to the child.
+        // TODO: Add proper validation through PDL api
+        Boolean hasForeldreansvar = true;
+        if (!hasForeldreansvar) {
+            LOGGER.error('Parent does not have valid relation to child', null, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
+            return null;
+        }
+        Account child = [SELECT Id, PersonContactId FROM Account WHERE Name = :childPid LIMIT 1];
+
+        return createThread(null, theme, child.Id, child.PersonContactId, medskriv, type, inboxTitle, inboxTheme);
+    }
+
     private static Thread__c createThread(
         String relatedObjId,
         String theme,
