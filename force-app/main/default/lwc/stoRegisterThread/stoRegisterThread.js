@@ -1,6 +1,6 @@
 import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
-import createThreadWithCase from '@salesforce/apex/stoHelperClass.createThreadWithCase';
+import createThreadWithCaseV2 from '@salesforce/apex/stoHelperClass.createThreadWithCaseV2';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
@@ -226,6 +226,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 category: 'Pleiepenger',
                 text: 'Gjelder det pleiepenger for sykt barn?',
                 inboxTheme: 'Pleiepenger for sykt barn'
+            },
+            Ufør: {
+                initialCategory: 'Ufør',
+                category: 'Ufør',
+                text: 'Har du fått SMS om at vi kan hjelpe deg å se på mulighetene dine?',
+                inboxTheme: 'Ufør'
             }
         },
         'Meld fra om endring': {
@@ -421,6 +427,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         const medskriv = this.refs.medskrivRadiobuttons?.getValue();
         const radioButtonValue = this.refs.themeRadioButton?.getValue();
         const radioButtonExists = this.refs.themeRadioButton != null;
+        const disabilityCampaign = radioButtonValue === 'true';
 
         let theme = this.category;
         let inboxTheme = this.themeToShow;
@@ -452,13 +459,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
-            createThreadWithCase({
+            createThreadWithCaseV2({
                 theme: theme,
                 msgText: this.message,
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxTitle: this.title,
-                inboxTheme: inboxTheme
+                inboxTheme: inboxTheme,
+                disabilityCampaign: disabilityCampaign
             })
                 .then((thread) => {
                     this.showSpinner = false;
@@ -600,6 +608,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     previousCategory;
     themeRadioButtonSelected;
     handleThemeRadioButtonChange(event) {
+        if (this.title === 'Skriv til oss' && this.originalThemeToShow === 'Ufør') {
+            this.themeRadioButtonSelected = event.detail.value === 'true';
+            return;
+        }
         this.isThreadDataLoading = true;
         this.spinnerText = spinnerReasonTextMap.load;
         const mappingKey = this.originalThemeToShow;

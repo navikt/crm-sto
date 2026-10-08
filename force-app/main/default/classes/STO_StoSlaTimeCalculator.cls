@@ -8,7 +8,8 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
                 FROM BusinessHours
                 WHERE Name = 'STO Business Hours'
                 LIMIT 1
-            ]?.Id;
+            ]
+            ?.Id;
 
             if (STO_BUSINESS_HOURS_ID == null) {
                 STO_BUSINESS_HOURS_ID = [
@@ -16,7 +17,8 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
                     FROM BusinessHours
                     WHERE IsDefault = TRUE
                     LIMIT 1
-                ]?.Id;
+                ]
+                ?.Id;
             }
         }
         return STO_BUSINESS_HOURS_ID;
@@ -82,11 +84,12 @@ global without sharing class STO_StoSlaTimeCalculator implements Support.Milesto
      **/
     public Date addBusinessDays(Date startDate, Integer businessDaysToAdd) {
         Date slaDate = startDate;
-
         Integer businessDaysAdded = 0;
+        Id businessHoursId = getBusinessHoursId();
+
         while (businessDaysAdded < businessDaysToAdd) {
             slaDate = slaDate.addDays(1);
-            if (BusinessHours.isWithin(getBusinessHoursId(), slaDate)) {
+            if (BusinessHours.isWithin(businessHoursId, slaDate)) {
                 businessDaysAdded++;
             }
         }
