@@ -5,8 +5,7 @@
 // dependency declared in sfdx-project.json, retrieved from the default org,
 // so the Apex Language Server can suggest their symbols. Requires an authenticated
 // default org ("sf config get target-org") that has these packages installed.
-// If a default Dev Hub is also set, its newest released version per package is
-// logged for comparison (informational only). Packages are retrieved concurrently.
+// Packages are retrieved sequentially.
 
 const { execFile } = require('child_process');
 const { promisify } = require('util');
@@ -65,47 +64,6 @@ async function getDefaultOrg() {
     return entry.value;
 }
 
-async function getDefaultDevHub() {
-    try {
-        const result = await runSfJson(['config', 'get', 'target-dev-hub']);
-        const entry = Array.isArray(result) ? result[0] : result;
-        return entry && entry.value ? entry.value : null;
-    } catch (err) {
-        return null;
-    }
-}
-
-async function getLatestReleasedVersion(devHub, packageName) {
-    let versions;
-    try {
-        versions = await runSfJson([
-            'package',
-            'version',
-            'list',
-            '--packages',
-            packageName,
-            '--released',
-            '--target-dev-hub',
-            devHub
-        ]);
-    } catch (err) {
-        return null;
-    }
-    if (!versions || versions.length === 0) {
-        return null;
-    }
-    return versions.reduce((latest, current) => {
-        const a = [current.MajorVersion, current.MinorVersion, current.PatchVersion, current.BuildNumber];
-        const b = [latest.MajorVersion, latest.MinorVersion, latest.PatchVersion, latest.BuildNumber];
-        for (let i = 0; i < a.length; i++) {
-            if (a[i] !== b[i]) {
-                return a[i] > b[i] ? current : latest;
-            }
-        }
-        return latest;
-    });
-}
-
 async function replaceDir(src, dest, attempts = 5) {
     for (let attempt = 1; attempt <= attempts; attempt++) {
         try {
@@ -137,32 +95,27 @@ async function retrievePackage(targetOrg, packageName) {
     }
 
     const destDir = path.join(PACKAGES_DIR, packageName);
+    console.log(`  Saving retrieved metadata to Packages/${packageName}...`);
     await replaceDir(tempDir, destDir);
 }
 
-async function processPackage(targetOrg, devHub, packageName, pinnedVersion) {
-    const lines = [];
-
-    if (devHub) {
-        const latest = await getLatestReleasedVersion(devHub, packageName);
-        const latestLabel = latest
-            ? `${latest.MajorVersion}.${latest.MinorVersion}.${latest.PatchVersion}.${latest.BuildNumber}`
-            : 'no released version found on Dev Hub';
-        lines.push(`${packageName}: pinned ${pinnedVersion} -> latest released ${latestLabel}`);
-    } else {
-        lines.push(`${packageName}: pinned ${pinnedVersion}`);
-    }
+async function processPackage(targetOrg, packageName, pinnedVersion) {
+    const startedAt = Date.now();
+    console.log(`  Pinned version: ${pinnedVersion}`);
 
     try {
+        console.log(`  Retrieving metadata for "${packageName}"...`);
         await retrievePackage(targetOrg, packageName);
-        return { packageName, ok: true, lines };
+        console.log(`  Completed "${packageName}" in ${((Date.now() - startedAt) / 1000).toFixed(1)}s.`);
+        return { packageName, ok: true };
     } catch (err) {
-        lines.push(`  Failed to retrieve "${packageName}": ${err.message}`);
-        return { packageName, ok: false, lines };
+        console.error(`  Failed to retrieve "${packageName}": ${err.message}`);
+        return { packageName, ok: false };
     }
 }
 
 async function main() {
+    const startedAt = Date.now();
     const deps = getDependencies();
     if (deps.size === 0) {
         console.log('No dependencies found in sfdx-project.json.');
@@ -172,30 +125,24 @@ async function main() {
     const targetOrg = await getDefaultOrg();
     console.log(`Using default org: ${targetOrg}`);
 
-    const devHub = await getDefaultDevHub();
-    if (devHub) {
-        console.log(`Using default Dev Hub for version check: ${devHub}\n`);
-    } else {
-        console.log('No default Dev Hub set - skipping newest released version check.\n');
-    }
-
     fs.mkdirSync(PACKAGES_DIR, { recursive: true });
 
-    const results = await Promise.all(
-        Array.from(deps, ([packageName, pinnedVersion]) =>
-            processPackage(targetOrg, devHub, packageName, pinnedVersion)
-        )
-    );
-
+    console.log(`Refreshing ${deps.size} packages sequentially...`);
     const failures = [];
-    for (const result of results) {
-        console.log(result.lines.join('\n'));
+    let completed = 0;
+    for (const [packageName, pinnedVersion] of deps) {
+        console.log(`[${completed + 1}/${deps.size}] ${packageName}`);
+        const result = await processPackage(targetOrg, packageName, pinnedVersion);
+        completed++;
         console.log('');
         if (!result.ok) {
             failures.push(result.packageName);
         }
     }
 
+    console.log(
+        `Refreshed ${completed - failures.length}/${deps.size} packages in ${((Date.now() - startedAt) / 1000).toFixed(1)}s.`
+    );
     if (failures.length) {
         console.log(`Done, with failures retrieving: ${failures.join(', ')}`);
         process.exitCode = 1;
