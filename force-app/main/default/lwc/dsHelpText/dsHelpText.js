@@ -3,11 +3,12 @@ import { LightningElement, api } from 'lwc';
 export default class DsHelpText extends LightningElement {
     @api title = 'Mangler tittel';
     @api text = 'Mangler tekst';
+
     open = false;
     ariaExpanded = false;
 
     helpTextClick() {
-        const hidden = this.template.querySelector('.navds-popover--hidden');
+        const hidden = this.template.querySelector('.aksel-popover--hidden');
         if (hidden === null) {
             this.helpTextBlur();
         } else {
@@ -32,8 +33,8 @@ export default class DsHelpText extends LightningElement {
 
     get popoverClasses() {
         return (
-            'navds-popover navds-help-text__popover overrideableClasses popoverTop popoverRight--mobile popoverPosition' +
-            (this.ariaExpanded === true ? '' : ' navds-popover--hidden')
+            'aksel-popover aksel-help-text__popover overrideableClasses popoverTop popoverRight--mobile popoverPosition' +
+            (this.ariaExpanded === true ? '' : ' aksel-popover--hidden')
         );
     }
 }

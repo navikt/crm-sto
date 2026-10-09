@@ -1,0 +1,89 @@
+<template>
+    <div class="aksel-form-field aksel-form-field--medium">
+        <label for={inputId} class="aksel-form-field__label aksel-label">{label}</label>
+
+        <div class="aksel-combobox__wrapper">
+            <div class="aksel-combobox__wrapper-inner aksel-text-field__input">
+                <ul
+                    data-type="single"
+                    class="aksel-chips aksel-combobox__selected-options aksel-chips--medium aksel-body-short aksel-body-short--small"
+                >
+                    <li>
+                        <input
+                            id={inputId}
+                            role="combobox"
+                            autocomplete="off"
+                            class="aksel-combobox__input aksel-body-short aksel-body-short--medium"
+                            aria-controls={listId}
+                            aria-expanded={isOpen}
+                            aria-autocomplete="none"
+                            aria-invalid={invalid}
+                            aria-required={required}
+                            aria-describedby={errorId}
+                            type="text"
+                            value={displayValue}
+                            placeholder={placeholder}
+                            readonly
+                            onclick={toggleList}
+                            onkeydown={handleInputKeydown}
+                        />
+                    </li>
+                </ul>
+
+                <div class="aksel-combobox__button-toggle-list" aria-hidden="true" onclick={toggleList}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        focusable="false"
+                        role="img"
+                    >
+                        <path
+                            fill="currentColor"
+                            fill-rule="evenodd"
+                            d="M5.97 9.47a.75.75 0 0 1 1.06 0L12 14.44l4.97-4.97a.75.75 0 1 1 1.06 1.06l-5.5 5.5a.75.75 0 0 1-1.06 0l-5.5-5.5a.75.75 0 0 1 0-1.06"
+                            clip-rule="evenodd"
+                        ></path>
+                    </svg>
+                </div>
+            </div>
+
+            <div data-aksel-floating-content-wrapper class="combobox-floating-wrapper" dir="ltr" hidden={listHidden}>
+                <div
+                    data-side="bottom"
+                    data-align="center"
+                    class={listClass}
+                    id={listId}
+                    tabindex="-1"
+                    style="max-height: 316px; animation: auto ease 0s 1 normal none running none"
+                >
+                    <ul role="listbox" class="aksel-combobox__list-options">
+                        <template for:each={computedOptions} for:item="option">
+                            <li
+                                key={option.value}
+                                class="aksel-combobox__list-item"
+                                id={option.domId}
+                                tabindex="-1"
+                                role="option"
+                                aria-selected={option.selected}
+                                data-value={option.value}
+                                data-index={option.index}
+                                onclick={handleOptionClick}
+                            >
+                                <p aria-label={option.label} class="aksel-body-short aksel-body-short--medium">
+                                    {option.label}
+                                </p>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="aksel-form-field__error" id={errorId} aria-relevant="additions removals" aria-live="polite">
+            {errorMessage}
+        </div>
+    </div>
+</template>

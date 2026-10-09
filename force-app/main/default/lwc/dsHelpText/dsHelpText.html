@@ -1,7 +1,13 @@
 <template>
-    <div class="navds-help-text tester1" style="position: relative" onfocusout={focusClose} onkeydown={keyboardHandler}>
+    <div
+        class="aksel-help-text tester1"
+        data-color="info"
+        style="position: relative"
+        onfocusout={focusClose}
+        onkeydown={keyboardHandler}
+    >
         <button
-            class="navds-help-text__button"
+            class="aksel-help-text__button"
             type="button"
             aria-expanded={ariaExpanded}
             onclick={helpTextClick}
@@ -14,15 +20,14 @@
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 focusable="false"
-                role="img"
-                aria-labelledby="title-navds-id-22"
-                class="navds-help-text__icon"
+                class="aksel-help-text__icon"
+                aria-hidden="true"
             >
-                <title id="title-navds-id-22">{title}</title>
+                <circle cx="12" cy="12" r="11" stroke-width="1.5" stroke="currentColor" fill="transparent"></circle>
                 <path
                     fill-rule="evenodd"
                     clip-rule="evenodd"
-                    d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0Zm0 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm0 14a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm0-11c2.205 0 4 1.657 4 3.693 0 .986-.416 1.914-1.172 2.612l-.593.54-.294.28c-.477.466-.869.94-.936 1.417l-.01.144v.814h-1.991v-.814c0-1.254.84-2.214 1.675-3.002l.74-.68c.38-.35.59-.816.59-1.31 0-1.024-.901-1.856-2.01-1.856-1.054 0-1.922.755-2.002 1.71l-.006.145H8C8 6.657 9.794 5 12 5Z"
+                    d="M9.75 9C9.75 7.75736 10.7574 6.75 12 6.75H12.1716C13.3195 6.75 14.25 7.68054 14.25 8.82843C14.25 9.37966 14.031 9.90832 13.6412 10.2981L12.6412 11.2981C11.7504 12.1889 11.25 13.3971 11.25 14.6569C11.25 15.0711 11.5858 15.4069 12 15.4069C12.4142 15.4069 12.75 15.0711 12.75 14.6569C12.75 13.7949 13.0924 12.9682 13.7019 12.3588L14.7019 11.3588C15.373 10.6877 15.75 9.77748 15.75 8.82843C15.75 6.85212 14.1479 5.25 12.1716 5.25H12C9.92893 5.25 8.25 6.92893 8.25 9V9.5C8.25 9.91421 8.58579 10.25 9 10.25C9.41421 10.25 9.75 9.91421 9.75 9.5V9ZM12 16.5C11.4477 16.5 11 16.9477 11 17.5C11 18.0523 11.4477 18.5 12 18.5C12.5523 18.5 13 18.0523 13 17.5C13 16.9477 12.5523 16.5 12 16.5Z"
                     fill="currentColor"
                 ></path></svg
             ><svg
@@ -32,16 +37,15 @@
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 focusable="false"
-                role="img"
-                aria-labelledby="title-navds-id-23"
-                class="navds-help-text__icon navds-help-text__icon--filled"
+                class="aksel-help-text__icon aksel-help-text__icon--filled"
+                aria-hidden="true"
             >
-                <title id="title-navds-id-23">{title}</title>
+                <circle cx="12" cy="12" r="11" stroke-width="1.5" stroke="currentColor" fill="currentColor"></circle>
                 <path
                     fill-rule="evenodd"
                     clip-rule="evenodd"
-                    d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0Zm0 16a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm0-11c2.205 0 4 1.657 4 3.693 0 .986-.416 1.914-1.172 2.612l-.593.54-.294.28c-.477.466-.869.94-.936 1.417l-.01.144v.814h-1.991v-.814c0-1.254.84-2.214 1.675-3.002l.74-.68c.38-.35.59-.816.59-1.31 0-1.024-.901-1.856-2.01-1.856-1.054 0-1.922.755-2.002 1.71l-.006.145H8C8 6.657 9.794 5 12 5Z"
-                    fill="currentColor"
+                    d="M9.75 9C9.75 7.75736 10.7574 6.75 12 6.75H12.1716C13.3195 6.75 14.25 7.68054 14.25 8.82843C14.25 9.37966 14.031 9.90832 13.6412 10.2981L12.6412 11.2981C11.7504 12.1889 11.25 13.3971 11.25 14.6569C11.25 15.0711 11.5858 15.4069 12 15.4069C12.4142 15.4069 12.75 15.0711 12.75 14.6569C12.75 13.7949 13.0924 12.9682 13.7019 12.3588L14.7019 11.3588C15.373 10.6877 15.75 9.77748 15.75 8.82843C15.75 6.85212 14.1479 5.25 12.1716 5.25H12C9.92893 5.25 8.25 6.92893 8.25 9V9.5C8.25 9.91421 8.58579 10.25 9 10.25C9.41421 10.25 9.75 9.91421 9.75 9.5V9ZM12 16.5C11.4477 16.5 11 16.9477 11 17.5C11 18.0523 11.4477 18.5 12 18.5C12.5523 18.5 13 18.0523 13 17.5C13 16.9477 12.5523 16.5 12 16.5Z"
+                    fill="var(--ax-text-accent-contrast)"
                 ></path>
             </svg>
         </button>
@@ -53,8 +57,8 @@
             data-popper-placement="top"
             tabindex="-1"
         >
-            <div class="navds-popover__content navds-body-short" role="alert" aria-live="polite">{text}</div>
-            <div class="navds-popover__arrow popoverTop popoverRight--mobile"></div>
+            <div class="aksel-popover__content aksel-body-short" role="alert" aria-live="polite">{text}</div>
+            <div class="aksel-popover__arrow popoverTop popoverRight--mobile"></div>
         </div>
     </div>
 </template>

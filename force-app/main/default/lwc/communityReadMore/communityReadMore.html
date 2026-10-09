@@ -1,11 +1,10 @@
 <template>
-    <div class={readMoreStateClass}>
+    <div class="aksel-read-more aksel-read-more--medium" data-variant="ghost" data-state={dataState}>
         <button
             type="button"
-            class="navds-read-more__button navds-body-short"
+            class="aksel-read-more__button aksel-body-short"
             aria-expanded={isExpanded}
             onclick={toggleExpand}
-            data-state={dataState}
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -15,7 +14,7 @@
                 viewBox="0 0 24 24"
                 focusable="false"
                 role="img"
-                class="navds-read-more__expand-icon"
+                class="aksel-read-more__expand-icon"
                 aria-hidden="true"
             >
                 <path
@@ -27,9 +26,7 @@
             ><span>{title}</span>
         </button>
         <template lwc:if={isExpanded}>
-            <div aria-hidden={ariaHidden} class={readMoreContentStateClass} data-state={dataState}>
-                <slot></slot>
-            </div>
+            <div class="aksel-read-more__content aksel-body-long aksel-body-long--medium">{content}</div>
         </template>
     </div>
 </template>

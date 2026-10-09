@@ -1,24 +1,29 @@
 <template>
     <div class="container">
-        <p class="navds-bodylong navds-bodylong--medium">{inboxType}</p>
-        <h1 class="navds-heading navds-heading--xlarge">{inboxTheme}</h1>
+        <p class="aksel-body-long aksel-body-long--medium">{inboxType}</p>
+        <h1 class="aksel-heading aksel-heading--xlarge">{inboxTheme}</h1>
         <div class="text-area">
-            <c-community-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
-            </c-community-error-summary>
+            <c-sto-community-error-summary
+                error-list={errorList}
+                onclickedevent={handleErrorClick}
+                class="errorSummary"
+            >
+            </c-sto-community-error-summary>
         </div>
         <template lwc:if={showSpinner}>
             <div class="spinner-container">
                 <svg
-                    tabindex="0"
-                    aria-labelledby="loader-navds-id-4"
-                    class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
+                    aria-labelledby="loader-_r_2_"
+                    class="aksel-loader aksel-loader--3xlarge aksel-loader--neutral"
                     focusable="false"
                     viewBox="0 0 50 50"
                     preserveAspectRatio="xMidYMid"
+                    data-color="neutral"
+                    data-variant="neutral"
                 >
-                    <title id="loader-navds-id-4">Avslutter samtale. Vennligst vent.</title>
+                    <title id="loader-_r_2_">Venter...</title>
                     <circle
-                        class="navds-loader__background"
+                        class="aksel-loader__background"
                         xmlns="http://www.w3.org/2000/svg"
                         cx="25"
                         cy="25"
@@ -26,7 +31,7 @@
                         fill="none"
                     ></circle>
                     <circle
-                        class="navds-loader__foreground"
+                        class="aksel-loader__foreground"
                         cx="25"
                         cy="25"
                         r="20"
@@ -38,17 +43,18 @@
         </template>
         <template lwc:elseif={showCloseButton}>
             <div class="end-dialogue-container">
-                <p class="navds-bodylong navds-bodylong--large">
+                <p class="aksel-body-long aksel-body-long--large">
                     Vi ser at du allerede har tre åpne meldinger på dette temaet . Hvis du vil opprette en ny samtale,
                     må du derfor avslutte en av de du allerede har.
                 </p>
-                <p class="navds-bodylong navds-bodylong--large subtitle">Ønsker du å avslutte denne samtalen?</p>
+                <p class="aksel-body-long aksel-body-long--large subtitle">Ønsker du å avslutte denne samtalen?</p>
                 <button
-                    class="navds-button navds-button--secondary navds-button--medium close-button"
+                    data-variant="secondary"
+                    class="aksel-button aksel-button--medium close-button"
                     aria-disabled="false"
                     onclick={handleClick}
                 >
-                    Avslutt samtalen
+                    <span class="aksel-label"> Avslutt samtalen </span>
                 </button>
             </div>
         </template>
@@ -57,21 +63,22 @@
             <template lwc:if={closed}></template>
             <template lwc:else>
                 <div class="text-area">
-                    <c-community-textarea
+                    <c-sto-community-textarea
                         label="Ny melding"
                         max-length={maxLength}
                         ontextchanged={handleTextChange}
                         class="inputTextbox"
-                    ></c-community-textarea>
+                    ></c-sto-community-textarea>
                 </div>
                 <button
+                    data-variant="primary"
                     disabled={buttonDisabled}
-                    class="navds-button navds-button--primary navds-button--medium"
+                    class="aksel-button aksel-button--medium"
                     type="submit"
                     aria-disabled="false"
                     onclick={handleSendButtonClick}
                 >
-                    Send melding
+                    <span class="aksel-label">Send melding</span>
                 </button>
                 <template lwc:if={showOpenWarning}>
                     <c-community-alert alert-type="info" alert-text={openAlertText}></c-community-alert>

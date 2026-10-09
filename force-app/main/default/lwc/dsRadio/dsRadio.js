@@ -8,11 +8,11 @@ export default class DsRadio extends LightningElement {
 
     connectedCallback() {
         this.UUID = crypto.randomUUID();
-        this._options = this.options.map((option, index) => ({ ...option, id: 'radio-navds-id-' + index }));
+        this._options = this.options.map((option, index) => ({ ...option, id: 'radio-aksel-id-' + index }));
     }
 
     getSelectedButton() {
-        return this.template.querySelector(`input[type=radio][name=radioGroupName-navds-${this.UUID}]:checked`);
+        return this.template.querySelector(`input[type=radio][name=radioGroupName-aksel-${this.UUID}]:checked`);
     }
 
     @api
@@ -22,7 +22,7 @@ export default class DsRadio extends LightningElement {
 
     @api
     focus() {
-        const test = this.template.querySelectorAll('.navds-radio__input')[0];
+        const test = this.template.querySelectorAll('.aksel-radio__input')[0];
         test?.focus();
     }
 
@@ -53,6 +53,6 @@ export default class DsRadio extends LightningElement {
     }
 
     get radioName() {
-        return 'radioGroupName-navds-' + this.UUID;
+        return 'radioGroupName-aksel-' + this.UUID;
     }
 }

@@ -85,7 +85,7 @@ export default class CommunityThreadViewer extends LightningElement {
      * @Author lars Petter Johnsen
      */
     handlesuccess() {
-        const textBoks = this.template.querySelector('c-community-textarea');
+        const textBoks = this.template.querySelector('c-sto-community-textarea');
         textBoks.clearText();
         this.buttonDisabled = false;
         return refreshApex(this.wiredMessages);
