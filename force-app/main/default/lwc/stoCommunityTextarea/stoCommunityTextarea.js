@@ -76,8 +76,8 @@ export default class StoCommunityTextarea extends LightningElement {
 
     get remainingCharacterClass() {
         return (
-            'navds-textarea__counter navds-body-short remainingCounter' +
-            (this.remainingCharacters < 0 ? ' navds-textarea__counter--error' : '')
+            'aksel-textarea__counter aksel-body-short remainingCounter' +
+            (this.remainingCharacters < 0 ? ' aksel-textarea__counter--error' : '')
         );
     }
 
@@ -99,12 +99,12 @@ export default class StoCommunityTextarea extends LightningElement {
 
     get wrapperClass() {
         return (
-            'navds-form-field navds-form-field--medium navds-textarea--resize-both ' +
-            (this.errorState ? ' navds-textarea--error' : '')
+            'aksel-form-field aksel-form-field--medium aksel-textarea--resize-both ' +
+            (this.errorState ? ' aksel-textarea--error' : '')
         );
     }
 
-    get placeholderText() {
+    get description() {
         return 'Teksten lagres ikke automatisk. Hvis du er på denne siden i mer enn 30 minutter, kan du bli logget ut og miste det du har skrevet.';
     }
 }

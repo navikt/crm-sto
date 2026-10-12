@@ -1,6 +1,9 @@
 <template>
     <div class={wrapperClass}>
         <label for="textareaInput" class="aksel-form-field__label aksel-label">{label}</label>
+        <div id="textarea-description" class="aksel-form-field__description aksel-body-short aksel-body-short--medium">
+            {description}
+        </div>
         <textarea
             aria-invalid={errorState}
             onchange={handleChange}
@@ -8,7 +11,6 @@
             class="aksel-textarea__input aksel-body-short aksel-body-short--medium aksel-textarea--counter min-row textBox"
             onfocusout={checkError}
             id="textareaInput"
-            placeholder={placeholderText}
         >
             {message}
             </textarea

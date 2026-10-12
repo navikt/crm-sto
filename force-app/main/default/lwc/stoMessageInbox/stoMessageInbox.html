@@ -18,29 +18,53 @@
                     >brev og vedtak</a
                 >
             </p>
+            <template lwc:if={canRepresentChildren}>
+                <p class="aksel-body-long aksel-body-long--large representative-info">
+                    Du kan se egne meldinger eller meldinger du har skrevet på vegne av et barn du har foreldreansvar
+                    for.
+                </p>
+            </template>
         </div>
-        <template lwc:if={showrecentthreads}>
+        <template lwc:if={canRepresentChildren}>
+            <div class="person-selection-panel">
+                <c-community-combobox
+                    label="Hvem vil du se meldinger på vegne av?"
+                    options={personOptions}
+                    value={selectedPersonValue}
+                    onselectionchange={handlePersonChange}
+                ></c-community-combobox>
+            </div>
+        </template>
+        <template lwc:if={showCategoryFilter}>
+            <div class="category-filter">
+                <c-community-chips
+                    label="Velg kategori"
+                    options={chipOptions}
+                    onselectionchange={handleCategoryChange}
+                ></c-community-chips>
+            </div>
+        </template>
+
+        <p class="filter-status" role="status" aria-live="polite" aria-atomic="true">{filterResultText}</p>
+        <template lwc:if={showVisibleRecentThreads}>
             <h2 class="aksel-heading aksel-heading--small subheader">Siste meldinger</h2>
             <div class="inbox-list">
-                <template for:each={recentthreads} for:item="thread">
+                <template for:each={visibleRecentThreads} for:item="thread">
                     <c-sto-message-inbox-item thread={thread} key={thread.recordId}></c-sto-message-inbox-item>
                 </template>
             </div>
         </template>
-        <template lwc:if={showthreads}>
+        <template lwc:if={showVisibleThreads}>
             <h2 class="aksel-heading aksel-heading--small subheader">Tidligere meldinger</h2>
             <div class="inbox-list">
-                <template for:each={threads} for:item="thread">
+                <template for:each={visibleThreads} for:item="thread">
                     <c-sto-message-inbox-item thread={thread} key={thread.recordId}></c-sto-message-inbox-item>
                 </template>
             </div>
         </template>
         <template lwc:if={noItems}>
             <div class="slds-var-p-vertical_large">
-                <c-community-alert
-                    alert-type="info"
-                    alert-text="Du har ingen meldinger i innboksen din."
-                ></c-community-alert>
+                <c-community-alert alert-type="info" alert-text={noItemsText}></c-community-alert>
             </div>
         </template>
     </div>

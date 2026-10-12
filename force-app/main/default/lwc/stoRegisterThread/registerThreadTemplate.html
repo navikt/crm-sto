@@ -63,15 +63,13 @@
             </template>
 
             <template lwc:elseif={showPersonSelection}>
-                <p class="aksel-body-long aksel-body-long--medium">
-                    Du kan skrive til oss på vegne av barn du har foreldreansvar for. Velg om meldingen gjelder deg selv
-                    eller et barn.
-                </p>
-
+                <lightning-formatted-rich-text
+                    class="aksel-body-long aksel-body-long--large"
+                    value={ingressLabel}
+                ></lightning-formatted-rich-text>
                 <div class="person-selection-panel">
                     <c-community-combobox
                         label="Hvem vil du skrive melding på vegne av?"
-                        placeholder="- Velg person -"
                         options={personOptions}
                         value={selectedPersonValue}
                         required
@@ -81,8 +79,13 @@
                     ></c-community-combobox>
                 </div>
 
-                <button data-variant="primary" class="aksel-button aksel-button--medium" onclick={handlePersonNext}>
-                    <span class="aksel-label"> Neste </span>
+                <button
+                    type="button"
+                    data-variant="primary"
+                    class="aksel-button aksel-button--medium"
+                    onclick={handlePersonNext}
+                >
+                    <span class="aksel-label">Neste</span>
                 </button>
             </template>
 
@@ -127,7 +130,7 @@
                 <!-- Textarea -->
                 <template lwc:if={showInputTextArea}>
                     <template lwc:if={isWritingForChild}>
-                        <p class="aksel-body-long aksel-body-long--small representation-notice">
+                        <p class="aksel-body-long aksel-body-long--medium representation-notice">
                             Personen du sender melding på vegne av kan lese meldingen i fremtiden.
                         </p>
                     </template>

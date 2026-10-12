@@ -22,6 +22,22 @@
     gap: var(--ax-space-20);
 }
 
+.representative-info {
+    margin-top: var(--ax-space-16);
+}
+
+.person-selection-panel {
+    background-color: var(--ax-accent-100, #eef6ff);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-block: 1.5rem;
+}
+
+.person-selection-panel c-community-combobox {
+    display: block;
+    max-width: 28rem;
+}
+
 @media only screen and (max-width: 576px) {
     .inbox-wrapper {
         margin-left: var(--ax-space-16);

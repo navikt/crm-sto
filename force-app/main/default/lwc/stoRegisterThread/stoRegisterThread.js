@@ -5,6 +5,9 @@ import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import USER_ID from '@salesforce/user/Id';
+import USER_NAME_FIELD from '@salesforce/schema/User.Name';
 // TODO: Add import for getRepresentableChildren when ready.
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
@@ -81,19 +84,22 @@ const BTO_REPRESENTATION_RULES = {
     },
     Helse: {
         mode: 'themes',
-        themes: new Set(['Grunnstønad eller hjelpestønad', 'Uføretrygd'])
+        themes: new Set(['Grunnstønad eller hjelpestønad', 'Yrkesskade'])
     },
     Pensjon: {
         mode: 'themes',
-        themes: new Set(['Barnepensjon', 'Uføretrygd'])
+        themes: new Set(['Støtte til gjenlevende'])
     },
     Ufør: {
-        // Existing Uføretrygd route maps here.
-        // Other Ufør benefits are not automatically eligible.
         mode: 'themes',
         themes: new Set(['Uføretrygd'])
     }
 };
+
+const MOCK_HAS_FORELDREANSVAR = true;
+
+const MOCK_REPRESENTATION_INGRESS =
+    'Du kan sende meldinger til Nav på vegne av barna dine hvis du har foreldreansvar for dem. Når barn blir myndige (eller du mister foreldreretten), vil du ikke lenger kunne se meldinger du har sendt på deres vegne, eller ha dialog med Nav på deres vegne.';
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api threadTypeToMake;
@@ -226,13 +232,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     ingressMap = {
         'Skriv til oss': {
             default: STO_DEFAULT_INGRESS,
+            representation: MOCK_REPRESENTATION_INGRESS,
             'Andre-hjelpemidler': STO_HJELPEMIDLER_INGRESS
         },
         'Beskjed til oss': {
-            default: BTO_DEFAULT_INGRESS
+            default: BTO_DEFAULT_INGRESS,
+            representation: MOCK_REPRESENTATION_INGRESS
         },
         'Gi beskjed': {
             default: BESKJED_DEFAULT_INGRESS,
+            representation: MOCK_REPRESENTATION_INGRESS,
             'Be om bekreftelse på trygdeavgift': BESKJED_INTERNASJONAL_INGRESS,
             'Avtale eller endre time på Nav-kontor': BESKJED_ARBEID_INGRESS,
             'Gi fullmakt til lege': '', // kommer, settes i første omgang uten ingress
@@ -241,12 +250,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         },
         'Meld fra om endring': {
             default: ENDRING_DEFAULT_INGRESS,
+            representation: MOCK_REPRESENTATION_INGRESS,
             'AFP i offentlig sektor': ENDRING_PENSJON_INGRESS,
             'Bor eller jobber i utlandet': ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS,
             Yrkesskade: ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS
         },
         'Trekke en søknad': {
-            default: TREKK_SOKNAD_DEFAULT_INGRESS
+            default: TREKK_SOKNAD_DEFAULT_INGRESS,
+            representation: MOCK_REPRESENTATION_INGRESS
         }
     };
 
@@ -290,8 +301,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     };
 
     // Person selection
-    personOptions = [];
-    selectedPersonValue = '';
+    currentUserName = '';
+    selectedPersonValue = SELF_PERSON_VALUE;
     personSelectionConfirmed = false;
     representationLoaded = false;
     representationLoadFailed = false;
@@ -423,14 +434,20 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         });
     }
 
+    @wire(getRecord, { recordId: USER_ID, fields: [USER_NAME_FIELD] })
+    wiredCurrentUser({ data, error }) {
+        if (data) {
+            this.currentUserName = getFieldValue(data, USER_NAME_FIELD) || '';
+        } else if (error) {
+            this.currentUserName = '';
+            console.error('Could not load current user name:', error);
+        }
+    }
+
     initializeMockPersons() {
         // TODO(representation-api): Replace this method with the real person lookup.
         // Include only children the authenticated user is authorized to represent.
         // Keep "Meg selv" available when the response contains no children.
-        this.personOptions = [
-            { label: 'Meg selv', value: SELF_PERSON_VALUE },
-            ...MOCK_REPRESENTABLE_CHILDREN.map((child) => ({ ...child }))
-        ];
 
         this.representationLoaded = true;
         this.representationLoadFailed = false;
@@ -473,8 +490,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     resetPersonContext() {
-        this.personOptions = [];
-        this.selectedPersonValue = '';
+        this.selectedPersonValue = SELF_PERSON_VALUE;
         this.personSelectionConfirmed = false;
         this.representationLoaded = false;
         this.representationLoadFailed = false;
@@ -585,25 +601,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      */
     submitRequest() {
         if (!this.hasPersonContext || this.threadLoadFailed || this.shouldShowSpinner) {
-            return;
-        }
-
-        // TODO(representation-api): Remove this preview blocker ONLY after creation
-        // accepts representedPersonId, revalidates representation rights and theme
-        // eligibility, and stores the subject separately from the submitting user.
-        if (this.isMockChildSelected) {
-            this.errorList = {
-                title: 'Dette er en forhåndsvisning.',
-                errors: [
-                    {
-                        Id: 'mock-child-submission',
-                        EventItem: '.represented-person-banner',
-                        Text: 'Innsending på vegne av barn er ikke tilgjengelig ennå.'
-                    }
-                ]
-            };
-
-            this.template.querySelector('.errorSummary')?.focusHeader();
             return;
         }
 
@@ -908,11 +905,17 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get ingressLabel() {
-        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
-            return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
+        const ingress = this.ingressMap[this.title];
+
+        if (this.allowsRepresentation && ingress?.representation) {
+            return ingress.representation;
         }
 
-        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
+        if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
+            return ingress?.['Andre-hjelpemidler'];
+        }
+
+        return ingress?.[this.themeToShow] ?? ingress?.default;
     }
 
     get showThemeRadioButton() {
@@ -996,6 +999,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get allowsRepresentation() {
+        if (!this.canRepresentChildren) {
+            return false;
+        }
+
         if (this.threadTypeToMake === 'STO') {
             // The special Hjelpemidler route belongs to the same eligible group.
             const themeGroup =
@@ -1022,6 +1029,21 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     /**
      * representation-related getters and logic.
      */
+
+    get canRepresentChildren() {
+        return MOCK_HAS_FORELDREANSVAR && MOCK_REPRESENTABLE_CHILDREN.length > 0;
+    }
+
+    get selfPersonLabel() {
+        return this.currentUserName ? `Deg (${this.currentUserName})` : 'Deg';
+    }
+
+    get personOptions() {
+        return [
+            { label: this.selfPersonLabel, value: SELF_PERSON_VALUE },
+            ...(this.canRepresentChildren ? MOCK_REPRESENTABLE_CHILDREN : [])
+        ];
+    }
 
     get isMockChildSelected() {
         // TODO(representation-api): Remove this fixture-specific getter once
