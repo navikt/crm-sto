@@ -53,26 +53,8 @@ public with sharing class stoHelperClass {
     }
 
     /**
-     * Method to create case, thread and message when a user submits a write to us case. Case is created through
-     * flow "On New STO Thread Create Task Or Case" on after-insert trigger.
-     * @author Lars Petter Johnsen
-     * @date 08.06.21
-     */
-    @AuraEnabled
-    public static Thread__c createThreadWithCase(
-        String theme,
-        String msgText,
-        Boolean medskriv,
-        String type,
-        String inboxTitle,
-        String inboxTheme
-    ) {
-        return createThreadWithCaseInternal(theme, msgText, medskriv, type, inboxTitle, inboxTheme, false);
-    }
-
-    /**
-     * New version with extra optional fields.
-     * Kept for compatibility with updated frontend while old cached Experience Site pages still call the legacy method.
+     * Old version kept for compatibility with the frontend.
+     * TODO: DELETE RIGHT AFTER DEPLOY
      */
     @AuraEnabled
     public static Thread__c createThreadWithCaseV2(
@@ -84,10 +66,17 @@ public with sharing class stoHelperClass {
         String inboxTheme,
         Boolean disabilityCampaign
     ) {
-        return createThreadWithCaseInternal(theme, msgText, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign);
+        return createThreadWithCase(theme, msgText, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign);
     }
 
-    private static Thread__c createThreadWithCaseInternal(
+    /**
+     * Method to create case, thread and message when a user submits a write to us case. Case is created through
+     * flow "On New STO Thread Create Task Or Case" on after-insert trigger.
+     * @author Lars Petter Johnsen
+     * @date 08.06.21
+     */
+    @AuraEnabled
+    public static Thread__c createThreadWithCase(
         String theme,
         String msgText,
         Boolean medskriv,
