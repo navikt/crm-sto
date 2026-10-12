@@ -23,7 +23,6 @@ public with sharing class stoInboxHelperTest {
     static void getThreadsTest() {
         User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         Thread__c t = stoHelperClass.createThread(
-            null,
             'Arbeid',
             u.AccountId,
             u.ContactId,
@@ -61,7 +60,6 @@ public with sharing class stoInboxHelperTest {
             LIMIT 1
         ];
         Thread__c t = stoHelperClass.createThread(
-            null,
             'Arbeid',
             personContact.AccountId,
             personContact.Id,

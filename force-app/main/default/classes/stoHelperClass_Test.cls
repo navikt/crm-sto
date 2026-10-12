@@ -26,17 +26,7 @@ public with sharing class stoHelperClass_Test {
     @isTest
     static void getOpenThreadsTest() {
         User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        Thread__c t = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            u.AccountId,
-            u.ContactId,
-            true,
-            'STO',
-            null,
-            null,
-            false
-        );
+        Thread__c t = stoHelperClass.createThread('Arbeid', u.AccountId, u.ContactId, true, 'STO', null, null, false);
         Test.startTest();
         Assert.areNotEqual(null, stoHelperClass.getOpenThreads('Arbeid', 'STO'), 'Expected to get a thread');
         Test.stopTest();
@@ -57,7 +47,6 @@ public with sharing class stoHelperClass_Test {
         Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Test.startTest();
         Thread__c t = stoHelperClass.createThread(
-            null,
             'Arbeid',
             personContact.AccountId,
             personContact.Id,
@@ -76,7 +65,6 @@ public with sharing class stoHelperClass_Test {
     static void createMessageTest() {
         Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
-            null,
             'Arbeid',
             personContact.AccountId,
             personContact.Id,
@@ -200,7 +188,6 @@ public with sharing class stoHelperClass_Test {
     static void closeThreadTest() {
         Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c t = stoHelperClass.createThread(
-            null,
             'Arbeid',
             personContact.AccountId,
             personContact.Id,
@@ -254,7 +241,6 @@ public with sharing class stoHelperClass_Test {
         for (Integer i = 0; i < 3; i++) {
             threads.add(
                 stoHelperClass.createThread(
-                    null,
                     'Arbeid',
                     personContact.AccountId,
                     personContact.Id,
@@ -291,7 +277,6 @@ public with sharing class stoHelperClass_Test {
         for (Integer i = 0; i < 3; i++) {
             threads.add(
                 stoHelperClass.createThread(
-                    null,
                     'Arbeid',
                     personContact.AccountId,
                     personContact.Id,
@@ -325,7 +310,6 @@ public with sharing class stoHelperClass_Test {
 
         Contact personContact = getContactBasedOnPersonIdent('12345678910');
         Thread__c testThread = stoHelperClass.createThread(
-            null,
             'Arbeid',
             personContact.AccountId,
             personContact.Id,
@@ -363,7 +347,6 @@ public with sharing class stoHelperClass_Test {
         Contact personContact = getContactBasedOnPersonIdent('12345678910');
 
         Thread__c created = stoHelperClass.createThread(
-            null,
             'Arbeid',
             personContact.AccountId,
             personContact.Id,

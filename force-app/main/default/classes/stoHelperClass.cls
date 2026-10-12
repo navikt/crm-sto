@@ -92,23 +92,13 @@ public with sharing class stoHelperClass {
         }
 
         User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        Thread__c thread = createThread(
-            null,
-            theme,
-            personUser,
-            medskriv,
-            type,
-            inboxTitle,
-            inboxTheme,
-            disabilityCampaign
-        );
+        Thread__c thread = createThread(theme, personUser, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign);
 
         createMessage(thread, msgText, personUser.ContactId);
         return thread;
     }
 
     private static Thread__c createThread(
-        String relatedObjId,
         String theme,
         User personUser,
         Boolean medskriv,
@@ -118,7 +108,6 @@ public with sharing class stoHelperClass {
         Boolean disabilityCampaign
     ) {
         return createThread(
-            relatedObjId,
             theme,
             personUser.AccountId,
             personUser.ContactId,
@@ -137,7 +126,6 @@ public with sharing class stoHelperClass {
      */
     @TestVisible
     private static Thread__c createThread(
-        String relatedObjId,
         String theme,
         String accountId,
         String contactId,
@@ -148,7 +136,6 @@ public with sharing class stoHelperClass {
         Boolean disabilityCampaign
     ) {
         Thread__c thread = new Thread__c();
-        thread.CRM_Related_Object__c = relatedObjId;
         thread.CRM_Contact__c = contactId;
         thread.CRM_Account__c = accountId;
         thread.Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss';
