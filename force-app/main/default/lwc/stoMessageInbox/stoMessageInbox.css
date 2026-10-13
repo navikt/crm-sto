@@ -27,7 +27,7 @@
 }
 
 .person-selection-panel {
-    background-color: var(--ax-accent-100, #eef6ff);
+    background-color: var(--ax-bg-accent-soft);
     border-radius: 0.5rem;
     padding: 1.5rem;
     margin-block: 1.5rem;
