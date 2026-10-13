@@ -1,4 +1,4 @@
-@layer aksel.reset {
+
   *, :before, :after {
     box-sizing: border-box;
   }
@@ -90,9 +90,9 @@
   summary {
     display: list-item;
   }
-}
 
-@layer aksel.theming {
+
+
   :root, :host, .light {
     --ax-neutral-100: #f5f6f7;
     --ax-neutral-200: #ecedef;
@@ -951,9 +951,9 @@
     --ax-border-subtleA: var(--ax-border-meta-lime-subtleA);
     --ax-border-strong: var(--ax-border-meta-lime-strong);
   }
-}
 
-@layer aksel.baseline {
+
+
   :root, :host, .light {
     color: var(--ax-text-neutral);
     color-scheme: light;
@@ -1004,9 +1004,9 @@
     position: static;
     overflow: visible;
   }
-}
 
-@layer aksel.print {
+
+
   @media print {
     *, :before, :after {
       color: #000 !important;
@@ -1057,9 +1057,9 @@
       page-break-after: avoid;
     }
   }
-}
 
-@layer aksel.typography {
+
+
   @font-face {
     font-family: "Source Sans 3";
     font-style: italic;
@@ -1167,9 +1167,9 @@
     src: url("https://cdn.nav.no/aksel/fonts/SourceSans3-normal.woff2") format("woff2");
     unicode-range: U+??, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
-}
 
-@layer aksel.components.core {
+
+
   .aksel-theme {
     color: var(--ax-text-neutral);
   }
@@ -1602,9 +1602,9 @@
       background-color: selecteditemtext;
     }
   }
-}
 
-@layer aksel.components.core.loader {
+
+
   .aksel-loader {
     stroke-width: 6px;
     --__axc-loader-stroke-width: 5.9;
@@ -1710,9 +1710,9 @@
       stroke: canvastext;
     }
   }
-}
 
-@layer aksel.components.core.button {
+
+
   .aksel-button {
     --__axc-button-icon-size: 1.5rem;
     --__axc-button-icon-margin: -4px;
@@ -1943,9 +1943,9 @@
       stroke: canvastext;
     }
   }
-}
 
-@layer aksel.components.form {
+
+
   .aksel-fieldset {
     border: 0;
     min-width: 0;
@@ -3829,9 +3829,9 @@
   .aksel-form-progress__collapsible-content {
     min-height: 0;
   }
-}
 
-@layer aksel.components.modules {
+
+
   .aksel-accordion__header {
     justify-content: flex-start;
     align-items: flex-start;
@@ -7786,9 +7786,9 @@
     justify-content: center;
     font-size: 1.5rem;
   }
-}
 
-@layer aksel.layout {
+
+
   .aksel-r-p {
     --__axc-r-p-xs: initial;
     --__axc-r-p-sm: var(--__axc-r-p-xs);
@@ -9080,4 +9080,4 @@
       display: none !important;
     }
   }
-}
+

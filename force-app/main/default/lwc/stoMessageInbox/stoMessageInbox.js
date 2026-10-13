@@ -7,6 +7,7 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
 
+const PERSON_STORAGE_KEY = `sto-inbox-person-${USER_ID}`;
 const SELF_PERSON_VALUE = 'self';
 const MOCK_HAS_FORELDREANSVAR = true;
 
@@ -20,23 +21,30 @@ const MOCK_CHILD_THREADS = {
         recent: [
             {
                 recordId: 'mock-thread-1',
+                recordName: 'Mock thread 1',
                 category: 'Familie',
                 name: 'Familie og barn - Skriv til oss: Du sendte en melding',
                 latestMessageDate: '2026-10-10T09:15:00.000Z',
-                latestmessage: { Message: 'Spørsmål om barnetrygd for Beate.' },
+                latestmessage: {
+                    messageText: 'Spørsmål om barnetrygd for Beate.',
+                    isExternal: true
+                },
                 status: 'Åpen',
-                objectName: 'Thread__c'
+                numberOfUnreadMessages: 0,
+                objectName: 'skriv-til-oss'
             }
         ],
         older: [
             {
                 recordId: 'mock-thread-2',
+                recordName: 'Mock thread 2',
                 category: 'Helse',
                 name: 'Helse og sykdom - Skriv til oss: Du sendte en melding',
                 latestMessageDate: '2026-06-02T13:40:00.000Z',
-                latestmessage: { Message: 'Gjelder grunnstønad.' },
-                status: 'Lukket',
-                objectName: 'Thread__c'
+                latestmessage: { messageText: 'Gjelder grunnstønad.', isExternal: true },
+                status: 'Avsluttet',
+                numberOfUnreadMessages: 0,
+                objectName: 'skriv-til-oss'
             }
         ]
     },
@@ -61,6 +69,17 @@ export default class StoMessageInbox extends LightningElement {
     currentUserName = '';
     selectedPersonValue = SELF_PERSON_VALUE;
     selectedCategoryValues = new Set();
+
+    connectedCallback() {
+        try {
+            const savedValue = sessionStorage.getItem(PERSON_STORAGE_KEY);
+            const validOption = this.personOptions.some((option) => option.value === savedValue);
+
+            this.selectedPersonValue = validOption ? savedValue : SELF_PERSON_VALUE;
+        } catch (error) {
+            console.error('Could not restore inbox person:', error);
+        }
+    }
 
     renderedCallback() {
         setDecoratorParams('Innboks', 'Innboks', '');
@@ -100,6 +119,14 @@ export default class StoMessageInbox extends LightningElement {
             console.error(result.error);
         } else if (result.data) {
             this.setRecentThreads();
+        }
+    }
+
+    saveSelectedPerson() {
+        try {
+            sessionStorage.setItem(PERSON_STORAGE_KEY, this.selectedPersonValue);
+        } catch (error) {
+            console.error('Could not save inbox person:', error);
         }
     }
 
@@ -165,18 +192,34 @@ export default class StoMessageInbox extends LightningElement {
     handlePersonChange(event) {
         const value = event.detail?.value;
         const validOption = this.personOptions.some((option) => option.value === value);
+
         this.selectedPersonValue = validOption ? value : SELF_PERSON_VALUE;
         this.selectedCategoryValues = new Set();
+        this.saveSelectedPerson();
+    }
+
+    getThreadCategory(thread) {
+        return thread?.category?.trim() || '';
+    }
+
+    filterThreads(threads) {
+        if (this.isAllCategoriesSelected) {
+            return threads;
+        }
+
+        return threads.filter((thread) => this.selectedCategoryValues.has(this.getThreadCategory(thread)));
     }
 
     get selfPersonLabel() {
         return this.currentUserName ? `Deg (${this.currentUserName})` : 'Deg';
     }
 
+    // ToDo: To be replaced with actual logic for determining if the user can represent children
     get canRepresentChildren() {
         return MOCK_HAS_FORELDREANSVAR && MOCK_REPRESENTABLE_CHILDREN.length > 0;
     }
 
+    // ToDo: MOCK_REPRESENTABLE_CHILDREN will be replaced with actual representable children
     get personOptions() {
         return [
             { label: this.selfPersonLabel, value: SELF_PERSON_VALUE },
@@ -196,12 +239,13 @@ export default class StoMessageInbox extends LightningElement {
         return this.selectedPersonValue === SELF_PERSON_VALUE;
     }
 
+    // ToDo: To be replaced with actual logic for fetching child threads
     get mockChildThreads() {
         return MOCK_CHILD_THREADS[this.selectedPersonValue] || { recent: [], older: [] };
     }
 
     get isDataLoaded() {
-        return Boolean(this.wthreads && this.wrthreads);
+        return this.wthreads?.data !== undefined && this.wrthreads?.data !== undefined;
     }
 
     get noItems() {
@@ -215,10 +259,6 @@ export default class StoMessageInbox extends LightningElement {
         return this.isSelfSelected
             ? 'Du har ingen meldinger i innboksen din.'
             : 'Det finnes ingen meldinger for denne personen.';
-    }
-
-    getThreadCategory(thread) {
-        return thread?.category?.trim() || '';
     }
 
     get personRecentThreads() {
@@ -258,14 +298,6 @@ export default class StoMessageInbox extends LightningElement {
 
     get showCategoryFilter() {
         return this.totalPersonMessages > 0;
-    }
-
-    filterThreads(threads) {
-        if (this.isAllCategoriesSelected) {
-            return threads;
-        }
-
-        return threads.filter((thread) => this.selectedCategoryValues.has(this.getThreadCategory(thread)));
     }
 
     get isAllCategoriesSelected() {

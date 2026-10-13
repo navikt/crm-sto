@@ -58,8 +58,7 @@ const spinnerReasonTextMap = {
 };
 const SELF_PERSON_VALUE = 'self';
 
-// TODO(representation-api): Remove these fixtures when the authorized
-// children endpoint is available. Never send these values to Apex.
+// TODO(representation-api): Remove these fixtures when the authorized children endpoint is available. Never send these values to Apex.
 const MOCK_REPRESENTABLE_CHILDREN = [
     { label: 'Beate Normann (datter, 8 år)', value: 'mock-child-1' },
     { label: 'Ola Normann (sønn, 12 år)', value: 'mock-child-2' }
@@ -75,8 +74,7 @@ const STO_REPRESENTATION_THEME_GROUPS = new Set([
     'Ufør'
 ]);
 
-// TODO(representation-policy): Confirm the final approved eligibility matrix.
-// The frontend configuration must also be enforced by Apex.
+// TODO(representation-policy): Confirm the final approved eligibility matrix. The frontend configuration must also be enforced by Apex.
 const BTO_REPRESENTATION_RULES = {
     Familie: {
         mode: 'all',
@@ -88,7 +86,7 @@ const BTO_REPRESENTATION_RULES = {
     },
     Pensjon: {
         mode: 'themes',
-        themes: new Set(['Støtte til gjenlevende'])
+        themes: new Set(['Støtte til gjenlevende']) // ToDo: Confirm if this theme is correct
     },
     Ufør: {
         mode: 'themes',
@@ -96,6 +94,7 @@ const BTO_REPRESENTATION_RULES = {
     }
 };
 
+// ToDo: To be replaced with actual logic for determining if the user has parental responsibility
 const MOCK_HAS_FORELDREANSVAR = true;
 
 const MOCK_REPRESENTATION_INGRESS =
@@ -200,9 +199,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             sykepenger: { category: 'Helse', theme: 'Sykepenger eller reisetilskudd' },
             utland: { category: 'Internasjonal', theme: 'Bor eller jobber i utlandet' },
             yrkesskade: { category: 'Helse', theme: 'Yrkesskade' }
-            // TODO(representation-routing): Add the approved Barnepensjon route
-            // with category 'Pensjon' and theme 'Barnepensjon'.
-            // Eligibility is configured, but no matching route exists here yet.
+            // TODO(representation-routing): Add the approved Barnepensjon route with category 'Pensjon' and theme 'Barnepensjon'. Eligibility is configured, but no matching route exists here yet.
         },
         // Trekke en søknad
         'trekke-soknad': {
@@ -232,16 +229,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     ingressMap = {
         'Skriv til oss': {
             default: STO_DEFAULT_INGRESS,
-            representation: MOCK_REPRESENTATION_INGRESS,
-            'Andre-hjelpemidler': STO_HJELPEMIDLER_INGRESS
+            representation: MOCK_REPRESENTATION_INGRESS, // ToDo: Replace with actual default representation ingress for STO when available
+            'Andre-hjelpemidler': STO_HJELPEMIDLER_INGRESS // ToDo: Replace with actual Hjelpemidler representation ingress when available
         },
         'Beskjed til oss': {
-            default: BTO_DEFAULT_INGRESS,
-            representation: MOCK_REPRESENTATION_INGRESS
+            default: BTO_DEFAULT_INGRESS
         },
         'Gi beskjed': {
             default: BESKJED_DEFAULT_INGRESS,
-            representation: MOCK_REPRESENTATION_INGRESS,
             'Be om bekreftelse på trygdeavgift': BESKJED_INTERNASJONAL_INGRESS,
             'Avtale eller endre time på Nav-kontor': BESKJED_ARBEID_INGRESS,
             'Gi fullmakt til lege': '', // kommer, settes i første omgang uten ingress
@@ -250,14 +245,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         },
         'Meld fra om endring': {
             default: ENDRING_DEFAULT_INGRESS,
-            representation: MOCK_REPRESENTATION_INGRESS,
+            representation: MOCK_REPRESENTATION_INGRESS, // ToDo: Replace with actual default representation ingress for Meld fra om endring when available
             'AFP i offentlig sektor': ENDRING_PENSJON_INGRESS,
             'Bor eller jobber i utlandet': ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS,
-            Yrkesskade: ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS
+            Yrkesskade: ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS // ToDo: Replace with actual Yrkesskade representation ingress when available
         },
         'Trekke en søknad': {
-            default: TREKK_SOKNAD_DEFAULT_INGRESS,
-            representation: MOCK_REPRESENTATION_INGRESS
+            default: TREKK_SOKNAD_DEFAULT_INGRESS
         }
     };
 
@@ -373,8 +367,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.originalCategory = this.category;
             this.originalThemeToShow = this.themeToShow;
 
-            // TODO(representation-api): Replace local initialization with an authorized
-            // person lookup, including loading/error handling and stale-route protection.
+            // TODO(representation-api): Replace local initialization with an authorized person lookup, including loading/error handling and stale-route protection.
             this.initializeMockPersons();
         }
     }
@@ -390,9 +383,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    // TODO(representation-api): Extend Apex to accept representedPersonId,
-    // authorize the selected person, and return only that person's threads.
-    // Then add representedPersonId: '$representedPersonId' to this configuration.
+    // TODO(representation-api): Extend Apex to accept representedPersonId, authorize the selected person, and return only that person's threads. Then add representedPersonId: '$representedPersonId' to this configuration.
     @wire(getOpenThreads, {
         category: '$threadQueryCategory',
         threadType: '$threadQueryType'
@@ -425,8 +416,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.openThreadList = data || [];
         this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
 
-        // TODO(representation-api): Confirm whether close intent is person-scoped
-        // or global. Align this operation with that backend contract.
+        // TODO(representation-api): Confirm whether close intent is person-scoped or global. Align this operation with that backend contract.
         putCloseIntent({
             count: this.openThreadList.length
         }).catch(() => {
@@ -445,10 +435,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     initializeMockPersons() {
-        // TODO(representation-api): Replace this method with the real person lookup.
-        // Include only children the authenticated user is authorized to represent.
-        // Keep "Meg selv" available when the response contains no children.
-
+        // TODO(representation-api): Replace this method with the real person lookup. Include only children the authenticated user is authorized to represent. Keep "Meg selv" available when the response contains no children.
         this.representationLoaded = true;
         this.representationLoadFailed = false;
     }
@@ -482,8 +469,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         // TODO(representation-api): Enable person-scoped retrieval for real children.
         this.personSelectionConfirmed = true;
 
-        // TODO(representation-api): Remove this mock reset when person-scoped
-        // thread retrieval handles category changes and clears the loading state.
+        // TODO(representation-api): Remove this mock reset when person-scoped thread retrieval handles category changes and clears the loading state.
         if (this.isMockChildSelected) {
             this.applyMockChildThreads();
         }
@@ -639,8 +625,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
-            // TODO(representation-api): Add representedPersonId to the agreed Apex
-            // creation contract. Enforce person-scoped thread limits server-side.
+            // TODO(representation-api): Add representedPersonId to the agreed Apex creation contract. Enforce person-scoped thread limits server-side.
             createThreadWithCaseV2({
                 theme: theme,
                 msgText: this.message,
@@ -726,9 +711,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // TODO(representation-api): Verify Apex authorizes access to this thread
-    // for the authenticated user, including represented-person threads.
-    // After closing, refresh the same person-scoped thread query.
+    // TODO(representation-api): Verify Apex authorizes access to this thread for the authenticated user, including represented-person threads. After closing, refresh the same person-scoped thread query.
     async closeSelectedThread(selectedThreadId) {
         this.showSpinner = true;
         this.spinnerText = spinnerReasonTextMap.close;
@@ -837,9 +820,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     handleSendSto() {
-        // TODO(representation-navigation): Decide whether to ask for the person again
-        // on the STO page or restore a validated person context.
-        // Never silently change a child conversation into a self conversation.
+        // TODO(representation-navigation): Decide whether to ask for the person again on the STO page or restore a validated person context. Never silently change a child conversation into a self conversation.
         // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
         window.open(basepath + `/skriv-til-oss?category=${this.category}`, '_self');
     }
@@ -1046,8 +1027,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get isMockChildSelected() {
-        // TODO(representation-api): Remove this fixture-specific getter once
-        // real child retrieval, threads, and submission are implemented together.
+        // TODO(representation-api): Remove this fixture-specific getter once real child retrieval, threads, and submission are implemented together.
         return (
             this.personSelectionConfirmed &&
             MOCK_REPRESENTABLE_CHILDREN.some((child) => child.value === this.selectedPersonValue)
@@ -1055,8 +1035,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     applyMockChildThreads() {
-        // TODO(representation-api): Replace this empty mock list with authorized,
-        // person-scoped threads. Do not reuse the logged-in user's thread list.
+        // TODO(representation-api): Replace this empty mock list with authorized, person-scoped threads. Do not reuse the logged-in user's thread list.
         this.openThreadList = [];
         this.wireThreadData = undefined;
         this.threadLoadFailed = false;
@@ -1065,8 +1044,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get threadQueryCategory() {
-        // TODO(representation-api): Once Apex supports person-scoped retrieval,
-        // remove the mock-child exclusion and pass representedPersonId to the wire.
+        // TODO(representation-api): Once Apex supports person-scoped retrieval, remove the mock-child exclusion and pass representedPersonId to the wire.
         return !this.isLoading && this.validQueryParameter && this.hasPersonContext && !this.isMockChildSelected
             ? this.category
             : undefined;
@@ -1080,8 +1058,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         // undefined: no confirmed person context.
         // null: authenticated user.
         // Otherwise: currently a MOCK child value.
-        // TODO(representation-api): Use an opaque identifier from the authorized
-        // endpoint. Apex must revalidate authorization for every operation.
+        // TODO(representation-api): Use an opaque identifier from the authorized endpoint. Apex must revalidate authorization for every operation.
         if (!this.hasPersonContext) {
             return undefined;
         }
