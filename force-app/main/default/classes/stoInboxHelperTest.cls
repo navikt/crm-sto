@@ -19,19 +19,23 @@ public with sharing class stoInboxHelperTest {
         insert cn;
     }
 
+    private static stoHelperClass.ThreadData getThreadData(String representedPersonIdentifier) {
+        stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
+        info.theme = 'Arbeid';
+        info.msgText = 'This is the message';
+        info.medskriv = true;
+        info.type = 'STO';
+        info.inboxTitle = 'Skriv til oss';
+        info.inboxTheme = 'Arbeid';
+        info.representedPersonIdentifier = representedPersonIdentifier;
+        return info;
+    }
+
     @isTest
     static void getThreadsTest() {
-        User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        Thread__c t = stoHelperClass.createThread(
-            'Arbeid',
-            u.AccountId,
-            u.ContactId,
-            true,
-            'STO',
-            'Skriv til oss',
-            'Arbeid',
-            false
-        );
+        User u = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        Thread__c t = stoHelperClass.createThread(getThreadData(null));
+        getThreadData()
         stoHelperClass.createMessage(t, 'Dette er en test melding', u.ContactId);
         t.CRM_Closed_Date__c = Date.today().addDays(-1);
         update t;
@@ -53,22 +57,7 @@ public with sharing class stoInboxHelperTest {
 
     @isTest
     static void getRecentThreadsTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-        Thread__c t = stoHelperClass.createThread(
-            'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
-            true,
-            'STO',
-            'Skriv til oss',
-            'Arbeid',
-            false
-        );
+        Thread__c t = stoHelperClass.createThread(getThreadData('12345678910'));
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         insert m;

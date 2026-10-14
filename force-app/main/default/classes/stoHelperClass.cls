@@ -9,6 +9,7 @@ public with sharing class stoHelperClass {
         'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
     };
 
+    @TestVisible
     private static Id cachedAccountId;
     private static Id accountId {
         get {
@@ -66,7 +67,16 @@ public with sharing class stoHelperClass {
         String inboxTheme,
         Boolean disabilityCampaign
     ) {
-        return createThreadWithCase(theme, msgText, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign);
+        ThreadData info = new ThreadData();
+        info.theme = theme;
+        info.msgText = msgText;
+        info.medskriv = medskriv;
+        info.type = type;
+        info.inboxTitle = inboxTitle;
+        info.inboxTheme = inboxTheme;
+        info.disabilityCampaign = disabilityCampaign;
+        info.medskriv = medskriv;
+        return createThread(info);
     }
 
     /**
@@ -76,104 +86,28 @@ public with sharing class stoHelperClass {
      * @date 08.06.21
      */
     @AuraEnabled
-    public static Thread__c createThreadWithCase(
-        String theme,
-        String msgText,
-        Boolean medskriv,
-        String type,
-        String inboxTitle,
-        String inboxTheme,
-        Boolean disabilityCampaign
-    ) {
-        if (isMaxThreadCount(theme, type)) {
-            LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
-            LOGGER.publish();
-            throw new maxThreadLimitReachedException();
+    public static Thread__c createThread(ThreadData info) {
+        if (!validateData(info)) {
+            return null;
         }
-
-        User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        Thread__c thread = createThread(theme, personUser, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign);
-
-        createMessage(thread, msgText, personUser.ContactId);
-        return thread;
-    }
-
-    private static Thread__c createThread(
-        String theme,
-        User personUser,
-        Boolean medskriv,
-        String type,
-        String inboxTitle,
-        String inboxTheme,
-        Boolean disabilityCampaign
-    ) {
-        return createThread(
-            theme,
-            personUser.AccountId,
-            personUser.ContactId,
-            medskriv,
-            type,
-            inboxTitle,
-            inboxTheme,
-            disabilityCampaign
-        );
-    }
-
-    /**
-     * Creates a thread to contain the STO conversation
-     * @author Lars Petter Johnsen
-     * @date 08.06.2021
-     */
-    @TestVisible
-    private static Thread__c createThread(
-        String theme,
-        String accountId,
-        String contactId,
-        Boolean medskriv,
-        String type,
-        String inboxTitle,
-        String inboxTheme,
-        Boolean disabilityCampaign
-    ) {
-        Thread__c thread = new Thread__c();
-        thread.CRM_Contact__c = contactId;
-        thread.CRM_Account__c = accountId;
-        thread.Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss';
-        thread.CRM_Thread_Type__c = ALLOWED_THREAD_TYPES.contains(type) ? type : 'STO';
-        thread.STO_Category__c = theme;
-        thread.STO_Medskriv__c = medskriv;
-        thread.NKS_Inbox_Title__c = inboxTitle;
-        thread.NKS_Inbox_Theme__c = inboxTheme;
-
-        if (disabilityCampaign != null && disabilityCampaign) {
-            thread.NKS_Experience_Site_Source__c = 'Uforekampanje';
-        }
-
-        List<RecordType> recordType = [
-            SELECT Id
-            FROM RecordType
-            WHERE SObjectType = 'Thread__c' AND Name = 'NKS Thread'
-            LIMIT 1
-        ];
-        if (!recordType.isEmpty()) {
-            thread.recordTypeId = recordType[0].Id;
-        }
-
+        Thread__c thread = info.toThread();
         try {
             insert thread;
         } catch (DmlException e) {
             LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
-            throw new threadOrMessageException();
+            throw new ThreadOrMessageException();
         }
+
+        createMessage(thread, info);
         return thread;
     }
 
     @TestVisible
-    private static void createMessage(Thread__c thread, String msgText, String contactId) {
+    private static void createMessage(Thread__c thread, ThreadData info) {
         Message__c msg = new Message__c();
-        msg.CRM_Message_Text__c = msgText;
-        msg.CRM_From_Contact__c = contactId;
+        msg.CRM_Message_Text__c = info.msgText;
+        msg.CRM_From_Contact__c = info.contactId;
         msg.CRM_Thread__c = thread.Id;
         msg.CRM_Read__c = true;
         msg.CRM_Read_Datetime__c = DateTime.now();
@@ -182,7 +116,7 @@ public with sharing class stoHelperClass {
         } catch (DmlException e) {
             LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
-            throw new threadOrMessageException();
+            throw new ThreadOrMessageException();
         }
     }
 
@@ -280,10 +214,38 @@ public with sharing class stoHelperClass {
         }
     }
 
-    private static Boolean isMaxThreadCount(String theme, String threadType) {
+    private static Boolean validateData(ThreadData info) {
+        // We need to validate that the parent has a valid relation to the child.
+        // TODO: Add proper validation through PDL api
+        Boolean hasForeldreansvar = true;
+        if (!hasForeldreansvar) {
+            LOGGER.error('Parent does not have valid relation to child', null, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
+            throw new NoParentalResponsibilityException();
+        }
+        if (info.representedPersonIdentifier != null && info.accountId == null) {
+            LOGGER.error(
+                'Account not found for child when making STO.' + info.representedPersonIdentifier,
+                null,
+                CRM_ApplicationDomain.Domain.NKS
+            );
+            LOGGER.publish();
+            throw new ChildAccountNotFoundException();
+        }
+
+        // TODO: Check how we should determine max thread count for parental representation
+        if (isMaxThreadCount(info)) {
+            LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
+            throw new MaxThreadLimitReachedException();
+        }
+        return true;
+    }
+
+    private static Boolean isMaxThreadCount(ThreadData info) {
         List<String> ALLOWED_THREAD_TYPES;
-        if (THREAD_TYPE_MAP.containsKey(threadType)) {
-            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(threadType);
+        if (THREAD_TYPE_MAP.containsKey(info.type)) {
+            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(info.type);
         } else {
             ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get('ALL');
         }
@@ -300,9 +262,9 @@ public with sharing class stoHelperClass {
             FROM Thread__c
             WHERE
                 CRM_Is_Closed__C = FALSE
-                AND STO_Category__c = :theme
+                AND STO_Category__c = :info.theme
                 AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES
-                AND CRM_Account__c = :accountId
+                AND CRM_Account__c = :info.accountId
         ];
 
         List<Thread__c> threadList = new List<Thread__c>();
@@ -311,13 +273,22 @@ public with sharing class stoHelperClass {
                 threadList.add(t);
             }
         }
-        return threadList.size() >= (threadType == 'BTO' ? MAX_THREAD_COUNT_BTO : MAX_THREAD_COUNT_STO);
+        return threadList.size() >= (info.type == 'BTO' ? MAX_THREAD_COUNT_BTO : MAX_THREAD_COUNT_STO);
     }
 
-    public class threadOrMessageException extends Exception {
+    public class ThreadOrMessageException extends Exception {
     }
 
-    public class maxThreadLimitReachedException extends Exception {
+    public class MaxThreadLimitReachedException extends Exception {
+    }
+
+    public class NoParentalResponsibilityException extends Exception {
+    }
+
+    public class ChildAccountNotFoundException extends Exception {
+    }
+
+    public class NoAccountFoundException extends Exception {
     }
 
     @AuraEnabled(cacheable=true)
@@ -367,5 +338,104 @@ public with sharing class stoHelperClass {
             WHERE CRM_Is_Closed__c = FALSE AND STO_Category__c = :category AND CRM_Type__c = 'STO'
         ];
         return count >= 3;
+    }
+
+    public class ThreadData {
+        @AuraEnabled
+        public String theme { get; set; }
+        @AuraEnabled
+        public String msgText { get; set; }
+        @AuraEnabled
+        public String type { get; set; }
+        @AuraEnabled
+        public String inboxTitle { get; set; }
+        @AuraEnabled
+        public String inboxTheme { get; set; }
+        @AuraEnabled
+        public Boolean medskriv { get; set; }
+        @AuraEnabled
+        public Boolean disabilityCampaign { get; set; }
+        @AuraEnabled
+        public String representedPersonIdentifier { get; set; }
+
+        @TestVisible
+        private Id cachedAccountId;
+        @TestVisible
+        private Id cachedContactId;
+
+        public Id accountId {
+            get {
+                if (cachedAccountId != null) {
+                    return cachedAccountId;
+                }
+                populateAccountAndContactIds();
+                return cachedAccountId;
+            }
+        }
+
+        public Id contactId {
+            get {
+                if (cachedContactId != null) {
+                    return cachedContactId;
+                }
+                populateAccountAndContactIds();
+                return cachedContactId;
+            }
+        }
+
+        private void populateAccountAndContactIds() {
+            if (representedPersonIdentifier == null) {
+                User usr = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+                cachedAccountId = usr?.AccountId;
+                cachedContactId = usr?.ContactId;
+            } else {
+                List<Account> accList = [
+                    SELECT Id, PersonContactId
+                    FROM Account
+                    WHERE Name = :representedPersonIdentifier
+                    LIMIT 1
+                ];
+                cachedAccountId = accList.isEmpty() ? null : accList[0].Id;
+                cachedContactId = accList.isEmpty() ? null : accList[0].PersonContactId;
+            }
+            if (cachedAccountId == null || cachedContactId == null) {
+                LOGGER.error(
+                    'Unable to determine Account or Contact ID for represented person: ' + representedPersonIdentifier,
+                    null,
+                    CRM_ApplicationDomain.Domain.NKS
+                );
+                LOGGER.publish();
+                throw new NoAccountFoundException();
+            }
+        }
+
+        public Thread__c toThread() {
+            Thread__c thread = new Thread__c();
+
+            thread.CRM_Contact__c = contactId;
+            thread.CRM_Account__c = accountId;
+            thread.Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss';
+            thread.CRM_Thread_Type__c = ALLOWED_THREAD_TYPES.contains(type) ? type : 'STO';
+            thread.STO_Category__c = theme;
+            thread.STO_Medskriv__c = medskriv;
+            thread.NKS_Inbox_Title__c = inboxTitle;
+            thread.NKS_Inbox_Theme__c = inboxTheme;
+
+            if (disabilityCampaign != null && disabilityCampaign) {
+                thread.NKS_Experience_Site_Source__c = 'Uforekampanje';
+            }
+
+            List<RecordType> recordType = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Thread__c' AND Name = 'NKS Thread'
+                LIMIT 1
+            ];
+            if (!recordType.isEmpty()) {
+                thread.recordTypeId = recordType[0].Id;
+            }
+
+            return thread;
+        }
     }
 }

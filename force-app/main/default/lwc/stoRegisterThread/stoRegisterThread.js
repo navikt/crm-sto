@@ -1,6 +1,6 @@
 import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
-import createThreadWithCase from '@salesforce/apex/stoHelperClass.createThreadWithCase';
+import createThread from '@salesforce/apex/stoHelperClass.createThread';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
@@ -459,14 +459,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
-            createThreadWithCase({
-                theme: theme,
-                msgText: this.message,
-                medskriv: medskriv,
-                type: this.threadTypeToMake,
-                inboxTitle: this.title,
-                inboxTheme: inboxTheme,
-                disabilityCampaign: disabilityCampaign
+            createThread({
+                info: {
+                    theme: theme,
+                    msgText: this.message,
+                    medskriv: medskriv,
+                    type: this.threadTypeToMake,
+                    inboxTitle: this.title,
+                    inboxTheme: inboxTheme,
+                    disabilityCampaign: disabilityCampaign
+                }
             })
                 .then((thread) => {
                     this.showSpinner = false;
