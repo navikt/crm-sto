@@ -6,29 +6,6 @@ export default class StoMessageInboxItem extends LightningElement {
     @api thread;
     @api closeIntent = false;
 
-    latestText;
-    objectName;
-    isExternal;
-    isOpen;
-    hasUnread = true;
-    unreadMessage = 'lest';
-
-    connectedCallback() {
-        this.objectName = this.thread.objectName;
-
-        if (this.thread.status === 'Åpen') {
-            this.isOpen = true;
-        }
-
-        if (Number(this.thread.numberOfUnreadMessages) > 0) {
-            this.hasUnread = true;
-            this.unreadMessage = 'Ulest';
-        }
-
-        this.latestText = this.thread.latestmessage.messageText;
-        this.isExternal = this.thread.latestmessage.isExternal;
-    }
-
     handleNavigation(event) {
         logNavigationEvent(getComponentName(this.template), 'valgt henvendelse', event.target.href, this.itemTitle);
     }
@@ -56,11 +33,8 @@ export default class StoMessageInboxItem extends LightningElement {
         return this.thread.status;
     }
 
-    get statusClass() {
-        return (
-            'navds-tag navds-tag--success navds-tag--small navds-body-short navds-body-short--small ' +
-            (this.thread.status === 'Åpen' ? 'navds-tag--success' : 'navds-tag--alt1')
-        );
+    get statusDataColor() {
+        return this.thread.status === 'Åpen' ? 'success' : 'meta-purple';
     }
 
     get linkUrl() {
@@ -99,5 +73,25 @@ export default class StoMessageInboxItem extends LightningElement {
 
     get linkSummary() {
         return `${this.formattedLatestMessageDate}. ${this.showReadStatus ? this.unreadMessage : ''} . ${this.showStatus ? this.statusText : ''} . ${this.itemTitle} . ${this.latestText}`;
+    }
+
+    get latestText() {
+        return this.thread?.latestmessage?.messageText || '';
+    }
+
+    get objectName() {
+        return this.thread?.objectName;
+    }
+
+    get isExternal() {
+        return this.thread?.latestmessage?.isExternal === true;
+    }
+
+    get isOpen() {
+        return this.thread?.status === 'Åpen';
+    }
+
+    get unreadMessage() {
+        return Number(this.thread?.numberOfUnreadMessages) > 0 ? 'Ulest' : 'lest';
     }
 }

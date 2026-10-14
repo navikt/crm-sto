@@ -30,6 +30,8 @@ public with sharing class stoInboxHelper {
                 Name,
                 NKS_Inbox_Title__c,
                 NKS_Inbox_Theme__c,
+                CRM_Theme_Group_Name__c,
+                STO_Category__c,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -55,10 +57,10 @@ public with sharing class stoInboxHelper {
                 CRM_Date_Time_Registered__c,
                 STO_External_Name__c,
                 CRM_Conversation_Note__c,
-                Name
+                Name,
+                CRM_Theme_Group_Name__c
             FROM Conversation_Note__c
-            WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
-            AND CRM_Account__c = :accountId
+            WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL AND CRM_Account__c = :accountId
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -84,6 +86,8 @@ public with sharing class stoInboxHelper {
                 Name,
                 NKS_Inbox_Title__c,
                 NKS_Inbox_Theme__c,
+                CRM_Theme_Group_Name__c,
+                STO_Category__c,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -109,10 +113,10 @@ public with sharing class stoInboxHelper {
                 CRM_Date_Time_Registered__c,
                 STO_External_Name__c,
                 CRM_Conversation_Note__c,
-                Name
+                Name,
+                CRM_Theme_Group_Name__c
             FROM Conversation_Note__c
-            WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
-            AND CRM_Account__c = :accountId
+            WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL AND CRM_Account__c = :accountId
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -145,6 +149,7 @@ public with sharing class stoInboxHelper {
             thread.latestmessage = message;
             thread.inboxTitle = t.NKS_Inbox_Title__c;
             thread.inboxTheme = t.NKS_Inbox_Theme__c;
+            thread.category = t.CRM_Thread_Type__c == 'CHAT' ? t.CRM_Theme_Group_Name__c : t.STO_Category__c;
             return thread;
         }
         return null;
@@ -165,6 +170,7 @@ public with sharing class stoInboxHelper {
         m.messageText = t.CRM_Conversation_Note__c?.replaceAll('<[^>]+>', ' ').replaceAll('(\\r|\\n)+', ' ');
         m.recordId = t.Id;
         i.latestmessage = m;
+        i.category = t.CRM_Theme_Group_Name__c;
         return i;
     }
 
@@ -193,6 +199,8 @@ public with sharing class stoInboxHelper {
         public String inboxTitle;
         @AuraEnabled
         public String inboxTheme;
+        @AuraEnabled
+        public String category;
     }
 
     public class Message {

@@ -2,21 +2,22 @@
     <div style="margin-bottom: 4rem">
         <div>
             <div class="header">
-                <h1 class="navds-heading navds-heading--2xlarge">{title}</h1>
+                <h1 class="aksel-heading aksel-heading--xlarge">{title}</h1>
             </div>
             <div class="text-center sizeAround">
                 <template lwc:if={loading}>
                     <svg
-                        tabindex="0"
-                        aria-labelledby="loader-navds-id-4"
-                        class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
+                        aria-labelledby="loader-_r_2_"
+                        class="aksel-loader aksel-loader--3xlarge aksel-loader--neutral"
                         focusable="false"
                         viewBox="0 0 50 50"
                         preserveAspectRatio="xMidYMid"
+                        data-color="neutral"
+                        data-variant="neutral"
                     >
-                        <title id="loader-navds-id-4">Laster</title>
+                        <title id="loader-_r_2_">Venter...</title>
                         <circle
-                            class="navds-loader__background"
+                            class="aksel-loader__background"
                             xmlns="http://www.w3.org/2000/svg"
                             cx="25"
                             cy="25"
@@ -24,7 +25,7 @@
                             fill="none"
                         ></circle>
                         <circle
-                            class="navds-loader__foreground"
+                            class="aksel-loader__foreground"
                             cx="25"
                             cy="25"
                             r="20"
@@ -49,19 +50,19 @@
                     </template>
                     <template lwc:else>
                         <div class="descholder slds-var-m-bottom_large">
-                            <p class="navds-body-short navds-body-short--small blokk-xs description">
+                            <p class="aksel-body-short aksel-body-short--small blokk-xs description">
                                 For at vi skal kunne vurdere saken på nytt, ber vi om at du fyller ut dette skjemaet. Du
                                 blir kontaktet hvis vi trenger flere opplysninger fra deg.
                             </p>
                         </div>
-                        <div class="text-start addMargin navds-form-field navds-form-field--medium">
-                            <c-community-error-summary
+                        <div class="text-start addMargin aksel-form-field aksel-form-field--medium">
+                            <c-ds-error-summary
                                 error-list={errorList}
                                 onclickedevent={handleErrorClick}
                                 class="errorSummary"
                                 style="text-align: left"
                             >
-                            </c-community-error-summary>
+                            </c-ds-error-summary>
                             <div class="childWrap">
                                 <template for:each={childList} for:item="child">
                                     <div key={child} class="spacing">
@@ -72,29 +73,29 @@
                                     </div>
                                 </template>
                             </div>
-                            <c-ds-button
-                                class="removeMargin"
-                                variant="tertiary"
-                                size="medium"
-                                text="Legg til et barn til"
-                                icon={plusCircle}
+                            <button
+                                data-variant="tertiary"
+                                class="aksel-button aksel-button--medium"
+                                type="button"
                                 onbuttonclick={addChild}
-                            ></c-ds-button>
-
+                            >
+                                <span class="aksel-label"> Legg til et barn til </span>
+                            </button>
                             <c-ds-text-field
                                 type="tel"
                                 maxlength="12"
-                                class="phoneNumber"
+                                class="phone-number"
                                 required="true"
                                 label="Ditt telefonnummer"
-                                style="width: 195.2px; margin-bottom: 1rem; margin-top: 2rem"
                             ></c-ds-text-field>
-                            <c-ds-button
-                                variant="primary"
-                                size="medium"
-                                text="Send"
+                            <button
+                                data-variant="primary"
+                                class="aksel-button aksel-button--medium"
+                                type="button"
                                 onbuttonclick={validateInputs}
-                            ></c-ds-button>
+                            >
+                                <span class="aksel-label"> Send </span>
+                            </button>
                         </div>
                     </template>
                 </template>

@@ -3,6 +3,58 @@ import { refreshApex } from '@salesforce/apex';
 import getThreads from '@salesforce/apex/stoInboxHelper.getThreads';
 import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads';
 import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import USER_ID from '@salesforce/user/Id';
+import USER_NAME_FIELD from '@salesforce/schema/User.Name';
+
+const PERSON_STORAGE_KEY = `sto-inbox-person-${USER_ID}`;
+const SELF_PERSON_VALUE = 'self';
+const MOCK_HAS_FORELDREANSVAR = true;
+
+const MOCK_REPRESENTABLE_CHILDREN = [
+    { label: 'Beate Normann (datter, 8 år)', value: 'mock-child-1' },
+    { label: 'Ola Normann (sønn, 12 år)', value: 'mock-child-2' }
+];
+
+const MOCK_CHILD_THREADS = {
+    'mock-child-1': {
+        recent: [
+            {
+                recordId: 'mock-thread-1',
+                recordName: 'Mock thread 1',
+                category: 'Familie',
+                name: 'Familie og barn - Skriv til oss: Du sendte en melding',
+                latestMessageDate: '2026-10-10T09:15:00.000Z',
+                latestmessage: {
+                    messageText: 'Spørsmål om barnetrygd for Beate.',
+                    isExternal: true
+                },
+                status: 'Åpen',
+                numberOfUnreadMessages: 0,
+                objectName: 'skriv-til-oss'
+            }
+        ],
+        older: [
+            {
+                recordId: 'mock-thread-2',
+                recordName: 'Mock thread 2',
+                category: 'Helse',
+                name: 'Helse og sykdom - Skriv til oss: Du sendte en melding',
+                latestMessageDate: '2026-06-02T13:40:00.000Z',
+                latestmessage: { messageText: 'Gjelder grunnstønad.', isExternal: true },
+                status: 'Avsluttet',
+                numberOfUnreadMessages: 0,
+                objectName: 'skriv-til-oss'
+            }
+        ]
+    },
+    'mock-child-2': {
+        recent: [],
+        older: []
+    }
+};
+
+const ALL_CATEGORIES_VALUE = 'all';
 
 export default class StoMessageInbox extends LightningElement {
     @api title;
@@ -14,6 +66,20 @@ export default class StoMessageInbox extends LightningElement {
     showthreads = false;
     showrecentthreads = false;
     hasRefreshed = false;
+    currentUserName = '';
+    selectedPersonValue = SELF_PERSON_VALUE;
+    selectedCategoryValues = new Set();
+
+    connectedCallback() {
+        try {
+            const savedValue = sessionStorage.getItem(PERSON_STORAGE_KEY);
+            const validOption = this.personOptions.some((option) => option.value === savedValue);
+
+            this.selectedPersonValue = validOption ? savedValue : SELF_PERSON_VALUE;
+        } catch (error) {
+            console.error('Could not restore inbox person:', error);
+        }
+    }
 
     renderedCallback() {
         setDecoratorParams('Innboks', 'Innboks', '');
@@ -24,6 +90,16 @@ export default class StoMessageInbox extends LightningElement {
         this.hasRefreshed = true;
         refreshApex(this.wthreads);
         refreshApex(this.wrthreads);
+    }
+
+    @wire(getRecord, { recordId: USER_ID, fields: [USER_NAME_FIELD] })
+    wiredCurrentUser({ data, error }) {
+        if (data) {
+            this.currentUserName = getFieldValue(data, USER_NAME_FIELD) || '';
+        } else if (error) {
+            this.currentUserName = '';
+            console.error('Could not load current user name:', error);
+        }
     }
 
     @wire(getThreads, {})
@@ -40,29 +116,37 @@ export default class StoMessageInbox extends LightningElement {
     wirerecentthreads(result) {
         this.wrthreads = result;
         if (result.error) {
-            console.log(result.error);
+            console.error(result.error);
         } else if (result.data) {
             this.setRecentThreads();
         }
     }
 
+    saveSelectedPerson() {
+        try {
+            sessionStorage.setItem(PERSON_STORAGE_KEY, this.selectedPersonValue);
+        } catch (error) {
+            console.error('Could not save inbox person:', error);
+        }
+    }
+
     setThreads() {
         if (this.wthreads.data) {
-            this.threads = [...this.wthreads.data].sort(this.sortByDate);
-            this.showthreads = this.wthreads.data.length > 0;
+            this.threads = this.wthreads.data.filter(Boolean).sort(this.sortByDate);
+            this.showthreads = this.threads.length > 0;
         }
     }
 
     setRecentThreads() {
         if (this.wrthreads.data) {
-            this.recentthreads = [...this.wrthreads.data].sort(this.sortByDate);
-            this.showrecentthreads = this.wrthreads.data.length > 0;
+            this.recentthreads = this.wrthreads.data.filter(Boolean).sort(this.sortByDate);
+            this.showrecentthreads = this.recentthreads.length > 0;
         }
     }
 
     sortByDate(t1, t2) {
-        let d1 = new Date(t1.latestMessageDate);
-        let d2 = new Date(t2.latestMessageDate);
+        const d1 = new Date(t1.latestMessageDate);
+        const d2 = new Date(t2.latestMessageDate);
         if (d1 > d2) return -1;
         if (d1 < d2) return 1;
         return 0;
@@ -86,7 +170,153 @@ export default class StoMessageInbox extends LightningElement {
         );
     }
 
+    handleCategoryChange(event) {
+        const value = event.detail?.value;
+        const valid = this.categoryOptions.some((option) => option.value === value);
+        if (!valid) return;
+
+        if (value === 'all') {
+            this.selectedCategoryValues = new Set();
+            return;
+        }
+
+        const next = new Set(this.selectedCategoryValues);
+        if (next.has(value)) {
+            next.delete(value);
+        } else {
+            next.add(value);
+        }
+        this.selectedCategoryValues = next;
+    }
+
+    handlePersonChange(event) {
+        const value = event.detail?.value;
+        const validOption = this.personOptions.some((option) => option.value === value);
+
+        this.selectedPersonValue = validOption ? value : SELF_PERSON_VALUE;
+        this.selectedCategoryValues = new Set();
+        this.saveSelectedPerson();
+    }
+
+    getThreadCategory(thread) {
+        return thread?.category?.trim() || '';
+    }
+
+    filterThreads(threads) {
+        if (this.isAllCategoriesSelected) {
+            return threads;
+        }
+
+        return threads.filter((thread) => this.selectedCategoryValues.has(this.getThreadCategory(thread)));
+    }
+
+    get selfPersonLabel() {
+        return this.currentUserName ? `Deg (${this.currentUserName})` : 'Deg';
+    }
+
+    // ToDo: To be replaced with actual logic for determining if the user can represent children
+    get canRepresentChildren() {
+        return MOCK_HAS_FORELDREANSVAR && MOCK_REPRESENTABLE_CHILDREN.length > 0;
+    }
+
+    // ToDo: MOCK_REPRESENTABLE_CHILDREN will be replaced with actual representable children
+    get personOptions() {
+        return [
+            { label: this.selfPersonLabel, value: SELF_PERSON_VALUE },
+            ...(this.canRepresentChildren ? MOCK_REPRESENTABLE_CHILDREN : [])
+        ];
+    }
+
+    get chipOptions() {
+        return this.categoryOptions.map((option) => ({
+            ...option,
+            selected:
+                option.value === 'all' ? this.isAllCategoriesSelected : this.selectedCategoryValues.has(option.value)
+        }));
+    }
+
+    get isSelfSelected() {
+        return this.selectedPersonValue === SELF_PERSON_VALUE;
+    }
+
+    // ToDo: To be replaced with actual logic for fetching child threads
+    get mockChildThreads() {
+        return MOCK_CHILD_THREADS[this.selectedPersonValue] || { recent: [], older: [] };
+    }
+
+    get isDataLoaded() {
+        return this.wthreads?.data !== undefined && this.wrthreads?.data !== undefined;
+    }
+
     get noItems() {
-        return this.wthreads && this.wrthreads && !this.showrecentthreads && !this.showthreads;
+        if (this.isSelfSelected && !this.isDataLoaded) {
+            return false;
+        }
+        return !this.showVisibleRecentThreads && !this.showVisibleThreads;
+    }
+
+    get noItemsText() {
+        return this.isSelfSelected
+            ? 'Du har ingen meldinger i innboksen din.'
+            : 'Det finnes ingen meldinger for denne personen.';
+    }
+
+    get personRecentThreads() {
+        const threads = this.isSelfSelected ? this.recentthreads || [] : this.mockChildThreads.recent;
+
+        return threads.filter(Boolean).sort(this.sortByDate);
+    }
+
+    get personThreads() {
+        const threads = this.isSelfSelected ? this.threads || [] : this.mockChildThreads.older;
+
+        return threads.filter(Boolean).sort(this.sortByDate);
+    }
+
+    get totalPersonMessages() {
+        return this.personRecentThreads.length + this.personThreads.length;
+    }
+
+    get categoryOptions() {
+        if (this.totalPersonMessages === 0) {
+            return [];
+        }
+
+        const categories = new Set(
+            [...this.personRecentThreads, ...this.personThreads]
+                .map((thread) => this.getThreadCategory(thread))
+                .filter(Boolean)
+        );
+
+        return [
+            { label: 'Vis alle', value: ALL_CATEGORIES_VALUE },
+            ...[...categories]
+                .sort((first, second) => first.localeCompare(second, 'nb'))
+                .map((category) => ({ label: category, value: category }))
+        ];
+    }
+
+    get showCategoryFilter() {
+        return this.totalPersonMessages > 0;
+    }
+
+    get isAllCategoriesSelected() {
+        return this.selectedCategoryValues.size === 0;
+    }
+
+    get visibleRecentThreads() {
+        return this.filterThreads(this.personRecentThreads);
+    }
+
+    get visibleThreads() {
+        return this.filterThreads(this.personThreads);
+    }
+
+    get showVisibleRecentThreads() {
+        return this.visibleRecentThreads.length > 0;
+    }
+
+    get showVisibleThreads() {
+        return this.visibleThreads.length > 0;
     }
 }
