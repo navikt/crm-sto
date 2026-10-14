@@ -3,12 +3,8 @@
         <p class="aksel-body-long aksel-body-long--medium">{inboxType}</p>
         <h1 class="aksel-heading aksel-heading--xlarge">{inboxTheme}</h1>
         <div class="text-area">
-            <c-sto-community-error-summary
-                error-list={errorList}
-                onclickedevent={handleErrorClick}
-                class="errorSummary"
-            >
-            </c-sto-community-error-summary>
+            <c-ds-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
+            </c-ds-error-summary>
         </div>
         <template lwc:if={showSpinner}>
             <div class="spinner-container">
@@ -63,12 +59,12 @@
             <template lwc:if={closed}></template>
             <template lwc:else>
                 <div class="text-area">
-                    <c-sto-community-textarea
+                    <c-ds-textarea
                         label="Ny melding"
                         max-length={maxLength}
                         ontextchanged={handleTextChange}
                         class="inputTextbox"
-                    ></c-sto-community-textarea>
+                    ></c-ds-textarea>
                 </div>
                 <button
                     data-variant="primary"
@@ -81,7 +77,7 @@
                     <span class="aksel-label">Send melding</span>
                 </button>
                 <template lwc:if={showOpenWarning}>
-                    <c-community-alert alert-type="info" alert-text={openAlertText}></c-community-alert>
+                    <c-ds-alert alert-type="info" alert-text={openAlertText}></c-ds-alert>
                 </template>
             </template>
         </slot>

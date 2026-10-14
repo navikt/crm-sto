@@ -17,12 +17,8 @@
                 </div>
             </template>
             <div class="errorBox">
-                <c-sto-community-error-summary
-                    error-list={errorList}
-                    onclickedevent={handleErrorClick}
-                    class="errorSummary"
-                >
-                </c-sto-community-error-summary>
+                <c-ds-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
+                </c-ds-error-summary>
             </div>
             <!-- Show spinner -->
             <template lwc:if={shouldShowSpinner}>
@@ -68,7 +64,7 @@
                     value={ingressLabel}
                 ></lightning-formatted-rich-text>
                 <div class="person-selection-panel">
-                    <c-community-combobox
+                    <c-ds-combobox
                         label="Hvem vil du skrive melding på vegne av?"
                         options={personOptions}
                         value={selectedPersonValue}
@@ -76,7 +72,7 @@
                         invalid={personSelectionInvalid}
                         error-message={personSelectionError}
                         onselectionchange={handlePersonChange}
-                    ></c-community-combobox>
+                    ></c-ds-combobox>
                 </div>
 
                 <button
@@ -135,12 +131,12 @@
                         </p>
                     </template>
                     <div class="text-area">
-                        <c-sto-community-textarea
+                        <c-ds-textarea
                             label="Din melding"
                             max-length={maxLength}
                             class="inputTextbox"
                             ontextchanged={handleTextChange}
-                        ></c-sto-community-textarea>
+                        ></c-ds-textarea>
                     </div>
                 </template>
                 <!-- Medskriv radiobutton -->
@@ -157,18 +153,18 @@
                         </div>
                     </c-ds-radio>
                 </div>
-                <c-community-read-more
+                <c-ds-read-more
                     title="Grunnen til at vi spør om samtykke  til opplæring"
                     content="For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt."
                 >
-                </c-community-read-more>
+                </c-ds-read-more>
                 <!-- Vilkår checkbox -->
                 <div class="slds-grid slds-wrap vilkar-container">
-                    <c-community-checkbox
+                    <c-ds-checkbox
                         label-text={labels.ACCEPT_TERM_TEXT}
                         oncheckedchanged={handleChecked}
                         class="checkboxContainer"
-                    ></c-community-checkbox>
+                    ></c-ds-checkbox>
                     <button onclick={showTerms} class="aksel-link vilkar-link" tabindex="0">
                         <span class="aksel-label">{labels.SHOW_TERM_TEXT}</span>
                     </button>
@@ -233,7 +229,7 @@
             </template>
 
             <!-- Modal and alert dialog -->
-            <c-community-modal show-modal={modalOpen} modal-header={labels.SERVICE_TERMS_HEADER}>
+            <c-ds-modal show-modal={modalOpen} modal-header={labels.SERVICE_TERMS_HEADER}>
                 <div slot="modalContent">
                     <form>
                         <div class="aksel-body-long aksel-body-long--medium">
@@ -259,7 +255,7 @@
                         <span class="aksel-label">{labels.DENY_TERMS_BUTTON}</span>
                     </button>
                 </div>
-            </c-community-modal>
+            </c-ds-modal>
             <c-alertdialog
                 header="Noe gikk galt"
                 content="Vennligst oppdater siden og prøv på nytt"

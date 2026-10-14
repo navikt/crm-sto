@@ -87,7 +87,7 @@
     margin-block: 1.5rem;
 }
 
-.person-selection-panel c-community-combobox {
+.person-selection-panel c-ds-combobox {
     display: block;
     max-width: 28rem;
 }

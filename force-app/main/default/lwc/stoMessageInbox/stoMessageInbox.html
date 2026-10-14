@@ -27,21 +27,21 @@
         </div>
         <template lwc:if={canRepresentChildren}>
             <div class="person-selection-panel">
-                <c-community-combobox
+                <c-ds-combobox
                     label="Hvem vil du se meldinger på vegne av?"
                     options={personOptions}
                     value={selectedPersonValue}
                     onselectionchange={handlePersonChange}
-                ></c-community-combobox>
+                ></c-ds-combobox>
             </div>
         </template>
         <template lwc:if={showCategoryFilter}>
             <div class="category-filter">
-                <c-community-chips
+                <c-ds-chips
                     label="Velg kategori"
                     options={chipOptions}
                     onselectionchange={handleCategoryChange}
-                ></c-community-chips>
+                ></c-ds-chips>
             </div>
         </template>
 
@@ -63,7 +63,7 @@
         </template>
         <template lwc:if={noItems}>
             <div class="slds-var-p-vertical_large">
-                <c-community-alert alert-type="info" alert-text={noItemsText}></c-community-alert>
+                <c-ds-alert alert-type="info" alert-text={noItemsText}></c-ds-alert>
             </div>
         </template>
     </div>
