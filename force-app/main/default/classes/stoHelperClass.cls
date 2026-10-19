@@ -96,7 +96,24 @@ public with sharing class stoHelperClass {
         String inboxTheme,
         Boolean disabilityCampaign
     ) {
-        if (isMaxThreadCount(theme, type)) {
+        // TODO(backend-ready): Keep legacy creation self-owned for cached clients.
+        return createThreadForPerson(theme, msgText, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign, null);
+    }
+
+    @AuraEnabled
+    // TODO(backend-ready): Preserve selected account/contact ownership and actor attribution with the real selection provider.
+    public static Thread__c createThreadForPerson(
+        String theme,
+        String msgText,
+        Boolean medskriv,
+        String type,
+        String inboxTitle,
+        String inboxTheme,
+        Boolean disabilityCampaign,
+        Id representedAccountId
+    ) {
+        Id ownerAccountId = stoPersonContext.resolveAccountId(representedAccountId);
+        if (isMaxThreadCount(theme, type, ownerAccountId)) {
             LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
             throw new maxThreadLimitReachedException();
@@ -106,7 +123,8 @@ public with sharing class stoHelperClass {
         Thread__c thread = createThread(
             null,
             theme,
-            personUser,
+            ownerAccountId,
+            representedAccountId == null ? personUser.ContactId : stoPersonContext.resolveContactId(ownerAccountId),
             medskriv,
             type,
             inboxTitle,
@@ -115,7 +133,33 @@ public with sharing class stoHelperClass {
         );
 
         createMessage(thread, msgText, personUser.ContactId);
+        // TODO(backend-ready): Revalidate sharing against the production access lifecycle; this grants only the inbox owner's own login.
+        if (ownerAccountId != null && ownerAccountId != personUser.AccountId) {
+            new InboxOwnerSharing().grantAccess(thread);
+        }
         return thread;
+    }
+
+    // TODO(backend-ready): Retain narrowly scoped owner-login access; citizen user visibility cannot locate another account's login.
+    private without sharing class InboxOwnerSharing {
+        public void grantAccess(Thread__c newThread) {
+            List<Thread__Share> shares = new List<Thread__Share>();
+            for (User childUser : [
+                SELECT Id
+                FROM User
+                WHERE AccountId = :newThread.CRM_Account__c AND ContactId != NULL AND IsActive = TRUE
+            ]) {
+                shares.add(
+                    new Thread__Share(
+                        ParentId = newThread.Id,
+                        UserOrGroupId = childUser.Id,
+                        AccessLevel = 'Edit',
+                        RowCause = Schema.Thread__Share.RowCause.Manual
+                    )
+                );
+            }
+            insert shares;
+        }
     }
 
     private static Thread__c createThread(
@@ -243,6 +287,18 @@ public with sharing class stoHelperClass {
 
     @AuraEnabled(cacheable=true)
     public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
+        // TODO(backend-ready): Keep legacy queries scoped to the logged-in user.
+        return getOpenThreadsForPerson(category, threadType, null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    // TODO(backend-ready): Preserve person-scoped limits and open-thread retrieval.
+    public static List<stoInboxHelper.thread> getOpenThreadsForPerson(
+        String category,
+        String threadType,
+        Id representedAccountId
+    ) {
+        Id accountId = stoPersonContext.resolveAccountId(representedAccountId);
         List<String> ALLOWED_THREAD_TYPES;
         if (THREAD_TYPE_MAP.containsKey(threadType)) {
             ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(threadType);
@@ -264,6 +320,9 @@ public with sharing class stoHelperClass {
                 Name,
                 NKS_Inbox_Title__c,
                 NKS_Inbox_Theme__c,
+                // TODO(backend-ready): Keep fields required by the shared inbox formatter.
+                STO_Category__c,
+                CRM_Theme_Group_Name__c,
                 (
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
@@ -304,7 +363,8 @@ public with sharing class stoHelperClass {
         }
     }
 
-    private static Boolean isMaxThreadCount(String theme, String threadType) {
+    // TODO(backend-ready): Keep limits scoped to the selected inbox owner, not the acting parent.
+    private static Boolean isMaxThreadCount(String theme, String threadType, Id accountId) {
         List<String> ALLOWED_THREAD_TYPES;
         if (THREAD_TYPE_MAP.containsKey(threadType)) {
             ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(threadType);

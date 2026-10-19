@@ -1,14 +1,16 @@
 import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
-import createThreadWithCaseV2 from '@salesforce/apex/stoHelperClass.createThreadWithCaseV2';
+// TODO(backend-ready): Preserve the account-scoped creation/query contract with the real person provider.
+import createThreadForPerson from '@salesforce/apex/stoHelperClass.createThreadForPerson';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
-import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
+import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreadsForPerson';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
-// TODO: Add import for getRepresentableChildren when ready.
+// TODO(backend-ready): Replace scratch selections server-side, not with client-side identities.
+import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
@@ -49,6 +51,7 @@ import BESKJED_ARBEID_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_
 import BESKJED_KLAGE_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Klage_ingress';
 import BESKJED_FRITA_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Frita_ingress';
 
+// TODO(backend-ready): Child fixtures now come from the authorized Apex endpoint as real Account IDs.
 const maxThreadCountSto = 3;
 const maxThreadCountBto = 10;
 const spinnerReasonTextMap = {
@@ -57,12 +60,6 @@ const spinnerReasonTextMap = {
     load: 'Laster samtaler. Vennligst vent.'
 };
 const SELF_PERSON_VALUE = 'self';
-
-// TODO(representation-api): Remove these fixtures when the authorized children endpoint is available. Never send these values to Apex.
-const MOCK_REPRESENTABLE_CHILDREN = [
-    { label: 'Beate Normann (datter, 8 år)', value: 'mock-child-1' },
-    { label: 'Ola Normann (sønn, 12 år)', value: 'mock-child-2' }
-];
 
 // STO: group-level eligibility from your requirement.
 // NOTE: existing STO "Ufør" is treated as Uføretrygd.
@@ -93,9 +90,6 @@ const BTO_REPRESENTATION_RULES = {
         themes: new Set(['Uføretrygd'])
     }
 };
-
-// ToDo: To be replaced with actual logic for determining if the user has parental responsibility
-const MOCK_HAS_FORELDREANSVAR = true;
 
 const MOCK_REPRESENTATION_INGRESS =
     'Du kan sende meldinger til Nav på vegne av barna dine hvis du har foreldreansvar for dem. Når barn blir myndige (eller du mister foreldreretten), vil du ikke lenger kunne se meldinger du har sendt på deres vegne, eller ha dialog med Nav på deres vegne.';
@@ -300,6 +294,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     personSelectionConfirmed = false;
     representationLoaded = false;
     representationLoadFailed = false;
+    // TODO(backend-ready): Populate only with verified server-returned account selections.
+    representableChildren = [];
     personSelectionError = '';
     threadLoadFailed = false;
     originalCategory;
@@ -366,9 +362,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
             this.originalCategory = this.category;
             this.originalThemeToShow = this.themeToShow;
-
-            // TODO(representation-api): Replace local initialization with an authorized person lookup, including loading/error handling and stale-route protection.
-            this.initializeMockPersons();
+            // TODO(backend-ready): Keep person loading independent of route changes; no local mock initialization.
         }
     }
 
@@ -383,10 +377,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    // TODO(representation-api): Extend Apex to accept representedPersonId, authorize the selected person, and return only that person's threads. Then add representedPersonId: '$representedPersonId' to this configuration.
+    // TODO(backend-ready): Revalidate person-scoped retrieval with the approved backend.
     @wire(getOpenThreads, {
         category: '$threadQueryCategory',
-        threadType: '$threadQueryType'
+        threadType: '$threadQueryType',
+        representedAccountId: '$representedPersonId'
     })
     openThread(result) {
         if (!this.hasPersonContext || this.threadQueryCategory === undefined) {
@@ -434,10 +429,19 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    initializeMockPersons() {
-        // TODO(representation-api): Replace this method with the real person lookup. Include only children the authenticated user is authorized to represent. Keep "Meg selv" available when the response contains no children.
-        this.representationLoaded = true;
-        this.representationLoadFailed = false;
+    // TODO(backend-ready): Keep explicit loading/error states for the real responsibility lookup.
+    @wire(getRepresentableChildren)
+    wiredChildren({ data, error }) {
+        if (error) {
+            this.representableChildren = [];
+            this.representationLoaded = true;
+            this.representationLoadFailed = true;
+            console.error('Could not load representable children:', error);
+        } else if (data !== undefined) {
+            this.representableChildren = data;
+            this.representationLoaded = true;
+            this.representationLoadFailed = false;
+        }
     }
 
     handlePersonChange(event) {
@@ -465,21 +469,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.isThreadDataLoading = true;
         this.spinnerText = spinnerReasonTextMap.load;
 
-        // Enables real self-only retrieval or the mock child form.
-        // TODO(representation-api): Enable person-scoped retrieval for real children.
+        // TODO(backend-ready): Keep real account-scoped wire retrieval; do not restore mock child lists.
         this.personSelectionConfirmed = true;
-
-        // TODO(representation-api): Remove this mock reset when person-scoped thread retrieval handles category changes and clears the loading state.
-        if (this.isMockChildSelected) {
-            this.applyMockChildThreads();
-        }
     }
 
     resetPersonContext() {
         this.selectedPersonValue = SELF_PERSON_VALUE;
         this.personSelectionConfirmed = false;
-        this.representationLoaded = false;
-        this.representationLoadFailed = false;
+        // TODO(backend-ready): Preserve loaded authorization when resetting only the route/form.
         this.personSelectionError = '';
         this.threadLoadFailed = false;
 
@@ -586,6 +583,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitRequest() {
+        // TODO(backend-ready): A lookup failure must not block self submission or silently convert a child submission.
         if (!this.hasPersonContext || this.threadLoadFailed || this.shouldShowSpinner) {
             return;
         }
@@ -625,15 +623,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
-            // TODO(representation-api): Add representedPersonId to the agreed Apex creation contract. Enforce person-scoped thread limits server-side.
-            createThreadWithCaseV2({
+            // TODO(backend-ready): Preserve the selected child's Account ID on creation.
+            createThreadForPerson({
                 theme: theme,
                 msgText: this.message,
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxTitle: this.title,
                 inboxTheme: inboxTheme,
-                disabilityCampaign: disabilityCampaign
+                disabilityCampaign: disabilityCampaign,
+                representedAccountId: this.representedPersonId
             })
                 .then((thread) => {
                     this.showSpinner = false;
@@ -802,10 +801,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
         }
 
-        if (this.isMockChildSelected) {
-            this.applyMockChildThreads();
-        }
-
+        // TODO(backend-ready): Category changes use the person-scoped wire, never a mock empty thread list.
         logFilterEvent(
             this.radioButtonMap[this.title]?.[this.themeToShow]?.text,
             event.detail.text,
@@ -936,7 +932,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get shouldShowSpinner() {
-        const loadingPeople = this.allowsRepresentation && !this.representationLoaded;
+        // TODO(backend-ready): Wait for authorization before querying or displaying a person form.
+        const loadingPeople = !this.representationLoaded;
 
         const loadingThreads = this.hasPersonContext && this.isThreadDataLoading;
 
@@ -1012,7 +1009,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      */
 
     get canRepresentChildren() {
-        return MOCK_HAS_FORELDREANSVAR && MOCK_REPRESENTABLE_CHILDREN.length > 0;
+        // TODO(backend-ready): Keep dropdown visibility based on server-authorized children.
+        return this.representableChildren.length > 0;
     }
 
     get selfPersonLabel() {
@@ -1020,45 +1018,29 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get personOptions() {
-        return [
-            { label: this.selfPersonLabel, value: SELF_PERSON_VALUE },
-            ...(this.canRepresentChildren ? MOCK_REPRESENTABLE_CHILDREN : [])
-        ];
-    }
-
-    get isMockChildSelected() {
-        // TODO(representation-api): Remove this fixture-specific getter once real child retrieval, threads, and submission are implemented together.
-        return (
-            this.personSelectionConfirmed &&
-            MOCK_REPRESENTABLE_CHILDREN.some((child) => child.value === this.selectedPersonValue)
-        );
-    }
-
-    applyMockChildThreads() {
-        // TODO(representation-api): Replace this empty mock list with authorized, person-scoped threads. Do not reuse the logged-in user's thread list.
-        this.openThreadList = [];
-        this.wireThreadData = undefined;
-        this.threadLoadFailed = false;
-        this.isThreadDataLoading = false;
-        this.registerNewThread = true;
+        // TODO(backend-ready): Preserve self plus verified children; no client-side family fixtures.
+        return [{ label: this.selfPersonLabel, value: SELF_PERSON_VALUE }, ...this.representableChildren];
     }
 
     get threadQueryCategory() {
-        // TODO(representation-api): Once Apex supports person-scoped retrieval, remove the mock-child exclusion and pass representedPersonId to the wire.
-        return !this.isLoading && this.validQueryParameter && this.hasPersonContext && !this.isMockChildSelected
-            ? this.category
-            : undefined;
+        // TODO(backend-ready): Query real child threads after confirming the authorized person.
+        return !this.isLoading && this.validQueryParameter && this.hasPersonContext ? this.category : undefined;
     }
 
     get hasPersonContext() {
-        return !this.allowsRepresentation || this.personSelectionConfirmed;
+        // TODO(backend-ready): Self remains available on optional lookup failure; an unverified child never becomes self.
+        return (
+            this.representationLoaded &&
+            (!this.representationLoadFailed || this.selectedPersonValue === SELF_PERSON_VALUE) &&
+            (!this.allowsRepresentation || this.personSelectionConfirmed)
+        );
     }
 
     get representedPersonId() {
+        // TODO(backend-ready): Preserve null=self / Account ID=child contract.
         // undefined: no confirmed person context.
         // null: authenticated user.
-        // Otherwise: currently a MOCK child value.
-        // TODO(representation-api): Use an opaque identifier from the authorized endpoint. Apex must revalidate authorization for every operation.
+        // Otherwise: an account returned by the authorized person lookup.
         if (!this.hasPersonContext) {
             return undefined;
         }
@@ -1082,7 +1064,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get showRepresentationLoadError() {
-        return this.allowsRepresentation && this.representationLoadFailed;
+        // TODO(backend-ready): Surface lookup errors even before any children are returned.
+        return this.representationLoadFailed;
     }
 
     get selectedPersonLabel() {
@@ -1099,5 +1082,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get personSelectionInvalid() {
         return Boolean(this.personSelectionError);
+    }
+
+    get descriptionTextArea() {
+        // TODO(backend-ready): Keep the readability notice separated from the full session-loss notice.
+        let description =
+            'Teksten lagres ikke automatisk. Hvis du er på denne siden i mer enn 30 minutter, kan du bli logget ut og miste det du har skrevet.';
+        return this.isWritingForChild
+            ? `Personen du sender melding på vegne av kan lese meldingen i fremtiden. Hvis en annen person har foreldrerett, vil den personen kunne lese meldingene også. ${description}`
+            : description;
     }
 }

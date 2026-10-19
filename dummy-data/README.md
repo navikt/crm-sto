@@ -1,5 +1,27 @@
 # How to use dummy data with SFDX
 
+## STO test persons and community login
+
+<!-- TODO(backend-ready): KEEP these scratch-data instructions; REPLACE/REMOVE only retired fixture details, as listed in the root README lifecycle inventory. -->
+
+`data/persons.json` contains Doktor Proktor (`12345678901`) and the two children from the LWC mock data: Beate Normann (`12345678904`, `mock-child-1`) and Ola Normann (`12345678905`, `mock-child-2`). All identifiers are synthetic test values. The children's birth dates match the mock labels (8 and 12 years old in October 2026); the labels are static.
+
+Import `data/plan.json` before running `npm run scratchSetup`. The crm-platform-base `PersonHandler` creates a Person Account and contact for each imported person. `post-scratch/scratchSetup.cls` then creates any missing community users and assigns `STO_experience`. Doktor Proktor uses `Scratch Community Profile` (Customer Community Plus); the children use the custom `Scratch Community Login Profile` (Customer Community Plus Login) to avoid exhausting the single member-based Plus license in a scratch org. `CustomerCommunityPlusLogin` is already enabled in the scratch definition. Deploy the new profile from `force-app/scratch-org/profiles` before running setup in an existing org. The setup can be rerun without duplicating users or permission assignments. The data-tree import itself is not idempotent: in an existing org, import only missing person records before rerunning that script.
+
+After activating and publishing the Experience site as described in the root README, open any of the three Person Accounts and choose **Log in to Experience as User**. No password is stored in the repository. `GenerateData.apex` links imported sample conversations to Doktor Proktor's existing Person Account and contact, and creates another sample conversation for him. The inbox no longer uses static child conversations: child selections fetch actual account-scoped threads through Apex.
+
+## Retained fixture dependencies
+
+<!-- TODO(backend-ready): KEEP these import dependencies while the demo exists; JSON does not support inline TODO comments. See root README for exact paths. -->
+The import plans retain data used by the existing scratch scenarios:
+
+-   `GenerateData.apex` creates its sample case with Doktor Proktor's Person Account and contact, rather than selecting an arbitrary existing case. A separate case import is no longer needed.
+-   `data/pushtopics.json` supplies `Thread_New_Message`, subscribed to by the crm-henvendelse thread viewers.
+-   `common_codes/plan.json` supplies the code sets queried by STO and task handling. SSDX discovers this plan through its configured `dummy-data` location.
+-   `sto/plan.json` supplies sample threads and messages identifying Doktor Proktor. After importing `data/plan.json` and `sto/plan.json`, run `sf apex run --file dummy-data/GenerateData.apex` (also included in `npm run scratchSetup` and `npm run mac:build`) to resolve their `CRM_Account__c` and `CRM_Contact__c` to his Person Account. This avoids a duplicate Account import and reliance on the importing user's default Account record type.
+
+The standalone Ola Hansen, Kari Larsen and Frode Johnsen account fixtures have been removed. The old sample threads incorrectly linked Doktor Proktor's external identity to Ola Hansen's account. Existing account and conversation records are not deleted or automatically reassigned; the setup only links matching imported threads whose account is empty.
+
 ## Exporting with record types
 
 Always add `RecordType.DeveloperName` to your SOQL query when exporting, if you want to keep the record type intact. A plugin is fixing the record type ID before it is imported to the new scratch org, so you won't have to do a single thing.

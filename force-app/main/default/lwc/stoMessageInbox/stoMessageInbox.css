@@ -26,6 +26,11 @@
     margin-top: var(--ax-space-16);
 }
 
+/* TODO(backend-ready): Keep category spacing independent of whether authorized person selection is available. */
+.category-filter {
+    margin-top: var(--ax-space-24, 1.5rem);
+}
+
 .person-selection-panel {
     background-color: var(--ax-bg-accent-soft);
     border-radius: 0.5rem;

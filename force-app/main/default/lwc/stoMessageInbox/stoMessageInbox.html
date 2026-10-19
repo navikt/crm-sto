@@ -25,6 +25,15 @@
                 </p>
             </template>
         </div>
+        <!-- TODO(backend-ready): Preserve explicit responsibility/query error messages with the real service. -->
+        <template lwc:if={representationLoadFailed}>
+            <p role="alert">
+                Vi kunne ikke hente hvem du kan se meldinger på vegne av. Oppdater siden og prøv på nytt.
+            </p>
+        </template>
+        <template lwc:if={threadLoadFailed}>
+            <p role="alert">Vi kunne ikke hente meldingene. Oppdater siden og prøv på nytt.</p>
+        </template>
         <template lwc:if={canRepresentChildren}>
             <div class="person-selection-panel">
                 <c-ds-combobox

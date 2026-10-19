@@ -126,6 +126,17 @@
         <enabled>false</enabled>
     </classAccesses>
     <custom>true</custom>
+    <!-- TODO(backend-ready): REMOVE this scratch fixture permission grant with the retired provider; never grant in production. -->
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>STO_Scratch_Family</name>
+    </customPermissions>
+    <!-- TODO(backend-ready): REMOVE this fixture-only identity read grant when its provider is retired; not production access. -->
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.INT_PersonIdent__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Case.NKS_Conversation_Stored__c</field>

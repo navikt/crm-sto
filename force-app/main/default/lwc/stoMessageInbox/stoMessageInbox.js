@@ -1,7 +1,9 @@
 import { LightningElement, wire, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
-import getThreads from '@salesforce/apex/stoInboxHelper.getThreads';
-import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads';
+// TODO(backend-ready): Preserve account-scoped inbox queries with the real authorization provider.
+import getThreads from '@salesforce/apex/stoInboxHelper.getThreadsForPerson';
+import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreadsForPerson';
+import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
 import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
@@ -9,51 +11,7 @@ import USER_NAME_FIELD from '@salesforce/schema/User.Name';
 
 const PERSON_STORAGE_KEY = `sto-inbox-person-${USER_ID}`;
 const SELF_PERSON_VALUE = 'self';
-const MOCK_HAS_FORELDREANSVAR = true;
-
-const MOCK_REPRESENTABLE_CHILDREN = [
-    { label: 'Beate Normann (datter, 8 år)', value: 'mock-child-1' },
-    { label: 'Ola Normann (sønn, 12 år)', value: 'mock-child-2' }
-];
-
-const MOCK_CHILD_THREADS = {
-    'mock-child-1': {
-        recent: [
-            {
-                recordId: 'mock-thread-1',
-                recordName: 'Mock thread 1',
-                category: 'Familie',
-                name: 'Familie og barn - Skriv til oss: Du sendte en melding',
-                latestMessageDate: '2026-10-10T09:15:00.000Z',
-                latestmessage: {
-                    messageText: 'Spørsmål om barnetrygd for Beate.',
-                    isExternal: true
-                },
-                status: 'Åpen',
-                numberOfUnreadMessages: 0,
-                objectName: 'skriv-til-oss'
-            }
-        ],
-        older: [
-            {
-                recordId: 'mock-thread-2',
-                recordName: 'Mock thread 2',
-                category: 'Helse',
-                name: 'Helse og sykdom - Skriv til oss: Du sendte en melding',
-                latestMessageDate: '2026-06-02T13:40:00.000Z',
-                latestmessage: { messageText: 'Gjelder grunnstønad.', isExternal: true },
-                status: 'Avsluttet',
-                numberOfUnreadMessages: 0,
-                objectName: 'skriv-til-oss'
-            }
-        ]
-    },
-    'mock-child-2': {
-        recent: [],
-        older: []
-    }
-};
-
+// TODO(backend-ready): All children and their threads now come from Apex; do not restore client fixtures.
 const ALL_CATEGORIES_VALUE = 'all';
 
 export default class StoMessageInbox extends LightningElement {
@@ -69,15 +27,37 @@ export default class StoMessageInbox extends LightningElement {
     currentUserName = '';
     selectedPersonValue = SELF_PERSON_VALUE;
     selectedCategoryValues = new Set();
+    // TODO(backend-ready): Keep verified selections and explicit backend failure states.
+    representableChildren = [];
+    representationLoadFailed = false;
 
-    connectedCallback() {
+    // TODO(backend-ready): Replace the scratch provider server-side and retain validated session restoration.
+    @wire(getRepresentableChildren)
+    wiredChildren({ data, error }) {
+        if (error) {
+            this.representationLoadFailed = true;
+            this.representableChildren = [];
+            this.selectedPersonValue = SELF_PERSON_VALUE;
+            console.error('Could not load representable children:', error);
+            return;
+        }
+        if (data === undefined) return;
+        this.representationLoadFailed = false;
+        this.representableChildren = data;
         try {
             const savedValue = sessionStorage.getItem(PERSON_STORAGE_KEY);
             const validOption = this.personOptions.some((option) => option.value === savedValue);
 
-            this.selectedPersonValue = validOption ? savedValue : SELF_PERSON_VALUE;
-        } catch (error) {
-            console.error('Could not restore inbox person:', error);
+            const nextValue = validOption ? savedValue : SELF_PERSON_VALUE;
+            if (nextValue !== this.selectedPersonValue) {
+                this.threads = [];
+                this.recentthreads = [];
+                this.wthreads = undefined;
+                this.wrthreads = undefined;
+                this.selectedPersonValue = nextValue;
+            }
+        } catch (storageError) {
+            console.error('Could not restore inbox person:', storageError);
         }
     }
 
@@ -102,23 +82,31 @@ export default class StoMessageInbox extends LightningElement {
         }
     }
 
-    @wire(getThreads, {})
+    // TODO(backend-ready): Revalidate recent/older queries and errors against the selected account.
+    @wire(getThreads, { representedAccountId: '$representedAccountId' })
     wirethreads(result) {
         this.wthreads = result;
         if (result.error) {
+            this.threads = [];
             console.error(result.error);
         } else if (result.data) {
             this.setThreads();
+        } else {
+            this.threads = [];
         }
     }
 
-    @wire(getRecentThreads, {})
+    // TODO(backend-ready): Preserve selected-account retrieval, not static child threads.
+    @wire(getRecentThreads, { representedAccountId: '$representedAccountId' })
     wirerecentthreads(result) {
         this.wrthreads = result;
         if (result.error) {
+            this.recentthreads = [];
             console.error(result.error);
         } else if (result.data) {
             this.setRecentThreads();
+        } else {
+            this.recentthreads = [];
         }
     }
 
@@ -193,7 +181,14 @@ export default class StoMessageInbox extends LightningElement {
         const value = event.detail?.value;
         const validOption = this.personOptions.some((option) => option.value === value);
 
-        this.selectedPersonValue = validOption ? value : SELF_PERSON_VALUE;
+        const nextValue = validOption ? value : SELF_PERSON_VALUE;
+        if (nextValue === this.selectedPersonValue) return;
+        this.selectedPersonValue = nextValue;
+        // TODO(backend-ready): Clear the previous person's content while the new query loads.
+        this.threads = [];
+        this.recentthreads = [];
+        this.wthreads = undefined;
+        this.wrthreads = undefined;
         this.selectedCategoryValues = new Set();
         this.saveSelectedPerson();
     }
@@ -214,17 +209,14 @@ export default class StoMessageInbox extends LightningElement {
         return this.currentUserName ? `Deg (${this.currentUserName})` : 'Deg';
     }
 
-    // ToDo: To be replaced with actual logic for determining if the user can represent children
     get canRepresentChildren() {
-        return MOCK_HAS_FORELDREANSVAR && MOCK_REPRESENTABLE_CHILDREN.length > 0;
+        // TODO(backend-ready): Only server-verified responsibility should expose the dropdown.
+        return this.representableChildren.length > 0;
     }
 
-    // ToDo: MOCK_REPRESENTABLE_CHILDREN will be replaced with actual representable children
     get personOptions() {
-        return [
-            { label: this.selfPersonLabel, value: SELF_PERSON_VALUE },
-            ...(this.canRepresentChildren ? MOCK_REPRESENTABLE_CHILDREN : [])
-        ];
+        // TODO(backend-ready): Keep self plus authorized real Account IDs.
+        return [{ label: this.selfPersonLabel, value: SELF_PERSON_VALUE }, ...this.representableChildren];
     }
 
     get chipOptions() {
@@ -239,17 +231,23 @@ export default class StoMessageInbox extends LightningElement {
         return this.selectedPersonValue === SELF_PERSON_VALUE;
     }
 
-    // ToDo: To be replaced with actual logic for fetching child threads
-    get mockChildThreads() {
-        return MOCK_CHILD_THREADS[this.selectedPersonValue] || { recent: [], older: [] };
+    get representedAccountId() {
+        // TODO(backend-ready): Preserve null=self / Account ID=child contract.
+        return this.isSelfSelected ? null : this.selectedPersonValue;
     }
 
     get isDataLoaded() {
         return this.wthreads?.data !== undefined && this.wrthreads?.data !== undefined;
     }
 
+    // TODO(backend-ready): A success from one query must not hide a failure from the other query.
+    get threadLoadFailed() {
+        return Boolean(this.wthreads?.error || this.wrthreads?.error);
+    }
+
     get noItems() {
-        if (this.isSelfSelected && !this.isDataLoaded) {
+        // TODO(backend-ready): Loading/query failures are not empty inboxes.
+        if (!this.isDataLoaded || this.threadLoadFailed) {
             return false;
         }
         return !this.showVisibleRecentThreads && !this.showVisibleThreads;
@@ -262,13 +260,15 @@ export default class StoMessageInbox extends LightningElement {
     }
 
     get personRecentThreads() {
-        const threads = this.isSelfSelected ? this.recentthreads || [] : this.mockChildThreads.recent;
+        // TODO(backend-ready): Keep actual queried child messages; no mock arrays.
+        const threads = this.recentthreads || [];
 
         return threads.filter(Boolean).sort(this.sortByDate);
     }
 
     get personThreads() {
-        const threads = this.isSelfSelected ? this.threads || [] : this.mockChildThreads.older;
+        // TODO(backend-ready): Keep actual queried child history; no mock arrays.
+        const threads = this.threads || [];
 
         return threads.filter(Boolean).sort(this.sortByDate);
     }

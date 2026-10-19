@@ -67,7 +67,9 @@ assignPermission() {
 insertingTestData() {
    sf data import tree --plan dummy-data/data/plan.json || { error $? '"sf data import tree" command failed.'; }
    sf data import tree --plan dummy-data/sto/plan.json || { error $? '"sf data import tree" command failed.'; }
-   sf apex run --file dummy-data/GenerateData.apex
+   # TODO(backend-ready): KEEP ordered scratch setup and explicit failures; REMOVE family fixture setup only when retiring demo logins.
+   sf apex run --file post-scratch/scratchSetup.cls || { error $? '"sf apex run" community user setup failed.'; }
+   sf apex run --file dummy-data/GenerateData.apex || { error $? '"sf apex run" dummy data generation failed.'; }
 }
 
 openOrg() {

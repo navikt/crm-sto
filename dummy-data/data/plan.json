@@ -6,12 +6,6 @@
         "files": ["persons.json"]
     },
     {
-        "sobject": "Case",
-        "saveRefs": false,
-        "resolveRefs": false,
-        "files": ["cases.json"]
-    },
-    {
         "sobject": "PushTopic",
         "saveRefs": false,
         "resolveRefs": false,

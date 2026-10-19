@@ -15,6 +15,14 @@ public with sharing class stoInboxHelper {
 
     @AuraEnabled(cacheable=true)
     public static List<thread> getThreads() {
+        // TODO(backend-ready): Preserve the legacy self-inbox contract.
+        return getThreadsForPerson(null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    // TODO(backend-ready): Preserve authorized account-scoped retrieval when replacing the selection provider.
+    public static List<thread> getThreadsForPerson(Id representedAccountId) {
+        Id accountId = stoPersonContext.resolveAccountId(representedAccountId);
         List<thread> inboxlist = new List<thread>();
         List<Thread__c> threadList = [
             SELECT
@@ -71,6 +79,14 @@ public with sharing class stoInboxHelper {
 
     @AuraEnabled(cacheable=true)
     public static List<thread> getRecentThreads() {
+        // TODO(backend-ready): Preserve the legacy self-inbox contract.
+        return getRecentThreadsForPerson(null);
+    }
+
+    @AuraEnabled(cacheable=true)
+    // TODO(backend-ready): Preserve authorized account-scoped retrieval when replacing the selection provider.
+    public static List<thread> getRecentThreadsForPerson(Id representedAccountId) {
+        Id accountId = stoPersonContext.resolveAccountId(representedAccountId);
         List<thread> inboxlist = new List<thread>();
         List<Thread__c> threadList = [
             SELECT
