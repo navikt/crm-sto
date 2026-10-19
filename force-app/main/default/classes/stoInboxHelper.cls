@@ -57,8 +57,7 @@ public with sharing class stoInboxHelper {
                 CRM_Conversation_Note__c,
                 Name
             FROM Conversation_Note__c
-            WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL
-            AND CRM_Account__c = :accountId
+            WHERE CRM_Is_Read__c = TRUE AND CRM_Created_By_Ident__c != NULL AND CRM_Account__c = :accountId
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -111,8 +110,7 @@ public with sharing class stoInboxHelper {
                 CRM_Conversation_Note__c,
                 Name
             FROM Conversation_Note__c
-            WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL
-            AND CRM_Account__c = :accountId
+            WHERE CRM_Is_Read__c = FALSE AND CRM_Created_By_Ident__c != NULL AND CRM_Account__c = :accountId
             ORDER BY CRM_Date_Time_Registered__c DESC
         ];
         for (Conversation_Note__c t : noteList) {
@@ -139,6 +137,7 @@ public with sharing class stoInboxHelper {
             message.recordId = t.Messages__r[0]?.Id;
             message.messageText = t.Messages__r[0]
                 ?.CRM_Message_Text__c
+                ?.left(500)
                 ?.replaceAll('<[^>]+>', ' ')
                 .replaceAll('(\\r|\\n)+', ' ');
             message.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
