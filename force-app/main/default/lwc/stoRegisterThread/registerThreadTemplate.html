@@ -60,10 +60,10 @@
             </template>
 
             <template lwc:elseif={showPersonSelection}>
-                <lightning-formatted-rich-text
-                    class="aksel-body-long aksel-body-long--large"
-                    value={ingressLabel}
-                ></lightning-formatted-rich-text>
+                <c-ds-read-more
+                    title="Sende melding på vegne av barn"
+                    content={representationInformation}
+                ></c-ds-read-more>
                 <div class="person-selection-panel">
                     <c-ds-combobox
                         label="Hvem vil du skrive melding på vegne av?"

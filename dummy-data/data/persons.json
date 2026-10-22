@@ -19,6 +19,38 @@
         {
             "attributes": {
                 "type": "Person__c",
+                "referenceId": "PersonRef4"
+            },
+            "Name": "12345678902",
+            "INT_FirstName__c": "Kari",
+            "INT_LastName__c": "Normann",
+            "INT_IsDeceased__c": false,
+            "INT_ResidentialAddress__c": "Galtvortveien 101",
+            "INT_ResidentialZipCode__c": "1001",
+            "INT_Sex__c": "Kvinne",
+            "INT_Confidential__c": "UGRADERT",
+            "INT_ActorId__c": "12345678912",
+            "INT_DateOfBirth__c": "1986-04-12"
+        },
+        {
+            "attributes": {
+                "type": "Person__c",
+                "referenceId": "PersonRef5"
+            },
+            "Name": "12345678903",
+            "INT_FirstName__c": "Anne",
+            "INT_LastName__c": "Normann",
+            "INT_IsDeceased__c": false,
+            "INT_ResidentialAddress__c": "Galtvortveien 101",
+            "INT_ResidentialZipCode__c": "1001",
+            "INT_Sex__c": "Kvinne",
+            "INT_Confidential__c": "UGRADERT",
+            "INT_ActorId__c": "12345678913",
+            "INT_DateOfBirth__c": "1987-06-15"
+        },
+        {
+            "attributes": {
+                "type": "Person__c",
                 "referenceId": "PersonRef2"
             },
             "Name": "12345678904",

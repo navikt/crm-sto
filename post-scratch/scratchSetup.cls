@@ -6,13 +6,21 @@ update usr;
 
 // TODO(backend-ready): KEEP scratch user/license setup while demo logins are used; REMOVE family entries only when retiring fixtures.
 // PersonHandler creates the Person Accounts when dummy-data/data/persons.json is imported.
-Set<String> personIdents = new Set<String>{ '12345678901', '12345678904', '12345678905' };
+System.assert(
+    URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com'),
+    'Family fixtures require a scratch org.'
+);
+Map<String, Set<String>> family = stoPersonContext.scratchFamily();
+Set<String> personIdents = new Set<String>(family.keySet());
+for (Set<String> children : family.values()) {
+    personIdents.addAll(children);
+}
 List<Account> personAccounts = [
     SELECT FirstName, LastName, PersonContactId, INT_PersonIdent__c
     FROM Account
     WHERE INT_PersonIdent__c IN :personIdents AND IsPersonAccount = TRUE
 ];
-System.assertEquals(3, personAccounts.size(), 'Import all three test persons from dummy-data/data/persons.json first.');
+System.assertEquals(5, personAccounts.size(), 'Import all five test persons from dummy-data/data/persons.json first.');
 Set<Id> contactIds = new Set<Id>();
 for (Account personAccount : personAccounts) {
     System.assertNotEquals(null, personAccount.PersonContactId, 'The test Person Account must have a contact.');
@@ -26,7 +34,7 @@ for (User communityUser : [SELECT Id, ContactId, IsActive FROM User WHERE Contac
 }
 
 Profile portalProfile = [SELECT Id FROM Profile WHERE Name = 'Scratch Community Profile' LIMIT 1];
-// Scratch orgs have only one member-based Plus license; use login-based licenses for the children.
+// Scratch orgs have one member-based Plus license; use login-based licenses for everyone except Far.
 Profile childPortalProfile = [
     SELECT Id
     FROM Profile
@@ -82,43 +90,45 @@ for (Id userId : userIds) {
 }
 insert assignmentsToInsert;
 
-// TODO(backend-ready): REMOVE this synthetic family AccountShare setup when retiring fixtures.
-// REPLACE production relationship access/revocation with the approved backend lifecycle, not this script.
-// This script already opts the synthetic parent into Scratch Community Profile.
-System.assert(
-    URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com'),
-    'Family fixtures require a scratch org.'
-);
-User parentUser;
-List<Account> childAccounts = new List<Account>();
+// TODO(backend-ready): REMOVE explicit fixture grants with the scratch provider; children never receive this permission.
+Set<Id> parentUserIds = new Set<Id>();
 for (Account personAccount : personAccounts) {
-    if (personAccount.INT_PersonIdent__c == '12345678901') {
-        parentUser = usersByContact.get(personAccount.PersonContactId);
-    } else {
-        childAccounts.add(personAccount);
+    if (family.containsKey(personAccount.INT_PersonIdent__c)) {
+        parentUserIds.add(usersByContact.get(personAccount.PersonContactId).Id);
     }
 }
-Set<Id> sharedAccountIds = new Set<Id>();
-for (AccountShare existingShare : [
-    SELECT AccountId
-    FROM AccountShare
-    WHERE UserOrGroupId = :parentUser.Id AND AccountId IN :childAccounts
+Id familyPermissionId = [SELECT Id FROM PermissionSet WHERE Name = 'STO_Scratch_Family' LIMIT 1].Id;
+Set<Id> optedInParents = new Set<Id>();
+for (PermissionSetAssignment assignment : [
+    SELECT AssigneeId
+    FROM PermissionSetAssignment
+    WHERE PermissionSetId = :familyPermissionId AND AssigneeId IN :parentUserIds
 ]) {
-    sharedAccountIds.add(existingShare.AccountId);
+    optedInParents.add(assignment.AssigneeId);
 }
-List<AccountShare> familyShares = new List<AccountShare>();
-for (Account childAccount : childAccounts) {
-    if (!sharedAccountIds.contains(childAccount.Id)) {
-        familyShares.add(
-            new AccountShare(
-                AccountId = childAccount.Id,
-                UserOrGroupId = parentUser.Id,
-                AccountAccessLevel = 'Edit',
-                OpportunityAccessLevel = 'None',
-                CaseAccessLevel = 'None',
-                RowCause = Schema.AccountShare.RowCause.Manual
-            )
-        );
+List<PermissionSetAssignment> familyAssignments = new List<PermissionSetAssignment>();
+for (Id parentUserId : parentUserIds) {
+    if (!optedInParents.contains(parentUserId)) {
+        familyAssignments.add(new PermissionSetAssignment(PermissionSetId = familyPermissionId, AssigneeId = parentUserId));
     }
 }
-insert familyShares;
+insert familyAssignments;
+
+// Read-only field/object access for the viewer's narrowly shared Person__c label details.
+Id labelPermissionId = [SELECT Id FROM PermissionSet WHERE Name = 'STO_Thread_Representation_Label' LIMIT 1].Id;
+Set<Id> labelAssignedUserIds = new Set<Id>();
+for (PermissionSetAssignment assignment : [
+    SELECT AssigneeId
+    FROM PermissionSetAssignment
+    WHERE PermissionSetId = :labelPermissionId AND AssigneeId IN :userIds
+]) {
+    labelAssignedUserIds.add(assignment.AssigneeId);
+}
+List<PermissionSetAssignment> labelAssignments = new List<PermissionSetAssignment>();
+for (Id userId : userIds) {
+    if (!labelAssignedUserIds.contains(userId)) {
+        labelAssignments.add(new PermissionSetAssignment(PermissionSetId = labelPermissionId, AssigneeId = userId));
+    }
+}
+insert labelAssignments;
+// Run scratchFamilySharing.cls in a separate transaction after this script to avoid mixed setup/record DML.

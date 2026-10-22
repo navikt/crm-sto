@@ -73,10 +73,6 @@ const STO_REPRESENTATION_THEME_GROUPS = new Set([
 
 // TODO(representation-policy): Confirm the final approved eligibility matrix. The frontend configuration must also be enforced by Apex.
 const BTO_REPRESENTATION_RULES = {
-    Familie: {
-        mode: 'all',
-        themes: new Set()
-    },
     Helse: {
         mode: 'themes',
         themes: new Set(['Grunnstønad eller hjelpestønad', 'Yrkesskade'])
@@ -91,12 +87,13 @@ const BTO_REPRESENTATION_RULES = {
     }
 };
 
-const MOCK_REPRESENTATION_INGRESS =
-    'Du kan sende meldinger til Nav på vegne av barna dine hvis du har foreldreansvar for dem. Når barn blir myndige (eller du mister foreldreretten), vil du ikke lenger kunne se meldinger du har sendt på deres vegne, eller ha dialog med Nav på deres vegne.';
+const REPRESENTATION_INFORMATION =
+    'Du kan sende meldinger til Nav på vegne av barn du har foreldreansvar for. Når barnet fyller 18 år, kan du ikke lenger se meldingene du har sendt på barnets vegne. Du kan heller ikke ha dialog med Nav på vegne av barnet.';
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api threadTypeToMake;
 
+    representationInformation = REPRESENTATION_INFORMATION;
     isLoading = true;
     showSpinner = false;
     category;
@@ -223,8 +220,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     ingressMap = {
         'Skriv til oss': {
             default: STO_DEFAULT_INGRESS,
-            representation: MOCK_REPRESENTATION_INGRESS, // ToDo: Replace with actual default representation ingress for STO when available
-            'Andre-hjelpemidler': STO_HJELPEMIDLER_INGRESS // ToDo: Replace with actual Hjelpemidler representation ingress when available
+            'Andre-hjelpemidler': STO_HJELPEMIDLER_INGRESS
         },
         'Beskjed til oss': {
             default: BTO_DEFAULT_INGRESS
@@ -239,10 +235,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         },
         'Meld fra om endring': {
             default: ENDRING_DEFAULT_INGRESS,
-            representation: MOCK_REPRESENTATION_INGRESS, // ToDo: Replace with actual default representation ingress for Meld fra om endring when available
             'AFP i offentlig sektor': ENDRING_PENSJON_INGRESS,
             'Bor eller jobber i utlandet': ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS,
-            Yrkesskade: ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS // ToDo: Replace with actual Yrkesskade representation ingress when available
+            Yrkesskade: ENDRING_INTERNASJONAL_YRKESSKADE_INGRESS
         },
         'Trekke en søknad': {
             default: TREKK_SOKNAD_DEFAULT_INGRESS
@@ -445,7 +440,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     handlePersonChange(event) {
-        // Required communityCombobox event contract: detail = { value }.
+        // dsCombobox event contract: detail = { value }.
         const value = event.detail?.value;
         const validOption = this.personOptions.some((option) => option.value === value);
 
@@ -458,7 +453,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
         if (!validOption) {
             this.personSelectionError = 'Du må velge hvem du vil skrive på vegne av.';
-            this.template.querySelector('c-community-combobox')?.focus();
+            this.template.querySelector('c-ds-combobox')?.focus();
             return;
         }
 
@@ -884,10 +879,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     get ingressLabel() {
         const ingress = this.ingressMap[this.title];
 
-        if (this.allowsRepresentation && ingress?.representation) {
-            return ingress.representation;
-        }
-
         if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
             return ingress?.['Andre-hjelpemidler'];
         }
@@ -1014,7 +1005,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get selfPersonLabel() {
-        return this.currentUserName ? `Deg (${this.currentUserName})` : 'Deg';
+        return this.currentUserName ? `${this.currentUserName} (Deg)` : 'Deg';
     }
 
     get personOptions() {
@@ -1032,6 +1023,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return (
             this.representationLoaded &&
             (!this.representationLoadFailed || this.selectedPersonValue === SELF_PERSON_VALUE) &&
+            this.personOptions.some((option) => option.value === this.selectedPersonValue) &&
             (!this.allowsRepresentation || this.personSelectionConfirmed)
         );
     }
@@ -1089,7 +1081,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         let description =
             'Teksten lagres ikke automatisk. Hvis du er på denne siden i mer enn 30 minutter, kan du bli logget ut og miste det du har skrevet.';
         return this.isWritingForChild
-            ? `Personen du sender melding på vegne av kan lese meldingen i fremtiden. Hvis en annen person har foreldrerett, vil den personen kunne lese meldingene også. ${description}`
+            ? `Personen du sender melding på vegne av kan lese meldingen i fremtiden. Hvis en annen person har foreldreansvar, vil den personen kunne lese meldingene også. ${description}`
             : description;
     }
 }

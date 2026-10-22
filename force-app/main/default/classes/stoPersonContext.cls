@@ -4,6 +4,16 @@ public with sharing class stoPersonContext {
     @TestVisible
     private static List<Account> testChildren;
 
+    // TODO(backend-ready): REMOVE this synthetic Foreldreansvar map with the scratch provider.
+    // Far and Mor have felles ansvar; Medmor has Foreldreansvar for Beate only.
+    public static Map<String, Set<String>> scratchFamily() {
+        return new Map<String, Set<String>>{
+            '12345678901' => new Set<String>{ '12345678904', '12345678905' },
+            '12345678902' => new Set<String>{ '12345678904', '12345678905' },
+            '12345678903' => new Set<String>{ '12345678904' }
+        };
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<PersonOption> getRepresentableChildren() {
         List<PersonOption> options = new List<PersonOption>();
@@ -65,17 +75,29 @@ public with sharing class stoPersonContext {
         }
         // TODO(backend-ready): The scratch parent profile explicitly grants read access to this synthetic identity field.
         List<Account> fixtureParent = [
-            SELECT Id
+            SELECT Id, INT_PersonIdent__c
             FROM Account
-            WHERE Id = :actor.AccountId AND INT_PersonIdent__c = '12345678901' AND IsPersonAccount = TRUE
+            WHERE Id = :actor.AccountId AND IsPersonAccount = TRUE
         ];
         if (fixtureParent.isEmpty()) {
             return new List<Account>();
         }
+        Set<String> childIdents = scratchFamily().get(fixtureParent[0].INT_PersonIdent__c);
+        if (childIdents == null) {
+            return new List<Account>();
+        }
+        // PersonHandler stores these fixture birth dates as ISO date strings, not Account.PersonBirthdate.
+        String adultBirthDate = String.valueOf(Date.today().addYears(-18));
+        String today = String.valueOf(Date.today());
         return [
-            SELECT Id, Name, PersonContactId
+            SELECT Id, Name, PersonContactId, INT_PersonIdent__c, CRM_Person__r.INT_DateOfBirth__c
             FROM Account
-            WHERE IsPersonAccount = TRUE AND INT_PersonIdent__c IN ('12345678904', '12345678905')
+            WHERE
+                IsPersonAccount = TRUE
+                AND INT_PersonIdent__c IN :childIdents
+                AND CRM_Person__r.INT_Confidential__c = 'UGRADERT'
+                AND CRM_Person__r.INT_DateOfBirth__c > :adultBirthDate
+                AND CRM_Person__r.INT_DateOfBirth__c <= :today
             ORDER BY Name
         ];
     }
@@ -88,6 +110,15 @@ public with sharing class stoPersonContext {
 
         public PersonOption(Account child) {
             label = child.Name;
+            String birthDateValue = child.CRM_Person__r?.INT_DateOfBirth__c;
+            if (String.isNotBlank(birthDateValue)) {
+                Date birthDate = Date.valueOf(birthDateValue);
+                Integer age = Date.today().year() - birthDate.year();
+                if (birthDate.addYears(age) > Date.today()) {
+                    age--;
+                }
+                label += ' (' + age + ' år)';
+            }
             value = child.Id;
         }
     }

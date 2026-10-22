@@ -1,7 +1,11 @@
 <template>
     <div class="container">
-        <c-sto-medskriv-samtykke record-id={recordId}></c-sto-medskriv-samtykke>
-        <c-ds-alert alert-type="info" alert-text={infoText}></c-ds-alert>
+        <template lwc:if={showMedskrivConsent}>
+            <c-sto-medskriv-samtykke record-id={_recordId}></c-sto-medskriv-samtykke>
+        </template>
+        <template lwc:if={showReplyInformation}>
+            <c-ds-alert alert-type="info" alert-text={infoText}></c-ds-alert>
+        </template>
         <template lwc:if={showSurveyButton}>
             <div class="survey-container">
                 <h2 class="aksel-heading aksel-heading--small aksel-typo--spacing">

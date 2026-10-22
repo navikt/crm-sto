@@ -1,5 +1,6 @@
 import { LightningElement, wire, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
+import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 // TODO(backend-ready): Preserve account-scoped inbox queries with the real authorization provider.
 import getThreads from '@salesforce/apex/stoInboxHelper.getThreadsForPerson';
 import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreadsForPerson';
@@ -9,12 +10,11 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
 
-const PERSON_STORAGE_KEY = `sto-inbox-person-${USER_ID}`;
 const SELF_PERSON_VALUE = 'self';
 // TODO(backend-ready): All children and their threads now come from Apex; do not restore client fixtures.
 const ALL_CATEGORIES_VALUE = 'all';
 
-export default class StoMessageInbox extends LightningElement {
+export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     @api title;
 
     threads;
@@ -30,35 +30,36 @@ export default class StoMessageInbox extends LightningElement {
     // TODO(backend-ready): Keep verified selections and explicit backend failure states.
     representableChildren = [];
     representationLoadFailed = false;
+    representationLoaded = false;
+    pageReference;
+    requestedPersonValue = SELF_PERSON_VALUE;
 
-    // TODO(backend-ready): Replace the scratch provider server-side and retain validated session restoration.
+    @wire(CurrentPageReference)
+    wiredPageReference(pageReference) {
+        if (pageReference?.attributes?.name !== 'Home') return;
+        this.pageReference = pageReference;
+        this.requestedPersonValue = pageReference.state?.c__inboxPerson || SELF_PERSON_VALUE;
+        if (this.representationLoaded) {
+            this.selectPerson(this.requestedPersonValue);
+        }
+    }
+
+    // TODO(backend-ready): Replace the scratch provider server-side and retain verified selections.
     @wire(getRepresentableChildren)
     wiredChildren({ data, error }) {
         if (error) {
+            this.representationLoaded = true;
             this.representationLoadFailed = true;
             this.representableChildren = [];
-            this.selectedPersonValue = SELF_PERSON_VALUE;
+            this.selectPerson(SELF_PERSON_VALUE);
             console.error('Could not load representable children:', error);
             return;
         }
         if (data === undefined) return;
         this.representationLoadFailed = false;
         this.representableChildren = data;
-        try {
-            const savedValue = sessionStorage.getItem(PERSON_STORAGE_KEY);
-            const validOption = this.personOptions.some((option) => option.value === savedValue);
-
-            const nextValue = validOption ? savedValue : SELF_PERSON_VALUE;
-            if (nextValue !== this.selectedPersonValue) {
-                this.threads = [];
-                this.recentthreads = [];
-                this.wthreads = undefined;
-                this.wrthreads = undefined;
-                this.selectedPersonValue = nextValue;
-            }
-        } catch (storageError) {
-            console.error('Could not restore inbox person:', storageError);
-        }
+        this.representationLoaded = true;
+        this.selectPerson(this.requestedPersonValue);
     }
 
     renderedCallback() {
@@ -107,14 +108,6 @@ export default class StoMessageInbox extends LightningElement {
             this.setRecentThreads();
         } else {
             this.recentthreads = [];
-        }
-    }
-
-    saveSelectedPerson() {
-        try {
-            sessionStorage.setItem(PERSON_STORAGE_KEY, this.selectedPersonValue);
-        } catch (error) {
-            console.error('Could not save inbox person:', error);
         }
     }
 
@@ -178,7 +171,20 @@ export default class StoMessageInbox extends LightningElement {
     }
 
     handlePersonChange(event) {
-        const value = event.detail?.value;
+        this.selectPerson(event.detail?.value);
+        this.requestedPersonValue = this.selectedPersonValue;
+        if (this.pageReference) {
+            const state = { ...this.pageReference.state };
+            if (this.isSelfSelected) {
+                delete state.c__inboxPerson;
+            } else {
+                state.c__inboxPerson = this.selectedPersonValue;
+            }
+            this[NavigationMixin.Navigate]({ ...this.pageReference, state }, true);
+        }
+    }
+
+    selectPerson(value) {
         const validOption = this.personOptions.some((option) => option.value === value);
 
         const nextValue = validOption ? value : SELF_PERSON_VALUE;
@@ -190,7 +196,6 @@ export default class StoMessageInbox extends LightningElement {
         this.wthreads = undefined;
         this.wrthreads = undefined;
         this.selectedCategoryValues = new Set();
-        this.saveSelectedPerson();
     }
 
     getThreadCategory(thread) {
@@ -206,7 +211,7 @@ export default class StoMessageInbox extends LightningElement {
     }
 
     get selfPersonLabel() {
-        return this.currentUserName ? `Deg (${this.currentUserName})` : 'Deg';
+        return this.currentUserName ? `${this.currentUserName} (Deg)` : 'Deg';
     }
 
     get canRepresentChildren() {

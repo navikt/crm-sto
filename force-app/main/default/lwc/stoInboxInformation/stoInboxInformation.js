@@ -4,6 +4,7 @@ import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
+import getReplyContext from '@salesforce/apex/stoHelperClass.getReplyContext';
 import { CurrentPageReference } from 'lightning/navigation';
 
 export default class StoInboxInformation extends LightningElement {
@@ -16,6 +17,21 @@ export default class StoInboxInformation extends LightningElement {
     surveyLink;
     completed = false;
     _recordId;
+    canReply = false;
+
+    @wire(getReplyContext, { threadId: '$_recordId' })
+    wiredReplyContext({ data, error }) {
+        this.canReply = data?.canReply === true;
+        if (error) console.error('Problem getting reply information:', error);
+    }
+
+    get showReplyInformation() {
+        return this.closed || this.canReply;
+    }
+
+    get showMedskrivConsent() {
+        return this.canReply && Boolean(this._recordId);
+    }
 
     connectedCallback() {
         getURL()

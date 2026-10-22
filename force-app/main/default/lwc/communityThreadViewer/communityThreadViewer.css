@@ -6,6 +6,13 @@
     margin-bottom: var(--ax-space-20);
 }
 
+.representation-banner {
+    background-color: var(--ax-accent-100, #eef6ff);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-block: 1.5rem;
+}
+
 .aksel-button {
     padding: var(--ax-space-12) var(--ax-space-20);
     margin-bottom: var(--ax-space-28);

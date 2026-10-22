@@ -133,8 +133,12 @@ public with sharing class stoHelperClass {
         );
 
         createMessage(thread, msgText, personUser.ContactId);
-        // TODO(backend-ready): Revalidate sharing against the production access lifecycle; this grants only the inbox owner's own login.
-        if (ownerAccountId != null && ownerAccountId != personUser.AccountId) {
+        // TODO(backend-ready): Replace scratch co-parent read sharing with the approved responsibility/revocation lifecycle.
+        if (
+            ownerAccountId != null &&
+            (ownerAccountId != personUser.AccountId ||
+            URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com'))
+        ) {
             new InboxOwnerSharing().grantAccess(thread);
         }
         return thread;
@@ -144,16 +148,60 @@ public with sharing class stoHelperClass {
     private without sharing class InboxOwnerSharing {
         public void grantAccess(Thread__c newThread) {
             List<Thread__Share> shares = new List<Thread__Share>();
+            Account child = [
+                SELECT
+                    INT_PersonIdent__c,
+                    PersonContactId,
+                    CRM_Person__r.INT_Confidential__c,
+                    CRM_Person__r.INT_DateOfBirth__c
+                FROM Account
+                WHERE Id = :newThread.CRM_Account__c
+            ];
+            Set<Id> parentContactIds = new Set<Id>();
+            if (
+                URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com') &&
+                child.CRM_Person__r?.INT_Confidential__c == 'UGRADERT' &&
+                child.CRM_Person__r?.INT_DateOfBirth__c > String.valueOf(Date.today().addYears(-18)) &&
+                child.CRM_Person__r?.INT_DateOfBirth__c <= String.valueOf(Date.today())
+            ) {
+                Map<String, Set<String>> family = stoPersonContext.scratchFamily();
+                Set<String> parentIdents = new Set<String>();
+                for (String parentIdent : family.keySet()) {
+                    if (family.get(parentIdent).contains(child.INT_PersonIdent__c)) {
+                        parentIdents.add(parentIdent);
+                    }
+                }
+                for (Account parent : [
+                    SELECT PersonContactId
+                    FROM Account
+                    WHERE IsPersonAccount = TRUE AND INT_PersonIdent__c IN :parentIdents
+                ]) {
+                    parentContactIds.add(parent.PersonContactId);
+                }
+            }
+            Set<Id> optedInParentUserIds = new Set<Id>();
+            for (PermissionSetAssignment assignment : [
+                SELECT AssigneeId
+                FROM PermissionSetAssignment
+                WHERE PermissionSet.Name = 'STO_Scratch_Family' AND Assignee.ContactId IN :parentContactIds
+            ]) {
+                optedInParentUserIds.add(assignment.AssigneeId);
+            }
             for (User childUser : [
-                SELECT Id
+                SELECT Id, ContactId
                 FROM User
-                WHERE AccountId = :newThread.CRM_Account__c AND ContactId != NULL AND IsActive = TRUE
+                WHERE
+                    (ContactId = :child.PersonContactId
+                    OR Id IN :optedInParentUserIds)
+                    AND ContactId != NULL
+                    AND IsActive = TRUE
+                    AND Id != :UserInfo.getUserId()
             ]) {
                 shares.add(
                     new Thread__Share(
                         ParentId = newThread.Id,
                         UserOrGroupId = childUser.Id,
-                        AccessLevel = 'Edit',
+                        AccessLevel = 'Read',
                         RowCause = Schema.Thread__Share.RowCause.Manual
                     )
                 );
@@ -360,7 +408,13 @@ public with sharing class stoHelperClass {
         } catch (DmlException e) {
             LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
+            throw new AuraHandledException(e.getDmlMessage(0));
         }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static stoThreadAccess.ReplyContext getReplyContext(Id threadId) {
+        return stoThreadAccess.getReplyContext(threadId);
     }
 
     // TODO(backend-ready): Keep limits scoped to the selected inbox owner, not the acting parent.

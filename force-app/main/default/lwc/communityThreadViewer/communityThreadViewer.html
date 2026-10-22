@@ -38,26 +38,49 @@
             </div>
         </template>
         <template lwc:elseif={showCloseButton}>
-            <div class="end-dialogue-container">
-                <p class="aksel-body-long aksel-body-long--large">
-                    Vi ser at du allerede har tre åpne meldinger på dette temaet . Hvis du vil opprette en ny samtale,
-                    må du derfor avslutte en av de du allerede har.
-                </p>
-                <p class="aksel-body-long aksel-body-long--large subtitle">Ønsker du å avslutte denne samtalen?</p>
-                <button
-                    data-variant="secondary"
-                    class="aksel-button aksel-button--medium close-button"
-                    aria-disabled="false"
-                    onclick={handleClick}
-                >
-                    <span class="aksel-label"> Avslutt samtalen </span>
-                </button>
-            </div>
+            <template lwc:if={canReply}>
+                <div class="end-dialogue-container">
+                    <p class="aksel-body-long aksel-body-long--large">
+                        Vi ser at du allerede har tre åpne meldinger på dette temaet . Hvis du vil opprette en ny
+                        samtale, må du derfor avslutte en av de du allerede har.
+                    </p>
+                    <p class="aksel-body-long aksel-body-long--large subtitle">Ønsker du å avslutte denne samtalen?</p>
+                    <button
+                        data-variant="secondary"
+                        class="aksel-button aksel-button--medium close-button"
+                        aria-disabled="false"
+                        onclick={handleClick}
+                    >
+                        <span class="aksel-label"> Avslutt samtalen </span>
+                    </button>
+                </div>
+            </template>
+        </template>
+        <template lwc:if={representationLabel}>
+            <div class="representation-banner aksel-body-long aksel-body-long--medium">{representationLabel}</div>
         </template>
         <c-community-message-container message-groups={messageGroups}></c-community-message-container>
         <slot name="messageArea">
-            <template lwc:if={closed}></template>
-            <template lwc:else>
+            <template lwc:if={replyContextError}>
+                <c-ds-alert alert-type="error" alert-text={replyContextError}></c-ds-alert>
+            </template>
+            <template lwc:elseif={showReadOnlyNotice}>
+                <c-ds-alert alert-type="info">
+                    <span>
+                        Bare den personen som har startet samtalen kan svare. Vil du
+                        <a
+                            class="aksel-link"
+                            data-color="accent"
+                            href="https://www.nav.no/skriv-til-oss"
+                            target="_self"
+                        >
+                            sende en melding til Nav selv</a
+                        >, kan du gjøre det her.
+                    </span>
+                </c-ds-alert>
+            </template>
+            <template lwc:elseif={closed}></template>
+            <template lwc:elseif={canReply}>
                 <div class="text-area">
                     <!-- TODO(backend-ready): KEEP the complete context-aware description binding when replacing context inference. -->
                     <c-ds-textarea

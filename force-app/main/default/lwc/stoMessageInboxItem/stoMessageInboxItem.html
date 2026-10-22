@@ -31,8 +31,17 @@
                 </template>
             </div>
         </div>
-        <h3 class="aksel-heading--small aksel-typo--semibold slds-var-p-bottom_x-small">{itemTitle}</h3>
+        <template lwc:if={inboxSenderLabel}>
+            <p class="aksel-body-short aksel-body-short--medium slds-var-p-bottom_x-small">{inboxSenderLabel}</p>
+        </template>
+        <template lwc:elseif={senderContextLoadFailed}>
+            <p role="status" class="aksel-body-short">Informasjon om hvem som startet samtalen kunne ikke hentes.</p>
+        </template>
+        <h3 class="aksel-heading--small aksel-typo--semibold slds-var-p-bottom_x-small item-title">{itemTitle}</h3>
         <p class="aksel-body-long--large aksel-typo--regular message-box">{latestText}</p>
+        <template lwc:if={showReadStateError}>
+            <p role="status" class="aksel-body-short">Lesestatus kunne ikke hentes.</p>
+        </template>
     </a>
     <slot name="endDialogue"></slot>
 </template>

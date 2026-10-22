@@ -44,3 +44,7 @@
     align-items: flex-start;
     gap: 0.5rem 0.5rem;
 }
+
+.item-title {
+    color: var(--ax-text-subtle);
+}

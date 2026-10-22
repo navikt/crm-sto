@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- TODO(backend-ready): REMOVE this opt-in permission set with the scratch family provider. Never assign in production. -->
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>STO_Scratch_Family</name>
+    </customPermissions>
+    <description>Explicit scratch-only Foreldreansvar fixture access for the synthetic parents.</description>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.CRM_Person__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.INT_PersonIdent__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.INT_Confidential__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.INT_DateOfBirth__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <label>STO Scratch Family</label>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Person__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+</PermissionSet>

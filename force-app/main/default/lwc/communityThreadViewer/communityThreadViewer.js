@@ -6,6 +6,7 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createThreadMessage from '@salesforce/apex/CRM_MessageHelperExperience.createThreadMessage';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import getCloseIntent from '@salesforce/apex/stoHelperClass.getCloseIntent';
+import getReplyContext from '@salesforce/apex/stoHelperClass.getReplyContext';
 
 import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import THREAD_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
@@ -15,6 +16,7 @@ import CATEGORY_FIELD from '@salesforce/schema/Thread__c.STO_Category__c';
 import THREAD_CONTACT_FIELD from '@salesforce/schema/Thread__c.CRM_Contact__c';
 import USER_CONTACT_FIELD from '@salesforce/schema/User.ContactId';
 import USER_ID from '@salesforce/user/Id';
+import { markMessagesRead } from 'c/stoReadState';
 
 const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD, CATEGORY_FIELD, THREAD_CONTACT_FIELD];
 
@@ -37,6 +39,17 @@ export default class CommunityThreadViewer extends LightningElement {
     referrer;
     // TODO(backend-ready): The owner replying as self is distinct from a parent replying for that owner.
     currentUserContactId;
+    replyContext;
+    replyContextError;
+
+    @wire(getReplyContext, { threadId: '$recordId' })
+    wiredReplyContext({ data, error }) {
+        this.replyContext = data;
+        this.replyContextError = error
+            ? 'Vi kunne ikke hente hvem som kan svare i samtalen. Oppdater siden og prøv på nytt.'
+            : undefined;
+        if (error) console.error('Problem getting reply access:', error);
+    }
 
     @wire(getRecord, { recordId: USER_ID, fields: [USER_CONTACT_FIELD] })
     wiredCurrentUser({ data, error }) {
@@ -93,6 +106,13 @@ export default class CommunityThreadViewer extends LightningElement {
             console.error('Problem getting message groups: ', error);
         } else if (data) {
             this.messageGroups = result.data;
+            const messageIds = data.flatMap((group) =>
+                (group.groupMessages || [])
+                    .map((entry) => entry.message)
+                    .filter((message) => ['Message', 'Info'].includes(message.CRM_Type__c))
+                    .map((message) => message.Id)
+            );
+            markMessagesRead(USER_ID, this.recordId, messageIds);
         }
     }
 
@@ -126,10 +146,12 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     createMessage(validation) {
+        if (!this.canReply) return;
         if (!validation) {
             this.buttonDisabled = false;
             return;
         }
+
         createThreadMessage({ threadId: this.recordId, messageText: this.messageValue })
             .then((result) => {
                 if (result) {
@@ -144,7 +166,20 @@ export default class CommunityThreadViewer extends LightningElement {
             });
     }
 
+    get canReply() {
+        return this.replyContext?.canReply === true;
+    }
+
+    get showReadOnlyNotice() {
+        return this.replyContext?.canReply === false;
+    }
+
+    get representationLabel() {
+        return this.replyContext?.representedLabel || '';
+    }
+
     handleSendButtonClick() {
+        if (!this.canReply) return;
         this.buttonDisabled = true;
         // Sending out event to parent to handle any needed validation
         if (this.overrideValidation) {
@@ -193,15 +228,17 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     handleClick() {
+        if (!this.canReply) return;
         this.refs.childRef.openModal();
     }
 
     handleCloseThread() {
+        if (!this.canReply) return;
         this.refs.childRef.closeModal();
         this.showSpinner = true;
         closeThread({ id: this.recordId })
             .then(() => {
-                return refreshApex(this.wireThread);
+                return refreshApex(this.wiredThread);
             })
             .then(() => {
                 this.showSpinner = false;
@@ -211,6 +248,7 @@ export default class CommunityThreadViewer extends LightningElement {
             .catch((err) => {
                 console.error(err);
                 this.showSpinner = false;
+                this.template.querySelector('c-alertdialog').showModal();
             });
     }
 
@@ -291,7 +329,7 @@ export default class CommunityThreadViewer extends LightningElement {
         const description =
             'Teksten lagres ikke automatisk. Hvis du er på denne siden i mer enn 30 minutter, kan du bli logget ut og miste det du har skrevet.';
         if (this.isWritingForChild) {
-            return `Personen du sender melding på vegne av kan lese meldingen i fremtiden. Hvis en annen person har foreldrerett, vil den personen kunne lese meldingene også. ${description}`;
+            return `Personen du sender melding på vegne av kan lese meldingen i fremtiden. Hvis en annen person har foreldreansvar, vil den personen kunne lese meldingene også. ${description}`;
         }
         if (
             this.currentUserContactId === getFieldValue(this.thread, THREAD_CONTACT_FIELD) &&

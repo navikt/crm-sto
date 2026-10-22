@@ -20,8 +20,8 @@
             </p>
             <template lwc:if={canRepresentChildren}>
                 <p class="aksel-body-long aksel-body-long--large representative-info">
-                    Du kan se egne meldinger eller meldinger du har skrevet på vegne av et barn du har foreldreansvar
-                    for.
+                    Du kan se egne meldinger eller meldinger som gjelder et barn du har foreldreansvar for. Du kan bare
+                    svare i samtaler du selv har startet.
                 </p>
             </template>
         </div>
@@ -58,7 +58,11 @@
             <h2 class="aksel-heading aksel-heading--small subheader">Siste meldinger</h2>
             <div class="inbox-list">
                 <template for:each={visibleRecentThreads} for:item="thread">
-                    <c-sto-message-inbox-item thread={thread} key={thread.recordId}></c-sto-message-inbox-item>
+                    <c-sto-message-inbox-item
+                        thread={thread}
+                        key={thread.recordId}
+                        inbox-person-value={selectedPersonValue}
+                    ></c-sto-message-inbox-item>
                 </template>
             </div>
         </template>
@@ -66,7 +70,11 @@
             <h2 class="aksel-heading aksel-heading--small subheader">Tidligere meldinger</h2>
             <div class="inbox-list">
                 <template for:each={visibleThreads} for:item="thread">
-                    <c-sto-message-inbox-item thread={thread} key={thread.recordId}></c-sto-message-inbox-item>
+                    <c-sto-message-inbox-item
+                        thread={thread}
+                        key={thread.recordId}
+                        inbox-person-value={selectedPersonValue}
+                    ></c-sto-message-inbox-item>
                 </template>
             </div>
         </template>
