@@ -26,26 +26,40 @@ public with sharing class stoThreadAccess {
             !isExternal(viewer) || (viewer.ContactId != null && starterContact(thread) == viewer.ContactId);
         if (!thread.Messages__r.isEmpty()) {
             Message__c firstMessage = thread.Messages__r[0];
-            if (firstMessage.CRM_From_Contact__c != null) {
-                String starterName = firstMessage.CRM_From_Contact__r.Name;
-                if (firstMessage.CRM_From_Contact__c != thread.CRM_Contact__c) {
-                    context.inboxSenderLabel = viewer.ContactId == thread.CRM_Contact__c
-                        ? starterName + ' startet samtalen'
-                        : (viewer.ContactId == firstMessage.CRM_From_Contact__c ? 'Deg' : starterName) +
-                          ' på vegne av ' +
-                          thread.CRM_Contact__r.Name;
-                } else if (viewer.ContactId != thread.CRM_Contact__c) {
-                    context.inboxSenderLabel = starterName + ' startet samtalen';
-                }
-            }
+            context.inboxSenderLabel = inboxSenderLabel(viewer.ContactId, firstMessage);
             if (firstMessage.CRM_From_Contact__c != null && firstMessage.CRM_From_Contact__c != thread.CRM_Contact__c) {
                 context.senderName = firstMessage.CRM_From_Contact__r.Name;
                 context.representedName = thread.CRM_Contact__r.Name;
-                context.representedLabel = new RepresentedPersonLabel()
-                    .format(thread.CRM_Account__c, context.representedName);
+                if (viewer.ContactId != thread.CRM_Contact__c) {
+                    context.representedLabel = viewer.ContactId == firstMessage.CRM_From_Contact__c
+                        ? new RepresentedPersonLabel().format(thread.CRM_Account__c, context.representedName)
+                        : context.senderName + ' på vegne av ' + context.representedName;
+                }
             }
         }
         return context;
+    }
+
+    public static String inboxSenderLabel(Id viewerContactId, Message__c firstMessage) {
+        if (firstMessage?.CRM_From_Contact__c == null || viewerContactId == firstMessage.CRM_From_Contact__c)
+            return null;
+        return firstMessage.CRM_From_Contact__r.Name + ' startet samtalen';
+    }
+
+    public static String replyRecipientFirstName(Id threadId) {
+        Thread__c thread = threads(new Set<Id>{ threadId }).get(threadId);
+        if (thread == null) {
+            throw new AuraHandledException('Vi kunne ikke hente samtalen.');
+        }
+        Id recipientId = starterContact(thread);
+        if (recipientId == null) {
+            return '';
+        }
+        List<Contact> recipients = [SELECT FirstName FROM Contact WHERE Id = :recipientId];
+        if (recipients.isEmpty()) {
+            throw new AuraHandledException('Vi kunne ikke hente mottakeren av svaret.');
+        }
+        return recipients[0].FirstName == null ? '' : recipients[0].FirstName;
     }
 
     public static void checkMessages(List<Message__c> messages) {
@@ -137,7 +151,7 @@ public with sharing class stoThreadAccess {
             Account account;
             try {
                 account = [
-                    SELECT CRM_Person__r.INT_Sex__c, CRM_Person__r.INT_DateOfBirth__c
+                    SELECT CRM_Person__r.INT_DateOfBirth__c
                     FROM Account
                     WHERE Id = :accountId
                     LIMIT 1
@@ -154,11 +168,6 @@ public with sharing class stoThreadAccess {
             }
             Person__c person = account.CRM_Person__r;
             List<String> details = new List<String>();
-            if (person.INT_Sex__c == 'Kvinne') {
-                details.add('datter');
-            } else if (person.INT_Sex__c == 'Mann') {
-                details.add('sønn');
-            }
             if (String.isNotBlank(person.INT_DateOfBirth__c)) {
                 try {
                     Date birthDate = Date.valueOf(person.INT_DateOfBirth__c);

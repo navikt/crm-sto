@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>One server-managed read position per user and thread. Not shared with other readers.</description>
+    <externalSharingModel>Private</externalSharingModel>
+    <label>Thread read state</label>
+    <nameField>
+        <displayFormat>READ-{000000000}</displayFormat>
+        <label>Read state number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Thread read states</pluralLabel>
+    <sharingModel>Private</sharingModel>
+</CustomObject>

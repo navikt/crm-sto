@@ -60,9 +60,12 @@
             <div class="representation-banner aksel-body-long aksel-body-long--medium">{representationLabel}</div>
         </template>
         <c-community-message-container message-groups={messageGroups}></c-community-message-container>
+        <template lwc:if={readStateError}>
+            <c-ds-alert alert-type="danger" alert-text={readStateError}></c-ds-alert>
+        </template>
         <slot name="messageArea">
             <template lwc:if={replyContextError}>
-                <c-ds-alert alert-type="error" alert-text={replyContextError}></c-ds-alert>
+                <c-ds-alert alert-type="danger" alert-text={replyContextError}></c-ds-alert>
             </template>
             <template lwc:elseif={showReadOnlyNotice}>
                 <c-ds-alert alert-type="info">

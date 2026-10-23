@@ -3,6 +3,11 @@
  * Controller class to get related record
  */
 public class STO_RecordInfoController {
+    @AuraEnabled(cacheable=true)
+    public static String getReplyRecipientFirstName(Id threadId) {
+        return stoThreadAccess.replyRecipientFirstName(threadId);
+    }
+
     /**
      * @description
      * @author Stian Ruud Schikora | 09-14-2020

@@ -2,13 +2,14 @@ import { LightningElement, wire, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 // TODO(backend-ready): Preserve account-scoped inbox queries with the real authorization provider.
-import getThreads from '@salesforce/apex/stoInboxHelper.getThreadsForPerson';
-import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreadsForPerson';
+import getInboxPage from '@salesforce/apex/stoInboxHelper.getInboxPage';
+import getNextInboxPage from '@salesforce/apex/stoInboxHelper.getNextInboxPage';
 import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
 import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
+import { READ_STATE_EVENT } from 'c/stoReadState';
 
 const SELF_PERSON_VALUE = 'self';
 // TODO(backend-ready): All children and their threads now come from Apex; do not restore client fixtures.
@@ -19,11 +20,16 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
 
     threads;
     recentthreads;
-    wthreads;
-    wrthreads;
-    showthreads = false;
-    showrecentthreads = false;
-    hasRefreshed = false;
+    wiredInbox;
+    refreshPending = true;
+    refreshFailed = false;
+    pageLoadFailed = false;
+    loadingMore = false;
+    hasMore = false;
+    beforeThreadId;
+    beforeNoteId;
+    pageGeneration = 0;
+    isOnInbox = true;
     currentUserName = '';
     selectedPersonValue = SELF_PERSON_VALUE;
     selectedCategoryValues = new Set();
@@ -34,14 +40,47 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     pageReference;
     requestedPersonValue = SELF_PERSON_VALUE;
 
+    refreshInbox = () => {
+        if (!this.isOnInbox) return;
+        this.refreshPending = true;
+        if (!this.wiredInbox) return;
+        this.refreshPending = false;
+        this.pageGeneration++;
+        this.loadingMore = false;
+        refreshApex(this.wiredInbox).catch((error) => {
+            this.refreshFailed = true;
+            console.error('Could not refresh inbox:', error);
+        });
+    };
+
+    handleVisibility = () => {
+        if (document.visibilityState === 'visible') this.refreshInbox();
+    };
+
+    connectedCallback() {
+        window.addEventListener('pageshow', this.refreshInbox);
+        window.addEventListener('focus', this.refreshInbox);
+        window.addEventListener(READ_STATE_EVENT, this.refreshInbox);
+        document.addEventListener('visibilitychange', this.handleVisibility);
+    }
+
+    disconnectedCallback() {
+        window.removeEventListener('pageshow', this.refreshInbox);
+        window.removeEventListener('focus', this.refreshInbox);
+        window.removeEventListener(READ_STATE_EVENT, this.refreshInbox);
+        document.removeEventListener('visibilitychange', this.handleVisibility);
+    }
+
     @wire(CurrentPageReference)
     wiredPageReference(pageReference) {
-        if (pageReference?.attributes?.name !== 'Home') return;
+        this.isOnInbox = pageReference?.attributes?.name === 'Home';
+        if (!this.isOnInbox) return;
         this.pageReference = pageReference;
         this.requestedPersonValue = pageReference.state?.c__inboxPerson || SELF_PERSON_VALUE;
         if (this.representationLoaded) {
             this.selectPerson(this.requestedPersonValue);
         }
+        this.refreshInbox();
     }
 
     // TODO(backend-ready): Replace the scratch provider server-side and retain verified selections.
@@ -64,13 +103,6 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
 
     renderedCallback() {
         setDecoratorParams('Innboks', 'Innboks', '');
-
-        if (this.hasRefreshed) return;
-        if (!this.wthreads || !this.wrthreads) return;
-
-        this.hasRefreshed = true;
-        refreshApex(this.wthreads);
-        refreshApex(this.wrthreads);
     }
 
     @wire(getRecord, { recordId: USER_ID, fields: [USER_NAME_FIELD] })
@@ -83,45 +115,52 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         }
     }
 
-    // TODO(backend-ready): Revalidate recent/older queries and errors against the selected account.
-    @wire(getThreads, { representedAccountId: '$representedAccountId' })
-    wirethreads(result) {
-        this.wthreads = result;
+    @wire(getInboxPage, { representedAccountId: '$representedAccountId', beforeThreadId: null, beforeNoteId: null })
+    wireInbox(result) {
+        this.wiredInbox = result;
         if (result.error) {
             this.threads = [];
-            console.error(result.error);
-        } else if (result.data) {
-            this.setThreads();
-        } else {
-            this.threads = [];
-        }
-    }
-
-    // TODO(backend-ready): Preserve selected-account retrieval, not static child threads.
-    @wire(getRecentThreads, { representedAccountId: '$representedAccountId' })
-    wirerecentthreads(result) {
-        this.wrthreads = result;
-        if (result.error) {
             this.recentthreads = [];
             console.error(result.error);
         } else if (result.data) {
-            this.setRecentThreads();
-        } else {
-            this.recentthreads = [];
+            this.refreshFailed = false;
+            this.applyPage(result.data, false);
         }
+        if (this.refreshPending && (result.data || result.error)) this.refreshInbox();
     }
 
-    setThreads() {
-        if (this.wthreads.data) {
-            this.threads = this.wthreads.data.filter(Boolean).sort(this.sortByDate);
-            this.showthreads = this.threads.length > 0;
-        }
+    applyPage(page, append) {
+        const incomingIds = new Set([...page.older, ...page.recent].map((thread) => thread.recordId));
+        this.threads = [
+            ...(append ? (this.threads || []).filter((thread) => !incomingIds.has(thread.recordId)) : []),
+            ...page.older
+        ];
+        this.recentthreads = [
+            ...(append ? (this.recentthreads || []).filter((thread) => !incomingIds.has(thread.recordId)) : []),
+            ...page.recent
+        ];
+        this.beforeThreadId = page.beforeThreadId;
+        this.beforeNoteId = page.beforeNoteId;
+        this.hasMore = page.hasMore;
+        this.pageLoadFailed = false;
     }
 
-    setRecentThreads() {
-        if (this.wrthreads.data) {
-            this.recentthreads = this.wrthreads.data.filter(Boolean).sort(this.sortByDate);
-            this.showrecentthreads = this.recentthreads.length > 0;
+    async handleLoadMore() {
+        if (this.loadingMore || !this.hasMore) return;
+        this.loadingMore = true;
+        const generation = this.pageGeneration;
+        try {
+            const page = await getNextInboxPage({
+                representedAccountId: this.representedAccountId,
+                beforeThreadId: this.beforeThreadId || null,
+                beforeNoteId: this.beforeNoteId || null
+            });
+            if (generation === this.pageGeneration) this.applyPage(page, true);
+        } catch (error) {
+            if (generation === this.pageGeneration) this.pageLoadFailed = true;
+            console.error('Could not load more inbox messages:', error);
+        } finally {
+            if (generation === this.pageGeneration) this.loadingMore = false;
         }
     }
 
@@ -193,8 +232,15 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         // TODO(backend-ready): Clear the previous person's content while the new query loads.
         this.threads = [];
         this.recentthreads = [];
-        this.wthreads = undefined;
-        this.wrthreads = undefined;
+        this.wiredInbox = undefined;
+        this.beforeThreadId = undefined;
+        this.beforeNoteId = undefined;
+        this.hasMore = false;
+        this.pageGeneration++;
+        this.loadingMore = false;
+        this.refreshPending = true;
+        this.refreshFailed = false;
+        this.pageLoadFailed = false;
         this.selectedCategoryValues = new Set();
     }
 
@@ -242,17 +288,17 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     }
 
     get isDataLoaded() {
-        return this.wthreads?.data !== undefined && this.wrthreads?.data !== undefined;
+        return this.wiredInbox?.data !== undefined;
     }
 
     // TODO(backend-ready): A success from one query must not hide a failure from the other query.
     get threadLoadFailed() {
-        return Boolean(this.wthreads?.error || this.wrthreads?.error);
+        return Boolean(this.wiredInbox?.error || this.refreshFailed || this.pageLoadFailed);
     }
 
     get noItems() {
         // TODO(backend-ready): Loading/query failures are not empty inboxes.
-        if (!this.isDataLoaded || this.threadLoadFailed) {
+        if (!this.isDataLoaded || this.threadLoadFailed || this.hasMore) {
             return false;
         }
         return !this.showVisibleRecentThreads && !this.showVisibleThreads;

@@ -4,7 +4,18 @@
             <c-sto-medskriv-samtykke record-id={_recordId}></c-sto-medskriv-samtykke>
         </template>
         <template lwc:if={showReplyInformation}>
-            <c-ds-alert alert-type="info" alert-text={infoText}></c-ds-alert>
+            <c-ds-alert alert-type="info">
+                <template lwc:if={closed}>
+                    Samtalen er avsluttet. Vil du&nbsp;
+                    <a class="aksel-link" data-color="accent" href="https://www.nav.no/skriv-til-oss" target="_self"
+                        >sende en ny melding</a
+                    >, kan du gjøre det her.
+                </template>
+                <template lwc:else>
+                    Du kan svare på denne samtalen innen syv dager. Samtalen avsluttes automatisk dersom du ikke har
+                    flere spørsmål, og lagres i din innboks.
+                </template>
+            </c-ds-alert>
         </template>
         <template lwc:if={showSurveyButton}>
             <div class="survey-container">

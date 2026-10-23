@@ -52,6 +52,7 @@ private class stoPersonContextTest {
             child.Id
         );
         Thread__c saved = [SELECT CRM_Account__c, CRM_Contact__c, CreatedById FROM Thread__c WHERE Id = :thread.Id];
+        Test.startTest();
         Assert.areEqual(child.Id, saved.CRM_Account__c);
         Assert.areEqual(child.PersonContactId, saved.CRM_Contact__c);
         Assert.areEqual(UserInfo.getUserId(), saved.CreatedById);
@@ -70,7 +71,12 @@ private class stoPersonContextTest {
         Assert.areEqual(0, stoInboxHelper.getRecentThreads().size());
         thread.CRM_Closed_Date__c = Date.today();
         update thread;
+        stoThreadReadState.markThreadRead(
+            thread.Id,
+            [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id AND CRM_Type__c = 'Message' LIMIT 1].Id
+        );
         Assert.areEqual(thread.Id, stoInboxHelper.getThreadsForPerson(child.Id)[0].recordId);
+        Test.stopTest();
     }
 
     @IsTest
@@ -237,6 +243,68 @@ private class stoPersonContextTest {
             Assert.areEqual(thread.Id, stoInboxHelper.getRecentThreads()[0].recordId);
             Assert.areEqual(child.Id, stoPersonContext.resolveAccountId(child.Id));
         }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void sharedThreadHasIndependentPersistentReceipts() {
+        Map<String, User> parents = createFamilyParents();
+        User childViewer = createChildViewer();
+        Account represented = child();
+        User firstReader = parents.get('12345678901');
+        User otherReader = parents.get('12345678902');
+        String starterName = [SELECT Name FROM Contact WHERE Id = :firstReader.ContactId].Name;
+        Test.startTest();
+        Thread__c thread = startThread(firstReader, represented.Id);
+        update new Thread__c(Id = thread.Id, CRM_Closed_Date__c = Date.today());
+        Message__c incoming = new Message__c(
+            CRM_Thread__c = thread.Id,
+            CRM_Type__c = 'Info',
+            CRM_Message_Text__c = 'Nav message for all readers',
+            CRM_Read__c = false
+        );
+        insert incoming;
+        stoPersonContext.testChildren = new List<Account>{ represented };
+        System.runAs(otherReader) {
+            stoThreadReadState.markThreadRead(thread.Id, incoming.Id);
+            Assert.isTrue(
+                [SELECT CRM_Read__c FROM Message__c WHERE Id = :incoming.Id].CRM_Read__c,
+                'A read-only co-parent must be able to record reading a new counsellor reply'
+            );
+        }
+        System.runAs(firstReader) {
+            stoThreadReadState.markThreadRead(thread.Id, incoming.Id);
+            stoInboxHelper.InboxPage page = stoInboxHelper.getInboxPage(represented.Id, null, null);
+            Assert.areEqual(0, page.recent.size());
+            Assert.areEqual(thread.Id, page.older[0].recordId);
+            Assert.areEqual(0, page.older[0].numberOfUnreadMessages);
+            Assert.isNull(page.older[0].inboxSenderLabel, 'The starter sees no sender text in history');
+        }
+        System.runAs(childViewer) {
+            stoPersonContext.testChildren = null;
+            stoInboxHelper.InboxPage page = stoInboxHelper.getInboxPage(null, null, null);
+            Assert.areEqual(thread.Id, page.recent[0].recordId);
+            Assert.areEqual(starterName + ' startet samtalen', page.recent[0].inboxSenderLabel);
+            Assert.areEqual(
+                1,
+                page.recent[0].numberOfUnreadMessages,
+                'Global markAsRead by a parent must not create a receipt for the child'
+            );
+            stoThreadReadState.markThreadRead(thread.Id, incoming.Id);
+            Assert.areEqual(thread.Id, stoInboxHelper.getInboxPage(null, null, null).older[0].recordId);
+        }
+        stoPersonContext.testChildren = new List<Account>{ represented };
+        System.runAs(otherReader) {
+            stoInboxHelper.InboxPage page = stoInboxHelper.getInboxPage(represented.Id, null, null);
+            Assert.areEqual(0, page.older[0].numberOfUnreadMessages, 'The co-parent has their own receipt');
+            Assert.areEqual(starterName + ' startet samtalen', page.older[0].inboxSenderLabel);
+            Assert.areEqual(1, [SELECT COUNT() FROM STO_Thread_Read_State__c], 'Only the co-parent receipt is visible');
+            stoThreadReadState.markThreadRead(thread.Id, incoming.Id);
+        }
+        Assert.areEqual(
+            3,
+            [SELECT COUNT() FROM STO_Thread_Read_State__c WHERE Thread__c = :thread.Id WITH SYSTEM_MODE]
+        );
         Test.stopTest();
     }
 
@@ -547,21 +615,33 @@ private class stoPersonContextTest {
         assertCannotMutate(parents.get('12345678901'), thread.Id);
         String starterName = [SELECT Name FROM Contact WHERE Id = :parents.get('12345678902').ContactId].Name;
         System.runAs(childViewer) {
-            Assert.areEqual(
-                starterName + ' startet samtalen',
-                stoHelperClass.getReplyContext(thread.Id).inboxSenderLabel
+            stoThreadAccess.ReplyContext context = stoHelperClass.getReplyContext(thread.Id);
+            Assert.isNull(context.representedLabel, 'The child must not see a banner representing themselves');
+            Assert.areEqual(starterName + ' startet samtalen', context.inboxSenderLabel);
+        }
+        System.runAs(parents.get('12345678901')) {
+            stoThreadAccess.ReplyContext context = stoHelperClass.getReplyContext(thread.Id);
+            Assert.areEqual(starterName + ' på vegne av ' + child().Name, context.representedLabel);
+            Assert.areEqual(starterName + ' startet samtalen', context.inboxSenderLabel);
+            Assert.isFalse(context.canReply);
+        }
+        System.runAs(parents.get('12345678903')) {
+            stoThreadAccess.ReplyContext context = stoHelperClass.getReplyContext(thread.Id);
+            Assert.areEqual(starterName + ' på vegne av ' + child().Name, context.representedLabel);
+            Assert.areEqual(starterName + ' startet samtalen', context.inboxSenderLabel);
+        }
+        update new Thread__c(Id = thread.Id, CRM_Closed_Date__c = Date.today());
+        System.runAs(childViewer) {
+            Assert.isNull(
+                stoHelperClass.getReplyContext(thread.Id).representedLabel,
+                'Closed parent-started conversations must also hide the banner for the child'
             );
         }
         System.runAs(parents.get('12345678901')) {
             Assert.areEqual(
                 starterName + ' på vegne av ' + child().Name,
-                stoHelperClass.getReplyContext(thread.Id).inboxSenderLabel
-            );
-        }
-        System.runAs(parents.get('12345678903')) {
-            Assert.areEqual(
-                starterName + ' på vegne av ' + child().Name,
-                stoHelperClass.getReplyContext(thread.Id).inboxSenderLabel
+                stoHelperClass.getReplyContext(thread.Id).representedLabel,
+                'The original sender must still be identified after closure'
             );
         }
         Test.stopTest();
@@ -577,15 +657,12 @@ private class stoPersonContextTest {
             Assert.isTrue(context.canReply);
             Assert.isNotNull(context.senderName);
             Assert.isNotNull(context.representedName);
-            Assert.areEqual('Gjelder: ' + child().Name + ' (datter 8 år)', context.representedLabel);
-            Assert.areEqual('Deg på vegne av ' + child().Name, context.inboxSenderLabel);
+            Assert.areEqual('Gjelder: ' + child().Name + ' (8 år)', context.representedLabel);
+            Assert.isNull(context.inboxSenderLabel, 'The starter must have no inbox sender text');
             Assert.isTrue(CRM_MessageHelperExperience.createThreadMessage(thread.Id, 'Original parent reply'));
             stoHelperClass.closeThread(thread.Id);
             Assert.isFalse([SELECT CRM_isActive__c FROM Thread__c WHERE Id = :thread.Id].CRM_isActive__c);
-            Assert.areEqual(
-                'Deg på vegne av ' + child().Name,
-                stoHelperClass.getReplyContext(thread.Id).inboxSenderLabel
-            );
+            Assert.isNull(stoHelperClass.getReplyContext(thread.Id).inboxSenderLabel);
         }
         Test.stopTest();
     }
@@ -616,7 +693,6 @@ private class stoPersonContextTest {
         if (URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com')) {
             for (User otherParent : parents.values()) {
                 System.runAs(otherParent) {
-                    Assert.areEqual(thread.Id, stoInboxHelper.getRecentThreadsForPerson(child().Id)[0].recordId);
                     Assert.isFalse(CRM_MessageHelperExperience.getGroupedMessagesFromThread(thread.Id).isEmpty());
                 }
                 assertCannotMutate(otherParent, thread.Id);
@@ -710,7 +786,7 @@ private class stoPersonContextTest {
     }
 
     @IsTest
-    static void representedLabelUsesPersonSexAndAgeNotSenderName() {
+    static void representedLabelUsesPersonNameAndAgeWithoutRelationship() {
         User parent = createFamilyParents().get('12345678901');
         Account son = [
             SELECT Id, Name
@@ -722,7 +798,7 @@ private class stoPersonContextTest {
         Thread__c thread = startThread(parent, son.Id);
         System.runAs(parent) {
             stoThreadAccess.ReplyContext context = stoHelperClass.getReplyContext(thread.Id);
-            Assert.areEqual('Gjelder: ' + son.Name + ' (sønn 12 år)', context.representedLabel);
+            Assert.areEqual('Gjelder: ' + son.Name + ' (12 år)', context.representedLabel);
         }
         Test.stopTest();
     }

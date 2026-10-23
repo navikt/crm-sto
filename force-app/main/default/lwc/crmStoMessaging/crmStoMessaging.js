@@ -5,13 +5,11 @@ import { refreshApex } from '@salesforce/apex';
 import { subscribe, MessageContext } from 'lightning/messageService';
 import TAB_REFRESH from '@salesforce/messageChannel/tabRefresh__c';
 
-import getRelatedRecord from '@salesforce/apex/STO_RecordInfoController.getRelatedRecord';
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
-import { resolve } from 'c/nksComponentsUtils';
+import getReplyRecipientFirstName from '@salesforce/apex/STO_RecordInfoController.getReplyRecipientFirstName';
 
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import COMPANY_NAME from '@salesforce/schema/User.CompanyName';
-import PERSON_FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
 import CASE_THREAD_API_REFERENCE from '@salesforce/schema/Case.NKS_Henvendelse_BehandlingsId__c';
 import THREAD_MEDSKRIV_REFERENCE from '@salesforce/schema/Thread__c.STO_Medskriv__C';
 import THREAD_TYPE from '@salesforce/schema/Thread__c.CRM_Thread_Type__c';
@@ -53,15 +51,12 @@ export default class CrmStoMessaging extends LightningElement {
     @api isThread;
     @api isCaseReserved;
 
-    accountId;
     userId;
-    personId;
     userName;
     supervisorName;
     companyName;
     norwegianCompanyName;
     englishCompanyName;
-    accountApiName;
     threadId;
     englishTextTemplate = false;
     acceptedMedskriv = false;
@@ -73,6 +68,9 @@ export default class CrmStoMessaging extends LightningElement {
     closeLanguageModal = false;
     isThreadIdNull = false;
     wiredThreadResult;
+    wiredRecipientResult;
+    recipientThreadId;
+    recipientError = false;
 
     labels = {
         MEDSKRIV_TEXT,
@@ -83,10 +81,9 @@ export default class CrmStoMessaging extends LightningElement {
 
     connectedCallback() {
         this.subscription = subscribe(this.messageContext, TAB_REFRESH, () => {
-            refreshApex(this.wiredThreadResult);
+            this.refreshThread();
         });
         this.userId = userId;
-        this.accountApiName = this.getAccountApiName();
     }
 
     dispatchStoToolbarAction(event) {
@@ -119,36 +116,21 @@ export default class CrmStoMessaging extends LightningElement {
             } else if (this.objectApiName === 'Thread__c') {
                 this.threadId = this.recordId;
             }
-            this.getAccountId();
         }
     }
 
-    @wire(getRecord, {
-        recordId: '$accountId',
-        fields: ['Account.Id']
-    })
-    wiredAccount({ error, data }) {
+    @wire(getReplyRecipientFirstName, { threadId: '$threadId' })
+    wiredRecipient(result) {
+        this.wiredRecipientResult = result;
+        const { error, data } = result;
+        if (data === undefined && !error) return;
+        this.recipientError = Boolean(error);
+        this.userName = undefined;
         if (error) {
-            console.error('wiredAccount failed: ', error);
-        } else if (data) {
-            if (this.accountId) {
-                this.getPersonId();
-            }
-        }
-    }
-
-    @wire(getRecord, {
-        recordId: '$personId',
-        fields: [PERSON_FIRST_NAME]
-    })
-    wiredPerson({ error, data }) {
-        if (error) {
-            console.error('wiredPerson failed', error);
-        } else if (data) {
-            if (this.accountId && this.personId) {
-                let firstName = getFieldValue(data, PERSON_FIRST_NAME);
-                this.userName = this.toTitleCaseName(firstName);
-            }
+            console.error('Could not load the original thread sender:', error);
+        } else if (data !== undefined) {
+            this.recipientThreadId = this.threadId;
+            this.userName = this.toTitleCaseName(data);
         }
     }
 
@@ -186,6 +168,7 @@ export default class CrmStoMessaging extends LightningElement {
 
     refreshThread() {
         refreshApex(this.wiredThreadResult);
+        if (this.wiredRecipientResult) refreshApex(this.wiredRecipientResult);
     }
 
     handleMedskrivClick() {
@@ -196,43 +179,6 @@ export default class CrmStoMessaging extends LightningElement {
         const child = this.template.querySelector('c-crm-messaging-message-component');
         child.checkSlotChange('messages');
         child.focus();
-    }
-
-    getAccountApiName() {
-        if (this.objectApiName === 'Case') {
-            return 'AccountId';
-        } else if (this.objectApiName === 'Thread__c') {
-            return 'CRM_Account__c';
-        }
-        return null;
-    }
-
-    getAccountId() {
-        getRelatedRecord({
-            parentId: this.recordId,
-            relationshipField: this.accountApiName,
-            objectApiName: this.objectApiName
-        })
-            .then((record) => {
-                this.accountId = resolve(this.accountApiName, record);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
-
-    getPersonId() {
-        getRelatedRecord({
-            parentId: this.accountId,
-            relationshipField: 'CRM_Person__c',
-            objectApiName: 'Account'
-        })
-            .then((record) => {
-                this.personId = resolve('CRM_Person__c', record);
-            })
-            .catch((error) => {
-                console.error('Problem getting person id: ', error);
-            });
     }
 
     getNorwegianCompanyName() {
@@ -474,5 +420,9 @@ export default class CrmStoMessaging extends LightningElement {
         return this.objectApiName === 'Case'
             ? [this.objectApiName + '.Id', CASE_THREAD_API_REFERENCE]
             : [this.objectApiName + '.Id'];
+    }
+
+    get recipientReady() {
+        return Boolean(this.threadId && this.recipientThreadId === this.threadId && !this.recipientError);
     }
 }

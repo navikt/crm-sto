@@ -1,40 +1,32 @@
-const STORAGE_PREFIX = 'sto-read-messages';
+import markThreadRead from '@salesforce/apex/stoThreadReadState.markThreadRead';
+
 export const READ_STATE_EVENT = 'storeadstatechange';
 
-function storageKey(userId, threadId) {
-    return `${STORAGE_PREFIX}-${userId}-${threadId}`;
+export function latestDisplayedMessage(groups) {
+    return groups
+        .flatMap((group) => (group.groupMessages || []).map((entry) => entry.message))
+        .filter((message) => message.CRM_Type__c === 'Message' || message.CRM_Type__c === 'Info')
+        .sort((first, second) => {
+            const dateDifference = new Date(second.CreatedDate).getTime() - new Date(first.CreatedDate).getTime();
+            if (dateDifference) return dateDifference;
+            return first.Id < second.Id ? 1 : first.Id > second.Id ? -1 : 0;
+        })[0];
 }
 
-export function getReadMessageIds(userId, threadId) {
-    if (!userId || !threadId) return [];
+export async function markMessagesRead(threadId, latestDisplayedMessageId) {
+    const params = { threadId, latestDisplayedMessageId };
     try {
-        const value = localStorage.getItem(storageKey(userId, threadId));
-        if (!value) return [];
-        const ids = JSON.parse(value);
-        if (!Array.isArray(ids) || !ids.every((id) => typeof id === 'string')) {
-            throw new TypeError('Invalid STO read receipts');
-        }
-        return ids;
+        await markThreadRead(params);
     } catch (error) {
-        console.error('Could not restore local STO read receipts:', error);
-        return [];
+        const errors = [error.body, ...(error.body?.pageErrors || [])].filter(Boolean);
+        const retryable = errors.some(
+            (entry) =>
+                entry.statusCode === 'DUPLICATE_VALUE' ||
+                entry.statusCode === 'UNABLE_TO_LOCK_ROW' ||
+                /DUPLICATE_VALUE|UNABLE_TO_LOCK_ROW/.test(entry.message || '')
+        );
+        if (!retryable) throw error;
+        await markThreadRead(params);
     }
-}
-
-export function markMessagesRead(userId, threadId, messageIds) {
-    if (!userId || !threadId || messageIds.length === 0) return;
-    const ids = [...new Set([...getReadMessageIds(userId, threadId), ...messageIds])];
-    try {
-        localStorage.setItem(storageKey(userId, threadId), JSON.stringify(ids));
-        window.dispatchEvent(new CustomEvent(READ_STATE_EVENT, { detail: { userId, threadId } }));
-    } catch (error) {
-        console.error('Could not save local STO read receipts:', error);
-    }
-}
-
-export function isMessageRead(readIds, messageId, senderContactId, viewerContactId) {
-    return Boolean(
-        messageId &&
-            ((senderContactId && viewerContactId && senderContactId === viewerContactId) || readIds.includes(messageId))
-    );
+    window.dispatchEvent(new CustomEvent(READ_STATE_EVENT, { detail: { threadId } }));
 }

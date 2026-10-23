@@ -1,6 +1,5 @@
 import { LightningElement, wire, api } from 'lwc';
 import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExperience.getGroupedMessagesFromThread';
-import markAsRead from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createThreadMessage from '@salesforce/apex/CRM_MessageHelperExperience.createThreadMessage';
@@ -16,7 +15,7 @@ import CATEGORY_FIELD from '@salesforce/schema/Thread__c.STO_Category__c';
 import THREAD_CONTACT_FIELD from '@salesforce/schema/Thread__c.CRM_Contact__c';
 import USER_CONTACT_FIELD from '@salesforce/schema/User.ContactId';
 import USER_ID from '@salesforce/user/Id';
-import { markMessagesRead } from 'c/stoReadState';
+import { latestDisplayedMessage, markMessagesRead } from 'c/stoReadState';
 
 const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD, CATEGORY_FIELD, THREAD_CONTACT_FIELD];
 
@@ -41,6 +40,9 @@ export default class CommunityThreadViewer extends LightningElement {
     currentUserContactId;
     replyContext;
     replyContextError;
+    readStateError;
+    readPositionPending;
+    lastReadMessageId;
 
     @wire(getReplyContext, { threadId: '$recordId' })
     wiredReplyContext({ data, error }) {
@@ -63,8 +65,6 @@ export default class CommunityThreadViewer extends LightningElement {
 
     connectedCallback() {
         this.referrer = document.referrer.toLowerCase();
-
-        markAsRead({ threadId: this.recordId });
     }
 
     renderedCallback() {
@@ -106,13 +106,27 @@ export default class CommunityThreadViewer extends LightningElement {
             console.error('Problem getting message groups: ', error);
         } else if (data) {
             this.messageGroups = result.data;
-            const messageIds = data.flatMap((group) =>
-                (group.groupMessages || [])
-                    .map((entry) => entry.message)
-                    .filter((message) => ['Message', 'Info'].includes(message.CRM_Type__c))
-                    .map((message) => message.Id)
-            );
-            markMessagesRead(USER_ID, this.recordId, messageIds);
+            this.saveDisplayedReadPosition();
+        }
+    }
+
+    async saveDisplayedReadPosition() {
+        const latest = latestDisplayedMessage(this.messageGroups || []);
+        if (!latest || latest.Id === this.lastReadMessageId || this.readPositionPending) return;
+        const threadId = this.recordId;
+        this.readPositionPending = true;
+        try {
+            await markMessagesRead(threadId, latest.Id);
+            this.lastReadMessageId = latest.Id;
+            this.readStateError = undefined;
+        } catch (error) {
+            console.error('Could not save thread read position:', error);
+            this.readStateError = 'Lesestatus kunne ikke lagres. Oppdater siden og prøv på nytt.';
+        } finally {
+            this.readPositionPending = false;
+        }
+        if (!this.readStateError && latestDisplayedMessage(this.messageGroups || [])?.Id !== latest.Id) {
+            this.saveDisplayedReadPosition();
         }
     }
 
@@ -171,7 +185,7 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     get showReadOnlyNotice() {
-        return this.replyContext?.canReply === false;
+        return this.closed === false && this.replyContext?.canReply === false;
     }
 
     get representationLabel() {

@@ -83,5 +83,16 @@
                 <c-ds-alert alert-type="info" alert-text={noItemsText}></c-ds-alert>
             </div>
         </template>
+        <template lwc:if={hasMore}>
+            <p class="aksel-body-short">Viser et utvalg. Last inn flere for å se resten og flere kategorier.</p>
+            <button
+                class="aksel-button aksel-button--secondary aksel-button--medium"
+                type="button"
+                onclick={handleLoadMore}
+                disabled={loadingMore}
+            >
+                Last inn flere meldinger
+            </button>
+        </template>
     </div>
 </template>
