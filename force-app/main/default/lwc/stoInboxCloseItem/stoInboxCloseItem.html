@@ -1,9 +1,14 @@
 <template>
     <c-sto-Message-Inbox-Item thread={thread} close-intent>
         <div slot="endDialogue" class="end-dialogue-container">
-            <button class="navds-button navds-button--secondary navds-button--small" onclick={handleClick}>
-                Avslutt samtale
-            </button>
+            <template lwc:if={canClose}>
+                <button data-variant="secondary" class="aksel-button aksel-button--small" onclick={handleClick}>
+                    <span class="aksel-label"> Avslutt samtale </span>
+                </button>
+            </template>
+            <template lwc:elseif={accessError}>
+                <c-ds-alert alert-type="error" alert-text={accessError}></c-ds-alert>
+            </template>
         </div>
     </c-sto-Message-Inbox-Item>
     <c-sto-end-dialogue-modal lwc:ref="childRef" onclosethread={handleCloseThread}></c-sto-end-dialogue-modal>

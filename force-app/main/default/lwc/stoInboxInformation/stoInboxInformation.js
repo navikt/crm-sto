@@ -4,6 +4,7 @@ import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
+import getReplyContext from '@salesforce/apex/stoHelperClass.getReplyContext';
 import { CurrentPageReference } from 'lightning/navigation';
 
 export default class StoInboxInformation extends LightningElement {
@@ -16,6 +17,7 @@ export default class StoInboxInformation extends LightningElement {
     surveyLink;
     completed = false;
     _recordId;
+    canReply = false;
 
     connectedCallback() {
         getURL()
@@ -27,12 +29,27 @@ export default class StoInboxInformation extends LightningElement {
             });
     }
 
+    @wire(getReplyContext, { threadId: '$_recordId' })
+    wiredReplyContext({ data, error }) {
+        this.canReply = data?.canReply === true;
+        if (error) console.error('Problem getting reply information:', error);
+    }
+
     @wire(CurrentPageReference)
     async getStateParameters(currentPageReference) {
         const newRecordId = currentPageReference?.state?.samtale || this.recordId;
         if (newRecordId && newRecordId !== this._recordId) {
             this._recordId = newRecordId;
             await this.fetchThreadData();
+        }
+    }
+
+    @wire(getSurvey, { caseId: '$caseId' })
+    wiredLink({ data, error }) {
+        if (data && this.caseId) {
+            this.surveyLink = data;
+        } else if (error) {
+            console.error('Problem getting surveyLink: ' + error);
         }
     }
 
@@ -46,15 +63,6 @@ export default class StoInboxInformation extends LightningElement {
             }
         } catch (error) {
             console.error('Problem getting thread:', error);
-        }
-    }
-
-    @wire(getSurvey, { caseId: '$caseId' })
-    wiredLink({ data, error }) {
-        if (data && this.caseId) {
-            this.surveyLink = data;
-        } else if (error) {
-            console.error('Problem getting surveyLink: ' + error);
         }
     }
 
@@ -84,10 +92,12 @@ export default class StoInboxInformation extends LightningElement {
         );
     }
 
-    get infoText() {
-        return this.closed
-            ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/skriv-til-oss" target="_self">sende en ny melding</a>, kan du gjøre det her.'
-            : 'Du kan svare på denne samtalen innen syv dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
+    get showReplyInformation() {
+        return this.closed || this.canReply;
+    }
+
+    get showMedskrivConsent() {
+        return this.canReply && Boolean(this._recordId);
     }
 
     get showSurveyButton() {

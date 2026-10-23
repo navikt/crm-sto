@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TODO(backend-ready): REMOVE this scratch-only opt-in with its profile grant and provider check when fixtures are retired. -->
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Opts only the synthetic parent into the scratch family fixture. The Apex provider also requires a scratch domain and the synthetic parent account.</description>
+    <isLicensed>false</isLicensed>
+    <label>STO scratch family fixture</label>
+</CustomPermission>

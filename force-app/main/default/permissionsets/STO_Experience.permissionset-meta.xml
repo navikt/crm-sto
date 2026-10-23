@@ -56,10 +56,44 @@
         <apexClass>stoInboxHelper</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>stoThreadReadState</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <!-- TODO(backend-ready): Retain access to the authorized person-selection endpoint. -->
+    <classAccesses>
+        <apexClass>stoPersonContext</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <customMetadataTypeAccesses>
         <enabled>true</enabled>
         <name>STO_Category__mdt</name>
     </customMetadataTypeAccesses>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>STO_Thread_Read_State__c.Thread__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>STO_Thread_Read_State__c.Reader__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>STO_Thread_Read_State__c.Reader_Thread_Key__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>STO_Thread_Read_State__c.Last_Read_Created__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>STO_Thread_Read_State__c.Last_Read_Message_Id__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>CRM_FAQ__c.CRM_Content__c</field>
@@ -377,6 +411,16 @@
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Skriv til Oss - Experience Cloud Access</label>
+    <!-- Receipts are server-managed: no client create/edit/delete permissions. -->
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>STO_Thread_Read_State__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>

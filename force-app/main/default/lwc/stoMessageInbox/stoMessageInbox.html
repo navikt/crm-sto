@@ -1,47 +1,98 @@
 <template>
     <div class="inbox-wrapper">
-        <h1 class="navds-heading navds-heading--xlarge header">{title}</h1>
-        <c-nav-Button
+        <h1 class="aksel-heading aksel-heading--xlarge header">{title}</h1>
+        <c-nav-button
             url="https://www.nav.no/kontaktoss"
             title="Kontakt oss"
             log-amplitude-event
             onlogevent={handleContactUsClick}
-        ></c-nav-Button>
+        ></c-nav-button>
         <div class="body">
-            <p class="navds-body-long navds-body-long--large">
+            <p class="aksel-body-long aksel-body-long--large">
                 For meldinger om dokumenter og/eller informasjonsbrev se&#32;
                 <a
                     href="https://www.nav.no/dokumentarkiv"
                     target="_self"
-                    class="navds-link navds-link--action archive-link"
+                    class="aksel-link archive-link"
                     onclick={handleDocumentArchiveClick}
                     >brev og vedtak</a
                 >
             </p>
+            <template lwc:if={canRepresentChildren}>
+                <p class="aksel-body-long aksel-body-long--large representative-info">
+                    Du kan se egne meldinger eller meldinger som gjelder et barn du har foreldreansvar for. Du kan bare
+                    svare i samtaler du selv har startet.
+                </p>
+            </template>
         </div>
-        <template lwc:if={showrecentthreads}>
-            <h2 class="navds-heading navds-heading--small subheader">Siste meldinger</h2>
+        <!-- TODO(backend-ready): Preserve explicit responsibility/query error messages with the real service. -->
+        <template lwc:if={representationLoadFailed}>
+            <p role="alert">
+                Vi kunne ikke hente hvem du kan se meldinger på vegne av. Oppdater siden og prøv på nytt.
+            </p>
+        </template>
+        <template lwc:if={threadLoadFailed}>
+            <p role="alert">Vi kunne ikke hente meldingene. Oppdater siden og prøv på nytt.</p>
+        </template>
+        <template lwc:if={canRepresentChildren}>
+            <div class="person-selection-panel">
+                <c-ds-combobox
+                    label="Hvem vil du se meldinger på vegne av?"
+                    options={personOptions}
+                    value={selectedPersonValue}
+                    onselectionchange={handlePersonChange}
+                ></c-ds-combobox>
+            </div>
+        </template>
+        <template lwc:if={showCategoryFilter}>
+            <div class="category-filter">
+                <c-ds-chips
+                    label="Velg kategori"
+                    options={chipOptions}
+                    onselectionchange={handleCategoryChange}
+                ></c-ds-chips>
+            </div>
+        </template>
+
+        <template lwc:if={showVisibleRecentThreads}>
+            <h2 class="aksel-heading aksel-heading--small subheader">Siste meldinger</h2>
             <div class="inbox-list">
-                <template for:each={recentthreads} for:item="thread">
-                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+                <template for:each={visibleRecentThreads} for:item="thread">
+                    <c-sto-message-inbox-item
+                        thread={thread}
+                        key={thread.recordId}
+                        inbox-person-value={selectedPersonValue}
+                    ></c-sto-message-inbox-item>
                 </template>
             </div>
         </template>
-        <template lwc:if={showthreads}>
-            <h2 class="navds-heading navds-heading--small subheader">Tidligere meldinger</h2>
+        <template lwc:if={showVisibleThreads}>
+            <h2 class="aksel-heading aksel-heading--small subheader">Tidligere meldinger</h2>
             <div class="inbox-list">
-                <template for:each={threads} for:item="thread">
-                    <c-sto-Message-Inbox-Item thread={thread} key={thread.recordId}></c-sto-Message-Inbox-Item>
+                <template for:each={visibleThreads} for:item="thread">
+                    <c-sto-message-inbox-item
+                        thread={thread}
+                        key={thread.recordId}
+                        inbox-person-value={selectedPersonValue}
+                    ></c-sto-message-inbox-item>
                 </template>
             </div>
         </template>
         <template lwc:if={noItems}>
             <div class="slds-var-p-vertical_large">
-                <c-community-alert
-                    alert-type="info"
-                    alert-text="Du har ingen meldinger i innboksen din."
-                ></c-community-alert>
+                <c-ds-alert alert-type="info" alert-text={noItemsText}></c-ds-alert>
             </div>
+        </template>
+        <template lwc:if={hasMore}>
+            <p class="aksel-body-short">Viser et utvalg. Last inn flere for å se resten og flere kategorier.</p>
+            <button
+                class="aksel-button aksel-button--secondary aksel-button--medium"
+                type="button"
+                onclick={handleLoadMore}
+                disabled={loadingMore}
+            >
+                Last inn flere meldinger
+            </button>
         </template>
     </div>
 </template>

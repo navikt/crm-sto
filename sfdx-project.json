@@ -29,7 +29,7 @@
                 },
                 {
                     "package": "crm-platform-reporting",
-                    "versionNumber": "0.41.0.LATEST"
+                    "versionNumber": "0.47.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -65,11 +65,11 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.119.0.LATEST"
+                    "versionNumber": "0.147.0.LATEST"
                 },
                 {
                     "package": "crm-henvendelse",
-                    "versionNumber": "0.205.0.LATEST"
+                    "versionNumber": "0.210.0.LATEST"
                 },
                 {
                     "package": "crm-sf-saf",
@@ -96,7 +96,7 @@
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "64.0",
+    "sourceApiVersion": "67.0",
     "replacements": [
         {
             "glob": "force-app/unpackagable-with-auto-deploy/experiences/Innboks1/themes/buildYourOwnLWR.json",

@@ -1,10 +1,16 @@
 import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
-import createThreadWithCaseV2 from '@salesforce/apex/stoHelperClass.createThreadWithCaseV2';
+// TODO(backend-ready): Preserve the account-scoped creation/query contract with the real person provider.
+import createThreadForPerson from '@salesforce/apex/stoHelperClass.createThreadForPerson';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
-import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
+import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreadsForPerson';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import USER_ID from '@salesforce/user/Id';
+import USER_NAME_FIELD from '@salesforce/schema/User.Name';
+// TODO(backend-ready): Replace scratch selections server-side, not with client-side identities.
+import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
@@ -45,6 +51,7 @@ import BESKJED_ARBEID_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_
 import BESKJED_KLAGE_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Klage_ingress';
 import BESKJED_FRITA_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Frita_ingress';
 
+// TODO(backend-ready): Child fixtures now come from the authorized Apex endpoint as real Account IDs.
 const maxThreadCountSto = 3;
 const maxThreadCountBto = 10;
 const spinnerReasonTextMap = {
@@ -52,10 +59,41 @@ const spinnerReasonTextMap = {
     close: 'Avslutter samtale. Vennligst vent.',
     load: 'Laster samtaler. Vennligst vent.'
 };
+const SELF_PERSON_VALUE = 'self';
+
+// STO: group-level eligibility from your requirement.
+// NOTE: existing STO "Ufør" is treated as Uføretrygd.
+const STO_REPRESENTATION_THEME_GROUPS = new Set([
+    'Helse og sykdom',
+    'Familie og barn',
+    'Hjelpemidler og tilrettelegging',
+    'Pensjon',
+    'Ufør'
+]);
+
+// TODO(representation-policy): Confirm the final approved eligibility matrix. The frontend configuration must also be enforced by Apex.
+const BTO_REPRESENTATION_RULES = {
+    Helse: {
+        mode: 'themes',
+        themes: new Set(['Grunnstønad eller hjelpestønad', 'Yrkesskade'])
+    },
+    Pensjon: {
+        mode: 'themes',
+        themes: new Set(['Støtte til gjenlevende']) // ToDo: Confirm if this theme is correct
+    },
+    Ufør: {
+        mode: 'themes',
+        themes: new Set(['Uføretrygd'])
+    }
+};
+
+const REPRESENTATION_INFORMATION =
+    'Du kan sende meldinger til Nav på vegne av barn du har foreldreansvar for. Når barnet fyller 18 år, kan du ikke lenger se meldingene du har sendt på barnets vegne. Du kan heller ikke ha dialog med Nav på vegne av barnet.';
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api threadTypeToMake;
 
+    representationInformation = REPRESENTATION_INFORMATION;
     isLoading = true;
     showSpinner = false;
     category;
@@ -152,6 +190,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             sykepenger: { category: 'Helse', theme: 'Sykepenger eller reisetilskudd' },
             utland: { category: 'Internasjonal', theme: 'Bor eller jobber i utlandet' },
             yrkesskade: { category: 'Helse', theme: 'Yrkesskade' }
+            // TODO(representation-routing): Add the approved Barnepensjon route with category 'Pensjon' and theme 'Barnepensjon'. Eligibility is configured, but no matching route exists here yet.
         },
         // Trekke en søknad
         'trekke-soknad': {
@@ -244,6 +283,18 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     };
 
+    // Person selection
+    currentUserName = '';
+    selectedPersonValue = SELF_PERSON_VALUE;
+    personSelectionConfirmed = false;
+    representationLoaded = false;
+    representationLoadFailed = false;
+    // TODO(backend-ready): Populate only with verified server-returned account selections.
+    representableChildren = [];
+    personSelectionError = '';
+    threadLoadFailed = false;
+    originalCategory;
+
     connectedCallback() {
         getAcceptedThemes({ language: 'no' })
             .then((categoryResults) => {
@@ -294,10 +345,19 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             if (this.urlStateParameters?.category == null) {
                 return;
             }
-            this.lowerCaseUrlCategory = this.urlStateParameters.category.toLowerCase();
+            const nextCategory = this.urlStateParameters.category.toLowerCase();
+
+            if (nextCategory !== this.lowerCaseUrlCategory) {
+                this.resetPersonContext();
+            }
+
+            this.lowerCaseUrlCategory = nextCategory;
             this.setTitleAndCategory();
             this.setThemeToShow();
+
+            this.originalCategory = this.category;
             this.originalThemeToShow = this.themeToShow;
+            // TODO(backend-ready): Keep person loading independent of route changes; no local mock initialization.
         }
     }
 
@@ -312,25 +372,119 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    @wire(getOpenThreads, { category: '$category', threadType: '$threadTypeToMake' })
+    // TODO(backend-ready): Revalidate person-scoped retrieval with the approved backend.
+    @wire(getOpenThreads, {
+        category: '$threadQueryCategory',
+        threadType: '$threadQueryType',
+        representedAccountId: '$representedPersonId'
+    })
     openThread(result) {
+        if (!this.hasPersonContext || this.threadQueryCategory === undefined) {
+            return;
+        }
+
+        const { data, error } = result;
+
+        // A pending wire is not an empty thread list.
+        if (data === undefined && !error) {
+            this.isThreadDataLoading = true;
+            this.spinnerText = spinnerReasonTextMap.load;
+            return;
+        }
+
+        this.wireThreadData = result;
+        this.isThreadDataLoading = false;
+
+        if (error) {
+            this.threadLoadFailed = true;
+            this.openThreadList = [];
+            this.registerNewThread = false;
+            return;
+        }
+
+        this.threadLoadFailed = false;
+        this.openThreadList = data || [];
+        this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
+
+        // TODO(representation-api): Confirm whether close intent is person-scoped or global. Align this operation with that backend contract.
+        putCloseIntent({
+            count: this.openThreadList.length
+        }).catch(() => {
+            console.error('Could not update close intent.');
+        });
+    }
+
+    @wire(getRecord, { recordId: USER_ID, fields: [USER_NAME_FIELD] })
+    wiredCurrentUser({ data, error }) {
+        if (data) {
+            this.currentUserName = getFieldValue(data, USER_NAME_FIELD) || '';
+        } else if (error) {
+            this.currentUserName = '';
+            console.error('Could not load current user name:', error);
+        }
+    }
+
+    // TODO(backend-ready): Keep explicit loading/error states for the real responsibility lookup.
+    @wire(getRepresentableChildren)
+    wiredChildren({ data, error }) {
+        if (error) {
+            this.representableChildren = [];
+            this.representationLoaded = true;
+            this.representationLoadFailed = true;
+            console.error('Could not load representable children:', error);
+        } else if (data !== undefined) {
+            this.representableChildren = data;
+            this.representationLoaded = true;
+            this.representationLoadFailed = false;
+        }
+    }
+
+    handlePersonChange(event) {
+        // dsCombobox event contract: detail = { value }.
+        const value = event.detail?.value;
+        const validOption = this.personOptions.some((option) => option.value === value);
+
+        this.selectedPersonValue = validOption ? value : '';
+        this.personSelectionError = '';
+    }
+
+    handlePersonNext() {
+        const validOption = this.personOptions.some((option) => option.value === this.selectedPersonValue);
+
+        if (!validOption) {
+            this.personSelectionError = 'Du må velge hvem du vil skrive på vegne av.';
+            this.template.querySelector('c-ds-combobox')?.focus();
+            return;
+        }
+
+        this.errorList = { title: '', errors: [] };
+        this.openThreadList = [];
+        this.registerNewThread = false;
+        this.threadLoadFailed = false;
         this.isThreadDataLoading = true;
         this.spinnerText = spinnerReasonTextMap.load;
-        const { error, data } = result;
-        this.wireThreadData = result;
-        if (data) {
-            this.openThreadList = data;
-            putCloseIntent({ count: this.openThreadList.length });
-            this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
-        } else {
-            this.openThreadList = [];
-            putCloseIntent({ count: 0 });
-            this.registerNewThread = true;
-            if (error) {
-                console.error(error);
-            }
-        }
-        this.isThreadDataLoading = false;
+
+        // TODO(backend-ready): Keep real account-scoped wire retrieval; do not restore mock child lists.
+        this.personSelectionConfirmed = true;
+    }
+
+    resetPersonContext() {
+        this.selectedPersonValue = SELF_PERSON_VALUE;
+        this.personSelectionConfirmed = false;
+        // TODO(backend-ready): Preserve loaded authorization when resetting only the route/form.
+        this.personSelectionError = '';
+        this.threadLoadFailed = false;
+
+        this.openThreadList = [];
+        this.registerNewThread = false;
+        this.isThreadDataLoading = true;
+        this.wireThreadData = undefined;
+
+        this.message = undefined;
+        this.acceptedTerms = false;
+        this.themeRadioButtonSelected = undefined;
+        this.showBTOConfirmation = false;
+        this.errorList = { title: '', errors: [] };
     }
 
     setThemeToShow() {
@@ -424,6 +578,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitRequest() {
+        // TODO(backend-ready): A lookup failure must not block self submission or silently convert a child submission.
+        if (!this.hasPersonContext || this.threadLoadFailed || this.shouldShowSpinner) {
+            return;
+        }
+
         const medskriv = this.refs.medskrivRadiobuttons?.getValue();
         const radioButtonValue = this.refs.themeRadioButton?.getValue();
         const radioButtonExists = this.refs.themeRadioButton != null;
@@ -459,14 +618,16 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
-            createThreadWithCaseV2({
+            // TODO(backend-ready): Preserve the selected child's Account ID on creation.
+            createThreadForPerson({
                 theme: theme,
                 msgText: this.message,
                 medskriv: medskriv,
                 type: this.threadTypeToMake,
                 inboxTitle: this.title,
                 inboxTheme: inboxTheme,
-                disabilityCampaign: disabilityCampaign
+                disabilityCampaign: disabilityCampaign,
+                representedAccountId: this.representedPersonId
             })
                 .then((thread) => {
                     this.showSpinner = false;
@@ -503,7 +664,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     EventItem: '.inputTextbox',
                     Text: 'Tekstboksen kan ikke være tom.'
                 });
-            } else if (this.message?.length >= this.maxLength && this.showInputTextArea) {
+            } else if (this.message?.length > this.maxLength && this.showInputTextArea) {
                 this.errorList.errors.push({
                     Id: 2,
                     EventItem: '.inputTextbox',
@@ -544,22 +705,20 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    closeSelectedThread(selectedThreadId) {
+    // TODO(representation-api): Verify Apex authorizes access to this thread for the authenticated user, including represented-person threads. After closing, refresh the same person-scoped thread query.
+    async closeSelectedThread(selectedThreadId) {
         this.showSpinner = true;
         this.spinnerText = spinnerReasonTextMap.close;
-        closeThread({ id: selectedThreadId })
-            .then(() => {
-                refreshApex(this.wireThreadData)
-                    .then(() => {
-                        this.showSpinner = false;
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                    });
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+
+        try {
+            // Apex must authorize this specific thread before closing it.
+            await closeThread({ id: selectedThreadId });
+            await refreshApex(this.wireThreadData);
+        } catch {
+            this.template.querySelector('c-alertdialog')?.showModal();
+        } finally {
+            this.showSpinner = false;
+        }
     }
 
     capitalizeFirstLetter(val) {
@@ -637,6 +796,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
         }
 
+        // TODO(backend-ready): Category changes use the person-scoped wire, never a mock empty thread list.
         logFilterEvent(
             this.radioButtonMap[this.title]?.[this.themeToShow]?.text,
             event.detail.text,
@@ -651,6 +811,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     handleSendSto() {
+        // TODO(representation-navigation): Decide whether to ask for the person again on the STO page or restore a validated person context. Never silently change a child conversation into a self conversation.
         // eslint-disable-next-line @locker/locker/distorted-xml-http-request-window-open
         window.open(basepath + `/skriv-til-oss?category=${this.category}`, '_self');
     }
@@ -716,11 +877,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get ingressLabel() {
+        const ingress = this.ingressMap[this.title];
+
         if (this.lowerCaseUrlCategory === 'andre-hjelpemidler') {
-            return this.ingressMap[this.title]?.['Andre-hjelpemidler'];
+            return ingress?.['Andre-hjelpemidler'];
         }
 
-        return this.ingressMap[this.title]?.[this.themeToShow] ?? this.ingressMap[this.title]?.default;
+        return ingress?.[this.themeToShow] ?? ingress?.default;
     }
 
     get showThemeRadioButton() {
@@ -760,15 +923,26 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get shouldShowSpinner() {
-        return this.isThreadDataLoading || this.showSpinner;
+        // TODO(backend-ready): Wait for authorization before querying or displaying a person form.
+        const loadingPeople = !this.representationLoaded;
+
+        const loadingThreads = this.hasPersonContext && this.isThreadDataLoading;
+
+        return loadingPeople || loadingThreads || this.showSpinner;
     }
 
     get shouldShowTextArea() {
-        return !this.isThreadDataLoading && this.registerNewThread;
+        return this.hasPersonContext && !this.threadLoadFailed && !this.isThreadDataLoading && this.registerNewThread;
     }
 
     get shouldShowThreads() {
-        return !this.isThreadDataLoading && !this.registerNewThread && !this.showBtoTextArea;
+        return (
+            this.hasPersonContext &&
+            !this.threadLoadFailed &&
+            !this.isThreadDataLoading &&
+            !this.registerNewThread &&
+            !this.showBtoTextArea
+        );
     }
 
     get btoConfirmationTitle() {
@@ -791,5 +965,123 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     get showNewMessageButton() {
         return this.threadTypeToMake === 'STO' && this.canOpenMoreThreads;
+    }
+
+    get allowsRepresentation() {
+        if (!this.canRepresentChildren) {
+            return false;
+        }
+
+        if (this.threadTypeToMake === 'STO') {
+            // The special Hjelpemidler route belongs to the same eligible group.
+            const themeGroup =
+                this.originalThemeToShow === 'Hjelpemidler'
+                    ? 'Hjelpemidler og tilrettelegging'
+                    : this.originalThemeToShow;
+
+            return STO_REPRESENTATION_THEME_GROUPS.has(themeGroup);
+        }
+
+        if (this.threadTypeToMake === 'BTO') {
+            const rule = BTO_REPRESENTATION_RULES[this.originalCategory];
+
+            if (!rule) {
+                return false;
+            }
+
+            return rule.mode === 'all' || rule.themes.has(this.originalThemeToShow);
+        }
+
+        return false;
+    }
+
+    /**
+     * representation-related getters and logic.
+     */
+
+    get canRepresentChildren() {
+        // TODO(backend-ready): Keep dropdown visibility based on server-authorized children.
+        return this.representableChildren.length > 0;
+    }
+
+    get selfPersonLabel() {
+        return this.currentUserName ? `${this.currentUserName} (Deg)` : 'Deg';
+    }
+
+    get personOptions() {
+        // TODO(backend-ready): Preserve self plus verified children; no client-side family fixtures.
+        return [{ label: this.selfPersonLabel, value: SELF_PERSON_VALUE }, ...this.representableChildren];
+    }
+
+    get threadQueryCategory() {
+        // TODO(backend-ready): Query real child threads after confirming the authorized person.
+        return !this.isLoading && this.validQueryParameter && this.hasPersonContext ? this.category : undefined;
+    }
+
+    get hasPersonContext() {
+        // TODO(backend-ready): Self remains available on optional lookup failure; an unverified child never becomes self.
+        return (
+            this.representationLoaded &&
+            (!this.representationLoadFailed || this.selectedPersonValue === SELF_PERSON_VALUE) &&
+            this.personOptions.some((option) => option.value === this.selectedPersonValue) &&
+            (!this.allowsRepresentation || this.personSelectionConfirmed)
+        );
+    }
+
+    get representedPersonId() {
+        // TODO(backend-ready): Preserve null=self / Account ID=child contract.
+        // undefined: no confirmed person context.
+        // null: authenticated user.
+        // Otherwise: an account returned by the authorized person lookup.
+        if (!this.hasPersonContext) {
+            return undefined;
+        }
+
+        return this.selectedPersonValue === SELF_PERSON_VALUE || !this.allowsRepresentation
+            ? null
+            : this.selectedPersonValue;
+    }
+
+    get threadQueryType() {
+        return this.threadQueryCategory !== undefined ? this.threadTypeToMake : undefined;
+    }
+
+    get showPersonSelection() {
+        return (
+            this.allowsRepresentation &&
+            this.representationLoaded &&
+            !this.representationLoadFailed &&
+            !this.personSelectionConfirmed
+        );
+    }
+
+    get showRepresentationLoadError() {
+        // TODO(backend-ready): Surface lookup errors even before any children are returned.
+        return this.representationLoadFailed;
+    }
+
+    get selectedPersonLabel() {
+        return this.personOptions.find((option) => option.value === this.selectedPersonValue)?.label || '';
+    }
+
+    get showSelectedPerson() {
+        return this.allowsRepresentation && this.personSelectionConfirmed;
+    }
+
+    get isWritingForChild() {
+        return this.showSelectedPerson && this.selectedPersonValue !== SELF_PERSON_VALUE;
+    }
+
+    get personSelectionInvalid() {
+        return Boolean(this.personSelectionError);
+    }
+
+    get descriptionTextArea() {
+        // TODO(backend-ready): Keep the readability notice separated from the full session-loss notice.
+        let description =
+            'Teksten lagres ikke automatisk. Hvis du er på denne siden i mer enn 30 minutter, kan du bli logget ut og miste det du har skrevet.';
+        return this.isWritingForChild
+            ? `Personen du sender melding på vegne av kan lese meldingen i fremtiden. Hvis en annen person har foreldreansvar, vil den personen kunne lese meldingene også. ${description}`
+            : description;
     }
 }

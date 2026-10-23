@@ -7,30 +7,40 @@
     </template>
     <template lwc:else>
         <div class="container">
-            <p class="navds-bodylong navds-bodylong--medium">{title}</p>
-            <h1 class="navds-heading navds-heading--xlarge header">{themeToShow}</h1>
+            <p class="aksel-body-long aksel-body-long--medium">{title}</p>
+            <h1 class="aksel-heading aksel-heading--xlarge header">{themeToShow}</h1>
+            <template lwc:if={showSelectedPerson}>
+                <div class="represented-person-banner" tabindex="-1">
+                    <p class="aksel-body-short aksel-body-short--medium">
+                        <strong>Gjelder: {selectedPersonLabel}</strong>
+                    </p>
+                </div>
+            </template>
             <div class="errorBox">
-                <c-community-error-summary
-                    error-list={errorList}
-                    onclickedevent={handleErrorClick}
-                    class="errorSummary"
-                >
-                </c-community-error-summary>
+                <c-ds-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
+                </c-ds-error-summary>
             </div>
+            <!-- TODO(backend-ready): Surface optional lookup failure without hiding the authenticated user's own form. -->
+            <template lwc:if={showRepresentationLoadError}>
+                <p role="alert" class="aksel-body-long aksel-body-long--medium">
+                    Vi kunne ikke hente hvem du kan skrive på vegne av. Oppdater siden og prøv på nytt. Du kan fortsatt
+                    skrive på vegne av deg selv hvis du ikke har valgt et barn.
+                </p>
+            </template>
             <!-- Show spinner -->
             <template lwc:if={shouldShowSpinner}>
                 <div class="spinner-container">
                     <svg
                         tabindex="0"
-                        aria-labelledby="loader-navds-id-4"
-                        class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
+                        aria-labelledby="loader-aksel-id-4"
+                        class="aksel-loader aksel-loader--3xlarge aksel-loader--neutral spinner"
                         focusable="false"
                         viewBox="0 0 50 50"
                         preserveAspectRatio="xMidYMid"
                     >
-                        <title id="loader-navds-id-4">{spinnerText}</title>
+                        <title id="loader-aksel-id-4">{spinnerText}</title>
                         <circle
-                            class="navds-loader__background"
+                            class="aksel-loader__background"
                             xmlns="http://www.w3.org/2000/svg"
                             cx="25"
                             cy="25"
@@ -38,7 +48,7 @@
                             fill="none"
                         ></circle>
                         <circle
-                            class="navds-loader__foreground"
+                            class="aksel-loader__foreground"
                             cx="25"
                             cy="25"
                             r="20"
@@ -48,17 +58,51 @@
                     </svg>
                 </div>
             </template>
+
+            <template lwc:elseif={showPersonSelection}>
+                <c-ds-read-more
+                    title="Sende melding på vegne av barn"
+                    content={representationInformation}
+                ></c-ds-read-more>
+                <div class="person-selection-panel">
+                    <c-ds-combobox
+                        label="Hvem vil du skrive melding på vegne av?"
+                        options={personOptions}
+                        value={selectedPersonValue}
+                        required
+                        invalid={personSelectionInvalid}
+                        error-message={personSelectionError}
+                        onselectionchange={handlePersonChange}
+                    ></c-ds-combobox>
+                </div>
+
+                <button
+                    type="button"
+                    data-variant="primary"
+                    class="aksel-button aksel-button--medium"
+                    onclick={handlePersonNext}
+                >
+                    <span class="aksel-label">Neste</span>
+                </button>
+            </template>
+
+            <template lwc:elseif={threadLoadFailed}>
+                <p role="alert" class="aksel-body-long aksel-body-long--medium">
+                    Vi kunne ikke hente samtalene dine. Oppdater siden og prøv på nytt.
+                </p>
+            </template>
+
             <!-- Show textarea -->
             <template lwc:elseif={shouldShowTextArea}>
                 <lightning-formatted-rich-text
-                    class="navds-bodylong navds-bodylong--large"
+                    class="aksel-body-long aksel-body-long--large"
                     value={ingressLabel}
                 ></lightning-formatted-rich-text>
-                <div class="navds-accordion">
+                <div class="aksel-accordion">
                     <template for:each={newsList} for:item="news">
                         <c-community-expandable-panel title={news.header} key={news.id}>
                             <lightning-formatted-rich-text
-                                class="navds-body-long navds-body-long--medium"
+                                class="aksel-body-long aksel-body-long--medium"
                                 value={news.body}
                             ></lightning-formatted-rich-text>
                         </c-community-expandable-panel>
@@ -83,12 +127,14 @@
                 <!-- Textarea -->
                 <template lwc:if={showInputTextArea}>
                     <div class="text-area">
-                        <c-community-textarea
+                        <!-- TODO(backend-ready): KEEP both separated notices and their selected-person context. -->
+                        <c-ds-textarea
                             label="Din melding"
                             max-length={maxLength}
+                            description={descriptionTextArea}
                             class="inputTextbox"
                             ontextchanged={handleTextChange}
-                        ></c-community-textarea>
+                        ></c-ds-textarea>
                     </div>
                 </template>
                 <!-- Medskriv radiobutton -->
@@ -105,45 +151,47 @@
                         </div>
                     </c-ds-radio>
                 </div>
-                <c-community-read-more title="Grunnen til at vi spør om samtykke  til opplæring">
-                    For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på
-                    meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også
-                    taushetsplikt.
-                </c-community-read-more>
+                <c-ds-read-more
+                    title="Grunnen til at vi spør om samtykke  til opplæring"
+                    content="For å lære opp nye veiledere og utvikle oss kan vi noen ganger være to personer som ser og svarer på meldingen din. Personen som ser samtalen på grunn av opplæring eller utvikling har også taushetsplikt."
+                >
+                </c-ds-read-more>
                 <!-- Vilkår checkbox -->
                 <div class="slds-grid slds-wrap vilkar-container">
-                    <c-community-checkbox
+                    <c-ds-checkbox
                         label-text={labels.ACCEPT_TERM_TEXT}
                         oncheckedchanged={handleChecked}
                         class="checkboxContainer"
-                    ></c-community-checkbox>
-                    <button onclick={showTerms} class="navds-link navds-link--action vilkar-link" tabindex="0">
-                        {labels.SHOW_TERM_TEXT}
+                    ></c-ds-checkbox>
+                    <button onclick={showTerms} class="aksel-link vilkar-link" tabindex="0">
+                        <span class="aksel-label">{labels.SHOW_TERM_TEXT}</span>
                     </button>
                 </div>
                 <button
-                    class="navds-button navds-button--primary navds-button--medium"
+                    data-variant="primary"
+                    class="aksel-button aksel-button--medium"
                     type="submit"
                     aria-disabled="false"
                     onclick={submitRequest}
                 >
-                    Send melding
+                    <span class="aksel-label"> Send melding </span>
                 </button>
             </template>
 
             <!-- Show active threads -->
             <template lwc:elseif={shouldShowThreads}>
-                <p class="navds-bodylong navds-bodylong--large">{openThreadText}</p>
+                <p class="aksel-body-long aksel-body-long--large">{openThreadText}</p>
                 <template lwc:if={showSendSTOButton}>
                     <button
-                        class="navds-button navds-button--primary navds-button--medium send-sto-button"
+                        data-variant="primary"
+                        class="aksel-button aksel-button--medium send-sto-button"
                         aria-disabled="false"
                         onclick={handleSendSto}
                     >
-                        Opprett ny samtale
+                        <span class="aksel-label">Opprett ny samtale</span>
                     </button>
                 </template>
-                <h2 class="navds-heading navds-heading--medium subheader">
+                <h2 class="aksel-heading aksel-heading--medium subheader">
                     Dine aktive samtaler om {capitalizedCategory}
                 </h2>
                 <div class="inbox-list">
@@ -168,41 +216,44 @@
                 </div>
                 <template lwc:if={showNewMessageButton}>
                     <button
-                        class="navds-button navds-button--primary navds-button--medium new-message-button"
+                        data-variant="primary"
+                        class="aksel-button aksel-button--medium new-message-button"
                         aria-disabled="false"
                         onclick={handleShowTextArea}
                     >
-                        Skriv ny melding
+                        <span class="aksel-label">Skriv ny melding</span>
                     </button>
                 </template>
             </template>
 
             <!-- Modal and alert dialog -->
-            <c-community-modal show-modal={modalOpen} modal-header={labels.SERVICE_TERMS_HEADER}>
+            <c-ds-modal show-modal={modalOpen} modal-header={labels.SERVICE_TERMS_HEADER}>
                 <div slot="modalContent">
                     <form>
-                        <div class="navds-body-long navds-body-long--medium">
+                        <div class="aksel-body-long aksel-body-long--medium">
                             <lightning-formatted-rich-text value={termsContentText}></lightning-formatted-rich-text>
                         </div>
                     </form>
                 </div>
-                <div slot="modalFooter" class="navds-modal__footer">
+                <div slot="modalFooter" class="aksel-modal__footer">
                     <button
-                        class="navds-button navds-button--primary navds-button--medium button-width"
+                        data-variant="primary"
+                        class="aksel-button aksel-button--medium button-width"
                         onclick={termsAccepted}
                         type="submit"
                     >
-                        {labels.ACCEPT_TERMS_BUTTON}
+                        <span class="aksel-label">{labels.ACCEPT_TERMS_BUTTON}</span>
                     </button>
                     <button
-                        class="navds-button navds-button--secondary navds-button--medium button-width"
+                        data-variant="secondary"
+                        class="aksel-button aksel-button--medium button-width"
                         type="submit"
                         onclick={termsDenied}
                     >
-                        {labels.DENY_TERMS_BUTTON}
+                        <span class="aksel-label">{labels.DENY_TERMS_BUTTON}</span>
                     </button>
                 </div>
-            </c-community-modal>
+            </c-ds-modal>
             <c-alertdialog
                 header="Noe gikk galt"
                 content="Vennligst oppdater siden og prøv på nytt"

@@ -5,6 +5,7 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import { CurrentPageReference } from 'lightning/navigation';
 import { updateBreadcrumbs } from 'c/inboxAmplitude';
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
+import basepath from '@salesforce/community/basePath';
 
 const NAV_URLS = {
     home: 'https://nav.no',
@@ -29,6 +30,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
     leafnode;
     breadcrumbs = [];
     name;
+    inboxPersonValue;
 
     renderedCallback() {
         Promise.all([loadStyle(this, index), loadStyle(this, navStyling)]).catch((error) =>
@@ -42,6 +44,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
 
         const { attributes, state } = currentPageReference;
         this.name = attributes?.name || '';
+        this.inboxPersonValue = state?.c__inboxPerson;
 
         const { samtale, category } = state || {};
 
@@ -96,7 +99,12 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
         this.breadcrumbs = [
             { url: NAV_URLS.home, title: 'Privatperson' },
             { url: NAV_URLS.minSide, title: 'Min side' },
-            { url: NAV_URLS.inbox, title: 'Innboks' },
+            {
+                url: this.inboxPersonValue
+                    ? `${basepath}/?c__inboxPerson=${encodeURIComponent(this.inboxPersonValue)}`
+                    : NAV_URLS.inbox,
+                title: 'Innboks'
+            },
             { url: '/', title: this.leafnode }
         ];
         this.retryBreadcrumbUpdate();

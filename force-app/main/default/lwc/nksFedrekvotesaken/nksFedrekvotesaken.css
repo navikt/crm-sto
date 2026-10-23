@@ -40,6 +40,12 @@
     border-radius: 4px;
 }
 
+.phone-number {
+    width: 195.2px;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
 @media screen and (min-height: 480px) {
     .sizeAround {
         padding-left: 0px;

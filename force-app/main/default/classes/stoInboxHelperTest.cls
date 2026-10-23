@@ -34,6 +34,7 @@ public with sharing class stoInboxHelperTest {
             false
         );
         stoHelperClass.createMessage(t, 'Dette er en test melding', u.ContactId);
+        Message__c message = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :t.Id LIMIT 1];
         t.CRM_Closed_Date__c = Date.today().addDays(-1);
         update t;
 
@@ -45,6 +46,7 @@ public with sharing class stoInboxHelperTest {
         insert cn;
 
         Test.startTest();
+        stoThreadReadState.markThreadRead(t.Id, message.Id);
         List<stoInboxHelper.thread> tList = stoInboxHelper.getThreads();
         Test.stopTest();
 
