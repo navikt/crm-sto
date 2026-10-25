@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Generate_Survey_Invitation</name>
-        <label>Generate Survey Invitation</label>
+        <name>Generate_SurveyInvitation</name>
+        <label>Generate SurveyInvitation</label>
         <locationX>407</locationX>
-        <locationY>575</locationY>
-        <actionName>NKS_SurveyController</actionName>
+        <locationY>539</locationY>
+        <actionName>NKS_CaseSurveyInvitationInvocable</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Check_If_SurveyInvitationId_Is_Null</targetReference>
@@ -13,7 +13,7 @@
         <faultConnector>
             <targetReference>Log_Error</targetReference>
         </faultConnector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
             <name>caseId</name>
             <value>
@@ -26,6 +26,8 @@
                 <stringValue>nks_service_survey</stringValue>
             </value>
         </inputParameters>
+        <nameSegment>NKS_CaseSurveyInvitationInvocable</nameSegment>
+        <offset>0</offset>
         <outputParameters>
             <assignToReference>SurveyInvitationId</assignToReference>
             <name>output</name>
@@ -34,25 +36,25 @@
     <actionCalls>
         <name>Log_Error</name>
         <label>Log Error</label>
-        <locationX>1265</locationX>
-        <locationY>695</locationY>
+        <locationX>1001</locationX>
+        <locationY>647</locationY>
         <actionName>LoggerUtility</actionName>
         <actionType>apex</actionType>
         <dataTypeMappings>
             <typeName>T__refRecord</typeName>
-            <typeValue>Thread__c</typeValue>
+            <typeValue>Case</typeValue>
         </dataTypeMappings>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
             <name>category</name>
             <value>
-                <stringValue>NKS</stringValue>
+                <stringValue>NKS Survey</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
             <name>domain</name>
             <value>
-                <stringValue>STO</stringValue>
+                <stringValue>NKS</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -64,16 +66,25 @@
         <inputParameters>
             <name>logMessage</name>
             <value>
-                <stringValue>An error has occurred on generating/updating SurveyInvitation</stringValue>
+                <elementReference>$Flow.FaultMessage</elementReference>
             </value>
         </inputParameters>
+        <inputParameters>
+            <name>refRecord</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>LoggerUtility</nameSegment>
+        <offset>0</offset>
     </actionCalls>
     <apiVersion>57.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Assign_Values</name>
         <label>Assign Values</label>
         <locationX>473</locationX>
-        <locationY>1175</locationY>
+        <locationY>1079</locationY>
         <assignmentItems>
             <assignToReference>Get_SurveyInvitation.NKS_Survey_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -96,7 +107,7 @@
         <name>Assign_Values_2</name>
         <label>Assign Values</label>
         <locationX>737</locationX>
-        <locationY>1175</locationY>
+        <locationY>1079</locationY>
         <assignmentItems>
             <assignToReference>Get_SurveyInvitation.NKS_Survey_Theme__c</assignToReference>
             <operator>Assign</operator>
@@ -119,7 +130,7 @@
         <name>Check_Assignee_For_Thread</name>
         <label>Check Assignee For Thread</label>
         <locationX>605</locationX>
-        <locationY>1055</locationY>
+        <locationY>971</locationY>
         <defaultConnector>
             <targetReference>Assign_Values_2</targetReference>
         </defaultConnector>
@@ -144,9 +155,9 @@
         <name>Check_If_Person_Is_Reserved_In_KRR</name>
         <label>Check If Person Is Reserved In KRR</label>
         <locationX>176</locationX>
-        <locationY>455</locationY>
+        <locationY>431</locationY>
         <defaultConnector>
-            <targetReference>Generate_Survey_Invitation</targetReference>
+            <targetReference>Generate_SurveyInvitation</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -166,7 +177,7 @@
         <name>Check_If_SurveyInvitationId_Is_Null</name>
         <label>Check If SurveyInvitationId Is Null</label>
         <locationX>407</locationX>
-        <locationY>695</locationY>
+        <locationY>647</locationY>
         <defaultConnector>
             <targetReference>Get_SurveyInvitation</targetReference>
         </defaultConnector>
@@ -210,7 +221,7 @@
         <name>Get_Person</name>
         <label>Get Person</label>
         <locationX>176</locationX>
-        <locationY>335</locationY>
+        <locationY>323</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_If_Person_Is_Reserved_In_KRR</targetReference>
@@ -231,7 +242,7 @@
         <name>Get_SurveyInvitation</name>
         <label>Get SurveyInvitation</label>
         <locationX>605</locationX>
-        <locationY>815</locationY>
+        <locationY>755</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Thread</targetReference>
@@ -252,7 +263,7 @@
         <name>Get_Thread</name>
         <label>Get Thread</label>
         <locationX>605</locationX>
-        <locationY>935</locationY>
+        <locationY>863</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Assignee_For_Thread</targetReference>
@@ -273,11 +284,7 @@
         <name>Update_SurveyInvitation</name>
         <label>Update SurveyInvitation</label>
         <locationX>605</locationX>
-        <locationY>1391</locationY>
-        <faultConnector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Log_Error</targetReference>
-        </faultConnector>
+        <locationY>1271</locationY>
         <inputReference>Get_SurveyInvitation</inputReference>
     </recordUpdates>
     <start>
@@ -314,7 +321,7 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <value>
-            <elementReference>Generate_Survey_Invitation</elementReference>
+            <elementReference>Generate_SurveyInvitation</elementReference>
         </value>
     </variables>
 </Flow>
