@@ -1,11 +1,11 @@
-// TODO(backend-ready): KEEP this resolver/DTO and server-side account validation; REPLACE only the scratch provider below.
 public with sharing class stoPersonContext {
-    // TODO(backend-ready): KEEP this test-only seam for isolated ownership tests; never use it for runtime authorization.
     @TestVisible
     private static List<Account> testChildren;
 
-    // TODO(backend-ready): REMOVE this synthetic Foreldreansvar map with the scratch provider.
-    // Far and Mor have felles ansvar; Medmor has Foreldreansvar for Beate only.
+    // Cache only within this transaction, separately for each authenticated actor.
+    private static Map<Id, Set<String>> childIdentsByUser = new Map<Id, Set<String>>();
+
+    // Scratch sharing/setup fixture only; never used to authorize representation.
     public static Map<String, Set<String>> scratchFamily() {
         return new Map<String, Set<String>>{
             '12345678901' => new Set<String>{ '12345678904', '12345678905' },
@@ -53,40 +53,11 @@ public with sharing class stoPersonContext {
         if (Test.isRunningTest() && testChildren != null) {
             return testChildren;
         }
-        // TODO(backend-ready): REPLACE the entire scratch gate/identity queries below with verified foreldreansvar.
-        // REMOVE the fixture permission/identity grants together; preserve with sharing and fail-closed authorization.
-        // Only the existing, explicitly configured scratch family is supported until
-        // a production foreldreansvar source is available. Sandbox status alone is not authorization.
-        // TODO(backend-ready): Use crm-community-base's scratch-domain gate; citizen licenses cannot query Organization.
-        if (
-            !URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com') ||
-            !FeatureManagement.checkPermission('STO_Scratch_Family')
-        ) {
+        Set<String> childIdents = verifiedChildIdents();
+        if (childIdents.isEmpty()) {
             return new List<Account>();
         }
-        User actor = [
-            SELECT AccountId
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ];
-        // TODO(backend-ready): Query the actor's Account directly; citizen User.Account/Profile joins are restricted.
-        if (actor.AccountId == null) {
-            return new List<Account>();
-        }
-        // TODO(backend-ready): The scratch parent profile explicitly grants read access to this synthetic identity field.
-        List<Account> fixtureParent = [
-            SELECT Id, INT_PersonIdent__c
-            FROM Account
-            WHERE Id = :actor.AccountId AND IsPersonAccount = TRUE
-        ];
-        if (fixtureParent.isEmpty()) {
-            return new List<Account>();
-        }
-        Set<String> childIdents = scratchFamily().get(fixtureParent[0].INT_PersonIdent__c);
-        if (childIdents == null) {
-            return new List<Account>();
-        }
-        // PersonHandler stores these fixture birth dates as ISO date strings, not Account.PersonBirthdate.
+        // PersonHandler stores birth dates as ISO strings, not Account.PersonBirthdate.
         String adultBirthDate = String.valueOf(Date.today().addYears(-18));
         String today = String.valueOf(Date.today());
         return [
@@ -100,6 +71,64 @@ public with sharing class stoPersonContext {
                 AND CRM_Person__r.INT_DateOfBirth__c <= :today
             ORDER BY Name
         ];
+    }
+
+    private static Set<String> verifiedChildIdents() {
+        Id actorId = UserInfo.getUserId();
+        if (childIdentsByUser.containsKey(actorId)) {
+            return childIdentsByUser.get(actorId);
+        }
+        Id actorAccountId = [SELECT AccountId FROM User WHERE Id = :actorId].AccountId;
+        if (actorAccountId == null) {
+            return new Set<String>();
+        }
+        List<Account> parents = [
+            SELECT INT_PersonIdent__c
+            FROM Account
+            WHERE Id = :actorAccountId AND IsPersonAccount = TRUE
+        ];
+        if (parents.isEmpty()) {
+            return new Set<String>();
+        }
+        HttpResponse response = NKS_ForeldreansvarService.barn(parents[0].INT_PersonIdent__c);
+        Set<String> childIdents = new Set<String>();
+        if (response.getStatusCode() != 204 && response.getStatusCode() != 404) {
+            if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
+                throw invalidResponse();
+            }
+            BarnResponse body;
+            try {
+                body = (BarnResponse) JSON.deserialize(response.getBody(), BarnResponse.class);
+            } catch (System.JSONException error) {
+                throw invalidResponse();
+            }
+            if (body == null || body.barn == null) {
+                throw invalidResponse();
+            }
+            for (Barn child : body.barn) {
+                if (child == null || String.isBlank(child.ident)) {
+                    throw invalidResponse();
+                }
+                childIdents.add(child.ident);
+            }
+        }
+        childIdentsByUser.put(actorId, childIdents);
+        return childIdents;
+    }
+
+    private static AuraHandledException invalidResponse() {
+        LoggerUtility logger = new LoggerUtility('Foreldreansvar');
+        logger.error('Ugyldig svar ved henting av barn fra nks-foreldreansvar', null, CRM_ApplicationDomain.Domain.NKS);
+        logger.publish();
+        return new AuraHandledException('Kunne ikke hente barn du kan representere. Prøv igjen senere.');
+    }
+
+    private class BarnResponse {
+        public List<Barn> barn;
+    }
+
+    private class Barn {
+        public String ident;
     }
 
     public class PersonOption {

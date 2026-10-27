@@ -83,7 +83,7 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         this.refreshInbox();
     }
 
-    // TODO(backend-ready): Replace the scratch provider server-side and retain verified selections.
+    // Selections and account authorization share the server-side barn() provider.
     @wire(getRepresentableChildren)
     wiredChildren({ data, error }) {
         if (error) {

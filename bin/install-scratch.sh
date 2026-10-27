@@ -70,6 +70,7 @@ insertingTestData() {
    # TODO(backend-ready): KEEP ordered scratch setup and explicit failures; REMOVE family fixture setup only when retiring demo logins.
    sf apex run --file post-scratch/scratchSetup.cls || { error $? '"sf apex run" community user setup failed.'; }
    sf apex run --file post-scratch/scratchFamilySharing.cls || { error $? '"sf apex run" family sharing setup failed.'; }
+   sf apex run --file post-scratch/activateFamilyMock.cls || { error $? '"sf apex run" family mock activation failed.'; }
    sf apex run --file dummy-data/GenerateData.apex || { error $? '"sf apex run" dummy data generation failed.'; }
 }
 

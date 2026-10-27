@@ -9,7 +9,7 @@ import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
-// TODO(backend-ready): Replace scratch selections server-side, not with client-side identities.
+// The server resolves barn() results to accessible Account IDs.
 import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
@@ -51,7 +51,6 @@ import BESKJED_ARBEID_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_
 import BESKJED_KLAGE_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Klage_ingress';
 import BESKJED_FRITA_INGRESS from '@salesforce/label/c.Beskjed_til_oss_Beskjed_Frita_ingress';
 
-// TODO(backend-ready): Child fixtures now come from the authorized Apex endpoint as real Account IDs.
 const maxThreadCountSto = 3;
 const maxThreadCountBto = 10;
 const spinnerReasonTextMap = {
