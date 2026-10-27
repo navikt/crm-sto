@@ -33,10 +33,12 @@ public with sharing class stoInboxHelperTest {
 
     @isTest
     static void getThreadsTest() {
-        User u = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        Thread__c t = stoHelperClass.createThread(getThreadData(null));
-        getThreadData()
-        stoHelperClass.createMessage(t, 'Dette er en test melding', u.ContactId);
+        User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        stoHelperClass.ThreadData threadData = getThreadData('12345678910');
+        threadData.msgText = 'Dette er en test melding';
+        threadData.cachedContactId = u.ContactId;
+        threadData.cachedAccountId = u.AccountId;
+        Thread__c t = stoHelperClass.createThread(threadData);
         t.CRM_Closed_Date__c = Date.today().addDays(-1);
         update t;
 
