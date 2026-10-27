@@ -9,6 +9,7 @@ public with sharing class stoHelperClass {
         'ALL' => new List<String>{ 'STO', 'STB', 'BTO' }
     };
 
+    @TestVisible
     private static Id cachedAccountId;
     private static Id accountId {
         get {
@@ -53,26 +54,8 @@ public with sharing class stoHelperClass {
     }
 
     /**
-     * Method to create case, thread and message when a user submits a write to us case. Case is created through
-     * flow "On New STO Thread Create Task Or Case" on after-insert trigger.
-     * @author Lars Petter Johnsen
-     * @date 08.06.21
-     */
-    @AuraEnabled
-    public static Thread__c createThreadWithCase(
-        String theme,
-        String msgText,
-        Boolean medskriv,
-        String type,
-        String inboxTitle,
-        String inboxTheme
-    ) {
-        return createThreadWithCaseInternal(theme, msgText, medskriv, type, inboxTitle, inboxTheme, false);
-    }
-
-    /**
-     * New version with extra optional fields.
-     * Kept for compatibility with updated frontend while old cached Experience Site pages still call the legacy method.
+     * Old version kept for compatibility with the frontend.
+     * TODO: DELETE RIGHT AFTER DEPLOY
      */
     @AuraEnabled
     public static Thread__c createThreadWithCaseV2(
@@ -84,24 +67,23 @@ public with sharing class stoHelperClass {
         String inboxTheme,
         Boolean disabilityCampaign
     ) {
-        return createThreadWithCaseInternal(theme, msgText, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign);
+        return createThreadForPerson(theme, msgText, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign, null);
     }
 
-    private static Thread__c createThreadWithCaseInternal(
+    @AuraEnabled
+    public static Thread__c createThreadWithCase(
         String theme,
         String msgText,
         Boolean medskriv,
         String type,
         String inboxTitle,
-        String inboxTheme,
-        Boolean disabilityCampaign
+        String inboxTheme
     ) {
-        // TODO(backend-ready): Keep legacy creation self-owned for cached clients.
-        return createThreadForPerson(theme, msgText, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign, null);
+        return createThreadWithCaseV2(theme, msgText, medskriv, type, inboxTitle, inboxTheme, false);
     }
 
     @AuraEnabled
-    // TODO(backend-ready): Preserve selected account/contact ownership and actor attribution with the real selection provider.
+    // Compatibility for cached clients; all creation uses the same DTO validation.
     public static Thread__c createThreadForPerson(
         String theme,
         String msgText,
@@ -112,36 +94,16 @@ public with sharing class stoHelperClass {
         Boolean disabilityCampaign,
         Id representedAccountId
     ) {
-        Id ownerAccountId = stoPersonContext.resolveAccountId(representedAccountId);
-        if (isMaxThreadCount(theme, type, ownerAccountId)) {
-            LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
-            LOGGER.publish();
-            throw new maxThreadLimitReachedException();
-        }
-
-        User personUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
-        Thread__c thread = createThread(
-            null,
-            theme,
-            ownerAccountId,
-            representedAccountId == null ? personUser.ContactId : stoPersonContext.resolveContactId(ownerAccountId),
-            medskriv,
-            type,
-            inboxTitle,
-            inboxTheme,
-            disabilityCampaign
-        );
-
-        createMessage(thread, msgText, personUser.ContactId);
-        // TODO(backend-ready): Replace scratch co-parent read sharing with the approved responsibility/revocation lifecycle.
-        if (
-            ownerAccountId != null &&
-            (ownerAccountId != personUser.AccountId ||
-            URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com'))
-        ) {
-            new InboxOwnerSharing().grantAccess(thread);
-        }
-        return thread;
+        ThreadData info = new ThreadData();
+        info.theme = theme;
+        info.msgText = msgText;
+        info.medskriv = medskriv;
+        info.type = type;
+        info.inboxTitle = inboxTitle;
+        info.inboxTheme = inboxTheme;
+        info.disabilityCampaign = disabilityCampaign;
+        info.representedAccountId = representedAccountId;
+        return createThread(info);
     }
 
     // TODO(backend-ready): Retain narrowly scoped owner-login access; citizen user visibility cannot locate another account's login.
@@ -210,86 +172,41 @@ public with sharing class stoHelperClass {
         }
     }
 
-    private static Thread__c createThread(
-        String relatedObjId,
-        String theme,
-        User personUser,
-        Boolean medskriv,
-        String type,
-        String inboxTitle,
-        String inboxTheme,
-        Boolean disabilityCampaign
-    ) {
-        return createThread(
-            relatedObjId,
-            theme,
-            personUser.AccountId,
-            personUser.ContactId,
-            medskriv,
-            type,
-            inboxTitle,
-            inboxTheme,
-            disabilityCampaign
-        );
-    }
-
     /**
-     * Creates a thread to contain the STO conversation
+     * Method to create case, thread and message when a user submits a write to us case. Case is created through
+     * flow "On New STO Thread Create Task Or Case" on after-insert trigger.
      * @author Lars Petter Johnsen
-     * @date 08.06.2021
+     * @date 08.06.21
      */
-    @TestVisible
-    private static Thread__c createThread(
-        String relatedObjId,
-        String theme,
-        String accountId,
-        String contactId,
-        Boolean medskriv,
-        String type,
-        String inboxTitle,
-        String inboxTheme,
-        Boolean disabilityCampaign
-    ) {
-        Thread__c thread = new Thread__c();
-        thread.CRM_Related_Object__c = relatedObjId;
-        thread.CRM_Contact__c = contactId;
-        thread.CRM_Account__c = accountId;
-        thread.Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss';
-        thread.CRM_Thread_Type__c = ALLOWED_THREAD_TYPES.contains(type) ? type : 'STO';
-        thread.STO_Category__c = theme;
-        thread.STO_Medskriv__c = medskriv;
-        thread.NKS_Inbox_Title__c = inboxTitle;
-        thread.NKS_Inbox_Theme__c = inboxTheme;
-
-        if (disabilityCampaign != null && disabilityCampaign) {
-            thread.NKS_Experience_Site_Source__c = 'Uforekampanje';
-        }
-
-        List<RecordType> recordType = [
-            SELECT Id
-            FROM RecordType
-            WHERE SObjectType = 'Thread__c' AND Name = 'NKS Thread'
-            LIMIT 1
-        ];
-        if (!recordType.isEmpty()) {
-            thread.recordTypeId = recordType[0].Id;
-        }
-
+    @AuraEnabled
+    public static Thread__c createThread(ThreadData info) {
+        validateData(info);
+        Thread__c thread = info.toThread();
         try {
             insert thread;
         } catch (DmlException e) {
             LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
-            throw new threadOrMessageException();
+            throw new ThreadOrMessageException();
+        }
+
+        createMessage(thread, info);
+        User actor = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        if (
+            thread.CRM_Account__c != null &&
+            (thread.CRM_Account__c != actor.AccountId ||
+            URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com'))
+        ) {
+            new InboxOwnerSharing().grantAccess(thread);
         }
         return thread;
     }
 
     @TestVisible
-    private static void createMessage(Thread__c thread, String msgText, String contactId) {
+    private static void createMessage(Thread__c thread, ThreadData info) {
         Message__c msg = new Message__c();
-        msg.CRM_Message_Text__c = msgText;
-        msg.CRM_From_Contact__c = contactId;
+        msg.CRM_Message_Text__c = info.msgText;
+        msg.CRM_From_Contact__c = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
         msg.CRM_Thread__c = thread.Id;
         msg.CRM_Read__c = true;
         msg.CRM_Read_Datetime__c = DateTime.now();
@@ -298,7 +215,7 @@ public with sharing class stoHelperClass {
         } catch (DmlException e) {
             LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
-            throw new threadOrMessageException();
+            throw new ThreadOrMessageException();
         }
     }
 
@@ -346,7 +263,9 @@ public with sharing class stoHelperClass {
         String threadType,
         Id representedAccountId
     ) {
-        Id accountId = stoPersonContext.resolveAccountId(representedAccountId);
+        Id accountId = representedAccountId == null
+            ? stoHelperClass.accountId
+            : stoPersonContext.resolveAccountId(representedAccountId);
         List<String> ALLOWED_THREAD_TYPES;
         if (THREAD_TYPE_MAP.containsKey(threadType)) {
             ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(threadType);
@@ -417,11 +336,22 @@ public with sharing class stoHelperClass {
         return stoThreadAccess.getReplyContext(threadId);
     }
 
-    // TODO(backend-ready): Keep limits scoped to the selected inbox owner, not the acting parent.
-    private static Boolean isMaxThreadCount(String theme, String threadType, Id accountId) {
+    private static void validateData(ThreadData info) {
+        if (info == null) {
+            throw new AuraHandledException('Mangler opplysninger for å opprette samtalen.');
+        }
+        info.populateAccountAndContactIds();
+        if (isMaxThreadCount(info)) {
+            LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
+            throw new MaxThreadLimitReachedException();
+        }
+    }
+
+    private static Boolean isMaxThreadCount(ThreadData info) {
         List<String> ALLOWED_THREAD_TYPES;
-        if (THREAD_TYPE_MAP.containsKey(threadType)) {
-            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(threadType);
+        if (THREAD_TYPE_MAP.containsKey(info.type)) {
+            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(info.type);
         } else {
             ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get('ALL');
         }
@@ -438,9 +368,9 @@ public with sharing class stoHelperClass {
             FROM Thread__c
             WHERE
                 CRM_Is_Closed__C = FALSE
-                AND STO_Category__c = :theme
+                AND STO_Category__c = :info.theme
                 AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES
-                AND CRM_Account__c = :accountId
+                AND CRM_Account__c = :info.accountId
         ];
 
         List<Thread__c> threadList = new List<Thread__c>();
@@ -449,13 +379,22 @@ public with sharing class stoHelperClass {
                 threadList.add(t);
             }
         }
-        return threadList.size() >= (threadType == 'BTO' ? MAX_THREAD_COUNT_BTO : MAX_THREAD_COUNT_STO);
+        return threadList.size() >= (info.type == 'BTO' ? MAX_THREAD_COUNT_BTO : MAX_THREAD_COUNT_STO);
     }
 
-    public class threadOrMessageException extends Exception {
+    public class ThreadOrMessageException extends Exception {
     }
 
-    public class maxThreadLimitReachedException extends Exception {
+    public class MaxThreadLimitReachedException extends Exception {
+    }
+
+    public class NoParentalResponsibilityException extends Exception {
+    }
+
+    public class ChildAccountNotFoundException extends Exception {
+    }
+
+    public class NoAccountFoundException extends Exception {
     }
 
     @AuraEnabled(cacheable=true)
@@ -505,5 +444,115 @@ public with sharing class stoHelperClass {
             WHERE CRM_Is_Closed__c = FALSE AND STO_Category__c = :category AND CRM_Type__c = 'STO'
         ];
         return count >= 3;
+    }
+
+    public class ThreadData {
+        @AuraEnabled
+        public String theme { get; set; }
+        @AuraEnabled
+        public String msgText { get; set; }
+        @AuraEnabled
+        public String type { get; set; }
+        @AuraEnabled
+        public String inboxTitle { get; set; }
+        @AuraEnabled
+        public String inboxTheme { get; set; }
+        @AuraEnabled
+        public Boolean medskriv { get; set; }
+        @AuraEnabled
+        public Boolean disabilityCampaign { get; set; }
+        @AuraEnabled
+        public String representedPersonIdentifier { get; set; }
+        @AuraEnabled
+        public Id representedAccountId { get; set; }
+
+        @TestVisible
+        private Id cachedAccountId;
+        @TestVisible
+        private Id cachedContactId;
+        private Boolean idsResolved = false;
+
+        public Id accountId {
+            get {
+                if (cachedAccountId != null) {
+                    return cachedAccountId;
+                }
+                populateAccountAndContactIds();
+                return cachedAccountId;
+            }
+        }
+
+        public Id contactId {
+            get {
+                if (cachedContactId != null) {
+                    return cachedContactId;
+                }
+                populateAccountAndContactIds();
+                return cachedContactId;
+            }
+        }
+
+        private void populateAccountAndContactIds() {
+            if (idsResolved || (cachedAccountId != null && cachedContactId != null)) {
+                return;
+            }
+            if (representedPersonIdentifier != null && representedAccountId != null) {
+                throw new AuraHandledException('Velg bare én person for samtalen.');
+            }
+            if (representedPersonIdentifier == null && representedAccountId == null) {
+                User usr = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+                cachedAccountId = usr?.AccountId;
+                cachedContactId = usr?.ContactId;
+            } else {
+                Id selectedAccountId = representedAccountId;
+                if (representedPersonIdentifier != null) {
+                    if (String.isBlank(representedPersonIdentifier)) {
+                        throw new AuraHandledException('Ugyldig personvalg.');
+                    }
+                    List<Account> children = [
+                        SELECT Id
+                        FROM Account
+                        WHERE IsPersonAccount = TRUE AND INT_PersonIdent__c = :representedPersonIdentifier
+                        LIMIT 1
+                    ];
+                    if (children.isEmpty()) {
+                        throw new ChildAccountNotFoundException();
+                    }
+                    selectedAccountId = children[0].Id;
+                }
+                cachedAccountId = stoPersonContext.resolveAccountId(selectedAccountId);
+                cachedContactId = stoPersonContext.resolveContactId(cachedAccountId);
+            }
+            idsResolved = true;
+        }
+
+        public Thread__c toThread() {
+            Thread__c thread = new Thread__c();
+
+            thread.CRM_Contact__c = contactId;
+            thread.CRM_Account__c = accountId;
+            thread.Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss';
+            thread.CRM_Thread_Type__c = ALLOWED_THREAD_TYPES.contains(type) ? type : 'STO';
+            thread.STO_Category__c = theme;
+            thread.STO_Medskriv__c = medskriv;
+            thread.NKS_Inbox_Title__c = inboxTitle;
+            thread.NKS_Inbox_Theme__c = inboxTheme;
+
+            if (disabilityCampaign != null && disabilityCampaign) {
+                thread.NKS_Experience_Site_Source__c = 'Uforekampanje';
+            }
+
+            List<RecordType> recordType = [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Thread__c' AND Name = 'NKS Thread'
+                LIMIT 1
+            ];
+            if (!recordType.isEmpty()) {
+                thread.recordTypeId = recordType[0].Id;
+            }
+
+            return thread;
+        }
     }
 }

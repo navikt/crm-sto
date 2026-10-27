@@ -19,21 +19,21 @@ public with sharing class stoInboxHelperTest {
         insert cn;
     }
 
+    private static stoHelperClass.ThreadData getThreadData() {
+        stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
+        info.theme = 'Arbeid';
+        info.msgText = 'This is the message';
+        info.medskriv = true;
+        info.type = 'STO';
+        info.inboxTitle = 'Skriv til oss';
+        info.inboxTheme = 'Arbeid';
+        return info;
+    }
+
     @isTest
     static void getThreadsTest() {
-        User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        Thread__c t = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            u.AccountId,
-            u.ContactId,
-            true,
-            'STO',
-            'Skriv til oss',
-            'Arbeid',
-            false
-        );
-        stoHelperClass.createMessage(t, 'Dette er en test melding', u.ContactId);
+        User u = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        Thread__c t = stoHelperClass.createThread(getThreadData());
         Message__c message = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :t.Id LIMIT 1];
         t.CRM_Closed_Date__c = Date.today().addDays(-1);
         update t;
@@ -56,23 +56,7 @@ public with sharing class stoInboxHelperTest {
 
     @isTest
     static void getRecentThreadsTest() {
-        Contact personContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Account.CRM_Person__r.Name = '12345678910'
-            LIMIT 1
-        ];
-        Thread__c t = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
-            true,
-            'STO',
-            'Skriv til oss',
-            'Arbeid',
-            false
-        );
+        Thread__c t = stoHelperClass.createThread(getThreadData());
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         insert m;
@@ -89,6 +73,24 @@ public with sharing class stoInboxHelperTest {
         Test.stopTest();
 
         Assert.areEqual(false, tList.isEmpty());
+    }
+
+    @isTest
+    static void threadPreviewKeepsIncomingFiveHundredCharacterLimit() {
+        stoHelperClass.ThreadData info = getThreadData();
+        info.msgText = 'x'.repeat(650);
+        Thread__c thread = stoHelperClass.createThread(info);
+        Test.startTest();
+        stoInboxHelper.thread item = stoInboxHelper.getRecentThreads()[0];
+        Test.stopTest();
+        Assert.areEqual(thread.Id, item.recordId);
+        Assert.areEqual(500, item.latestmessage.messageText.length());
+        Assert.areEqual(
+            650,
+            [SELECT CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c = :thread.Id LIMIT 1]
+                .CRM_Message_Text__c.length(),
+            'Only the preview should be truncated'
+        );
     }
 
     @isTest

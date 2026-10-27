@@ -1,7 +1,6 @@
 import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
-// TODO(backend-ready): Preserve the account-scoped creation/query contract with the real person provider.
-import createThreadForPerson from '@salesforce/apex/stoHelperClass.createThreadForPerson';
+import createThread from '@salesforce/apex/stoHelperClass.createThread';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreadsForPerson';
@@ -617,16 +616,17 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
 
-            // TODO(backend-ready): Preserve the selected child's Account ID on creation.
-            createThreadForPerson({
-                theme: theme,
-                msgText: this.message,
-                medskriv: medskriv,
-                type: this.threadTypeToMake,
-                inboxTitle: this.title,
-                inboxTheme: inboxTheme,
-                disabilityCampaign: disabilityCampaign,
-                representedAccountId: this.representedPersonId
+            createThread({
+                info: {
+                    theme: theme,
+                    msgText: this.message,
+                    medskriv: medskriv,
+                    type: this.threadTypeToMake,
+                    inboxTitle: this.title,
+                    inboxTheme: inboxTheme,
+                    disabilityCampaign: disabilityCampaign,
+                    representedAccountId: this.representedPersonId
+                }
             })
                 .then((thread) => {
                     this.showSpinner = false;

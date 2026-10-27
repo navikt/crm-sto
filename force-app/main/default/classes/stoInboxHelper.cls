@@ -165,7 +165,7 @@ public with sharing class stoInboxHelper {
             thread.status = (t.CRM_Is_Closed__c) ? 'Avsluttet' : 'Åpen';
             thread.recordName = t.Name;
             message.recordId = t.Messages__r[0]?.Id;
-            message.messageText = preview(t.Messages__r[0]?.CRM_Message_Text__c);
+            message.messageText = preview(t.Messages__r[0]?.CRM_Message_Text__c)?.left(500);
             message.isExternal = t.Messages__r[0]?.CRM_External_Message__c;
             thread.latestmessage = message;
             thread.inboxTitle = t.NKS_Inbox_Title__c;

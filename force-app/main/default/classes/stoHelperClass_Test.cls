@@ -23,20 +23,30 @@ public with sharing class stoHelperClass_Test {
         ];
     }
 
+    private static stoHelperClass.ThreadData getThreadData() {
+        stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
+        info.theme = 'Arbeid';
+        info.msgText = 'This is the message';
+        info.medskriv = true;
+        info.type = 'STO';
+        info.disabilityCampaign = false;
+        setAccountAndContactIds(info, '12345678910');
+        return info;
+    }
+
+    private static void setAccountAndContactIds(stoHelperClass.ThreadData info, String personIdent) {
+        Contact personContact = getContactBasedOnPersonIdent(personIdent);
+        info.cachedContactId = personContact.Id;
+        info.cachedAccountId = personContact.AccountId;
+    }
+
     @isTest
     static void getOpenThreadsTest() {
-        User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        Thread__c t = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            u.AccountId,
-            u.ContactId,
-            true,
-            'STO',
-            null,
-            null,
-            false
-        );
+        stoHelperClass.ThreadData info = getThreadData();
+
+        stoHelperClass.cachedAccountId = getContactBasedOnPersonIdent('12345678910')?.AccountId;
+
+        Thread__c t = stoHelperClass.createThread(info);
         Test.startTest();
         Assert.areNotEqual(null, stoHelperClass.getOpenThreads('Arbeid', 'STO'), 'Expected to get a thread');
         Test.stopTest();
@@ -54,19 +64,12 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void createThreadCaseTest() {
-        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        // Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        stoHelperClass.ThreadData info = getThreadData();
+
+        // info.representedPersonIdentifier = '12345678910';
         Test.startTest();
-        Thread__c t = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
-            true,
-            'STO',
-            null,
-            null,
-            false
-        );
+        Thread__c t = stoHelperClass.createThread(info);
         Test.stopTest();
 
         Assert.areNotEqual(null, t.Id, 'Thread should have been created and have an Id');
@@ -74,20 +77,20 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void createMessageTest() {
-        Contact personContact = getContactBasedOnPersonIdent('12345678910');
-        Thread__c t = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
-            true,
-            'STO',
-            null,
-            null,
-            false
-        );
+        // Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        stoHelperClass.ThreadData info = getThreadData();
+
+        info.msgText = 'this is a test message';
+        // info.representedPersonIdentifier = '12345678910';
+        Thread__c t = stoHelperClass.createThread(info);
+        Contact personContact = [
+            SELECT Id
+            FROM Contact
+            WHERE Account.CRM_Person__r.Name = '12345678910'
+            LIMIT 1
+        ];
         Test.startTest();
-        stoHelperClass.createMessage(t, 'this is a test message', personContact.Id);
+        stoHelperClass.createMessage(t, info);
         Test.stopTest();
         List<Message__c> m = [SELECT CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c = :t.Id];
 
@@ -95,16 +98,11 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void createThreadWithCaseLegacyTest() {
+    static void createThreadTest() {
         Test.startTest();
-        Thread__c thread = stoHelperClass.createThreadWithCase(
-            'Arbeid',
-            'This is the message',
-            true,
-            'STO',
-            null,
-            null
-        );
+        stoHelperClass.ThreadData info = getThreadData();
+
+        Thread__c thread = stoHelperClass.createThread(info);
         Test.stopTest();
 
         List<Message__c> msgList = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :thread.Id];
@@ -112,17 +110,11 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void createThreadWithCaseV2_DisabilityCampaign_SetsSourceTest() {
+    static void createThread_DisabilityCampaign_SetsSourceTest() {
         Test.startTest();
-        Thread__c thread = stoHelperClass.createThreadWithCaseV2(
-            'Arbeid',
-            'This is the message',
-            true,
-            'STO',
-            null,
-            null,
-            true
-        );
+        stoHelperClass.ThreadData info = getThreadData();
+        info.disabilityCampaign = true;
+        Thread__c thread = stoHelperClass.createThread(info);
         Test.stopTest();
 
         Thread__c insertedThread = [
@@ -136,17 +128,10 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void createThreadWithCaseV2_DisabilityCampaign_NullSourceWhenFalseTest() {
+    static void createThread_DisabilityCampaign_NullSourceWhenFalseTest() {
         Test.startTest();
-        Thread__c thread = stoHelperClass.createThreadWithCaseV2(
-            'Arbeid',
-            'This is the message',
-            true,
-            'STO',
-            null,
-            null,
-            false
-        );
+        stoHelperClass.ThreadData info = getThreadData();
+        Thread__c thread = stoHelperClass.createThread(info);
         Test.stopTest();
 
         Thread__c insertedThread = [
@@ -160,15 +145,16 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
-    static void createThreadWithCaseMoreThanThreeThreadsErrorTest() {
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
-        stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+    static void createThreadMoreThanThreeThreadsErrorTest() {
+        stoHelperClass.ThreadData info = getThreadData();
+        stoHelperClass.createThread(info);
+        stoHelperClass.createThread(info);
+        stoHelperClass.createThread(info);
         Exception ex;
 
         Test.startTest();
         try {
-            stoHelperClass.createThreadWithCase('Arbeid', 'This is the message', true, 'STO', null, null);
+            stoHelperClass.createThread(info);
         } catch (Exception e) {
             ex = e;
         }
@@ -197,18 +183,10 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void closeThreadTest() {
-        Contact personContact = getContactBasedOnPersonIdent('12345678910');
-        Thread__c t = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
-            true,
-            'STO',
-            null,
-            null,
-            false
-        );
+        // Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        stoHelperClass.ThreadData info = getThreadData();
+
+        Thread__c t = stoHelperClass.createThread(info);
         Test.startTest();
         stoHelperClass.closeThread(t.Id);
         Test.stopTest();
@@ -248,22 +226,12 @@ public with sharing class stoHelperClass_Test {
         u.NKS_Close_Intent__c = true;
         update u;
 
-        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        // Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        stoHelperClass.ThreadData info = getThreadData();
+
         List<Thread__c> threads = new List<Thread__c>();
         for (Integer i = 0; i < 3; i++) {
-            threads.add(
-                stoHelperClass.createThread(
-                    null,
-                    'Arbeid',
-                    personContact.AccountId,
-                    personContact.Id,
-                    true,
-                    'STO',
-                    null,
-                    null,
-                    false
-                )
-            );
+            threads.add(stoHelperClass.createThread(info));
         }
 
         System.runAs(u) {
@@ -285,22 +253,12 @@ public with sharing class stoHelperClass_Test {
         u.NKS_Close_Intent__c = false;
         update u;
 
-        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        // Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        stoHelperClass.ThreadData info = getThreadData();
+
         List<Thread__c> threads = new List<Thread__c>();
         for (Integer i = 0; i < 3; i++) {
-            threads.add(
-                stoHelperClass.createThread(
-                    null,
-                    'Arbeid',
-                    personContact.AccountId,
-                    personContact.Id,
-                    true,
-                    'STO',
-                    null,
-                    null,
-                    false
-                )
-            );
+            threads.add(stoHelperClass.createThread(info));
         }
 
         System.runAs(u) {
@@ -321,19 +279,10 @@ public with sharing class stoHelperClass_Test {
         User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         u.NKS_Close_Intent__c = true;
         update u;
+        // Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        stoHelperClass.ThreadData info = getThreadData();
 
-        Contact personContact = getContactBasedOnPersonIdent('12345678910');
-        Thread__c testThread = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
-            true,
-            'STO',
-            null,
-            null,
-            false
-        );
+        Thread__c testThread = stoHelperClass.createThread(info);
 
         System.runAs(u) {
             Test.startTest();
@@ -359,19 +308,12 @@ public with sharing class stoHelperClass_Test {
 
     @isTest
     static void testGetThread() {
-        Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        // Contact personContact = getContactBasedOnPersonIdent('12345678910');
+        stoHelperClass.ThreadData info = getThreadData();
 
-        Thread__c created = stoHelperClass.createThread(
-            null,
-            'Arbeid',
-            personContact.AccountId,
-            personContact.Id,
-            true,
-            'STO',
-            'Inbox title test',
-            'Inbox theme test',
-            false
-        );
+        info.inboxTitle = 'Inbox title test';
+        info.inboxTheme = 'Inbox theme test';
+        Thread__c created = stoHelperClass.createThread(info);
 
         Test.startTest();
         Thread__c fetched = stoHelperClass.getThread(created.Id);
