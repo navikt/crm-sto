@@ -100,6 +100,11 @@ public with sharing class stoHelperClass {
         }
 
         createMessage(thread, info);
+
+        if (info.representedPersonIdentifier != null) {
+            // Handle represented person logic here
+            insertFamilieShare(thread);
+        }
         return thread;
     }
 
@@ -113,6 +118,23 @@ public with sharing class stoHelperClass {
         msg.CRM_Read_Datetime__c = DateTime.now();
         try {
             insert msg;
+        } catch (DmlException e) {
+            LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
+            throw new ThreadOrMessageException();
+        }
+    }
+
+    @TestVisible
+    private static void insertFamilieShare(Thread__c thread) {
+        // Implement the logic to insert FamilieShare record related to the thread
+        Thread__Share share = new Thread__Share();
+        share.ParentId = thread.Id;
+        share.AccessLevel = 'Write';
+        share.RowCause = Schema.Thread__Share.RowCause.Manual;
+        share.UserOrGroupId = UserInfo.getUserId();
+        try {
+            insert share;
         } catch (DmlException e) {
             LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
@@ -217,8 +239,7 @@ public with sharing class stoHelperClass {
     private static Boolean validateData(ThreadData info) {
         // We need to validate that the parent has a valid relation to the child.
         // TODO: Add proper validation through PDL api
-        Boolean hasForeldreansvar = true;
-        if (!hasForeldreansvar) {
+        if (!info.validateRepresentation()) {
             LOGGER.error('Parent does not have valid relation to child', null, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
             throw new NoParentalResponsibilityException();
@@ -436,6 +457,13 @@ public with sharing class stoHelperClass {
             }
 
             return thread;
+        }
+
+        public Boolean validateRepresentation() {
+            String foreldre = '12345678901';
+            String barn = representedPersonIdentifier;
+            NKS_ForeldreansvarService.verifiser(foreldre, barn);
+            return true;
         }
     }
 }
