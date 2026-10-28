@@ -9,7 +9,7 @@
         <div class="container">
             <p class="aksel-body-long aksel-body-long--medium">{title}</p>
             <h1 class="aksel-heading aksel-heading--xlarge header">{themeToShow}</h1>
-            <template lwc:if={showSelectedPerson}>
+            <template lwc:if={isWritingForChild}>
                 <div class="represented-person-banner" tabindex="-1">
                     <p class="aksel-body-short aksel-body-short--medium">
                         <strong>Gjelder: {selectedPersonLabel}</strong>

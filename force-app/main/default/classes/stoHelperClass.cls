@@ -191,6 +191,9 @@ public with sharing class stoHelperClass {
         }
 
         createMessage(thread, info);
+        if (info.representedPersonIdentifier != null || info.representedAccountId != null) {
+            insertFamilieShare(thread);
+        }
         User actor = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         if (
             thread.CRM_Account__c != null &&
@@ -212,6 +215,26 @@ public with sharing class stoHelperClass {
         msg.CRM_Read_Datetime__c = DateTime.now();
         try {
             insert msg;
+        } catch (DmlException e) {
+            LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
+            throw new ThreadOrMessageException();
+        }
+    }
+
+    @TestVisible
+    private static void insertFamilieShare(Thread__c thread) {
+        // The creator already has edit access when they own the new thread.
+        if ([SELECT OwnerId FROM Thread__c WHERE Id = :thread.Id].OwnerId == UserInfo.getUserId()) {
+            return;
+        }
+        Thread__Share share = new Thread__Share();
+        share.ParentId = thread.Id;
+        share.AccessLevel = 'Edit';
+        share.RowCause = Schema.Thread__Share.RowCause.Manual;
+        share.UserOrGroupId = UserInfo.getUserId();
+        try {
+            insert share;
         } catch (DmlException e) {
             LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
@@ -341,6 +364,11 @@ public with sharing class stoHelperClass {
             throw new AuraHandledException('Mangler opplysninger for å opprette samtalen.');
         }
         info.populateAccountAndContactIds();
+        if (!info.validateRepresentation()) {
+            LOGGER.error('Parent does not have valid relation to child', null, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
+            throw new NoParentalResponsibilityException();
+        }
         if (isMaxThreadCount(info)) {
             LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
@@ -553,6 +581,14 @@ public with sharing class stoHelperClass {
             }
 
             return thread;
+        }
+
+        public Boolean validateRepresentation() {
+            populateAccountAndContactIds();
+            return representedPersonIdentifier == null &&
+                representedAccountId == null
+                ? true
+                : stoPersonContext.verifyRepresentation(accountId);
         }
     }
 }

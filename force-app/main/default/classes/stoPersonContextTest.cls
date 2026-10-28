@@ -4,6 +4,8 @@ private class stoPersonContextTest {
         private Integer statusCode;
         private String responseBody;
         public Integer calls = 0;
+        public Integer verificationStatusCode = 200;
+        public String verificationBody = '{"kanRepresentere":true}';
 
         public BarnMock(Integer statusCode, String responseBody) {
             this.statusCode = statusCode;
@@ -13,9 +15,7 @@ private class stoPersonContextTest {
         public HttpResponse respond(HttpRequest request) {
             calls++;
             Assert.areEqual('POST', request.getMethod());
-            Assert.isTrue(request.getEndpoint().endsWith('/api/foreldreansvar/barn'));
             Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(request.getBody());
-            Assert.areEqual(new Set<String>{ 'ident' }, payload.keySet());
             Id actorAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
             String actorIdent = [
                 SELECT INT_PersonIdent__c
@@ -23,8 +23,20 @@ private class stoPersonContextTest {
                 WHERE Id = :actorAccountId
             ]
             .INT_PersonIdent__c;
-            Assert.areEqual(actorIdent, payload.get('ident'), 'Always use the authenticated parent identity');
             HttpResponse response = new HttpResponse();
+            if (request.getEndpoint().endsWith('/api/foreldreansvar/verifiser')) {
+                Assert.areEqual(new Set<String>{ 'forelderIdent', 'barnIdent' }, payload.keySet());
+                Assert.areEqual(actorIdent, payload.get('forelderIdent'), 'Never use a hardcoded parent');
+                Assert.isTrue(
+                    new Set<String>{ '12345678904', '12345678905' }.contains((String) payload.get('barnIdent'))
+                );
+                response.setStatusCode(verificationStatusCode);
+                response.setBody(verificationBody);
+                return response;
+            }
+            Assert.isTrue(request.getEndpoint().endsWith('/api/foreldreansvar/barn'));
+            Assert.areEqual(new Set<String>{ 'ident' }, payload.keySet());
+            Assert.areEqual(actorIdent, payload.get('ident'), 'Always use the authenticated parent identity');
             response.setStatusCode(statusCode);
             response.setHeader('Content-Type', 'application/json');
             if (responseBody != null) {
@@ -139,6 +151,114 @@ private class stoPersonContextTest {
                 .CRM_From_Contact__c
             );
             Assert.areEqual(thread.Id, stoInboxHelper.getRecentThreadsForPerson(represented.Id)[0].recordId);
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void initialSharingSkipsOwnerAndUsesEditForNonOwner() {
+        User parent = createFamilyParents().get('12345678901');
+        stoPersonContext.testChildren = new List<Account>{ child() };
+        Thread__c thread;
+        Test.startTest();
+        System.runAs(parent) {
+            thread = stoHelperClass.createThread(childThreadData(child().Id));
+            stoHelperClass.insertFamilieShare(thread);
+            Assert.areEqual(
+                0,
+                [
+                    SELECT COUNT()
+                    FROM Thread__Share
+                    WHERE ParentId = :thread.Id AND UserOrGroupId = :parent.Id AND RowCause = 'Manual'
+                ],
+                'The owner must not need a redundant manual share'
+            );
+        }
+        stoHelperClass.insertFamilieShare(thread);
+        Assert.areEqual(
+            'Edit',
+            [
+                SELECT AccessLevel
+                FROM Thread__Share
+                WHERE ParentId = :thread.Id AND UserOrGroupId = :UserInfo.getUserId() AND RowCause = 'Manual'
+            ]
+            .AccessLevel,
+            'Salesforce shares use Edit, not Write'
+        );
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void verificationDenialPreventsChildThreadAndMessage() {
+        assertVerificationDenied(200, '{"kanRepresentere":false}');
+    }
+
+    @IsTest
+    static void verificationNotFoundPreventsChildThreadAndMessage() {
+        assertVerificationDenied(404, '{}');
+    }
+
+    @IsTest
+    static void verificationNoContentPreventsChildThreadAndMessage() {
+        assertVerificationDenied(204, '');
+    }
+
+    private static void assertVerificationDenied(Integer statusCode, String body) {
+        User parent = createFamilyParents().get('12345678902');
+        BarnMock mock = new BarnMock(200, null);
+        mock.verificationStatusCode = statusCode;
+        mock.verificationBody = body;
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(parent) {
+            try {
+                stoHelperClass.createThread(childThreadData(child().Id));
+                Assert.fail('Verification must deny even when barn and Salesforce sharing allow selection');
+            } catch (stoHelperClass.NoParentalResponsibilityException expected) {
+                Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
+                Assert.areEqual(0, [SELECT COUNT() FROM Message__c]);
+            }
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void malformedVerificationIsAnErrorNotAuthorization() {
+        User parent = createFamilyParents().get('12345678902');
+        BarnMock mock = new BarnMock(200, null);
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(parent) {
+            for (String body : new List<String>{ '', 'not json', 'null', '{}', '{"kanRepresentere":null}' }) {
+                mock.verificationBody = body;
+                try {
+                    stoHelperClass.createThread(childThreadData(child().Id));
+                    Assert.fail('Malformed verification must not authorize creation');
+                } catch (AuraHandledException expected) {
+                    Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
+                    Assert.areEqual(0, [SELECT COUNT() FROM Message__c]);
+                }
+            }
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void verificationServiceFailurePreventsCreation() {
+        User parent = createFamilyParents().get('12345678902');
+        BarnMock mock = new BarnMock(200, null);
+        mock.verificationStatusCode = 500;
+        mock.verificationBody = '{"title":"Internal Server Error"}';
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(parent) {
+            try {
+                stoHelperClass.createThread(childThreadData(child().Id));
+                Assert.fail('Verification errors must prevent creation');
+            } catch (NKS_ForeldreansvarService.ForeldreansvarException expected) {
+                Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
+                Assert.areEqual(0, [SELECT COUNT() FROM Message__c]);
+            }
         }
         Test.stopTest();
     }
@@ -507,7 +627,21 @@ private class stoPersonContextTest {
     }
 
     @IsTest
-    static void threeParentsGetTheirOwnChildrenAndCanCreateSto() {
+    static void doktorCanCreateSharedChildThread() {
+        assertParentCanCreateSharedChildThread('12345678901');
+    }
+
+    @IsTest
+    static void kariCanCreateSharedChildThread() {
+        assertParentCanCreateSharedChildThread('12345678902');
+    }
+
+    @IsTest
+    static void anneCanCreateSharedChildThread() {
+        assertParentCanCreateSharedChildThread('12345678903');
+    }
+
+    private static void assertParentCanCreateSharedChildThread(String parentIdent) {
         Map<String, User> parents = createFamilyParents();
         Set<Id> createdThreadIds = new Set<Id>();
         Map<Id, Id> creators = new Map<Id, Id>();
@@ -520,54 +654,51 @@ private class stoPersonContextTest {
             children.put(child.INT_PersonIdent__c, child);
         }
         Test.startTest();
-        loadBarnFor(parents.values());
-        for (String parentIdent : parents.keySet()) {
-            System.runAs(parents.get(parentIdent)) {
-                Assert.isTrue(FeatureManagement.checkPermission('STO_Scratch_Family'));
-                List<stoPersonContext.PersonOption> options = stoPersonContext.getRepresentableChildren();
-                Set<Id> expected = new Set<Id>();
-                for (String childIdent : stoPersonContext.scratchFamily().get(parentIdent)) {
-                    expected.add(children.get(childIdent).Id);
-                }
-                Set<Id> actual = new Set<Id>();
-                for (stoPersonContext.PersonOption option : options) {
-                    actual.add(option.value);
-                }
-                Assert.areEqual(expected, actual, parentIdent);
-                Account beate = children.get('12345678904');
-                Thread__c created = stoHelperClass.createThreadForPerson(
-                    'Familie',
-                    'Foreldreansvar test',
-                    true,
-                    'STO',
-                    'Skriv til oss',
-                    'Familie og barn',
-                    false,
-                    beate.Id
-                );
-                Thread__c saved = [
-                    SELECT CRM_Account__c, CRM_Contact__c, CreatedById
-                    FROM Thread__c
-                    WHERE Id = :created.Id
-                ];
-                createdThreadIds.add(saved.Id);
-                creators.put(saved.Id, saved.CreatedById);
-                Assert.areEqual(beate.Id, saved.CRM_Account__c);
-                Assert.areEqual(beate.PersonContactId, saved.CRM_Contact__c);
-                Assert.areEqual(parents.get(parentIdent).Id, saved.CreatedById);
-                if (parentIdent == '12345678903') {
-                    try {
-                        stoPersonContext.resolveAccountId(children.get('12345678905').Id);
-                        Assert.fail('Medmor must not represent Ola');
-                    } catch (AuraHandledException expectedError) {
-                        Assert.areEqual(1, options.size());
-                    }
+        System.runAs(parents.get(parentIdent)) {
+            Assert.isTrue(FeatureManagement.checkPermission('STO_Scratch_Family'));
+            List<stoPersonContext.PersonOption> options = stoPersonContext.getRepresentableChildren();
+            Set<Id> expected = new Set<Id>();
+            for (String childIdent : stoPersonContext.scratchFamily().get(parentIdent)) {
+                expected.add(children.get(childIdent).Id);
+            }
+            Set<Id> actual = new Set<Id>();
+            for (stoPersonContext.PersonOption option : options) {
+                actual.add(option.value);
+            }
+            Assert.areEqual(expected, actual, parentIdent);
+            Account beate = children.get('12345678904');
+            Thread__c created = stoHelperClass.createThreadForPerson(
+                'Familie',
+                'Foreldreansvar test',
+                true,
+                'STO',
+                'Skriv til oss',
+                'Familie og barn',
+                false,
+                beate.Id
+            );
+            Thread__c saved = [
+                SELECT CRM_Account__c, CRM_Contact__c, CreatedById
+                FROM Thread__c
+                WHERE Id = :created.Id
+            ];
+            createdThreadIds.add(saved.Id);
+            creators.put(saved.Id, saved.CreatedById);
+            Assert.areEqual(beate.Id, saved.CRM_Account__c);
+            Assert.areEqual(beate.PersonContactId, saved.CRM_Contact__c);
+            Assert.areEqual(parents.get(parentIdent).Id, saved.CreatedById);
+            if (parentIdent == '12345678903') {
+                try {
+                    stoPersonContext.resolveAccountId(children.get('12345678905').Id);
+                    Assert.fail('Medmor must not represent Ola');
+                } catch (AuraHandledException expectedError) {
+                    Assert.areEqual(1, options.size());
                 }
             }
         }
         if (URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com')) {
             Assert.areEqual(
-                6,
+                2,
                 [SELECT COUNT() FROM Thread__Share WHERE ParentId IN :createdThreadIds AND AccessLevel = 'Read'],
                 'Each new Beate thread must have two co-parent Read shares'
             );
@@ -588,6 +719,28 @@ private class stoPersonContextTest {
                 }
             }
         }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void verificationCacheIsScopedToParentAndReusesDenial() {
+        Map<String, User> parents = createFamilyParents();
+        Id childId = child().Id;
+        BarnMock mock = new BarnMock(200, null);
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(parents.get('12345678901')) {
+            Assert.isTrue(stoPersonContext.verifyRepresentation(childId));
+        }
+        mock.verificationBody = '{"kanRepresentere":false}';
+        System.runAs(parents.get('12345678903')) {
+            Assert.isFalse(stoPersonContext.verifyRepresentation(childId));
+            Assert.isFalse(stoPersonContext.verifyRepresentation(childId));
+        }
+        System.runAs(parents.get('12345678901')) {
+            Assert.isTrue(stoPersonContext.verifyRepresentation(childId));
+        }
+        Assert.areEqual(4, mock.calls, 'Each parent needs one barn and one verifiser call, including denials');
         Test.stopTest();
     }
 
@@ -621,20 +774,7 @@ private class stoPersonContextTest {
     @IsTest
     static void metadataMocksSupplyRepresentableChildrenWithoutCallouts() {
         Map<String, User> parents = createFamilyParents();
-        System.runAs(new User(Id = UserInfo.getUserId())) {
-            List<API_Controller_Mock_Settings__c> settings = new List<API_Controller_Mock_Settings__c>();
-            for (User parent : parents.values()) {
-                settings.add(
-                    new API_Controller_Mock_Settings__c(
-                        SetupOwnerId = parent.Id,
-                        Use_Mock__c = true,
-                        Status_Code__c = '200',
-                        Status__c = 'OK'
-                    )
-                );
-            }
-            insert settings;
-        }
+        activateMetadataMocks(parents.values());
         Test.startTest();
         for (String parentIdent : parents.keySet()) {
             System.runAs(parents.get(parentIdent)) {
@@ -646,7 +786,29 @@ private class stoPersonContextTest {
                 Assert.areEqual(0, Limits.getCallouts(), 'ApiController must read custom metadata, not call PDL');
             }
         }
+        System.runAs(parents.get('12345678902')) {
+            Thread__c thread = stoHelperClass.createThread(childThreadData(child().Id));
+            Assert.areEqual(child().Id, thread.CRM_Account__c);
+            Assert.areEqual(0, Limits.getCallouts(), 'Both barn and verifiser must use metadata mocks');
+        }
         Test.stopTest();
+    }
+
+    private static void activateMetadataMocks(List<User> parents) {
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            List<API_Controller_Mock_Settings__c> settings = new List<API_Controller_Mock_Settings__c>();
+            for (User parent : parents) {
+                settings.add(
+                    new API_Controller_Mock_Settings__c(
+                        SetupOwnerId = parent.Id,
+                        Use_Mock__c = true,
+                        Status_Code__c = '200',
+                        Status__c = 'OK'
+                    )
+                );
+            }
+            insert settings;
+        }
     }
 
     @IsTest

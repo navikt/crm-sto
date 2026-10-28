@@ -32,8 +32,9 @@ public with sharing class stoInboxHelperTest {
 
     @isTest
     static void getThreadsTest() {
-        User u = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        Thread__c t = stoHelperClass.createThread(getThreadData());
+        stoHelperClass.ThreadData threadData = getThreadData();
+        threadData.msgText = 'Dette er en test melding';
+        Thread__c t = stoHelperClass.createThread(threadData);
         Message__c message = [SELECT Id FROM Message__c WHERE CRM_Thread__c = :t.Id LIMIT 1];
         t.CRM_Closed_Date__c = Date.today().addDays(-1);
         update t;

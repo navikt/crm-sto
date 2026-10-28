@@ -4,6 +4,7 @@ public with sharing class stoPersonContext {
 
     // Cache only within this transaction, separately for each authenticated actor.
     private static Map<Id, Set<String>> childIdentsByUser = new Map<Id, Set<String>>();
+    private static Map<String, Boolean> verificationByUserAndChild = new Map<String, Boolean>();
 
     // Scratch sharing/setup fixture only; never used to authorize representation.
     public static Map<String, Set<String>> scratchFamily() {
@@ -47,6 +48,52 @@ public with sharing class stoPersonContext {
             }
         }
         throw new AuraHandledException('Du har ikke tilgang til denne personens innboks.');
+    }
+
+    public static Boolean verifyRepresentation(Id representedAccountId) {
+        Id actorId = UserInfo.getUserId();
+        String key = actorId + ':' + representedAccountId;
+        if (verificationByUserAndChild.containsKey(key)) {
+            return verificationByUserAndChild.get(key);
+        }
+        Id ownAccountId = [SELECT AccountId FROM User WHERE Id = :actorId].AccountId;
+        if (representedAccountId == null || representedAccountId == ownAccountId) {
+            return true;
+        }
+        resolveAccountId(representedAccountId);
+        if (Test.isRunningTest() && testChildren != null) {
+            return true;
+        }
+        Set<Id> accountIds = new Set<Id>{ ownAccountId, representedAccountId };
+        Map<Id, Account> accounts = new Map<Id, Account>(
+            [SELECT INT_PersonIdent__c FROM Account WHERE Id IN :accountIds]
+        );
+        HttpResponse response = NKS_ForeldreansvarService.verifiser(
+            accounts.get(ownAccountId).INT_PersonIdent__c,
+            accounts.get(representedAccountId).INT_PersonIdent__c
+        );
+        if (response.getStatusCode() == 204 || response.getStatusCode() == 404) {
+            verificationByUserAndChild.put(key, false);
+            return false;
+        }
+        if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
+            throw invalidResponse();
+        }
+        VerificationResponse body;
+        try {
+            body = (VerificationResponse) JSON.deserialize(response.getBody(), VerificationResponse.class);
+        } catch (System.JSONException error) {
+            throw invalidResponse();
+        }
+        if (body == null || body.kanRepresentere == null) {
+            throw invalidResponse();
+        }
+        verificationByUserAndChild.put(key, body.kanRepresentere);
+        return body.kanRepresentere;
+    }
+
+    private class VerificationResponse {
+        public Boolean kanRepresentere;
     }
 
     private static List<Account> authorizedChildren() {
@@ -118,9 +165,9 @@ public with sharing class stoPersonContext {
 
     private static AuraHandledException invalidResponse() {
         LoggerUtility logger = new LoggerUtility('Foreldreansvar');
-        logger.error('Ugyldig svar ved henting av barn fra nks-foreldreansvar', null, CRM_ApplicationDomain.Domain.NKS);
+        logger.error('Ugyldig svar fra nks-foreldreansvar', null, CRM_ApplicationDomain.Domain.NKS);
         logger.publish();
-        return new AuraHandledException('Kunne ikke hente barn du kan representere. Prøv igjen senere.');
+        return new AuraHandledException('Kunne ikke kontrollere hvilke barn du kan representere. Prøv igjen senere.');
     }
 
     private class BarnResponse {
