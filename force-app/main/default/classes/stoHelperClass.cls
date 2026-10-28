@@ -413,7 +413,7 @@ public with sharing class stoHelperClass {
                 List<Account> accList = [
                     SELECT Id, PersonContactId
                     FROM Account
-                    WHERE Name = :representedPersonIdentifier
+                    WHERE CRM_Person__r.Name = :representedPersonIdentifier
                     LIMIT 1
                 ];
                 cachedAccountId = accList.isEmpty() ? null : accList[0].Id;
