@@ -102,7 +102,18 @@ public with sharing class stoHelperClass {
         info.inboxTitle = inboxTitle;
         info.inboxTheme = inboxTheme;
         info.disabilityCampaign = disabilityCampaign;
-        info.representedAccountId = representedAccountId;
+        if (representedAccountId != null) {
+            Id authorizedAccountId = stoPersonContext.resolveAccountId(representedAccountId);
+            info.representedPersonIdentifier = [
+                SELECT INT_PersonIdent__c
+                FROM Account
+                WHERE Id = :authorizedAccountId
+            ]
+            .INT_PersonIdent__c;
+            if (String.isBlank(info.representedPersonIdentifier)) {
+                throw new ChildAccountNotFoundException();
+            }
+        }
         return createThread(info);
     }
 
@@ -191,7 +202,7 @@ public with sharing class stoHelperClass {
         }
 
         createMessage(thread, info);
-        if (info.representedPersonIdentifier != null || info.representedAccountId != null) {
+        if (info.representedPersonIdentifier != null) {
             insertFamilieShare(thread);
         }
         User actor = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()];
@@ -491,8 +502,6 @@ public with sharing class stoHelperClass {
         public Boolean disabilityCampaign { get; set; }
         @AuraEnabled
         public String representedPersonIdentifier { get; set; }
-        @AuraEnabled
-        public Id representedAccountId { get; set; }
 
         @TestVisible
         private Id cachedAccountId;
@@ -524,31 +533,24 @@ public with sharing class stoHelperClass {
             if (idsResolved || (cachedAccountId != null && cachedContactId != null)) {
                 return;
             }
-            if (representedPersonIdentifier != null && representedAccountId != null) {
-                throw new AuraHandledException('Velg bare én person for samtalen.');
-            }
-            if (representedPersonIdentifier == null && representedAccountId == null) {
+            if (representedPersonIdentifier == null) {
                 User usr = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
                 cachedAccountId = usr?.AccountId;
                 cachedContactId = usr?.ContactId;
             } else {
-                Id selectedAccountId = representedAccountId;
-                if (representedPersonIdentifier != null) {
-                    if (String.isBlank(representedPersonIdentifier)) {
-                        throw new AuraHandledException('Ugyldig personvalg.');
-                    }
-                    List<Account> children = [
-                        SELECT Id
-                        FROM Account
-                        WHERE IsPersonAccount = TRUE AND INT_PersonIdent__c = :representedPersonIdentifier
-                        LIMIT 1
-                    ];
-                    if (children.isEmpty()) {
-                        throw new ChildAccountNotFoundException();
-                    }
-                    selectedAccountId = children[0].Id;
+                if (String.isBlank(representedPersonIdentifier)) {
+                    throw new AuraHandledException('Ugyldig personvalg.');
                 }
-                cachedAccountId = stoPersonContext.resolveAccountId(selectedAccountId);
+                List<Account> children = [
+                    SELECT Id
+                    FROM Account
+                    WHERE IsPersonAccount = TRUE AND INT_PersonIdent__c = :representedPersonIdentifier
+                    LIMIT 1
+                ];
+                if (children.isEmpty()) {
+                    throw new ChildAccountNotFoundException();
+                }
+                cachedAccountId = stoPersonContext.resolveAccountId(children[0].Id);
                 cachedContactId = stoPersonContext.resolveContactId(cachedAccountId);
             }
             idsResolved = true;
@@ -585,10 +587,7 @@ public with sharing class stoHelperClass {
 
         public Boolean validateRepresentation() {
             populateAccountAndContactIds();
-            return representedPersonIdentifier == null &&
-                representedAccountId == null
-                ? true
-                : stoPersonContext.verifyRepresentation(accountId);
+            return representedPersonIdentifier == null ? true : stoPersonContext.verifyRepresentation(accountId);
         }
     }
 }

@@ -6,13 +6,9 @@ public with sharing class stoPersonContext {
     private static Map<Id, Set<String>> childIdentsByUser = new Map<Id, Set<String>>();
     private static Map<String, Boolean> verificationByUserAndChild = new Map<String, Boolean>();
 
-    // Scratch sharing/setup fixture only; never used to authorize representation.
+    // Shared mock data for scratch responses and fixture sharing; live authorization uses the API.
     public static Map<String, Set<String>> scratchFamily() {
-        return new Map<String, Set<String>>{
-            '12345678901' => new Set<String>{ '12345678904', '12345678905' },
-            '12345678902' => new Set<String>{ '12345678904', '12345678905' },
-            '12345678903' => new Set<String>{ '12345678904' }
-        };
+        return stoForeldreansvarMock.family();
     }
 
     @AuraEnabled(cacheable=true)
@@ -68,10 +64,11 @@ public with sharing class stoPersonContext {
         Map<Id, Account> accounts = new Map<Id, Account>(
             [SELECT INT_PersonIdent__c FROM Account WHERE Id IN :accountIds]
         );
-        HttpResponse response = NKS_ForeldreansvarService.verifiser(
-            accounts.get(ownAccountId).INT_PersonIdent__c,
-            accounts.get(representedAccountId).INT_PersonIdent__c
-        );
+        String parentIdent = accounts.get(ownAccountId).INT_PersonIdent__c;
+        String childIdent = accounts.get(representedAccountId).INT_PersonIdent__c;
+        HttpResponse response = stoForeldreansvarMock.isEnabled()
+            ? stoForeldreansvarMock.verifiser(parentIdent, childIdent)
+            : NKS_ForeldreansvarService.verifiser(parentIdent, childIdent);
         if (response.getStatusCode() == 204 || response.getStatusCode() == 404) {
             verificationByUserAndChild.put(key, false);
             return false;
@@ -137,7 +134,9 @@ public with sharing class stoPersonContext {
         if (parents.isEmpty()) {
             return new Set<String>();
         }
-        HttpResponse response = NKS_ForeldreansvarService.barn(parents[0].INT_PersonIdent__c);
+        HttpResponse response = stoForeldreansvarMock.isEnabled()
+            ? stoForeldreansvarMock.barn(parents[0].INT_PersonIdent__c)
+            : NKS_ForeldreansvarService.barn(parents[0].INT_PersonIdent__c);
         Set<String> childIdents = new Set<String>();
         if (response.getStatusCode() != 204 && response.getStatusCode() != 404) {
             if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
@@ -183,6 +182,8 @@ public with sharing class stoPersonContext {
         public String label;
         @AuraEnabled
         public Id value;
+        @AuraEnabled
+        public String representedPersonIdentifier;
 
         public PersonOption(Account child) {
             label = child.Name;
@@ -196,6 +197,7 @@ public with sharing class stoPersonContext {
                 label += ' (' + age + ' år)';
             }
             value = child.Id;
+            representedPersonIdentifier = child.INT_PersonIdent__c;
         }
     }
 }
