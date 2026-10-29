@@ -70,7 +70,7 @@ export default class CommunityThreadViewer extends LightningElement {
 
     renderedCallback() {
         if (this.showSpinner) {
-            this.template.querySelector('.spinner')?.focus();
+            this.template.querySelector('c-ds-loader')?.focus();
         }
     }
 

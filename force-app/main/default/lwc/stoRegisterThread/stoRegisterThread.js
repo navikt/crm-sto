@@ -324,7 +324,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     renderedCallback() {
         if (this.showSpinner) {
-            this.template.querySelector('.spinner')?.focus();
+            this.template.querySelector('c-ds-loader')?.focus();
         }
 
         document.title = this.tabName;

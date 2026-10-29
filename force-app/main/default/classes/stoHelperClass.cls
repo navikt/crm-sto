@@ -544,7 +544,7 @@ public with sharing class stoHelperClass {
                 List<Account> children = [
                     SELECT Id
                     FROM Account
-                    WHERE IsPersonAccount = TRUE AND INT_PersonIdent__c = :representedPersonIdentifier
+                    WHERE IsPersonAccount = TRUE AND CRM_Person__r.Name = :representedPersonIdentifier
                     LIMIT 1
                 ];
                 if (children.isEmpty()) {

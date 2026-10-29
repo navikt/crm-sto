@@ -6,6 +6,12 @@ Metadata supporting the general STO functionality at NAV. This includes componen
 [![GitHub version](https://badgen.net/github/release/navikt/crm-sto/stable)](https://github.com/navikt/crm-sto)
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/navikt/crm-sto/blob/master/LICENSE)
 
+## Funksjonalitet
+
+**Skriv til oss (STO)** lar innbyggeren sende spørsmål til Nav og følge opp svaret i samme samtale. **Beskjed til oss (BTO)** brukes til å melde fra om endringer, trekke en søknad eller gi en bestemt beskjed. Temaet i inngangslenken avgjør hvilket skjema brukeren får.
+
+Innboksen samler siste og tidligere meldinger. Der personvalget er tilgjengelig, kan brukeren velge seg selv eller et barn vedkommende kan representere. Se [Sider i innboksen](#sider-i-innboksen) for URL-er og eksempler på STO/BTO-innganger.
+
 ## Dependencies
 
 This package is dependant on the following packages
@@ -65,11 +71,7 @@ Interne henvendelser kan sendes via Slack i kanalen #crm-nks.
 
 ## Experience setup
 
-`stoInboxInformation` renders its open/closed conversation information through the default slot of `c-ds-alert`, with the
-closed-conversation link defined in the HTML template rather than an HTML string. This requires the slot-enabled `dsAlert`
-from `crm-community-base`; existing `alert-text` callers remain supported.
-The starter-only reply notice in `communityThreadViewer` is shown only for confirmed open, read-only conversations, not
-closed conversations or while the thread status is still loading.
+Åpne samtaler viser om brukeren kan svare eller bare lese. Avsluttede samtaler kan fortsatt leses, og brukeren får en lenke til å starte en ny melding.
 
 To set up the "innboks" experience you need to go through a couple of easy steps.
 
@@ -114,8 +116,6 @@ Scratch-oppsettet deler begge barna med Far og Mor, og bare Beate med Medmor. De
 For lokal testing ligger mocken bare i crm-sto: deploy `stoForeldreansvarMock`, `stoPersonContext` og `STO_Foreldreansvar_Family.resource` sammen. Ingen endring i crm-platform-base, ApiController, integrasjonsklassen eller integrasjonens mock-metadata kreves. Den lokale mocken brukes bare på et `.scratch.my.salesforce.com`-domene når eksisterende bruker-/profilinnstilling har `Use_Mock__c = true` og status 200; brukerinnstilling har prioritet. Uten dette brukes integrasjonen som før, også for andre mockstatuser. Familieforholdene ligger i JSON-ressursen, som også brukes av `scratchFamily()` ved fixture-oppsett. Barn-mocken returnerer Beate (`12345678904`) og Ola (`12345678905`) for Doktor/Kari, bare Beate for Anne og en tom liste for ukjente foreldre. Verifiser-mocken tillater bare de fem tilsvarende forelder/barn-parene; Anne/Ola gir false selv om Salesforce-deling skulle finnes. Kjør eksisterende `npm run activateFamilyMock` etter bruker-/delingsoppsettet; dette inngår også i `npm run scratchSetup` og `npm run mac:build`. Skriptet og API Controller-oppsettet er uendret. Innstillingen aktiveres bare for de tre testforeldrene og gjelder fortsatt andre ApiController-integrasjoner for disse brukerne. Eksisterende Account-/Person-deling er nødvendig i tillegg til mockansvaret. Mocken modellerer bare den syntetiske familien, ikke ekte PDL-ansvar. Før reelle kall må de brukerbaserte mock-innstillingene deaktiveres; `deactivateMock.cls` endrer bare profilinnstillinger.
 
 Informasjon om representasjon vises bare i personvalgsteget. Etter «Neste» bruker meldingsskjemaet vanlig ingress for valgt rute/tema, uavhengig av om personen valgte `Deg` eller et barn. Personbanneret og det separate lese-/utloggingsvarselet beholdes.
-
-Lastetilstander i registreringsskjemaet, samtalevisningen og fedrekvotesaken bruker felles `c-ds-loader` fra crm-community-base. Komponenten bruker `aksel-loader`-klassene fra de eksisterende Aksel-stilene, uten egen laster-CSS. Deploy `dsLoader` fra `force-app\Designsystemet\lwc` før eller sammen med disse komponentene. Ved sending i en samtale vises «Sender melding. Vennligst vent.» til meldingen er sendt og meldingslisten er oppfrisket; sendeknappen er deaktivert imens. Feil ved selve sendingen stopper lasteren og lar brukeren prøve igjen uten å tømme teksten.
 
 Sending bruker eksisterende `resolveAccountId`/`resolveContactId` og oppretter en ekte STO på barnets konto og kontakt, med forelderen som oppretter/avsender. Nyopprettede samtaler deles med barnet og de andre fixture-foreldrene med Foreldreansvar med Read. Dette gjelder også STO/BTO som barnet starter selv: barnet trenger ikke foreldretillatelsen, mens foreldrene som får tilgang må ha `STO_Scratch_Family`. Kode 6/7 og myndige barn gir ingen nye foreldredelinger. `scratchFamilySharing.cls` legger idempotent til manglende Read shares på eksisterende STO/STB/BTO for de samme ansvarsbarnene, uten å flytte eller endre samtaler/meldinger. Bare originale innsender kan svare eller avslutte samtalen; eierskap til barnets konto/kontakt gir ikke skriverett. Se `dummy-data\README.md` for testoppsett og deploy-rekkefølge.
 
@@ -194,12 +194,50 @@ Personvelgeren i innboksen starter på innlogget bruker (`Deg`) ved et nytt bes�
 
 ## Sider i innboksen
 
-Liste over alle sidene (der BASE_URL er miljøet, eks: https://ruby-data-3845.scratch.my.site.com/Innboks/s/, https://sit2-navdialog.cs162.force.com/Innboks/s/, https://innboks.nav.no/s/):
+`{BASE_URL}` er adressen til innboksen i valgt miljø, uten avsluttende skråstrek. I produksjon er den `https://innboks.nav.no/s`; i en scratch org er den for eksempel `https://<org>.scratch.my.site.com/Innboks/s`. Sidene krever innlogging.
 
-| Navn                  | URl                               | Parametere                                                                                                                                                                                      |
-| --------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Innboksen             | {BASE_URL}                        |                                                                                                                                                                                                 |
-| Skriv ny STO          | {BASE_URL}/skriv-til-oss?category | Category: Forteller hvilket tema/kategori STOen skal lages på, se [metadata filen](force-app/main/default/objects/STO_Category__mdt/fields/STO_Category__c.field-meta.xml) for gyldige verdier. |
-| Vis en STO/STB        | {BASE_URL}/skriv-til-oss/&lt;id>  | Id: Id til en STO/STB thread.                                                                                                                                                                   |
-| Vis en chat           | {BASE_URL}/chat/&lt;id>           | Id: Id til en chat-thread.                                                                                                                                                                      |
-| Vis et samtalereferat | {BASE_URL}/samtalereferat/&lt;id> | Id: Id til et samtalereferat.                                                                                                                                                                   |
+| Funksjon | URL | Beskrivelse |
+| --- | --- | --- |
+| Innboksen | `{BASE_URL}` | Se siste og tidligere meldinger. |
+| Skriv ny STO | `{BASE_URL}/skriv-til-oss?category=<tema>` | Still et spørsmål innen valgt tema. |
+| Meld fra om endring (BTO) | `{BASE_URL}/beskjed-til-oss?category=endring-<tema>` | Meld fra om en endring som gjelder en ytelse eller situasjon. |
+| Trekk en søknad (BTO) | `{BASE_URL}/beskjed-til-oss?category=trekke-soknad-<tema>` | Gi beskjed om at en søknad skal trekkes. |
+| Gi beskjed (BTO) | `{BASE_URL}/beskjed-til-oss?category=beskjed-<tema>` | Send en beskjed for et av de støttede formålene. |
+| Vis en STO/STB | `{BASE_URL}/skriv-til-oss/<id>` | Åpne en eksisterende samtale. `<id>` er samtalens ID. |
+| Vis en BTO | `{BASE_URL}/beskjed-til-oss/visning?samtale=<id>` | Åpne en tidligere innsendt beskjed. `<id>` er samtalens ID. |
+| Vis en chat | `{BASE_URL}/chat/<id>` | Åpne en chat. |
+| Vis et samtalereferat | `{BASE_URL}/samtalereferat/<id>` | Åpne et samtalereferat. |
+
+### Temaer for STO
+
+Bruk verdien fra tabellen som `category`, for eksempel `{BASE_URL}/skriv-til-oss?category=familie`.
+
+| Tema | `category` |
+| --- | --- |
+| Arbeid | `arbeid` |
+| Familie og barn | `familie` |
+| Helse og sykdom | `helse` |
+| Hjelpemidler og tilrettelegging | `hjelpemidler` |
+| Bor eller jobber i utlandet | `internasjonal` |
+| Pensjon | `pensjon` |
+| Pleiepenger for sykt barn | `pleiepenger` |
+| Ufør | `uf%C3%B8r` (URL-kodet `ufør`) |
+| Andre hjelpemidler | `andre-hjelpemidler` |
+
+### Temaer for BTO
+
+Sett sammen prefikset og et tema fra samme rad. For eksempel blir `endring-` og `aap` til `category=endring-aap`. Det er ikke nok å bruke et STO-tema alene i en BTO-lenke.
+
+| Formål | Prefiks | Støttede temaer |
+| --- | --- | --- |
+| Meld fra om endring | `endring-` | `dagpenger`, `tiltakspenger`, `ventelonn`, `grunn-og-hjelpestonad`, `yrkesskadetrygd`, `omsorg-fosterhjem`, `arbeidsevne`, `enslig`, `barnetrygd`, `kontantstotte`, `bidrag`, `uforetrygd`, `tilleggsstonader`, `aap`, `foreldre`, `sykdom-familien`, `afp-offentlig`, `supplerende-stonad-flyktninger`, `supplerende-stonad-over-67`, `alderspensjon`, `gjenlevende`, `sykepenger`, `utland`, `yrkesskade` |
+| Trekk en søknad | `trekke-soknad-` | `arbeid`, `helse`, `utland`, `familie`, `pensjon`, `hjelpemidler`, `ufor` |
+| Gi beskjed | `beskjed-` | `trygdeavgift`, `sykepenger`, `menerstatning`, `afp-offentlig`, `afp-privat`, `kontor`, `fullmakt-lege`, `klage`, `taushetsplikt` |
+
+Eksempler:
+
+- `{BASE_URL}/beskjed-til-oss?category=endring-aap`: meld fra om endring for arbeidsavklaringspenger.
+- `{BASE_URL}/beskjed-til-oss?category=trekke-soknad-familie`: trekk en søknad innen familie og barn.
+- `{BASE_URL}/beskjed-til-oss?category=beskjed-kontor`: avtal eller endre time på Nav-kontor.
+
+`category` må ha en støttet verdi. En manglende eller ukjent verdi viser en feilside i stedet for meldingsskjemaet.
