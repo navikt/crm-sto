@@ -6,33 +6,7 @@
             </div>
             <div class="text-center sizeAround">
                 <template lwc:if={loading}>
-                    <svg
-                        aria-labelledby="loader-_r_2_"
-                        class="aksel-loader aksel-loader--3xlarge aksel-loader--neutral"
-                        focusable="false"
-                        viewBox="0 0 50 50"
-                        preserveAspectRatio="xMidYMid"
-                        data-color="neutral"
-                        data-variant="neutral"
-                    >
-                        <title id="loader-_r_2_">Venter...</title>
-                        <circle
-                            class="aksel-loader__background"
-                            xmlns="http://www.w3.org/2000/svg"
-                            cx="25"
-                            cy="25"
-                            r="20"
-                            fill="none"
-                        ></circle>
-                        <circle
-                            class="aksel-loader__foreground"
-                            cx="25"
-                            cy="25"
-                            r="20"
-                            fill="none"
-                            stroke-dasharray="50 155"
-                        ></circle>
-                    </svg>
+                    <c-ds-loader size="3xlarge" title="Venter..."></c-ds-loader>
                 </template>
                 <template lwc:else>
                     <template lwc:if={hasNavTask}>

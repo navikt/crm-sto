@@ -8,33 +8,7 @@
         </div>
         <template lwc:if={showSpinner}>
             <div class="spinner-container">
-                <svg
-                    aria-labelledby="loader-_r_2_"
-                    class="aksel-loader aksel-loader--3xlarge aksel-loader--neutral"
-                    focusable="false"
-                    viewBox="0 0 50 50"
-                    preserveAspectRatio="xMidYMid"
-                    data-color="neutral"
-                    data-variant="neutral"
-                >
-                    <title id="loader-_r_2_">Venter...</title>
-                    <circle
-                        class="aksel-loader__background"
-                        xmlns="http://www.w3.org/2000/svg"
-                        cx="25"
-                        cy="25"
-                        r="20"
-                        fill="none"
-                    ></circle>
-                    <circle
-                        class="aksel-loader__foreground"
-                        cx="25"
-                        cy="25"
-                        r="20"
-                        fill="none"
-                        stroke-dasharray="50 155"
-                    ></circle>
-                </svg>
+                <c-ds-loader size="3xlarge" title="Avslutter samtalen. Vennligst vent."></c-ds-loader>
             </div>
         </template>
         <template lwc:elseif={showCloseButton}>
@@ -94,12 +68,23 @@
                         class="inputTextbox"
                     ></c-ds-textarea>
                 </div>
+                <template lwc:if={isSending}>
+                    <div class="sending-message" role="status">
+                        <c-ds-loader
+                            size="small"
+                            title="Sender melding. Vennligst vent."
+                            aria-hidden="true"
+                        ></c-ds-loader>
+                        <span class="aksel-body-short">Sender melding. Vennligst vent.</span>
+                    </div>
+                </template>
                 <button
                     data-variant="primary"
                     disabled={buttonDisabled}
                     class="aksel-button aksel-button--medium"
                     type="submit"
-                    aria-disabled="false"
+                    aria-disabled={buttonDisabled}
+                    aria-busy={isSending}
                     onclick={handleSendButtonClick}
                 >
                     <span class="aksel-label">Send melding</span>

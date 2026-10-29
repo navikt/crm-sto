@@ -8,7 +8,7 @@ import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
-// The server resolves barn() results to accessible Account IDs.
+// The server returns authorized Account IDs for queries and person identifiers for creation.
 import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
@@ -581,6 +581,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             return;
         }
 
+        const representedPersonIdentifier = this.representedPersonIdentifier;
+        if (this.representedPersonId != null && !representedPersonIdentifier?.trim()) {
+            console.error('Missing person identifier for the selected child.');
+            this.template.querySelector('c-alertdialog').showModal();
+            return;
+        }
+
         const medskriv = this.refs.medskrivRadiobuttons?.getValue();
         const radioButtonValue = this.refs.themeRadioButton?.getValue();
         const radioButtonExists = this.refs.themeRadioButton != null;
@@ -625,7 +632,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     inboxTitle: this.title,
                     inboxTheme: inboxTheme,
                     disabilityCampaign: disabilityCampaign,
-                    representedAccountId: this.representedPersonId
+                    representedPersonIdentifier: representedPersonIdentifier
                 }
             })
                 .then((thread) => {
@@ -1039,6 +1046,14 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return this.selectedPersonValue === SELF_PERSON_VALUE || !this.allowsRepresentation
             ? null
             : this.selectedPersonValue;
+    }
+
+    get representedPersonIdentifier() {
+        if (this.representedPersonId == null) {
+            return this.representedPersonId;
+        }
+        return this.representableChildren.find((person) => person.value === this.representedPersonId)
+            ?.representedPersonIdentifier;
     }
 
     get threadQueryType() {

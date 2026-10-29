@@ -30,32 +30,7 @@
             <!-- Show spinner -->
             <template lwc:if={shouldShowSpinner}>
                 <div class="spinner-container">
-                    <svg
-                        tabindex="0"
-                        aria-labelledby="loader-aksel-id-4"
-                        class="aksel-loader aksel-loader--3xlarge aksel-loader--neutral spinner"
-                        focusable="false"
-                        viewBox="0 0 50 50"
-                        preserveAspectRatio="xMidYMid"
-                    >
-                        <title id="loader-aksel-id-4">{spinnerText}</title>
-                        <circle
-                            class="aksel-loader__background"
-                            xmlns="http://www.w3.org/2000/svg"
-                            cx="25"
-                            cy="25"
-                            r="20"
-                            fill="none"
-                        ></circle>
-                        <circle
-                            class="aksel-loader__foreground"
-                            cx="25"
-                            cy="25"
-                            r="20"
-                            fill="none"
-                            stroke-dasharray="50 155"
-                        ></circle>
-                    </svg>
+                    <c-ds-loader size="3xlarge" title={spinnerText}></c-ds-loader>
                 </div>
             </template>
 

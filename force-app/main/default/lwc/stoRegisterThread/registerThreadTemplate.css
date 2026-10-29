@@ -71,10 +71,6 @@
     gap: var(--ax-space-20);
 }
 
-.spinner {
-    outline: none;
-}
-
 .send-sto-button {
     margin-top: var(--ax-space-16);
 }

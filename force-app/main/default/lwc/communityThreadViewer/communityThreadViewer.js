@@ -29,6 +29,7 @@ export default class CommunityThreadViewer extends LightningElement {
 
     wiredMessages;
     buttonDisabled = false;
+    isSending = false;
     messageValue;
     thread;
     wiredThread;
@@ -131,13 +132,12 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     /**
-     * Blanks out all text fields, and enables the submit-button again.
+     * Blanks out all text fields and refreshes the messages.
      * @Author lars Petter Johnsen
      */
     handlesuccess() {
         const textBoks = this.template.querySelector('c-ds-textarea');
         textBoks.clearText();
-        this.buttonDisabled = false;
         return refreshApex(this.wiredMessages);
     }
 
@@ -159,25 +159,30 @@ export default class CommunityThreadViewer extends LightningElement {
         errorSummary.focusHeader();
     }
 
-    createMessage(validation) {
-        if (!this.canReply) return;
+    async createMessage(validation) {
+        if (!this.canReply || this.isSending) return;
         if (!validation) {
             this.buttonDisabled = false;
             return;
         }
 
-        createThreadMessage({ threadId: this.recordId, messageText: this.messageValue })
-            .then((result) => {
-                if (result) {
-                    this.handlesuccess();
-                } else {
-                    this.handleMessageFailed();
-                }
-            })
-            .catch((error) => {
-                console.error('Problem sending message: ', error);
-                this.template.querySelector('c-alertdialog').showModal();
-            });
+        this.isSending = true;
+        this.buttonDisabled = true;
+        try {
+            const result = await createThreadMessage({ threadId: this.recordId, messageText: this.messageValue });
+            if (result) {
+                await this.handlesuccess();
+                this.buttonDisabled = false;
+            } else {
+                this.handleMessageFailed();
+            }
+        } catch (error) {
+            console.error('Problem sending message: ', error);
+            this.buttonDisabled = false;
+            this.template.querySelector('c-alertdialog').showModal();
+        } finally {
+            this.isSending = false;
+        }
     }
 
     get canReply() {
@@ -193,7 +198,7 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     handleSendButtonClick() {
-        if (!this.canReply) return;
+        if (!this.canReply || this.buttonDisabled || this.isSending) return;
         this.buttonDisabled = true;
         // Sending out event to parent to handle any needed validation
         if (this.overrideValidation) {
