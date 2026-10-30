@@ -3,14 +3,13 @@ import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import createThread from '@salesforce/apex/stoHelperClass.createThread';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
-import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreadsForPerson';
+import getOpenThreads from '@salesforce/apex/stoHelperClass.getAccessibleOpenThreadsForPerson';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
 // The server returns authorized Account IDs for queries and person identifiers for creation.
 import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
-import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
 import basepath from '@salesforce/community/basePath';
@@ -93,6 +92,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     representationInformation = REPRESENTATION_INFORMATION;
     isLoading = true;
+    spinnerText = spinnerReasonTextMap.load;
     showSpinner = false;
     category;
     themeToShow;
@@ -104,7 +104,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     lowerCaseUrlCategory = '';
     subpath;
     acceptedTerms = false;
-    newsList;
+    newsList = [];
     errorList = { title: '', errors: [] };
     message;
     modalOpen = false;
@@ -138,7 +138,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         { text: 'Nei', value: 'false', checked: false }
     ];
 
-    wireThreadData;
+    threadRequestKey;
+    threadLoadGeneration = 0;
 
     stoAndBtoThemeMapping = {
         arbeid: 'Arbeid',
@@ -308,6 +309,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                         Object.keys(childObj).map((childKey) => `${parentKey}-${childKey}`.toLowerCase())
                 );
                 this.isLoading = false;
+                this.loadOpenThreads();
             })
             .catch((error) => {
                 this.isLoading = false;
@@ -316,10 +318,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     render() {
-        if (this.isLoading) {
-            return null;
-        }
-        return this.validQueryParameter ? registerThreadTemplate : badUrlTemplate;
+        return this.isLoading || this.validQueryParameter ? registerThreadTemplate : badUrlTemplate;
     }
 
     renderedCallback() {
@@ -355,7 +354,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
             this.originalCategory = this.category;
             this.originalThemeToShow = this.themeToShow;
-            // TODO(backend-ready): Keep person loading independent of route changes; no local mock initialization.
+            this.loadOpenThreads();
         }
     }
 
@@ -370,46 +369,37 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
     }
 
-    // TODO(backend-ready): Revalidate person-scoped retrieval with the approved backend.
-    @wire(getOpenThreads, {
-        category: '$threadQueryCategory',
-        threadType: '$threadQueryType',
-        representedAccountId: '$representedPersonId'
-    })
-    openThread(result) {
-        if (!this.hasPersonContext || this.threadQueryCategory === undefined) {
-            return;
-        }
-
-        const { data, error } = result;
-
-        // A pending wire is not an empty thread list.
-        if (data === undefined && !error) {
-            this.isThreadDataLoading = true;
-            this.spinnerText = spinnerReasonTextMap.load;
-            return;
-        }
-
-        this.wireThreadData = result;
-        this.isThreadDataLoading = false;
-
-        if (error) {
+    async loadOpenThreads(force = false) {
+        if (this.threadQueryCategory === undefined) return;
+        const params = {
+            category: this.threadQueryCategory,
+            threadType: this.threadQueryType,
+            representedAccountId: this.representedPersonId
+        };
+        const key = JSON.stringify(params);
+        if (!force && key === this.threadRequestKey) return;
+        this.threadRequestKey = key;
+        const generation = ++this.threadLoadGeneration;
+        this.isThreadDataLoading = true;
+        this.spinnerText = spinnerReasonTextMap.load;
+        try {
+            const data = await getOpenThreads(params);
+            if (generation !== this.threadLoadGeneration) return;
+            this.threadLoadFailed = false;
+            this.openThreadList = data || [];
+            this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
+            putCloseIntent({ count: this.openThreadList.length }).catch((error) => {
+                console.error('Could not update close intent:', error);
+            });
+        } catch (error) {
+            if (generation !== this.threadLoadGeneration) return;
             this.threadLoadFailed = true;
             this.openThreadList = [];
             this.registerNewThread = false;
-            return;
+            console.error('Could not load accessible conversations:', error);
+        } finally {
+            if (generation === this.threadLoadGeneration) this.isThreadDataLoading = false;
         }
-
-        this.threadLoadFailed = false;
-        this.openThreadList = data || [];
-        this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
-
-        // TODO(representation-api): Confirm whether close intent is person-scoped or global. Align this operation with that backend contract.
-        putCloseIntent({
-            count: this.openThreadList.length
-        }).catch(() => {
-            console.error('Could not update close intent.');
-        });
     }
 
     @wire(getRecord, { recordId: USER_ID, fields: [USER_NAME_FIELD] })
@@ -435,6 +425,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.representationLoaded = true;
             this.representationLoadFailed = false;
         }
+        this.loadOpenThreads();
     }
 
     handlePersonChange(event) {
@@ -462,8 +453,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.isThreadDataLoading = true;
         this.spinnerText = spinnerReasonTextMap.load;
 
-        // TODO(backend-ready): Keep real account-scoped wire retrieval; do not restore mock child lists.
         this.personSelectionConfirmed = true;
+        this.loadOpenThreads();
     }
 
     resetPersonContext() {
@@ -476,7 +467,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.openThreadList = [];
         this.registerNewThread = false;
         this.isThreadDataLoading = true;
-        this.wireThreadData = undefined;
+        this.threadRequestKey = undefined;
+        this.threadLoadGeneration++;
 
         this.message = undefined;
         this.acceptedTerms = false;
@@ -711,16 +703,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // TODO(representation-api): Verify Apex authorizes access to this thread for the authenticated user, including represented-person threads. After closing, refresh the same person-scoped thread query.
     async closeSelectedThread(selectedThreadId) {
         this.showSpinner = true;
         this.spinnerText = spinnerReasonTextMap.close;
 
         try {
-            // Apex must authorize this specific thread before closing it.
             await closeThread({ id: selectedThreadId });
-            await refreshApex(this.wireThreadData);
-        } catch {
+            await this.loadOpenThreads(true);
+        } catch (error) {
+            console.error('Could not close conversation:', error);
             this.template.querySelector('c-alertdialog')?.showModal();
         } finally {
             this.showSpinner = false;
@@ -777,8 +768,6 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.themeRadioButtonSelected = event.detail.value === 'true';
             return;
         }
-        this.isThreadDataLoading = true;
-        this.spinnerText = spinnerReasonTextMap.load;
         const mappingKey = this.originalThemeToShow;
         if (event.detail.value === 'true') {
             this.themeRadioButtonSelected = true;
@@ -793,7 +782,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             const prevCategory = this.category;
             const prevTheme = this.themeToShow;
 
-            this.category = this.previousCategory;
+            this.category = this.previousCategory || this.originalCategory;
             this.themeRadioButtonSelected = false;
             this.themeToShow = this.originalThemeToShow;
 
@@ -802,7 +791,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
         }
 
-        // TODO(backend-ready): Category changes use the person-scoped wire, never a mock empty thread list.
+        this.loadOpenThreads();
         logFilterEvent(
             this.radioButtonMap[this.title]?.[this.themeToShow]?.text,
             event.detail.text,

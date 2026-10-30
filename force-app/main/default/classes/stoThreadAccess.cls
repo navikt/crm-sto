@@ -13,6 +13,10 @@ public with sharing class stoThreadAccess {
         public String representedLabel;
         @AuraEnabled
         public String inboxSenderLabel;
+        @AuraEnabled
+        public Boolean isWritingForChild;
+        @AuraEnabled
+        public Boolean wasStartedOnBehalfOfOwner;
     }
 
     public static ReplyContext getReplyContext(Id threadId) {
@@ -22,12 +26,15 @@ public with sharing class stoThreadAccess {
             throw new AuraHandledException('Vi kunne ikke hente samtalen.');
         }
         ReplyContext context = new ReplyContext();
+        context.isWritingForChild = viewer.ContactId != null && viewer.ContactId != thread.CRM_Contact__c;
+        context.wasStartedOnBehalfOfOwner = false;
         context.canReply =
             !isExternal(viewer) || (viewer.ContactId != null && starterContact(thread) == viewer.ContactId);
         if (!thread.Messages__r.isEmpty()) {
             Message__c firstMessage = thread.Messages__r[0];
             context.inboxSenderLabel = inboxSenderLabel(viewer.ContactId, firstMessage);
             if (firstMessage.CRM_From_Contact__c != null && firstMessage.CRM_From_Contact__c != thread.CRM_Contact__c) {
+                context.wasStartedOnBehalfOfOwner = true;
                 context.senderName = firstMessage.CRM_From_Contact__r.Name;
                 context.representedName = thread.CRM_Contact__r.Name;
                 if (viewer.ContactId != thread.CRM_Contact__c) {

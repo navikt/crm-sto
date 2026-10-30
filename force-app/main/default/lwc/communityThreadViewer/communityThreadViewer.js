@@ -11,13 +11,9 @@ import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c'
 import THREAD_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
 import CATEGORY_FIELD from '@salesforce/schema/Thread__c.STO_Category__c';
-// TODO(backend-ready): Preserve owner/actor context from records, not a page-local representation flag.
-import THREAD_CONTACT_FIELD from '@salesforce/schema/Thread__c.CRM_Contact__c';
-import USER_CONTACT_FIELD from '@salesforce/schema/User.ContactId';
-import USER_ID from '@salesforce/user/Id';
 import { latestDisplayedMessage, markMessagesRead } from 'c/stoReadState';
 
-const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD, CATEGORY_FIELD, THREAD_CONTACT_FIELD];
+const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD, CATEGORY_FIELD];
 
 export default class CommunityThreadViewer extends LightningElement {
     @api recordId;
@@ -37,8 +33,6 @@ export default class CommunityThreadViewer extends LightningElement {
     showSpinner = false;
     showCloseButton = false;
     referrer;
-    // TODO(backend-ready): The owner replying as self is distinct from a parent replying for that owner.
-    currentUserContactId;
     replyContext;
     replyContextError;
     readStateError;
@@ -52,16 +46,6 @@ export default class CommunityThreadViewer extends LightningElement {
             ? 'Vi kunne ikke hente hvem som kan svare i samtalen. Oppdater siden og prøv på nytt.'
             : undefined;
         if (error) console.error('Problem getting reply access:', error);
-    }
-
-    @wire(getRecord, { recordId: USER_ID, fields: [USER_CONTACT_FIELD] })
-    wiredCurrentUser({ data, error }) {
-        if (data) {
-            this.currentUserContactId = getFieldValue(data, USER_CONTACT_FIELD);
-        } else if (error) {
-            this.currentUserContactId = undefined;
-            console.error('Problem getting current user contact:', error);
-        }
     }
 
     connectedCallback() {
@@ -323,24 +307,8 @@ export default class CommunityThreadViewer extends LightningElement {
         return getFieldValue(this.thread, CATEGORY_FIELD);
     }
 
-    // TODO(backend-ready): REPLACE owner/actor inference with explicit verified representation context; KEEP perspective separation.
     get isWritingForChild() {
-        const ownerContactId = getFieldValue(this.thread, THREAD_CONTACT_FIELD);
-        return Boolean(ownerContactId && this.currentUserContactId && ownerContactId !== this.currentUserContactId);
-    }
-
-    // TODO(backend-ready): REPLACE first-sender inference with explicit backend context; KEEP the owner's readability notice.
-    get wasStartedOnBehalfOfOwner() {
-        const ownerContactId = getFieldValue(this.thread, THREAD_CONTACT_FIELD);
-        const firstExternalMessage = (this.messageGroups || [])
-            .filter((group) => group.type === 'group')
-            .flatMap((group) => group.groupMessages || [])
-            .find((entry) => entry.message?.CRM_External_Message__c && entry.message?.CRM_From_Contact__c);
-        return Boolean(
-            ownerContactId &&
-                firstExternalMessage &&
-                firstExternalMessage.message.CRM_From_Contact__c !== ownerContactId
-        );
+        return this.replyContext?.isWritingForChild === true;
     }
 
     // TODO(backend-ready): Preserve both readability and session-loss notices with perspective-correct wording.
@@ -350,10 +318,7 @@ export default class CommunityThreadViewer extends LightningElement {
         if (this.isWritingForChild) {
             return `Personen du sender melding på vegne av kan lese meldingen i fremtiden. Hvis en annen person har foreldreansvar, vil den personen kunne lese meldingene også. ${description}`;
         }
-        if (
-            this.currentUserContactId === getFieldValue(this.thread, THREAD_CONTACT_FIELD) &&
-            this.wasStartedOnBehalfOfOwner
-        ) {
+        if (this.replyContext?.wasStartedOnBehalfOfOwner === true) {
             return `Denne samtalen ble startet på vegne av deg. Hvis noen har foreldreansvar for deg, kan de også lese meldingene. ${description}`;
         }
         return description;

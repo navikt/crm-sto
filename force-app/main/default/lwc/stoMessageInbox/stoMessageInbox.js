@@ -1,8 +1,7 @@
 import { LightningElement, wire, api } from 'lwc';
-import { refreshApex } from '@salesforce/apex';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 // TODO(backend-ready): Preserve account-scoped inbox queries with the real authorization provider.
-import getInboxPage from '@salesforce/apex/stoInboxHelper.getInboxPage';
+import getInboxPage from '@salesforce/apex/stoInboxHelper.getAccessibleInboxPage';
 import getNextInboxPage from '@salesforce/apex/stoInboxHelper.getNextInboxPage';
 import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
 import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
@@ -21,7 +20,8 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     threads;
     recentthreads;
     wiredInbox;
-    refreshPending = true;
+    inboxLoadPending = false;
+    loadingAccountId;
     refreshFailed = false;
     pageLoadFailed = false;
     loadingMore = false;
@@ -40,17 +40,35 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     pageReference;
     requestedPersonValue = SELF_PERSON_VALUE;
 
-    refreshInbox = () => {
+    refreshInbox = async () => {
         if (!this.isOnInbox) return;
-        this.refreshPending = true;
-        if (!this.wiredInbox) return;
-        this.refreshPending = false;
-        this.pageGeneration++;
+        const accountId = this.representedAccountId;
+        if (this.inboxLoadPending && this.loadingAccountId === accountId) return;
+        const generation = ++this.pageGeneration;
+        this.inboxLoadPending = true;
+        this.loadingAccountId = accountId;
         this.loadingMore = false;
-        refreshApex(this.wiredInbox).catch((error) => {
+        try {
+            const data = await getInboxPage({
+                representedAccountId: accountId,
+                beforeThreadId: null,
+                beforeNoteId: null
+            });
+            if (generation !== this.pageGeneration) return;
+            this.wiredInbox = { data };
+            this.refreshFailed = false;
+            this.applyPage(data, false);
+        } catch (error) {
+            if (generation !== this.pageGeneration) return;
+            this.wiredInbox = { error };
+            this.threads = [];
+            this.recentthreads = [];
+            this.hasMore = false;
             this.refreshFailed = true;
             console.error('Could not refresh inbox:', error);
-        });
+        } finally {
+            if (generation === this.pageGeneration) this.inboxLoadPending = false;
+        }
     };
 
     handleVisibility = () => {
@@ -62,9 +80,12 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         window.addEventListener('focus', this.refreshInbox);
         window.addEventListener(READ_STATE_EVENT, this.refreshInbox);
         document.addEventListener('visibilitychange', this.handleVisibility);
+        this.refreshInbox();
     }
 
     disconnectedCallback() {
+        this.pageGeneration++;
+        this.inboxLoadPending = false;
         window.removeEventListener('pageshow', this.refreshInbox);
         window.removeEventListener('focus', this.refreshInbox);
         window.removeEventListener(READ_STATE_EVENT, this.refreshInbox);
@@ -113,20 +134,6 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
             this.currentUserName = '';
             console.error('Could not load current user name:', error);
         }
-    }
-
-    @wire(getInboxPage, { representedAccountId: '$representedAccountId', beforeThreadId: null, beforeNoteId: null })
-    wireInbox(result) {
-        this.wiredInbox = result;
-        if (result.error) {
-            this.threads = [];
-            this.recentthreads = [];
-            console.error(result.error);
-        } else if (result.data) {
-            this.refreshFailed = false;
-            this.applyPage(result.data, false);
-        }
-        if (this.refreshPending && (result.data || result.error)) this.refreshInbox();
     }
 
     applyPage(page, append) {
@@ -238,10 +245,10 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         this.hasMore = false;
         this.pageGeneration++;
         this.loadingMore = false;
-        this.refreshPending = true;
         this.refreshFailed = false;
         this.pageLoadFailed = false;
         this.selectedCategoryValues = new Set();
+        this.refreshInbox();
     }
 
     getThreadCategory(thread) {

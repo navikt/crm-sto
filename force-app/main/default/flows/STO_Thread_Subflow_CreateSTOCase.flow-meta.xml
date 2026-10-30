@@ -21,6 +21,13 @@
             </value>
         </assignmentItems>
         <assignmentItems>
+            <assignToReference>Case.ContactId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Thread.CRM_Contact__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
             <assignToReference>Case.RecordTypeId</assignToReference>
             <operator>Assign</operator>
             <value>

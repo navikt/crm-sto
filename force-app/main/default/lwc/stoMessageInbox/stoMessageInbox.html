@@ -27,12 +27,14 @@
         </div>
         <!-- TODO(backend-ready): Preserve explicit responsibility/query error messages with the real service. -->
         <template lwc:if={representationLoadFailed}>
-            <p role="alert">
+            <c-ds-alert alert-type="danger" class="load-error">
                 Vi kunne ikke hente hvem du kan se meldinger på vegne av. Oppdater siden og prøv på nytt.
-            </p>
+            </c-ds-alert>
         </template>
         <template lwc:if={threadLoadFailed}>
-            <p role="alert">Vi kunne ikke hente meldingene. Oppdater siden og prøv på nytt.</p>
+            <c-ds-alert alert-type="danger" class="load-error">
+                Vi kunne ikke hente meldingene. Oppdater siden og prøv på nytt.
+            </c-ds-alert>
         </template>
         <template lwc:if={canRepresentChildren}>
             <div class="person-selection-panel">

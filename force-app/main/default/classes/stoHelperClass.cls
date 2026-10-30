@@ -67,33 +67,6 @@ public with sharing class stoHelperClass {
         String inboxTheme,
         Boolean disabilityCampaign
     ) {
-        return createThreadForPerson(theme, msgText, medskriv, type, inboxTitle, inboxTheme, disabilityCampaign, null);
-    }
-
-    @AuraEnabled
-    public static Thread__c createThreadWithCase(
-        String theme,
-        String msgText,
-        Boolean medskriv,
-        String type,
-        String inboxTitle,
-        String inboxTheme
-    ) {
-        return createThreadWithCaseV2(theme, msgText, medskriv, type, inboxTitle, inboxTheme, false);
-    }
-
-    @AuraEnabled
-    // Compatibility for cached clients; all creation uses the same DTO validation.
-    public static Thread__c createThreadForPerson(
-        String theme,
-        String msgText,
-        Boolean medskriv,
-        String type,
-        String inboxTitle,
-        String inboxTheme,
-        Boolean disabilityCampaign,
-        Id representedAccountId
-    ) {
         ThreadData info = new ThreadData();
         info.theme = theme;
         info.msgText = msgText;
@@ -102,85 +75,8 @@ public with sharing class stoHelperClass {
         info.inboxTitle = inboxTitle;
         info.inboxTheme = inboxTheme;
         info.disabilityCampaign = disabilityCampaign;
-        if (representedAccountId != null) {
-            Id authorizedAccountId = stoPersonContext.resolveAccountId(representedAccountId);
-            info.representedPersonIdentifier = [
-                SELECT INT_PersonIdent__c
-                FROM Account
-                WHERE Id = :authorizedAccountId
-            ]
-            .INT_PersonIdent__c;
-            if (String.isBlank(info.representedPersonIdentifier)) {
-                throw new ChildAccountNotFoundException();
-            }
-        }
+        info.medskriv = medskriv;
         return createThread(info);
-    }
-
-    // TODO(backend-ready): Retain narrowly scoped owner-login access; citizen user visibility cannot locate another account's login.
-    private without sharing class InboxOwnerSharing {
-        public void grantAccess(Thread__c newThread) {
-            List<Thread__Share> shares = new List<Thread__Share>();
-            Account child = [
-                SELECT
-                    INT_PersonIdent__c,
-                    PersonContactId,
-                    CRM_Person__r.INT_Confidential__c,
-                    CRM_Person__r.INT_DateOfBirth__c
-                FROM Account
-                WHERE Id = :newThread.CRM_Account__c
-            ];
-            Set<Id> parentContactIds = new Set<Id>();
-            if (
-                URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com') &&
-                child.CRM_Person__r?.INT_Confidential__c == 'UGRADERT' &&
-                child.CRM_Person__r?.INT_DateOfBirth__c > String.valueOf(Date.today().addYears(-18)) &&
-                child.CRM_Person__r?.INT_DateOfBirth__c <= String.valueOf(Date.today())
-            ) {
-                Map<String, Set<String>> family = stoPersonContext.scratchFamily();
-                Set<String> parentIdents = new Set<String>();
-                for (String parentIdent : family.keySet()) {
-                    if (family.get(parentIdent).contains(child.INT_PersonIdent__c)) {
-                        parentIdents.add(parentIdent);
-                    }
-                }
-                for (Account parent : [
-                    SELECT PersonContactId
-                    FROM Account
-                    WHERE IsPersonAccount = TRUE AND INT_PersonIdent__c IN :parentIdents
-                ]) {
-                    parentContactIds.add(parent.PersonContactId);
-                }
-            }
-            Set<Id> optedInParentUserIds = new Set<Id>();
-            for (PermissionSetAssignment assignment : [
-                SELECT AssigneeId
-                FROM PermissionSetAssignment
-                WHERE PermissionSet.Name = 'STO_Scratch_Family' AND Assignee.ContactId IN :parentContactIds
-            ]) {
-                optedInParentUserIds.add(assignment.AssigneeId);
-            }
-            for (User childUser : [
-                SELECT Id, ContactId
-                FROM User
-                WHERE
-                    (ContactId = :child.PersonContactId
-                    OR Id IN :optedInParentUserIds)
-                    AND ContactId != NULL
-                    AND IsActive = TRUE
-                    AND Id != :UserInfo.getUserId()
-            ]) {
-                shares.add(
-                    new Thread__Share(
-                        ParentId = newThread.Id,
-                        UserOrGroupId = childUser.Id,
-                        AccessLevel = 'Read',
-                        RowCause = Schema.Thread__Share.RowCause.Manual
-                    )
-                );
-            }
-            insert shares;
-        }
     }
 
     /**
@@ -191,7 +87,9 @@ public with sharing class stoHelperClass {
      */
     @AuraEnabled
     public static Thread__c createThread(ThreadData info) {
-        validateData(info);
+        if (!validateData(info)) {
+            return null;
+        }
         Thread__c thread = info.toThread();
         try {
             insert thread;
@@ -202,17 +100,11 @@ public with sharing class stoHelperClass {
         }
 
         createMessage(thread, info);
+
         if (info.representedPersonIdentifier != null) {
             insertFamilieShare(thread);
         }
-        User actor = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        if (
-            thread.CRM_Account__c != null &&
-            (thread.CRM_Account__c != actor.AccountId ||
-            URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com'))
-        ) {
-            new InboxOwnerSharing().grantAccess(thread);
-        }
+        stoThreadSharing.shareWithSubject(thread);
         return thread;
     }
 
@@ -235,7 +127,6 @@ public with sharing class stoHelperClass {
 
     @TestVisible
     private static void insertFamilieShare(Thread__c thread) {
-        // The creator already has edit access when they own the new thread.
         if ([SELECT OwnerId FROM Thread__c WHERE Id = :thread.Id].OwnerId == UserInfo.getUserId()) {
             return;
         }
@@ -286,8 +177,45 @@ public with sharing class stoHelperClass {
 
     @AuraEnabled(cacheable=true)
     public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
-        // TODO(backend-ready): Keep legacy queries scoped to the logged-in user.
-        return getOpenThreadsForPerson(category, threadType, null);
+        List<String> ALLOWED_THREAD_TYPES;
+        if (THREAD_TYPE_MAP.containsKey(threadType)) {
+            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(threadType);
+        } else {
+            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get('ALL');
+        }
+
+        List<Thread__c> openThreads = [
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Number_of_unread_Messages__c,
+                CRM_Latest_Message_Datetime__c,
+                CRM_Closed_Date__c,
+                STO_ExternalName__c,
+                CRM_Is_Closed__c,
+                CRM_Thread_Type__c,
+                CRM_Related_Object__c,
+                Name,
+                NKS_Inbox_Title__c,
+                NKS_Inbox_Theme__c,
+                STO_Category__c,
+                CRM_Theme_Group_Name__c,
+                (
+                    SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
+                    FROM Messages__r
+                    WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
+                    ORDER BY CRM_Sent_Datetime_Formula__c DESC
+                    LIMIT 1
+                )
+            FROM Thread__c
+            WHERE
+                CRM_Is_Closed__C = FALSE
+                AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES
+                AND STO_Category__c = :category
+                AND CRM_Account__c = :accountId
+            ORDER BY CRM_Latest_Message_Datetime__c DESC
+        ];
+        return formatOpenThreads(openThreads);
     }
 
     @AuraEnabled(cacheable=true)
@@ -339,14 +267,41 @@ public with sharing class stoHelperClass {
                 AND CRM_Account__c = :accountId
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
-        if (openThreads.size() > 0) {
-            List<stoInboxHelper.thread> threadList = new List<stoInboxHelper.thread>();
-            for (Thread__c t : openThreads) {
-                threadList.add(stoInboxHelper.formatThread(t));
-            }
-            return threadList;
+        return formatOpenThreads(openThreads);
+    }
+
+    private static List<stoInboxHelper.thread> formatOpenThreads(List<Thread__c> openThreads) {
+        if (openThreads.isEmpty())
+            return null;
+        Id viewerContactId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
+        Map<Id, String> senderLabels = stoInboxHelper.getInboxSenderLabels(
+            new Map<Id, Thread__c>(openThreads).keySet(),
+            viewerContactId
+        );
+        List<stoInboxHelper.thread> threadList = new List<stoInboxHelper.thread>();
+        for (Thread__c t : openThreads) {
+            stoInboxHelper.thread item = stoInboxHelper.formatThread(t);
+            if (item != null && t.CRM_Thread_Type__c != 'CHAT')
+                item.inboxSenderLabel = senderLabels.get(t.Id);
+            threadList.add(item);
         }
-        return null;
+        return threadList;
+    }
+
+    @AuraEnabled
+    public static List<stoInboxHelper.thread> getAccessibleOpenThreadsForPerson(
+        String category,
+        String threadType,
+        Id representedAccountId
+    ) {
+        try {
+            Id authorizedAccountId = stoThreadSharing.prepareInboxAccess(representedAccountId);
+            return getOpenThreadsForPerson(category, threadType, authorizedAccountId);
+        } catch (DmlException e) {
+            LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
+            LOGGER.publish();
+            throw new AuraHandledException('Vi kunne ikke gi tilgang til samtalene. Prøv igjen senere.');
+        }
     }
 
     @AuraEnabled
@@ -370,7 +325,7 @@ public with sharing class stoHelperClass {
         return stoThreadAccess.getReplyContext(threadId);
     }
 
-    private static void validateData(ThreadData info) {
+    private static Boolean validateData(ThreadData info) {
         if (info == null) {
             throw new AuraHandledException('Mangler opplysninger for å opprette samtalen.');
         }
@@ -380,11 +335,23 @@ public with sharing class stoHelperClass {
             LOGGER.publish();
             throw new NoParentalResponsibilityException();
         }
+        if (info.representedPersonIdentifier != null && info.accountId == null) {
+            LOGGER.error(
+                'Account not found for child when making STO.' + info.representedPersonIdentifier,
+                null,
+                CRM_ApplicationDomain.Domain.NKS
+            );
+            LOGGER.publish();
+            throw new ChildAccountNotFoundException();
+        }
+
+        // TODO: Check how we should determine max thread count for parental representation
         if (isMaxThreadCount(info)) {
             LOGGER.error('Max thread limit reached in the same category', null, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
             throw new MaxThreadLimitReachedException();
         }
+        return true;
     }
 
     private static Boolean isMaxThreadCount(ThreadData info) {
@@ -507,7 +474,6 @@ public with sharing class stoHelperClass {
         private Id cachedAccountId;
         @TestVisible
         private Id cachedContactId;
-        private Boolean idsResolved = false;
 
         public Id accountId {
             get {
@@ -530,7 +496,7 @@ public with sharing class stoHelperClass {
         }
 
         private void populateAccountAndContactIds() {
-            if (idsResolved || (cachedAccountId != null && cachedContactId != null)) {
+            if (cachedAccountId != null && cachedContactId != null) {
                 return;
             }
             if (representedPersonIdentifier == null) {
@@ -541,19 +507,27 @@ public with sharing class stoHelperClass {
                 if (String.isBlank(representedPersonIdentifier)) {
                     throw new AuraHandledException('Ugyldig personvalg.');
                 }
-                List<Account> children = [
-                    SELECT Id
+                List<Account> accList = [
+                    SELECT Id, PersonContactId
                     FROM Account
-                    WHERE IsPersonAccount = TRUE AND CRM_Person__r.Name = :representedPersonIdentifier
+                    WHERE CRM_Person__r.Name = :representedPersonIdentifier
                     LIMIT 1
                 ];
-                if (children.isEmpty()) {
+                if (accList.isEmpty()) {
                     throw new ChildAccountNotFoundException();
                 }
-                cachedAccountId = stoPersonContext.resolveAccountId(children[0].Id);
-                cachedContactId = stoPersonContext.resolveContactId(cachedAccountId);
+                cachedAccountId = accList.isEmpty() ? null : accList[0].Id;
+                cachedContactId = accList.isEmpty() ? null : accList[0].PersonContactId;
             }
-            idsResolved = true;
+            if (cachedAccountId == null || cachedContactId == null) {
+                LOGGER.error(
+                    'Unable to determine Account or Contact ID for represented person: ' + representedPersonIdentifier,
+                    null,
+                    CRM_ApplicationDomain.Domain.NKS
+                );
+                LOGGER.publish();
+                throw new NoAccountFoundException();
+            }
         }
 
         public Thread__c toThread() {
@@ -586,7 +560,6 @@ public with sharing class stoHelperClass {
         }
 
         public Boolean validateRepresentation() {
-            populateAccountAndContactIds();
             return representedPersonIdentifier == null ? true : stoPersonContext.verifyRepresentation(accountId);
         }
     }

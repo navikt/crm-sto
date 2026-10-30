@@ -35,11 +35,11 @@
         </template>
         <c-community-message-container message-groups={messageGroups}></c-community-message-container>
         <template lwc:if={readStateError}>
-            <c-ds-alert alert-type="danger" alert-text={readStateError}></c-ds-alert>
+            <c-ds-alert alert-type="danger" alert-text={readStateError} class="load-error"></c-ds-alert>
         </template>
         <slot name="messageArea">
             <template lwc:if={replyContextError}>
-                <c-ds-alert alert-type="danger" alert-text={replyContextError}></c-ds-alert>
+                <c-ds-alert alert-type="danger" alert-text={replyContextError} class="load-error"></c-ds-alert>
             </template>
             <template lwc:elseif={showReadOnlyNotice}>
                 <c-ds-alert alert-type="info">

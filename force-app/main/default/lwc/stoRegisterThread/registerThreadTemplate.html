@@ -22,10 +22,10 @@
             </div>
             <!-- TODO(backend-ready): Surface optional lookup failure without hiding the authenticated user's own form. -->
             <template lwc:if={showRepresentationLoadError}>
-                <p role="alert" class="aksel-body-long aksel-body-long--medium">
+                <c-ds-alert alert-type="danger" class="load-error">
                     Vi kunne ikke hente hvem du kan skrive på vegne av. Oppdater siden og prøv på nytt. Du kan fortsatt
                     skrive på vegne av deg selv hvis du ikke har valgt et barn.
-                </p>
+                </c-ds-alert>
             </template>
             <!-- Show spinner -->
             <template lwc:if={shouldShowSpinner}>
@@ -62,9 +62,9 @@
             </template>
 
             <template lwc:elseif={threadLoadFailed}>
-                <p role="alert" class="aksel-body-long aksel-body-long--medium">
+                <c-ds-alert alert-type="danger" class="load-error">
                     Vi kunne ikke hente samtalene dine. Oppdater siden og prøv på nytt.
-                </p>
+                </c-ds-alert>
             </template>
 
             <!-- Show textarea -->

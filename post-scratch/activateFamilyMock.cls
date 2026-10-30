@@ -2,22 +2,30 @@ System.assert(
     URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com'),
     'Family mocks require a scratch org.'
 );
-Set<String> parentIdents = stoPersonContext.scratchFamily().keySet();
+Map<String, Set<String>> family = stoPersonContext.scratchFamily();
+Set<String> personIdents = new Set<String>(family.keySet());
+for (Set<String> children : family.values()) {
+    personIdents.addAll(children);
+}
 Set<Id> contactIds = new Set<Id>();
-for (Account parent : [
+for (Account person : [
     SELECT PersonContactId
     FROM Account
-    WHERE IsPersonAccount = TRUE AND INT_PersonIdent__c IN :parentIdents
+    WHERE IsPersonAccount = TRUE AND INT_PersonIdent__c IN :personIdents
 ]) {
-    contactIds.add(parent.PersonContactId);
+    contactIds.add(person.PersonContactId);
 }
-List<User> parents = [SELECT Id FROM User WHERE ContactId IN :contactIds AND IsActive = TRUE];
-System.assertEquals(3, parents.size(), 'Run scratchSetup.cls first to provision all three test parents.');
+List<User> familyUsers = [SELECT Id FROM User WHERE ContactId IN :contactIds AND IsActive = TRUE];
+System.assertEquals(
+    personIdents.size(),
+    familyUsers.size(),
+    'Run scratchSetup.cls first to provision the test family.'
+);
 List<API_Controller_Mock_Settings__c> settings = new List<API_Controller_Mock_Settings__c>();
-for (User parent : parents) {
-    API_Controller_Mock_Settings__c setting = API_Controller_Mock_Settings__c.getValues(parent.Id);
+for (User familyUser : familyUsers) {
+    API_Controller_Mock_Settings__c setting = API_Controller_Mock_Settings__c.getValues(familyUser.Id);
     if (setting == null) {
-        setting = new API_Controller_Mock_Settings__c(SetupOwnerId = parent.Id);
+        setting = new API_Controller_Mock_Settings__c(SetupOwnerId = familyUser.Id);
     }
     setting.Status__c = 'OK';
     setting.Status_Code__c = '200';

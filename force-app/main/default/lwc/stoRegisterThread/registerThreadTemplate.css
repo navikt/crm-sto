@@ -65,6 +65,11 @@
     margin-bottom: var(--ax-space-20);
 }
 
+.load-error {
+    display: block;
+    margin-block: var(--ax-space-24, 1.5rem);
+}
+
 .inbox-list {
     display: flex;
     flex-direction: column;

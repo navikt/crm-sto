@@ -26,6 +26,11 @@
     margin-top: var(--ax-space-16);
 }
 
+.load-error {
+    display: block;
+    margin-block: var(--ax-space-24, 1.5rem);
+}
+
 /* TODO(backend-ready): Keep category spacing independent of whether authorized person selection is available. */
 .category-filter {
     margin-top: var(--ax-space-24, 1.5rem);

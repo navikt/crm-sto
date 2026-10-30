@@ -86,7 +86,9 @@ private class stoPersonContextTest {
                     INT_LastName__c = 'Family' + ident,
                     INT_Confidential__c = 'UGRADERT',
                     INT_Sex__c = ident == '12345678904' ? 'Kvinne' : 'Mann',
-                    INT_DateOfBirth__c = String.valueOf(Date.today().addYears(ident == '12345678904' ? -8 : -12))
+                    INT_DateOfBirth__c = String.valueOf(
+                        Date.today().addYears(ident == '12345678904' ? -8 : ident == '12345678905' ? -12 : -35)
+                    )
                 )
             );
         }
@@ -167,6 +169,61 @@ private class stoPersonContextTest {
                 .CRM_From_Contact__c
             );
             Assert.areEqual(thread.Id, stoInboxHelper.getRecentThreadsForPerson(represented.Id)[0].recordId);
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void dtoSelfValidationDoesNotCallForeldreansvar() {
+        User parent = createFamilyParents().get('12345678902');
+        Test.startTest();
+        System.runAs(parent) {
+            stoHelperClass.ThreadData info = childThreadData(null);
+            Assert.isTrue(info.validateRepresentation());
+            Assert.areEqual(0, Limits.getCallouts(), 'Self-sending does not require parental verification');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void dtoScratchValidationUsesAuthenticatedParent() {
+        Map<String, User> parents = createFamilyParents();
+        activateMetadataMocks(parents.values());
+        Account ola = [SELECT Id, CRM_Person__c FROM Account WHERE INT_PersonIdent__c = '12345678905' LIMIT 1];
+        // Account visibility alone must not authorize Anne to represent Ola.
+        insert new AccountShare(
+            AccountId = ola.Id,
+            UserOrGroupId = parents.get('12345678903').Id,
+            AccountAccessLevel = 'Read',
+            OpportunityAccessLevel = 'None',
+            CaseAccessLevel = 'None'
+        );
+        insert new Person__Share(
+            ParentId = ola.CRM_Person__c,
+            UserOrGroupId = parents.get('12345678903').Id,
+            AccessLevel = 'Read'
+        );
+        Test.startTest();
+        for (String parentIdent : parents.keySet()) {
+            System.runAs(parents.get(parentIdent)) {
+                for (String childIdent : stoPersonContext.scratchFamily().get(parentIdent)) {
+                    stoHelperClass.ThreadData info = childThreadData(null);
+                    info.representedPersonIdentifier = childIdent;
+                    Assert.isTrue(info.validateRepresentation(), 'Use the authenticated parent and selected child');
+                }
+                Assert.areEqual(0, Limits.getCallouts(), 'DTO validation must honor the local scratch mock');
+            }
+        }
+        System.runAs(parents.get('12345678903')) {
+            stoHelperClass.ThreadData info = childThreadData(null);
+            info.representedPersonIdentifier = '12345678905';
+            try {
+                info.validateRepresentation();
+                Assert.fail('Anne must not be allowed to represent Ola');
+            } catch (AuraHandledException expected) {
+                Assert.areEqual(0, Limits.getCallouts());
+                Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
+            }
         }
         Test.stopTest();
     }
@@ -330,7 +387,7 @@ private class stoPersonContextTest {
         stoPersonContext.testChildren = new List<Account>();
         Id childId = child().Id;
         try {
-            stoHelperClass.createThreadForPerson('Familie', 'Denied', true, 'STO', null, null, false, childId);
+            stoHelperClass.createThread(childThreadData(childId));
             Assert.fail('Unrelated account must be rejected');
         } catch (AuraHandledException expected) {
             Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
@@ -345,31 +402,30 @@ private class stoPersonContextTest {
 
     @IsTest
     static void limitsArePersonScoped() {
+        User parent = createFamilyParents().get('12345678901');
         Account child = child();
         stoPersonContext.testChildren = new List<Account>{ child };
-        for (Integer i = 0; i < 3; i++) {
-            stoHelperClass.createThreadWithCase('Familie', 'Self', true, 'STO', null, null);
-        }
         Test.startTest();
-        Thread__c thread = stoHelperClass.createThreadForPerson(
-            'Familie',
-            'Child',
-            true,
-            'STO',
-            null,
-            null,
-            false,
-            child.Id
-        );
-        Assert.areEqual(child.Id, thread.CRM_Account__c);
-        for (Integer i = 0; i < 2; i++) {
-            stoHelperClass.createThreadForPerson('Familie', 'Child', true, 'STO', null, null, false, child.Id);
-        }
-        try {
-            stoHelperClass.createThreadForPerson('Familie', 'Too many', true, 'STO', null, null, false, child.Id);
-            Assert.fail('The child must have the same three-thread limit');
-        } catch (stoHelperClass.maxThreadLimitReachedException expected) {
-            Assert.areEqual(3, stoHelperClass.getOpenThreadsForPerson('Familie', 'STO', child.Id).size());
+        System.runAs(parent) {
+            stoHelperClass.ThreadData selfInfo = childThreadData(null);
+            selfInfo.msgText = 'Self';
+            for (Integer i = 0; i < 3; i++) {
+                stoHelperClass.createThread(selfInfo);
+            }
+            stoHelperClass.ThreadData childInfo = childThreadData(child.Id);
+            childInfo.msgText = 'Child';
+            Thread__c thread = stoHelperClass.createThread(childInfo);
+            Assert.areEqual(child.Id, thread.CRM_Account__c);
+            for (Integer i = 0; i < 2; i++) {
+                stoHelperClass.createThread(childInfo);
+            }
+            try {
+                childInfo.msgText = 'Too many';
+                stoHelperClass.createThread(childInfo);
+                Assert.fail('The child must have the same three-thread limit');
+            } catch (stoHelperClass.maxThreadLimitReachedException expected) {
+                Assert.areEqual(3, stoHelperClass.getOpenThreadsForPerson('Familie', 'STO', child.Id).size());
+            }
         }
         Test.stopTest();
     }
@@ -452,16 +508,9 @@ private class stoPersonContextTest {
             List<stoPersonContext.PersonOption> actualSelections = stoPersonContext.getRepresentableChildren();
             Assert.areEqual(1, actualSelections.size(), 'Only Beate is shared with this parent');
             Assert.areEqual(child.Id, actualSelections[0].value);
-            thread = stoHelperClass.createThreadForPerson(
-                'Familie',
-                'Child inbox',
-                true,
-                'STO',
-                null,
-                null,
-                false,
-                child.Id
-            );
+            stoHelperClass.ThreadData info = childThreadData(child.Id);
+            info.msgText = 'Child inbox';
+            thread = stoHelperClass.createThread(info);
             Assert.areEqual(child.Id, [SELECT CRM_Account__c FROM Thread__c WHERE Id = :thread.Id].CRM_Account__c);
             Assert.areEqual(parentUser.Id, [SELECT CreatedById FROM Thread__c WHERE Id = :thread.Id].CreatedById);
             Assert.areEqual(
@@ -487,6 +536,55 @@ private class stoPersonContextTest {
     }
 
     @IsTest
+    static void activeThreadCardsUseInboxSenderLabels() {
+        Map<String, User> parents = createFamilyParents();
+        User childViewer = createChildViewer();
+        User starter = parents.get('12345678901');
+        User otherParent = parents.get('12345678902');
+        Account represented = child();
+        String starterName = [SELECT Name FROM Contact WHERE Id = :starter.ContactId].Name;
+        Test.startTest();
+        loadBarnFor(new List<User>{ starter, otherParent, childViewer });
+        Thread__c thread = startThread(starter, represented.Id);
+        insert new Message__c(
+            CRM_Thread__c = thread.Id,
+            CRM_Type__c = 'Info',
+            CRM_Message_Text__c = 'Latest message from Nav',
+            CRM_Sent_date__c = System.now().addMinutes(1)
+        );
+        System.runAs(starter) {
+            stoInboxHelper.thread card = stoHelperClass.getAccessibleOpenThreadsForPerson(
+                'Familie',
+                'STO',
+                represented.Id
+            )[0];
+            Assert.areEqual(thread.Id, card.recordId);
+            Assert.isNull(card.inboxSenderLabel, 'The starter sees the same card as in the inbox');
+        }
+        System.runAs(otherParent) {
+            stoInboxHelper.thread card = stoHelperClass.getAccessibleOpenThreadsForPerson(
+                'Familie',
+                'STO',
+                represented.Id
+            )[0];
+            Assert.areEqual(thread.Id, card.recordId);
+            Assert.areEqual(starterName + ' startet samtalen', card.inboxSenderLabel);
+            Assert.areEqual('Latest message from Nav', card.latestmessage.messageText);
+            Assert.areEqual(
+                stoInboxHelper.getInboxPage(represented.Id, null, null).recent[0].inboxSenderLabel,
+                card.inboxSenderLabel,
+                'Use the first message sender, not the latest message sender'
+            );
+        }
+        System.runAs(childViewer) {
+            stoInboxHelper.thread card = stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', null)[0];
+            Assert.areEqual(starterName + ' startet samtalen', card.inboxSenderLabel);
+            Assert.areEqual(card.inboxSenderLabel, stoHelperClass.getOpenThreads('Familie', 'STO')[0].inboxSenderLabel);
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
     static void sharedThreadHasIndependentPersistentReceipts() {
         Map<String, User> parents = createFamilyParents();
         User childViewer = createChildViewer();
@@ -506,6 +604,7 @@ private class stoPersonContextTest {
         insert incoming;
         stoPersonContext.testChildren = new List<Account>{ represented };
         System.runAs(otherReader) {
+            stoInboxHelper.getAccessibleInboxPage(represented.Id, null, null);
             stoThreadReadState.markThreadRead(thread.Id, incoming.Id);
             Assert.isTrue(
                 [SELECT CRM_Read__c FROM Message__c WHERE Id = :incoming.Id].CRM_Read__c,
@@ -673,6 +772,7 @@ private class stoPersonContextTest {
             children.put(child.INT_PersonIdent__c, child);
         }
         Test.startTest();
+        loadBarnFor(parents.values());
         System.runAs(parents.get(parentIdent)) {
             Assert.isTrue(FeatureManagement.checkPermission('STO_Scratch_Family'));
             List<stoPersonContext.PersonOption> options = stoPersonContext.getRepresentableChildren();
@@ -686,16 +786,10 @@ private class stoPersonContextTest {
             }
             Assert.areEqual(expected, actual, parentIdent);
             Account beate = children.get('12345678904');
-            Thread__c created = stoHelperClass.createThreadForPerson(
-                'Familie',
-                'Foreldreansvar test',
-                true,
-                'STO',
-                'Skriv til oss',
-                'Familie og barn',
-                false,
-                beate.Id
-            );
+            stoHelperClass.ThreadData info = childThreadData(beate.Id);
+            info.msgText = 'Foreldreansvar test';
+            info.inboxTheme = 'Familie og barn';
+            Thread__c created = stoHelperClass.createThread(info);
             Thread__c saved = [
                 SELECT CRM_Account__c, CRM_Contact__c, CreatedById
                 FROM Thread__c
@@ -715,11 +809,16 @@ private class stoPersonContextTest {
                 }
             }
         }
+        for (User parent : parents.values()) {
+            System.runAs(parent) {
+                stoInboxHelper.getAccessibleInboxPage(children.get('12345678904').Id, null, null);
+            }
+        }
         if (URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com')) {
             Assert.areEqual(
                 2,
                 [SELECT COUNT() FROM Thread__Share WHERE ParentId IN :createdThreadIds AND AccessLevel = 'Read'],
-                'Each new Beate thread must have two co-parent Read shares'
+                'Each verified co-parent receives a Read share when opening Beate inbox'
             );
             for (User parent : parents.values()) {
                 System.runAs(parent) {
@@ -809,6 +908,105 @@ private class stoPersonContextTest {
             Thread__c thread = stoHelperClass.createThread(childThreadData(child().Id));
             Assert.areEqual(child().Id, thread.CRM_Account__c);
             Assert.areEqual(0, Limits.getCallouts(), 'Both barn and verifiser must use local scratch mocks');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void scratchOlaHasNoRepresentationOptionsButCanWriteForSelf() {
+        Account ola = [
+            SELECT Id, PersonContactId
+            FROM Account
+            WHERE INT_PersonIdent__c = '12345678905'
+        ];
+        assertScratchChildSelfService(ola);
+    }
+
+    @IsTest
+    static void scratchBeateHasNoRepresentationOptionsButCanWriteForSelf() {
+        assertScratchChildSelfService(child());
+    }
+
+    private static void assertScratchChildSelfService(Account account) {
+        User childUser = createChildViewer(account);
+        User actor = [
+            SELECT AccountId, Account.CRM_Person__r.INT_DateOfBirth__c
+            FROM User
+            WHERE Id = :childUser.Id
+        ];
+        Assert.areEqual(account.Id, actor.AccountId, 'The child login must belong to the child account');
+        Assert.isNotNull(actor.Account.CRM_Person__r.INT_DateOfBirth__c, 'The child must have a known birth date');
+        Assert.isTrue(
+            Date.valueOf(actor.Account.CRM_Person__r.INT_DateOfBirth__c).addYears(18) > Date.today(),
+            'The actor must be younger than 18'
+        );
+        BarnMock failure = new BarnMock(500, '{"title":"Internal Server Error"}');
+        Test.setMock(HttpCalloutMock.class, failure);
+        Test.startTest();
+        System.runAs(childUser) {
+            Assert.isFalse(stoForeldreansvarMock.isEnabled(), 'Child eligibility must not depend on scratch mocks');
+            Assert.isFalse(FeatureManagement.checkPermission('STO_Scratch_Family'));
+            Assert.areEqual(
+                0,
+                stoPersonContext.getRepresentableChildren().size(),
+                'No children is not a loading error'
+            );
+            Assert.areEqual(account.Id, stoPersonContext.resolveAccountId(null));
+            Assert.areEqual(account.PersonContactId, stoPersonContext.resolveContactId(account.Id));
+            for (String type : new List<String>{ 'STO', 'BTO' }) {
+                stoHelperClass.ThreadData info = childThreadData(null);
+                info.type = type;
+                Thread__c thread = stoHelperClass.createThread(info);
+                Assert.areEqual(account.Id, thread.CRM_Account__c);
+                Assert.areEqual(account.PersonContactId, thread.CRM_Contact__c);
+            }
+            Assert.areEqual(0, Limits.getCallouts(), 'Child self-service must not reach the live responsibility API');
+            Assert.areEqual(0, failure.calls);
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void representationLookupStartsOnEighteenthBirthday() {
+        Person__c person = [SELECT Id FROM Person__c WHERE Name = '12345678905'];
+        person.INT_DateOfBirth__c = String.valueOf(Date.today().addYears(-18));
+        update person;
+        Account ola = [SELECT Id, PersonContactId FROM Account WHERE INT_PersonIdent__c = '12345678905'];
+        User actor = createChildViewer(ola);
+        BarnMock mock = new BarnMock(200, '{"barn":[]}');
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(actor) {
+            Assert.areEqual(0, stoPersonContext.getRepresentableChildren().size());
+            Assert.areEqual(1, mock.calls, 'An adult must still use the responsibility service');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void representationLookupSkipsDayBeforeEighteenthBirthday() {
+        Person__c person = [SELECT Id FROM Person__c WHERE Name = '12345678905'];
+        person.INT_DateOfBirth__c = String.valueOf(Date.today().addYears(-18).addDays(1));
+        update person;
+        Account ola = [SELECT Id, PersonContactId FROM Account WHERE INT_PersonIdent__c = '12345678905'];
+        assertScratchChildSelfService(ola);
+    }
+
+    @IsTest
+    static void missingActorBirthDateDoesNotHideServiceFailure() {
+        Map<String, User> parents = createFamilyParents();
+        Person__c person = [SELECT Id FROM Person__c WHERE Name = '12345678901'];
+        person.INT_DateOfBirth__c = null;
+        update person;
+        Test.setMock(HttpCalloutMock.class, new BarnMock(500, '{"title":"Internal Server Error"}'));
+        Test.startTest();
+        System.runAs(parents.get('12345678901')) {
+            try {
+                stoPersonContext.getRepresentableChildren();
+                Assert.fail('Missing birth date must not be interpreted as a known child');
+            } catch (NKS_ForeldreansvarService.ForeldreansvarException expected) {
+                Assert.isTrue(expected.getMessage().contains('LoggId'));
+            }
         }
         Test.stopTest();
     }
@@ -942,7 +1140,7 @@ private class stoPersonContextTest {
                 Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
             }
             try {
-                stoHelperClass.createThreadForPerson('Familie', 'Denied', true, 'STO', null, null, false, childId);
+                stoHelperClass.createThread(childThreadData(childId));
                 Assert.fail('Sharing alone must not authorize thread registration');
             } catch (AuraHandledException expected) {
                 Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
@@ -1003,7 +1201,7 @@ private class stoPersonContextTest {
                 Assert.isTrue(expected.getMessage().contains('LoggId'));
             }
             try {
-                stoHelperClass.createThreadForPerson('Familie', 'Denied', true, 'STO', null, null, false, child().Id);
+                stoHelperClass.createThread(childThreadData(child().Id));
                 Assert.fail('Service failure must block child thread registration');
             } catch (NKS_ForeldreansvarService.ForeldreansvarException expected) {
                 Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
@@ -1162,7 +1360,13 @@ private class stoPersonContextTest {
         Map<String, User> parents = createFamilyParents();
         User childViewer = createChildViewer();
         Test.startTest();
+        loadBarnFor(parents.values());
         Thread__c thread = startThread(parents.get('12345678902'), child().Id);
+        for (User parent : parents.values()) {
+            System.runAs(parent) {
+                stoThreadSharing.prepareInboxAccess(child().Id);
+            }
+        }
         List<Thread__Share> legacyShares = [
             SELECT Id, AccessLevel
             FROM Thread__Share
@@ -1209,6 +1413,245 @@ private class stoPersonContextTest {
     }
 
     @IsTest
+    static void verifiedParentReceivesWholeChildInboxReadAccess() {
+        Map<String, User> parents = createFamilyParents();
+        Account beate = child();
+        stoHelperClass.ThreadData info = childThreadData(beate.Id);
+        Thread__c first = info.toThread();
+        Thread__c second = info.toThread();
+        insert new List<Thread__c>{ first, second };
+        insert new List<Message__c>{
+            new Message__c(
+                CRM_Thread__c = first.Id,
+                CRM_From_Contact__c = parents.get('12345678901').ContactId,
+                CRM_Message_Text__c = 'First parent conversation'
+            ),
+            new Message__c(
+                CRM_Thread__c = second.Id,
+                CRM_From_Contact__c = parents.get('12345678902').ContactId,
+                CRM_Message_Text__c = 'Other parent conversation'
+            )
+        };
+        update new Thread__c(Id = second.Id, CRM_Closed_Date__c = Date.today());
+        Conversation_Note__c note = new Conversation_Note__c(
+            CRM_Account__c = beate.Id,
+            CRM_Created_By_Ident__c = 'Z999999',
+            CRM_Conversation_Note__c = 'Conversation note concerning Beate',
+            CRM_Is_Read__c = false
+        );
+        insert note;
+        Conversation_Note__c unpublished = new Conversation_Note__c(
+            CRM_Account__c = beate.Id,
+            CRM_Conversation_Note__c = 'Unpublished internal note'
+        );
+        insert unpublished;
+        User anne = parents.get('12345678903');
+        Test.startTest();
+        System.runAs(anne) {
+            stoInboxHelper.InboxPage page = stoInboxHelper.getAccessibleInboxPage(beate.Id, null, null);
+            Set<Id> records = new Set<Id>();
+            for (stoInboxHelper.thread item : page.recent) {
+                records.add(item.recordId);
+            }
+            for (stoInboxHelper.thread item : page.older) {
+                records.add(item.recordId);
+            }
+            Assert.areEqual(new Set<Id>{ first.Id, second.Id, note.Id }, records);
+            Assert.areEqual(2, [SELECT COUNT() FROM Thread__c WHERE CRM_Account__c = :beate.Id]);
+            Assert.areEqual(0, [SELECT COUNT() FROM Conversation_Note__c WHERE Id = :unpublished.Id]);
+            Assert.areEqual(
+                'Read',
+                [
+                    SELECT AccessLevel
+                    FROM Conversation_Note__Share
+                    WHERE ParentId = :note.Id AND UserOrGroupId = :anne.Id AND RowCause = 'STO_Family_Read__c'
+                ]
+                .AccessLevel
+            );
+            Assert.isFalse(stoHelperClass.getReplyContext(first.Id).canReply);
+            Assert.isFalse(stoHelperClass.getReplyContext(second.Id).canReply);
+            Integer beforeCount = [SELECT COUNT() FROM Thread__Share WHERE UserOrGroupId = :anne.Id];
+            stoInboxHelper.getAccessibleInboxPage(beate.Id, null, null);
+            Assert.areEqual(beforeCount, [SELECT COUNT() FROM Thread__Share WHERE UserOrGroupId = :anne.Id]);
+            Assert.areEqual(
+                1,
+                [SELECT COUNT() FROM Conversation_Note__Share WHERE ParentId = :note.Id AND UserOrGroupId = :anne.Id]
+            );
+            stoInboxHelper.markAsRead(note.Id);
+            Assert.isTrue([SELECT CRM_Is_Read__c FROM Conversation_Note__c WHERE Id = :note.Id].CRM_Is_Read__c);
+        }
+        Assert.areEqual(
+            0,
+            [SELECT COUNT() FROM Conversation_Note__Share WHERE ParentId = :unpublished.Id AND UserOrGroupId = :anne.Id]
+        );
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void unrelatedParentCannotShareThreadsOrConversationNotes() {
+        Map<String, User> parents = createFamilyParents();
+        Account ola = [SELECT Id FROM Account WHERE INT_PersonIdent__c = '12345678905'];
+        Test.startTest();
+        loadBarnFor(parents.values());
+        Thread__c thread = startThread(parents.get('12345678901'), ola.Id);
+        Conversation_Note__c note = new Conversation_Note__c(
+            CRM_Account__c = ola.Id,
+            CRM_Created_By_Ident__c = 'Z999999',
+            CRM_Conversation_Note__c = 'Conversation note concerning Ola'
+        );
+        insert note;
+        User anne = parents.get('12345678903');
+        System.runAs(anne) {
+            try {
+                stoInboxHelper.getAccessibleInboxPage(ola.Id, null, null);
+                Assert.fail('Anne must not receive shares for Ola');
+            } catch (AuraHandledException expected) {
+                Assert.areEqual(0, [SELECT COUNT() FROM Thread__c WHERE Id = :thread.Id]);
+                Assert.areEqual(0, [SELECT COUNT() FROM Conversation_Note__c WHERE Id = :note.Id]);
+            }
+            try {
+                stoInboxHelper.markAsRead(note.Id);
+                Assert.fail('Anne must not change read flags on an inaccessible note');
+            } catch (AuraHandledException expected) {
+                Assert.areEqual(0, [SELECT COUNT() FROM Conversation_Note__c WHERE Id = :note.Id]);
+            }
+        }
+        Assert.areEqual(
+            0,
+            [SELECT COUNT() FROM Thread__Share WHERE ParentId = :thread.Id AND UserOrGroupId = :anne.Id]
+        );
+        Assert.areEqual(
+            0,
+            [SELECT COUNT() FROM Conversation_Note__Share WHERE ParentId = :note.Id AND UserOrGroupId = :anne.Id]
+        );
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void childStoCaseBelongsOnlyToChild() {
+        assertCaseUsesThreadSubject('STO', true);
+    }
+
+    @IsTest
+    static void childBtoCaseBelongsOnlyToChild() {
+        assertCaseUsesThreadSubject('BTO', true);
+    }
+
+    @IsTest
+    static void selfStoCaseKeepsOwnAccountAndContact() {
+        assertCaseUsesThreadSubject('STO', false);
+    }
+
+    @IsTest
+    static void selfBtoCaseKeepsOwnAccountAndContact() {
+        assertCaseUsesThreadSubject('BTO', false);
+    }
+
+    private static void assertCaseUsesThreadSubject(String threadType, Boolean forChild) {
+        User anne = createFamilyParents().get('12345678903');
+        Account subject = forChild
+            ? child()
+            : [SELECT Id, PersonContactId FROM Account WHERE PersonContactId = :anne.ContactId];
+        Id threadId;
+        Test.startTest();
+        System.runAs(anne) {
+            stoHelperClass.ThreadData info = childThreadData(forChild ? subject.Id : null);
+            info.type = threadType;
+            Thread__c thread = info.toThread();
+            // Invoke the routing flow synchronously without also scheduling its after-insert path.
+            thread.CRM_Thread_Type__c = null;
+            insert as system thread;
+            thread.CRM_Thread_Type__c = threadType;
+            update as system thread;
+            threadId = thread.Id;
+            thread = [
+                SELECT
+                    Id,
+                    CRM_Account__c,
+                    CRM_Contact__c,
+                    CRM_Thread_Type__c,
+                    STO_Category__c,
+                    STO_ExternalName__c,
+                    CRM_API_Reference__c,
+                    CRM_Account__r.CRM_Person__r.INT_Confidential__c,
+                    CRM_Account__r.CRM_Person__r.INT_IsNavEmployee__c
+                FROM Thread__c
+                WHERE Id = :thread.Id
+                WITH SYSTEM_MODE
+            ];
+            Flow.Interview routing = Flow.Interview.createInterview(
+                'STO_Thread_CreateTaskOrCase',
+                new Map<String, Object>{ 'Thread' => thread }
+            );
+            routing.start();
+        }
+        Test.stopTest();
+        Thread__c saved = [SELECT CRM_Case__c FROM Thread__c WHERE Id = :threadId];
+        Assert.isNotNull(saved.CRM_Case__c, 'Routing must create and link a case');
+        Case created = [SELECT AccountId, ContactId, Origin FROM Case WHERE Id = :saved.CRM_Case__c];
+        Assert.areEqual(subject.Id, created.AccountId, 'The case belongs to the thread subject account');
+        Assert.areEqual(
+            0,
+            [SELECT COUNT() FROM Application_Log__c WHERE Source_Class__c = 'Thread - Subflow - Create STO Case'],
+            JSON.serialize(
+                [
+                    SELECT Log_Message__c
+                    FROM Application_Log__c
+                    WHERE Source_Class__c = 'Thread - Subflow - Create STO Case'
+                ]
+            )
+        );
+        Assert.areEqual(
+            subject.PersonContactId,
+            created.ContactId,
+            'The case contact must be the subject, not the sender'
+        );
+        Assert.areEqual(threadType, created.Origin);
+        Assert.areEqual(1, [SELECT COUNT() FROM Case], 'A submission must create exactly one case');
+        if (forChild) {
+            Assert.areEqual(0, [SELECT COUNT() FROM Case WHERE ContactId = :anne.ContactId]);
+        }
+    }
+
+    @IsTest
+    static void anneCanReplyAfterCreatingFamilyThreadForBeate() {
+        User anne = createFamilyParents().get('12345678903');
+        Account beate = child();
+        Test.startTest();
+        System.runAs(anne) {
+            stoHelperClass.ThreadData info = childThreadData(beate.Id);
+            info.msgText = 'Message for Beate from Anne';
+            info = (stoHelperClass.ThreadData) JSON.deserialize(JSON.serialize(info), stoHelperClass.ThreadData.class);
+            Thread__c thread = stoHelperClass.createThread(info);
+            Assert.areEqual(beate.Id, thread.CRM_Account__c);
+            Assert.areEqual(beate.PersonContactId, thread.CRM_Contact__c);
+            Message__c firstMessage = [
+                SELECT CRM_From_Contact__c
+                FROM Message__c
+                WHERE CRM_Thread__c = :thread.Id AND CRM_Type__c = 'Message'
+                LIMIT 1
+            ];
+            Assert.areEqual(anne.ContactId, firstMessage.CRM_From_Contact__c, 'Anne is the sender, not Beate');
+            stoThreadAccess.ReplyContext context = stoHelperClass.getReplyContext(thread.Id);
+            Assert.isTrue(context.canReply, 'The creator must be able to reply immediately after sending');
+            Assert.isNull(context.inboxSenderLabel);
+            Assert.areEqual('Gjelder: ' + beate.Name + ' (8 år)', context.representedLabel);
+            Assert.isTrue(CRM_MessageHelperExperience.createThreadMessage(thread.Id, 'Follow-up from Anne'));
+            Assert.areEqual(
+                2,
+                [
+                    SELECT COUNT()
+                    FROM Message__c
+                    WHERE CRM_Thread__c = :thread.Id AND CRM_From_Contact__c = :anne.ContactId
+                ]
+            );
+            stoHelperClass.closeThread(thread.Id);
+            Assert.isFalse([SELECT CRM_isActive__c FROM Thread__c WHERE Id = :thread.Id].CRM_isActive__c);
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
     static void originalParentCanReplyAndClose() {
         User parent = createFamilyParents().get('12345678902');
         Test.startTest();
@@ -1238,27 +1681,22 @@ private class stoPersonContextTest {
         Thread__c thread = startThread(childViewer, null);
         if (URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com')) {
             System.runAs(parent) {
-                Assert.areEqual(thread.Id, stoInboxHelper.getRecentThreadsForPerson(child().Id)[0].recordId);
+                Assert.areEqual(
+                    thread.Id,
+                    stoInboxHelper.getAccessibleInboxPage(child().Id, null, null).recent[0].recordId
+                );
                 Assert.areEqual(
                     'Read',
                     [
                         SELECT AccessLevel
                         FROM Thread__Share
-                        WHERE ParentId = :thread.Id AND UserOrGroupId = :parent.Id AND RowCause = 'Manual'
+                        WHERE ParentId = :thread.Id AND UserOrGroupId = :parent.Id AND RowCause = 'STO_Family_Read__c'
                     ]
                     .AccessLevel
                 );
             }
         } else {
             insert new Thread__Share(ParentId = thread.Id, UserOrGroupId = parent.Id, AccessLevel = 'Read');
-        }
-        if (URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com')) {
-            for (User otherParent : parents.values()) {
-                System.runAs(otherParent) {
-                    Assert.isFalse(CRM_MessageHelperExperience.getGroupedMessagesFromThread(thread.Id).isEmpty());
-                }
-                assertCannotMutate(otherParent, thread.Id);
-            }
         }
         assertCannotMutate(parent, thread.Id);
         System.runAs(parent) {
@@ -1292,22 +1730,20 @@ private class stoPersonContextTest {
                 FeatureManagement.checkPermission('STO_Scratch_Family'),
                 'Children need no parent permission'
             );
-            thread = stoHelperClass.createThreadForPerson(
-                'Familie',
-                'Child BTO',
-                true,
-                'BTO',
-                'Meld fra om endring',
-                'Familie',
-                false,
-                null
-            );
+            stoHelperClass.ThreadData info = childThreadData(null);
+            info.msgText = 'Child BTO';
+            info.type = 'BTO';
+            info.inboxTitle = 'Meld fra om endring';
+            thread = stoHelperClass.createThread(info);
             Assert.isTrue(stoHelperClass.getReplyContext(thread.Id).canReply);
         }
         if (URL.getOrgDomainUrl().getHost().endsWithIgnoreCase('.scratch.my.salesforce.com')) {
             for (String ident : new List<String>{ '12345678901', '12345678902' }) {
                 System.runAs(parents.get(ident)) {
-                    Assert.areEqual(thread.Id, stoInboxHelper.getRecentThreadsForPerson(son.Id)[0].recordId);
+                    Assert.areEqual(
+                        thread.Id,
+                        stoInboxHelper.getAccessibleInboxPage(son.Id, null, null).recent[0].recordId
+                    );
                 }
                 assertCannotMutate(parents.get(ident), thread.Id);
             }

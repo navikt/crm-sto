@@ -122,9 +122,16 @@ public with sharing class stoPersonContext {
         if (childIdentsByUser.containsKey(actorId)) {
             return childIdentsByUser.get(actorId);
         }
-        Id actorAccountId = [SELECT AccountId FROM User WHERE Id = :actorId].AccountId;
+        AuthenticatedActor actor = new AuthenticatedActor().read();
+        Id actorAccountId = actor.accountId;
         if (actorAccountId == null) {
             return new Set<String>();
+        }
+        String birthDate = actor.birthDate;
+        if (String.isNotBlank(birthDate) && Date.valueOf(birthDate).addYears(18) > Date.today()) {
+            Set<String> noChildren = new Set<String>();
+            childIdentsByUser.put(actorId, noChildren);
+            return noChildren;
         }
         List<Account> parents = [
             SELECT INT_PersonIdent__c
@@ -160,6 +167,35 @@ public with sharing class stoPersonContext {
         }
         childIdentsByUser.put(actorId, childIdents);
         return childIdents;
+    }
+
+    // Eligibility uses only the authenticated actor's age, even if their Person record is not shared.
+    private without sharing class AuthenticatedActor {
+        private Id accountId;
+        private String birthDate;
+
+        private AuthenticatedActor read() {
+            accountId = [
+                SELECT AccountId
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+            ]
+            .AccountId;
+            if (accountId == null) {
+                return this;
+            }
+            Id personId = [SELECT CRM_Person__c FROM Account WHERE Id = :accountId WITH SYSTEM_MODE].CRM_Person__c;
+            if (personId != null) {
+                birthDate = [
+                    SELECT INT_DateOfBirth__c
+                    FROM Person__c
+                    WHERE Id = :personId
+                    WITH SYSTEM_MODE
+                ]
+                .INT_DateOfBirth__c;
+            }
+            return this;
+        }
     }
 
     private static AuraHandledException invalidResponse() {

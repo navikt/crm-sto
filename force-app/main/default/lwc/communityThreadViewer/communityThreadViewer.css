@@ -6,6 +6,11 @@
     margin-bottom: var(--ax-space-20);
 }
 
+.load-error {
+    display: block;
+    margin-block: var(--ax-space-24, 1.5rem);
+}
+
 .representation-banner {
     background-color: var(--ax-accent-100, #eef6ff);
     border-radius: 0.5rem;
