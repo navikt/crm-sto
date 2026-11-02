@@ -111,6 +111,8 @@ For en eksisterende scratch org: deploy scratch-profilene, importer bare manglen
 
 For å reparere bare rutingen i en eksisterende scratch org, kjør `npm run scratchRoutingSetup` med riktig scratch org som CLI-ens standardorg. Kommandoen kan kjøres flere ganger uten dupliserte ressurser, ferdigheter eller eksempelsamtaler. Den fordeler også nye, ubehandlede STO/BTO for den syntetiske familien som fortsatt eies av en community-bruker. Saker under behandling eller ferdigstilte saker flyttes ikke, og ferdige eksempelsamtaler åpnes ikke på nytt. Oppsettet avbryter utenfor scratch org og bruker vanlige kø-/fordelingsregler; det lager ikke rutingsposter manuelt og krever ingen endring i produksjonskoden.
 
+Oppsettet synkroniserer `Case.NKS_Henvendelse_BehandlingsId__c` med `Thread.CRM_API_Reference__c` for nye og eksisterende navngitte eksempelsamtaler, slik at de kan åpnes fra verktøylinjen. Scratch-definisjonen inkluderer `EmbeddedServiceMessaging` for validering av meldingsmetadata.
+
 ### Personvalg og foreldreansvar
 
 `stoPersonContext` bruker `NKS_ForeldreansvarService.barn()` fra crm-nks-integration for personvalget i innboksen og registreringsskjemaet. Forelderidenten leses fra den innloggede brukerens egen personkonto, aldri fra klienten. Bare identene i API-ets `barn`-liste kan matches mot eksisterende, delte personkontoer. Ved reelle kall gir verken scratch-domene, `STO_Scratch_Family` eller fixture-data noen ekstra autorisasjon; den eksplisitt aktiverte lokale scratch-mocken er beskrevet nedenfor. API-resultatet gjenbrukes bare i samme Apex-transaksjon og per innlogget bruker. Ved oppretting valideres personvalget gjennom samme resolver før verifisering av foreldreansvar.
@@ -209,6 +211,8 @@ The bulk fixture disables only the unrelated `MessageCacheHandler` while creatin
 Innbokskortene viser originale innsender over tittelen uten å endre bakgrunnsfargen: «Kari Normann startet samtalen» når en annen person startet tråden. Den innloggede som selv startet tråden ser ingen avsendertekst, også når samtalen gjelder et barn. Dette er separat fra representasjonsbanneret inne i samtalen; innbokskort bruker aldri «på vegne av». Foreldre som leser en samtale barnet startet selv ser «Beate Normann startet samtalen». Dette gjelder både siste og tidligere meldinger, med eksisterende person-/kategorifilter. Avsenderetikett og lesestatus returneres nå samlet i tråd-DTO-en. Kortet har ingen egne Apex-/UI API-wirer; feil i sidehentingen vises på innboksnivå.
 
 Personvelgeren i innboksen starter på innlogget bruker (`Deg`) ved et nytt besøk uten returkontekst. Valget lagres ikke i nettleserlagring. Ved valg av barn lagres bare Account-ID i sidens URL-state (`c__inboxPerson`), slik at nettleserens tilbakeknapp beholder valget. Trådlenker og «Innboks»-brødsmulen tar med samme returkontekst. En vanlig inngang til innboksen uten denne parameteren velger `Deg`, også når komponenten gjenbrukes. Returnert Account-ID valideres alltid mot nyhentet foreldreansvar før innhold vises.
+
+Oppdateringer som kommer mens innboksen lastes, samles i én ny henting etter det pågående kallet. «Last inn flere meldinger» er deaktivert under oppdateringen. Ved bytte av samtale eller frakobling ignorerer samtalevisningen utestående lesestatussvar for den forrige visningen, uten å endre tilgang eller lagrede leseposisjoner.
 
 ## Sider i innboksen
 

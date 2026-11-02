@@ -21,6 +21,7 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     recentthreads;
     wiredInbox;
     inboxLoadPending = false;
+    refreshQueued = false;
     loadingAccountId;
     refreshFailed = false;
     pageLoadFailed = false;
@@ -41,10 +42,14 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     requestedPersonValue = SELF_PERSON_VALUE;
 
     refreshInbox = async () => {
-        if (!this.isOnInbox) return;
+        if (!this.isConnected || !this.isOnInbox) return;
         const accountId = this.representedAccountId;
-        if (this.inboxLoadPending && this.loadingAccountId === accountId) return;
+        if (this.inboxLoadPending && this.loadingAccountId === accountId) {
+            this.refreshQueued = true;
+            return;
+        }
         const generation = ++this.pageGeneration;
+        this.refreshQueued = false;
         this.inboxLoadPending = true;
         this.loadingAccountId = accountId;
         this.loadingMore = false;
@@ -67,7 +72,14 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
             this.refreshFailed = true;
             console.error('Could not refresh inbox:', error);
         } finally {
-            if (generation === this.pageGeneration) this.inboxLoadPending = false;
+            if (generation === this.pageGeneration) {
+                this.inboxLoadPending = false;
+                this.loadingAccountId = undefined;
+                if (this.refreshQueued) {
+                    this.refreshQueued = false;
+                    this.refreshInbox();
+                }
+            }
         }
     };
 
@@ -86,6 +98,8 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     disconnectedCallback() {
         this.pageGeneration++;
         this.inboxLoadPending = false;
+        this.loadingAccountId = undefined;
+        this.refreshQueued = false;
         window.removeEventListener('pageshow', this.refreshInbox);
         window.removeEventListener('focus', this.refreshInbox);
         window.removeEventListener(READ_STATE_EVENT, this.refreshInbox);
@@ -153,7 +167,7 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     }
 
     async handleLoadMore() {
-        if (this.loadingMore || !this.hasMore) return;
+        if (this.inboxLoadPending || this.loadingMore || !this.hasMore) return;
         this.loadingMore = true;
         const generation = this.pageGeneration;
         try {
@@ -244,6 +258,9 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         this.beforeNoteId = undefined;
         this.hasMore = false;
         this.pageGeneration++;
+        this.inboxLoadPending = false;
+        this.loadingAccountId = undefined;
+        this.refreshQueued = false;
         this.loadingMore = false;
         this.refreshFailed = false;
         this.pageLoadFailed = false;
@@ -296,6 +313,10 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
 
     get isDataLoaded() {
         return this.wiredInbox?.data !== undefined;
+    }
+
+    get loadMoreDisabled() {
+        return this.inboxLoadPending || this.loadingMore;
     }
 
     // TODO(backend-ready): A success from one query must not hide a failure from the other query.

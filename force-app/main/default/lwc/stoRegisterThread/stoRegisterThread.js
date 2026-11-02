@@ -463,7 +463,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.previousCategory = this.originalCategory;
             this.themeToShow = this.originalThemeToShow;
         }
-        this.loadOpenThreads();
+        this.loadOpenThreads(true);
     }
 
     resetPersonContext() {
@@ -741,7 +741,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     sendChecked() {
-        let checkbox = this.template.querySelector('c-community-checkbox');
+        const checkbox = this.template.querySelector('c-ds-checkbox');
         checkbox.setChecked(this.acceptedTerms);
     }
 

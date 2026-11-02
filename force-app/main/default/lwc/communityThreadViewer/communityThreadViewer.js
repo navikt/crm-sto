@@ -16,7 +16,7 @@ import { latestDisplayedMessage, markMessagesRead } from 'c/stoReadState';
 const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD, CATEGORY_FIELD];
 
 export default class CommunityThreadViewer extends LightningElement {
-    @api recordId;
+    _recordId;
     @api openAlertText;
     @api maxLength;
     @api overrideValidation = false;
@@ -36,8 +36,24 @@ export default class CommunityThreadViewer extends LightningElement {
     replyContext;
     replyContextError;
     readStateError;
-    readPositionPending;
+    readPositionPending = false;
+    readPositionGeneration = 0;
     lastReadMessageId;
+
+    @api
+    get recordId() {
+        return this._recordId;
+    }
+
+    set recordId(value) {
+        if (value === this._recordId) return;
+        this._recordId = value;
+        this.messageGroups = undefined;
+        this.lastReadMessageId = undefined;
+        this.readStateError = undefined;
+        this.readPositionPending = false;
+        this.readPositionGeneration++;
+    }
 
     @wire(getReplyContext, { threadId: '$recordId' })
     wiredReplyContext({ data, error }) {
@@ -50,6 +66,12 @@ export default class CommunityThreadViewer extends LightningElement {
 
     connectedCallback() {
         this.referrer = document.referrer.toLowerCase();
+        this.saveDisplayedReadPosition();
+    }
+
+    disconnectedCallback() {
+        this.readPositionGeneration++;
+        this.readPositionPending = false;
     }
 
     renderedCallback() {
@@ -96,22 +118,39 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     async saveDisplayedReadPosition() {
-        const latest = latestDisplayedMessage(this.messageGroups || []);
-        if (!latest || latest.Id === this.lastReadMessageId || this.readPositionPending) return;
         const threadId = this.recordId;
+        const latest = latestDisplayedMessage(this.messageGroups || []);
+        if (
+            !this.isConnected ||
+            !threadId ||
+            !latest ||
+            latest.Id === this.lastReadMessageId ||
+            this.readPositionPending
+        ) {
+            return;
+        }
+        const generation = this.readPositionGeneration;
+        const isCurrentRequest = () =>
+            this.isConnected && generation === this.readPositionGeneration && threadId === this.recordId;
         this.readPositionPending = true;
         try {
             await markMessagesRead(threadId, latest.Id);
+            if (!isCurrentRequest()) return;
             this.lastReadMessageId = latest.Id;
             this.readStateError = undefined;
         } catch (error) {
             console.error('Could not save thread read position:', error);
-            this.readStateError = 'Lesestatus kunne ikke lagres. Oppdater siden og prøv på nytt.';
+            if (isCurrentRequest()) {
+                this.readStateError = 'Lesestatus kunne ikke lagres. Oppdater siden og prøv på nytt.';
+            }
         } finally {
-            this.readPositionPending = false;
-        }
-        if (!this.readStateError && latestDisplayedMessage(this.messageGroups || [])?.Id !== latest.Id) {
-            this.saveDisplayedReadPosition();
+            if (isCurrentRequest()) {
+                this.readPositionPending = false;
+                const currentMessageId = latestDisplayedMessage(this.messageGroups || [])?.Id;
+                if (currentMessageId && currentMessageId !== latest.Id) {
+                    this.saveDisplayedReadPosition();
+                }
+            }
         }
     }
 
