@@ -10,6 +10,37 @@ public with sharing class stoPersonContext {
         return options;
     }
 
+    public static Boolean verifyRepresentation(String representedPersonIdentifier) {
+        Account parent = authenticatedParent();
+        if (parent == null) {
+            return false;
+        }
+        HttpResponse response = NKS_ForeldreansvarService.verifiser(
+            parent.CRM_Person__r?.Name,
+            representedPersonIdentifier
+        );
+        if (response.getStatusCode() == 204 || response.getStatusCode() == 404) {
+            return false;
+        }
+        if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
+            throw invalidVerificationResponse();
+        }
+        Object body;
+        try {
+            body = JSON.deserializeUntyped(response.getBody());
+        } catch (System.JSONException error) {
+            throw invalidVerificationResponse();
+        }
+        if (!(body instanceof Map<String, Object>)) {
+            throw invalidVerificationResponse();
+        }
+        Object canRepresent = ((Map<String, Object>) body).get('kanRepresentere');
+        if (!(canRepresent instanceof Boolean)) {
+            throw invalidVerificationResponse();
+        }
+        return (Boolean) canRepresent;
+    }
+
     private static List<Account> authorizedChildren() {
         Set<String> childIdents = verifiedChildIdents();
         if (childIdents.isEmpty()) {
@@ -19,11 +50,11 @@ public with sharing class stoPersonContext {
         String adultBirthDate = String.valueOf(Date.today().addYears(-18));
         String today = String.valueOf(Date.today());
         return [
-            SELECT Id, Name, PersonContactId, INT_PersonIdent__c, CRM_Person__r.INT_DateOfBirth__c
+            SELECT Id, Name, PersonContactId, CRM_Person__r.Name, CRM_Person__r.INT_DateOfBirth__c
             FROM Account
             WHERE
                 IsPersonAccount = TRUE
-                AND INT_PersonIdent__c IN :childIdents
+                AND CRM_Person__r.Name IN :childIdents
                 AND CRM_Person__r.INT_Confidential__c = 'UGRADERT'
                 AND CRM_Person__r.INT_DateOfBirth__c > :adultBirthDate
                 AND CRM_Person__r.INT_DateOfBirth__c <= :today
@@ -36,19 +67,11 @@ public with sharing class stoPersonContext {
         if (childIdentsByUser.containsKey(actorId)) {
             return childIdentsByUser.get(actorId);
         }
-        Id actorAccountId = [SELECT AccountId FROM User WHERE Id = :actorId].AccountId;
-        if (actorAccountId == null) {
+        Account parent = authenticatedParent();
+        if (parent == null) {
             return new Set<String>();
         }
-        List<Account> parents = [
-            SELECT INT_PersonIdent__c
-            FROM Account
-            WHERE Id = :actorAccountId AND IsPersonAccount = TRUE
-        ];
-        if (parents.isEmpty()) {
-            return new Set<String>();
-        }
-        HttpResponse response = NKS_ForeldreansvarService.barn(parents[0].INT_PersonIdent__c);
+        HttpResponse response = NKS_ForeldreansvarService.barn(parent.CRM_Person__r?.Name);
         Set<String> childIdents = new Set<String>();
         if (response.getStatusCode() != 204 && response.getStatusCode() != 404) {
             if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
@@ -72,6 +95,26 @@ public with sharing class stoPersonContext {
         }
         childIdentsByUser.put(actorId, childIdents);
         return childIdents;
+    }
+
+    private static Account authenticatedParent() {
+        Id accountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+        if (accountId == null) {
+            return null;
+        }
+        List<Account> parents = [
+            SELECT CRM_Person__r.Name
+            FROM Account
+            WHERE Id = :accountId AND IsPersonAccount = TRUE
+        ];
+        return parents.isEmpty() ? null : parents[0];
+    }
+
+    private static AuraHandledException invalidVerificationResponse() {
+        LoggerUtility logger = new LoggerUtility('Foreldreansvar');
+        logger.error('Ugyldig svar ved verifisering av foreldreansvar', null, CRM_ApplicationDomain.Domain.NKS);
+        logger.publish();
+        return new AuraHandledException('Kunne ikke verifisere foreldreansvar. Prøv igjen senere.');
     }
 
     private static AuraHandledException invalidResponse() {
@@ -109,7 +152,7 @@ public with sharing class stoPersonContext {
                 label += ' (' + age + ' år)';
             }
             value = child.Id;
-            representedPersonIdentifier = child.INT_PersonIdent__c;
+            representedPersonIdentifier = child.CRM_Person__r?.Name;
         }
     }
 }

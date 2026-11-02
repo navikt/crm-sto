@@ -112,7 +112,8 @@ public with sharing class stoHelperClass {
     private static void createMessage(Thread__c thread, ThreadData info) {
         Message__c msg = new Message__c();
         msg.CRM_Message_Text__c = info.msgText;
-        msg.CRM_From_Contact__c = info.contactId;
+        // ToDo: Replace with actual logic for who will be the sender of the message
+        msg.CRM_From_Contact__c = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
         msg.CRM_Thread__c = thread.Id;
         msg.CRM_Read__c = true;
         msg.CRM_Read_Datetime__c = DateTime.now();
@@ -460,10 +461,9 @@ public with sharing class stoHelperClass {
         }
 
         public Boolean validateRepresentation() {
-            String foreldre = '12345678901';
-            String barn = representedPersonIdentifier;
-            NKS_ForeldreansvarService.verifiser(foreldre, barn);
-            return true;
+            return representedPersonIdentifier == null
+                ? true
+                : stoPersonContext.verifyRepresentation(representedPersonIdentifier);
         }
     }
 }

@@ -37,6 +37,34 @@ public with sharing class stoPersonContextTest {
         }
     }
 
+    private class VerificationMock implements HttpCalloutMock {
+        private Integer statusCode;
+        private String responseBody;
+        public Integer calls = 0;
+
+        public VerificationMock(Integer statusCode, String responseBody) {
+            this.statusCode = statusCode;
+            this.responseBody = responseBody;
+        }
+
+        public HttpResponse respond(HttpRequest request) {
+            calls++;
+            Assert.areEqual('POST', request.getMethod());
+            Assert.isTrue(request.getEndpoint().endsWith('/api/foreldreansvar/verifiser'));
+            Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(request.getBody());
+            Assert.areEqual(new Set<String>{ 'forelderIdent', 'barnIdent' }, payload.keySet());
+            Assert.areEqual(PARENT_IDENT, payload.get('forelderIdent'), 'Verify the authenticated parent');
+            Assert.areEqual(FIRST_CHILD_IDENT, payload.get('barnIdent'));
+            HttpResponse response = new HttpResponse();
+            response.setStatusCode(statusCode);
+            response.setHeader('Content-Type', 'application/json');
+            if (responseBody != null) {
+                response.setBody(responseBody);
+            }
+            return response;
+        }
+    }
+
     @TestSetup
     static void setup() {
         UserRole ownerRole = new UserRole(Name = 'STO context ' + STO_TestDataFactory.generateRandomString(8));
@@ -173,7 +201,11 @@ public with sharing class stoPersonContextTest {
 
     private static void assertReturnedAccounts(List<stoPersonContext.PersonOption> options, Set<String> idents) {
         Map<Id, Account> expectedAccounts = new Map<Id, Account>(
-            [SELECT Id, INT_PersonIdent__c FROM Account WHERE INT_PersonIdent__c IN :idents]
+            [
+                SELECT Id, CRM_Person__r.Name
+                FROM Account
+                WHERE IsPersonAccount = TRUE AND CRM_Person__r.Name IN :idents
+            ]
         );
         Assert.areEqual(idents.size(), expectedAccounts.size(), 'All expected test accounts must be accessible');
         Assert.areEqual(expectedAccounts.size(), options.size(), 'Return only matching eligible Person Accounts');
@@ -181,7 +213,7 @@ public with sharing class stoPersonContextTest {
         for (stoPersonContext.PersonOption option : options) {
             actualAccountIds.add(option.value);
             Assert.isTrue(expectedAccounts.containsKey(option.value), 'Do not expose another account');
-            Assert.areEqual(expectedAccounts.get(option.value).INT_PersonIdent__c, option.representedPersonIdentifier);
+            Assert.areEqual(expectedAccounts.get(option.value).CRM_Person__r.Name, option.representedPersonIdentifier);
         }
         Assert.areEqual(expectedAccounts.keySet(), actualAccountIds);
     }
@@ -414,6 +446,142 @@ public with sharing class stoPersonContextTest {
         Test.stopTest();
     }
 
+    private static stoHelperClass.ThreadData representedThreadData() {
+        stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
+        info.representedPersonIdentifier = FIRST_CHILD_IDENT;
+        info.type = 'STO';
+        info.theme = 'Familie';
+        info.inboxTitle = 'Skriv til oss';
+        info.inboxTheme = 'Familie og barn';
+        info.msgText = 'A message on behalf of the child';
+        info.medskriv = true;
+        return info;
+    }
+
+    private static void assertVerificationResult(Integer statusCode, String body, Boolean expected) {
+        User viewer = parent();
+        VerificationMock mock = new VerificationMock(statusCode, body);
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(viewer) {
+            Assert.areEqual(expected, representedThreadData().validateRepresentation());
+        }
+        Assert.areEqual(1, mock.calls);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void representationUsesAuthenticatedParentTest() {
+        assertVerificationResult(200, '{"kanRepresentere":true}', true);
+    }
+
+    @isTest
+    static void negativeVerificationPreventsThreadCreationTest() {
+        User viewer = parent();
+        VerificationMock mock = new VerificationMock(200, '{"kanRepresentere":false}');
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(viewer) {
+            try {
+                stoHelperClass.createThread(representedThreadData());
+                Assert.fail('A negative verification must prevent child submission');
+            } catch (stoHelperClass.NoParentalResponsibilityException expected) {
+                Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
+                Assert.areEqual(0, [SELECT COUNT() FROM Message__c]);
+            }
+        }
+        Assert.areEqual(1, mock.calls);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void noVerificationContentDoesNotAuthorizeTest() {
+        assertVerificationResult(204, null, false);
+    }
+
+    @isTest
+    static void verificationParentNotFoundDoesNotAuthorizeTest() {
+        assertVerificationResult(404, null, false);
+    }
+
+    private static void assertInvalidVerification(String body) {
+        User viewer = parent();
+        VerificationMock mock = new VerificationMock(200, body);
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(viewer) {
+            try {
+                representedThreadData().validateRepresentation();
+                Assert.fail('Malformed verification must surface an error, not authorize a submission');
+            } catch (AuraHandledException expected) {
+                Assert.isNotNull(expected.getMessage());
+            }
+        }
+        Assert.areEqual(1, mock.calls);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void blankVerificationIsAnErrorTest() {
+        assertInvalidVerification(' ');
+    }
+
+    @isTest
+    static void malformedVerificationIsAnErrorTest() {
+        assertInvalidVerification('not json');
+    }
+
+    @isTest
+    static void nullVerificationIsAnErrorTest() {
+        assertInvalidVerification('null');
+    }
+
+    @isTest
+    static void missingVerificationFlagIsAnErrorTest() {
+        assertInvalidVerification('{}');
+    }
+
+    @isTest
+    static void nonBooleanVerificationFlagIsAnErrorTest() {
+        assertInvalidVerification('{"kanRepresentere":"true"}');
+    }
+
+    @isTest
+    static void selfSubmissionSkipsChildVerificationTest() {
+        User viewer = parent();
+        Test.startTest();
+        System.runAs(viewer) {
+            stoHelperClass.ThreadData info = representedThreadData();
+            info.representedPersonIdentifier = null;
+            Assert.isTrue(info.validateRepresentation());
+            Assert.areEqual(0, Limits.getCallouts());
+        }
+        Test.stopTest();
+    }
+
+    @isTest
+    static void representedChildRemainsSubjectButParentIsMessageSenderTest() {
+        User viewer = parent();
+        Account child = account(FIRST_CHILD_IDENT);
+        Test.startTest();
+        System.runAs(viewer) {
+            stoHelperClass.ThreadData info = representedThreadData();
+            Thread__c thread = info.toThread();
+            Assert.areEqual(child.Id, thread.CRM_Account__c);
+            Assert.areEqual(child.PersonContactId, thread.CRM_Contact__c);
+            insert thread;
+            stoHelperClass.createMessage(thread, info);
+            Message__c message = [
+                SELECT CRM_From_Contact__c
+                FROM Message__c
+                WHERE CRM_Thread__c = :thread.Id
+                LIMIT 1
+            ];
+            Assert.areEqual(viewer.ContactId, message.CRM_From_Contact__c);
+        }
+        Test.stopTest();
+    }
+
     @isTest
     static void personOptionAgeTest() {
         Map<Date, Integer> expectedAges = new Map<Date, Integer>{
@@ -426,23 +594,40 @@ public with sharing class stoPersonContextTest {
                 Id = '001000000000001AAA',
                 Name = 'Barn',
                 INT_PersonIdent__c = '12345678910',
-                CRM_Person__r = new Person__c(INT_DateOfBirth__c = String.valueOf(birthDate))
+                CRM_Person__r = new Person__c(Name = '12345678910', INT_DateOfBirth__c = String.valueOf(birthDate))
             );
             stoPersonContext.PersonOption option = new stoPersonContext.PersonOption(child);
 
             Assert.areEqual('Barn (' + expectedAges.get(birthDate) + ' år)', option.label);
             Assert.areEqual(child.Id, option.value);
-            Assert.areEqual(child.INT_PersonIdent__c, option.representedPersonIdentifier);
+            Assert.areEqual(child.CRM_Person__r.Name, option.representedPersonIdentifier);
         }
     }
 
     @isTest
     static void personOptionWithoutBirthDateTest() {
-        Account child = new Account(Id = '001000000000001AAA', Name = 'Barn', INT_PersonIdent__c = '12345678910');
+        Account child = new Account(
+            Id = '001000000000001AAA',
+            Name = 'Barn',
+            CRM_Person__r = new Person__c(Name = '12345678910')
+        );
         stoPersonContext.PersonOption option = new stoPersonContext.PersonOption(child);
 
         Assert.areEqual('Barn', option.label);
         Assert.areEqual(child.Id, option.value);
-        Assert.areEqual(child.INT_PersonIdent__c, option.representedPersonIdentifier);
+        Assert.areEqual(child.CRM_Person__r.Name, option.representedPersonIdentifier);
+    }
+
+    @isTest
+    static void personOptionUsesPersonIdentifierInsteadOfAccountCopyTest() {
+        Account child = new Account(
+            Id = '001000000000001AAA',
+            Name = 'Barn',
+            INT_PersonIdent__c = '12345678999',
+            CRM_Person__r = new Person__c(Name = '12345678910')
+        );
+        stoPersonContext.PersonOption option = new stoPersonContext.PersonOption(child);
+
+        Assert.areEqual('12345678910', option.representedPersonIdentifier);
     }
 }

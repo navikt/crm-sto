@@ -1,6 +1,5 @@
 import { LightningElement, wire, api } from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
-// ToDo(backend): Existing createThread must resolve child identifiers, verify the logged-in parent and retain that parent as sender.
 import createThread from '@salesforce/apex/stoHelperClass.createThread';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
@@ -465,7 +464,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.previousCategory = this.originalCategory;
             this.themeToShow = this.originalThemeToShow;
         }
-        this.loadOpenThreads();
+        this.loadOpenThreads(true);
     }
 
     resetPersonContext() {
@@ -579,7 +578,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
      * @Author Lars Petter Johnsen
      */
     submitRequest() {
-        // ToDo(backend): Accept null=self or the selected child ident; create subject/sender shares without scratch substitutions.
+        // ToDo(backend): Create subject/sender shares without scratch substitutions.
         // TODO(backend-ready): A lookup failure must not block self submission or silently convert a child submission.
         if (!this.hasPersonContext || this.threadLoadFailed || this.shouldShowSpinner) {
             return;
@@ -744,7 +743,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     sendChecked() {
-        let checkbox = this.template.querySelector('c-community-checkbox');
+        const checkbox = this.template.querySelector('c-ds-checkbox');
         checkbox.setChecked(this.acceptedTerms);
     }
 

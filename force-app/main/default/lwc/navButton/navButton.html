@@ -1,5 +1,12 @@
 <template>
-    <a role="button" data-variant="primary" href={url} class="aksel-button aksel-button--medium" onclick={handleClick}
+    <a
+        role="button"
+        data-variant="primary"
+        href={url}
+        class="aksel-button aksel-button--medium"
+        onclick={handleClick}
+        onkeydown={handleKeyDown}
+        onkeyup={handleKeyUp}
         ><span class="aksel-label">{title}</span></a
     >
 </template>

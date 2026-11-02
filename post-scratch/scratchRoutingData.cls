@@ -86,4 +86,20 @@ for (String origin : categories.keySet()) {
     existingFixtures.add(fixtureName);
 }
 System.assertEquals(2, existingFixtures.size(), 'Both STO and BTO utility fixtures must exist.');
+List<Case> fixtureUpdates = new List<Case>();
+for (Thread__c thread : [
+    SELECT Name, CRM_API_Reference__c, CRM_Related_Object__c
+    FROM Thread__c
+    WHERE Name IN :fixtureNames AND CRM_Account__c = :sender.Id
+]) {
+    System.assertNotEquals(null, thread.CRM_API_Reference__c, 'The fixture thread must have an API reference.');
+    System.assertNotEquals(null, thread.CRM_Related_Object__c, 'The fixture thread must have a related Case.');
+    fixtureUpdates.add(
+        new Case(
+            Id = thread.CRM_Related_Object__c,
+            NKS_Henvendelse_BehandlingsId__c = thread.CRM_API_Reference__c
+        )
+    );
+}
+update fixtureUpdates;
 System.debug(LoggingLevel.INFO, 'Scratch utility fixtures ready: ' + existingFixtures.size());

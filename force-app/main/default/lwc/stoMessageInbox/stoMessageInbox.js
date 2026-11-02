@@ -169,7 +169,7 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     }
 
     async handleLoadMore() {
-        if (this.loadingMore || !this.hasMore) return;
+        if (this.inboxLoadPending || this.loadingMore || !this.hasMore) return;
         this.loadingMore = true;
         const generation = this.pageGeneration;
         try {
@@ -315,6 +315,10 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
 
     get isDataLoaded() {
         return this.wiredInbox?.data !== undefined;
+    }
+
+    get loadMoreDisabled() {
+        return this.inboxLoadPending || this.loadingMore;
     }
 
     // TODO(backend-ready): A success from one query must not hide a failure from the other query.

@@ -119,7 +119,7 @@ Fixture-tilgang til testpersonpostene beholdes fordi syntetiske personer ikke al
 
 `npm run scratchRoutingSetup` setter opp den interne scratch-brukerens Service Resource og ferdigheter, deployer eksisterende kø-/fordelingsregelmetadata og oppretter én navngitt STO/Familie og én BTO/Helse fixture med Case, Thread og Message for Doktor Proktor. `npm run scratchSetup` og testdatasteget i `npm run mac:build` bruker samme kommando.
 
-Ruting av disse navngitte testpostene bruker vanlige assignment rules. Gjentatte kjøringer dupliserer ikke dem eller åpner ferdige fixtures på nytt. Oppsettet flytter eller reparerer ikke ekte innsendinger eller andre eksisterende saker; backend må rute ekte STO/BTO. Skriptene avbryter utenfor scratch org.
+Ruting av disse navngitte testpostene bruker vanlige assignment rules. Oppsettet synkroniserer `Case.NKS_Henvendelse_BehandlingsId__c` med `Thread.CRM_API_Reference__c` for både nye og eksisterende navngitte fixtures, slik at samtalene kan åpnes fra verktøylinjen. Gjentatte kjøringer dupliserer ikke dem eller åpner ferdige fixtures på nytt. Oppsettet flytter eller reparerer ikke ekte innsendinger eller andre eksisterende saker; backend må rute ekte STO/BTO. Skriptene avbryter utenfor scratch org.
 
 <!-- ToDo(backend): Complete real case routing/contact handling; do not reintroduce post-setup re-routing of community submissions. -->
 
