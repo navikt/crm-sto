@@ -11,7 +11,6 @@ import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
-// ToDo(backend): Add stoPersonContext.getRepresentableChildren; value is Account ID, representedPersonIdentifier is the child ident.
 import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
 import { publish, MessageContext } from 'lightning/messageService';
 import globalModalOpen from '@salesforce/messageChannel/globalModalOpen__c';
@@ -457,6 +456,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.spinnerText = spinnerReasonTextMap.load;
 
         this.personSelectionConfirmed = true;
+        if (
+            this.isWritingForChild &&
+            this.radioButtonMap[this.title]?.[this.originalThemeToShow]?.category === 'Pleiepenger'
+        ) {
+            this.themeRadioButtonSelected = undefined;
+            this.category = this.originalCategory;
+            this.previousCategory = this.originalCategory;
+            this.themeToShow = this.originalThemeToShow;
+        }
         this.loadOpenThreads();
     }
 
@@ -768,6 +776,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     previousCategory;
     themeRadioButtonSelected;
     handleThemeRadioButtonChange(event) {
+        if (
+            this.isWritingForChild &&
+            this.radioButtonMap[this.title]?.[this.originalThemeToShow]?.category === 'Pleiepenger'
+        ) {
+            console.warn('Ignored pleiepenger selection when writing on behalf of a child.');
+            return;
+        }
         if (this.title === 'Skriv til oss' && this.originalThemeToShow === 'Ufør') {
             this.themeRadioButtonSelected = event.detail.value === 'true';
             return;
@@ -888,6 +903,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     get showThemeRadioButton() {
         const mapping = this.radioButtonMap[this.title]?.[this.originalThemeToShow];
         if (!mapping) return false;
+        if (this.isWritingForChild && mapping.category === 'Pleiepenger') return false;
         return this.themeToShow === this.originalThemeToShow;
     }
 

@@ -4,7 +4,6 @@ import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import getInboxPage from '@salesforce/apex/stoInboxHelper.getAccessibleInboxPage';
 // ToDo(backend): Add stoInboxHelper.getNextInboxPage with the same authorization and bounded keyset cursors.
 import getNextInboxPage from '@salesforce/apex/stoInboxHelper.getNextInboxPage';
-// ToDo(backend): Add stoPersonContext.getRepresentableChildren returning verified label/value/representedPersonIdentifier.
 import getRepresentableChildren from '@salesforce/apex/stoPersonContext.getRepresentableChildren';
 import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';

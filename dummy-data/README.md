@@ -6,6 +6,8 @@ These fixtures support manual testing of personal inboxes, messages written on b
 
 **Prerequisite:** Integrate the real backend support before deploying the whole project. Test setup supplies synthetic records and logins, not missing responsibility checks, conversation access, sender authorization, read positions or production routing.
 
+Child selection retains the existing real `barn()` lookup. The service returns child identities, which are matched to accessible Person Accounts; displayed ages use the stored `Person__c.INT_DateOfBirth__c` birth dates, accounting for whether this year's birthday has occurred. Fixture relationships do not replace service responses.
+
 Import `data\plan.json` followed by `sto\plan.json`. The family scenario contains three parents and two children:
 
 | Person | Synthetic identifier | Expected backend responsibility |
@@ -16,7 +18,9 @@ Import `data\plan.json` followed by `sto\plan.json`. The family scenario contain
 | Beate Normann | 12345678904 | Self only; born 2018-10-18 |
 | Ola Normann | 12345678905 | Self only; born 2014-10-18 |
 
-Check that Far/Mor can select both children, Medmor can select only Beate, and each child can use their own inbox without representation. Check original-sender-only replies/closure, representation text from each reader's perspective, and that reading as one person does not clear another's unread status. Actual responsibility results, not the fixture family map, must control access.
+Check that Far/Mor can select both children, Medmor can select only Beate, and each child can use their own inbox without representation. When a child opens a conversation started by a parent, check that they see the same sender-on-behalf-of-child banner and open-conversation read-only notice as another parent. A child who started their own conversation keeps the ordinary reply view without a representation banner. Check original-sender-only replies/closure and that reading as one person does not clear another's unread status. Actual responsibility results, not the fixture family map, must control access.
+
+Under both Helse and Familie, check that the pleiepenger-for-sykt-barn question is available when writing for yourself but absent when writing on behalf of a child. The child's message stays in the selected Helse/Familie topic, without a hidden or previously selected pleiepenger answer.
 
 Run `npm run scratchSetup` against the intended scratch org after deployment/import. The family has separate community logins; Doktor uses the single member-based Plus license and the other four use login-based Plus licenses. No password is stored in source.
 

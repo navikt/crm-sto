@@ -14,13 +14,17 @@ Innboksen samler siste og tidligere meldinger og lar brukeren filtrere på tema.
 
 Der personvalget er tilgjengelig, kan brukeren velge **Deg** eller et barn vedkommende har foreldreansvar for. Et nytt besøk starter på Deg; tilbakeknappen beholder personen man kom fra. Barn som har fylt 18 år eller har beskyttede opplysninger skal ikke være tilgjengelige for representasjon.
 
+Personvalget bruker det eksisterende `barn()`-kallet til foreldreansvarstjenesten. Returnerte personidenter kobles til tilgjengelige personkontoer. Alder beregnes fra personens lagrede fødselsdato som hele år, med ett år trukket fra dersom årets fødselsdag ikke har vært ennå.
+
 Informasjon om representasjon vises før brukeren går videre til meldingsskjemaet. Når en forelder skriver for et barn, gjelder samtalen barnet, mens forelderen fortsatt er den originale innsenderen. Andre med foreldreansvar og barnet kan lese, men bare den som startet samtalen kan svare eller avslutte den.
 
-Innbokskort viser hvem som startet samtalen når det var en annen enn den innloggede. Inne i samtalen ser innsenderen barnets navn og alder, andre foreldre ser hvem som skrev på vegne av barnet, og barnet ser ikke et representasjonsbanner i egen samtale. Saksbehandlerens svarhilsen rettes til originale innsender, ikke automatisk til barnet.
+Ved skriving på vegne av et barn vises ikke spørsmålet om **pleiepenger for sykt barn**, verken under **Helse og sykdom** eller **Familie og barn**. Spørsmålet beholdes når brukeren skriver for seg selv.
+
+Innbokskort viser hvem som startet samtalen når det var en annen enn den innloggede. Inne i samtalen ser innsenderen barnets navn og alder. Andre foreldre og barnet ser hvem som skrev på vegne av barnet, og i en åpen samtale får de samme informasjon om at bare innsenderen kan svare. Et barn som startet sin egen samtale får ikke et representasjonsbanner. Saksbehandlerens svarhilsen rettes til originale innsender, ikke automatisk til barnet.
 
 Lesestatus skal være personlig: at en annen forelder eller barnet leser en samtale, skal ikke fjerne den innloggedes ulest-merke. Feil ved henting av personvalg, samtaler, svarrett eller lesestatus skal vises tydelig.
 
-**Forutsetning for full testing:** Tilhørende backend-støtte for foreldreansvar, tilgang, svarrett, ruting og personlig lesestatus må være ferdig og integrert før hele løsningen deployes. Testdata og scratch-oppsett erstatter ikke denne funksjonaliteten. Manglende støtte er markert med `ToDo(backend)` i koden.
+**Forutsetning for full testing:** Det eksisterende oppslaget av barn er beholdt. Tilhørende backend-støtte for opprettelse på vegne av barn, samtaletilgang, svarrett, ruting og personlig lesestatus må være ferdig og integrert før hele løsningen deployes. Testdata og scratch-oppsett erstatter ikke denne funksjonaliteten. Manglende støtte er markert med `ToDo(backend)` i koden.
 
 ## Dependencies
 

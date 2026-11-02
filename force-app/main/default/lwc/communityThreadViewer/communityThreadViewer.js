@@ -8,7 +8,7 @@ import createThreadMessage from '@salesforce/apex/CRM_MessageHelperExperience.cr
 // ToDo(backend): Enforce the same original-sender rule when closing a thread.
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import getCloseIntent from '@salesforce/apex/stoHelperClass.getCloseIntent';
-// ToDo(backend): Add stoHelperClass.getReplyContext with verified canReply and viewer-specific representedLabel.
+// ToDo(backend): Add getReplyContext with verified canReply and sender/represented names for every reader, including the child.
 import getReplyContext from '@salesforce/apex/stoHelperClass.getReplyContext';
 
 import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
@@ -182,7 +182,19 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     get representationLabel() {
-        return this.replyContext?.representedLabel || '';
+        const context = this.replyContext;
+        if (context?.representedLabel) {
+            return context.representedLabel;
+        }
+        if (
+            context?.canReply === false &&
+            context.wasStartedOnBehalfOfOwner === true &&
+            context.senderName &&
+            context.representedName
+        ) {
+            return `${context.senderName} på vegne av ${context.representedName}`;
+        }
+        return '';
     }
 
     handleSendButtonClick() {
