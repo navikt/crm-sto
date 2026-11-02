@@ -454,6 +454,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.spinnerText = spinnerReasonTextMap.load;
 
         this.personSelectionConfirmed = true;
+        if (
+            this.isWritingForChild &&
+            this.radioButtonMap[this.title]?.[this.originalThemeToShow]?.category === 'Pleiepenger'
+        ) {
+            this.themeRadioButtonSelected = undefined;
+            this.category = this.originalCategory;
+            this.previousCategory = this.originalCategory;
+            this.themeToShow = this.originalThemeToShow;
+        }
         this.loadOpenThreads();
     }
 
@@ -764,6 +773,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     previousCategory;
     themeRadioButtonSelected;
     handleThemeRadioButtonChange(event) {
+        if (
+            this.isWritingForChild &&
+            this.radioButtonMap[this.title]?.[this.originalThemeToShow]?.category === 'Pleiepenger'
+        ) {
+            console.warn('Ignored pleiepenger selection when writing on behalf of a child.');
+            return;
+        }
         if (this.title === 'Skriv til oss' && this.originalThemeToShow === 'Ufør') {
             this.themeRadioButtonSelected = event.detail.value === 'true';
             return;
@@ -884,6 +900,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     get showThemeRadioButton() {
         const mapping = this.radioButtonMap[this.title]?.[this.originalThemeToShow];
         if (!mapping) return false;
+        if (this.isWritingForChild && mapping.category === 'Pleiepenger') return false;
         return this.themeToShow === this.originalThemeToShow;
     }
 

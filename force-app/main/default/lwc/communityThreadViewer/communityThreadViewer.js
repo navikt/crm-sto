@@ -178,7 +178,19 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     get representationLabel() {
-        return this.replyContext?.representedLabel || '';
+        const context = this.replyContext;
+        if (context?.representedLabel) {
+            return context.representedLabel;
+        }
+        if (
+            context?.canReply === false &&
+            context.wasStartedOnBehalfOfOwner === true &&
+            context.senderName &&
+            context.representedName
+        ) {
+            return `${context.senderName} på vegne av ${context.representedName}`;
+        }
+        return '';
     }
 
     handleSendButtonClick() {
