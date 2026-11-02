@@ -1,20 +1,32 @@
 <template>
     <div class="container">
-        <c-sto-medskriv-samtykke record-id={recordId}></c-sto-medskriv-samtykke>
-        <c-community-alert alert-type="info" alert-text={infoText}></c-community-alert>
+        <template lwc:if={showMedskrivConsent}>
+            <c-sto-medskriv-samtykke record-id={_recordId}></c-sto-medskriv-samtykke>
+        </template>
+        <template lwc:if={showReplyInformation}>
+            <c-ds-alert alert-type="info">
+                <template lwc:if={closed}>
+                    Samtalen er avsluttet. Vil du&nbsp;
+                    <a class="aksel-link" data-color="accent" href="https://www.nav.no/skriv-til-oss" target="_self"
+                        >sende en ny melding</a
+                    >, kan du gjøre det her.
+                </template>
+                <template lwc:else>
+                    Du kan svare på denne samtalen innen syv dager. Samtalen avsluttes automatisk dersom du ikke har
+                    flere spørsmål, og lagres i din innboks.
+                </template>
+            </c-ds-alert>
+        </template>
         <template lwc:if={showSurveyButton}>
             <div class="survey-container">
-                <h2 class="navds-heading navds-heading--small navds-typo--spacing">
+                <h2 class="aksel-heading aksel-heading--small aksel-typo--spacing">
                     Vi ønsker å lære av din opplevelse. Har du tid til å svare på to spørsmål?
                 </h2>
                 <div class="survey-row">
-                    <c-ds-button
-                        variant="primary"
-                        size="medium"
-                        onclick={navigateToSurvey}
-                        text="Klikk her for å svare"
-                    ></c-ds-button>
-                    <span class="navds-body-short navds-body-short--medium survey-span"
+                    <button data-variant="primary" class="aksel-button aksel-button--medium" onclick={navigateToSurvey}>
+                        <span class="aksel-label"> Klikk her for å svare </span>
+                    </button>
+                    <span class="aksel-body-short aksel-body-short--medium survey-span"
                         >Din tilbakemelding er anonym.</span
                     >
                 </div>

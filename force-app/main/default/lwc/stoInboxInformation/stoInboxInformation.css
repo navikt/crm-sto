@@ -1,20 +1,20 @@
 .container {
-    margin: var(--a-spacing-5) auto var(--a-spacing-20) auto;
+    margin: var(--ax-space-20) auto var(--ax-space-80) auto;
     max-width: 640px;
 }
 
 .survey-container {
-    margin-top: var(--a-spacing-8);
+    margin-top: var(--ax-space-32);
 }
 
 .survey-span {
-    margin-left: var(--a-spacing-3);
+    margin-left: var(--ax-space-12);
 }
 
 @media only screen and (max-width: 576px) {
     .container {
-        margin-left: var(--a-spacing-4);
-        margin-right: var(--a-spacing-4);
+        margin-left: var(--ax-space-16);
+        margin-right: var(--ax-space-16);
     }
 
     .survey-row {
@@ -23,6 +23,6 @@
     }
 
     .survey-span {
-        margin: var(--a-spacing-4) 0 var(--a-spacing-4) 0;
+        margin: var(--ax-space-16) 0 var(--ax-space-16) 0;
     }
 }

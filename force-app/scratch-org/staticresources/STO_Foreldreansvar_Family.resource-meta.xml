@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Registers the private JSON fixture roster for scratch Account/Person setup only, not integration responses or authorization. -->
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Private</cacheControl>
+    <contentType>application/json</contentType>
+    <description>Synthetic family fixture data for scratch login and Account/Person setup only. Not backend authorization.</description>
+</StaticResource>

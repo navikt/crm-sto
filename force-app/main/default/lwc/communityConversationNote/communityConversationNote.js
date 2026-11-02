@@ -1,4 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
+// ToDo(backend): Authorize the note/account before updating read flags for a parent with Read-only access.
 import markasread from '@salesforce/apex/stoInboxHelper.markAsRead';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getRelatedConversations from '@salesforce/apex/relatedConversationNoteHelper.getRelatedConversations';

@@ -1,18 +1,18 @@
 .spacing-bottom {
-    margin-bottom: var(--a-spacing-7);
+    margin-bottom: var(--ax-space-28);
 }
 
 .spacing-top {
-    margin-top: var(--a-spacing-1);
+    margin-top: var(--ax-space-4);
 }
 
 .container {
-    margin: 0 auto var(--a-spacing-20) auto;
+    margin: 0 auto var(--ax-space-80) auto;
     max-width: 640px;
 }
 
 .icon-container {
-    padding-right: var(--a-spacing-5);
+    padding-right: var(--ax-space-20);
     text-align: right !important;
 }
 
@@ -30,8 +30,8 @@
 
 @media only screen and (max-width: 576px) {
     .container {
-        margin-left: var(--a-spacing-4);
-        margin-right: var(--a-spacing-4);
+        margin-left: var(--ax-space-16);
+        margin-right: var(--ax-space-16);
     }
 
     .icon-container {

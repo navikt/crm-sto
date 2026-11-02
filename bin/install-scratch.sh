@@ -1,4 +1,6 @@
 #!/bin/bash
+# Bootstraps the disposable STO test environment and runs the shared login, data and routing setup.
+# The cleanup step deletes the selected scratch org; this is environment preparation, not backend implementation.
 
 SCRIPT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd $SCRIPT_PATH/..
@@ -51,6 +53,7 @@ installDependencies() {
 }
 
 deployingMetadata() {
+    # ToDo(backend): Merge the required backend endpoints/permissions before whole-project deployment; do not overwrite them with older Apex.
     if [[ $npm_config_without_deploy ]]; then
         echo "Skipping..."
     else
@@ -67,7 +70,7 @@ assignPermission() {
 insertingTestData() {
    sf data import tree --plan dummy-data/data/plan.json || { error $? '"sf data import tree" command failed.'; }
    sf data import tree --plan dummy-data/sto/plan.json || { error $? '"sf data import tree" command failed.'; }
-   sf apex run --file dummy-data/GenerateData.apex
+   npm run scratchSetup || { error $? '"npm run scratchSetup" test data and routing setup failed.'; }
 }
 
 openOrg() {
