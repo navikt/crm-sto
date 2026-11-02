@@ -106,7 +106,7 @@ export default class NksFedrekvotesaken extends LightningElement {
         if (phoneNumber === '' || phoneNumber == null) {
             errorList.errors.push({
                 Id: errorList.length + 1,
-                EventItem: '.phoneNumber',
+                EventItem: '.phone-number',
                 Text: 'Telefonnummer kan ikke være tom'
             });
         }

@@ -22,6 +22,12 @@ Check that Far/Mor can select both children, Medmor can select only Beate, and e
 
 Under both Helse and Familie, check that the pleiepenger-for-sykt-barn question is available when writing for yourself but absent when writing on behalf of a child. The child's message stays in the selected Helse/Familie topic, without a hidden or previously selected pleiepenger answer.
 
+When a read-state update arrives while the inbox is loading, check that a follow-up refresh brings in the latest unread count. Updates received during one request should be coalesced; switching person must ignore the old person's response, and leaving the component must cancel queued work. Request failures must remain visible.
+
+### Automated child-selection coverage
+
+The child-selection Apex tests use isolated synthetic Person Accounts and a community parent with explicit Read shares. Mocked HTTP responses exercise the real `barn()` call and eligibility query, including empty/error responses, duplicate or unmatched identities, non-person and unshared accounts, the 18th-birthday boundary, protected children, and future/missing birth dates. Existing name/age/identity formatting checks remain. These tests do not use a test-only eligibility bypass, scratch-family authorization, or live service responses; Salesforce rolls back their test records.
+
 Run `npm run scratchSetup` against the intended scratch org after deployment/import. The family has separate community logins; Doktor uses the single member-based Plus license and the other four use login-based Plus licenses. No password is stored in source.
 
 User/permission setup and Account/Person sharing run in separate transactions to avoid `MIXED_DML_OPERATION`. They are idempotent. In an existing org, import only missing people and run just those two setup scripts when updating logins/fixture record access. Full setup also creates another generic sample conversation.

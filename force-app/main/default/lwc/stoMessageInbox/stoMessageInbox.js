@@ -22,6 +22,7 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     recentthreads;
     wiredInbox;
     inboxLoadPending = false;
+    refreshQueued = false;
     loadingAccountId;
     refreshFailed = false;
     pageLoadFailed = false;
@@ -41,41 +42,6 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     pageReference;
     requestedPersonValue = SELF_PERSON_VALUE;
 
-    refreshInbox = async () => {
-        if (!this.isOnInbox) return;
-        const accountId = this.representedAccountId;
-        if (this.inboxLoadPending && this.loadingAccountId === accountId) return;
-        const generation = ++this.pageGeneration;
-        this.inboxLoadPending = true;
-        this.loadingAccountId = accountId;
-        this.loadingMore = false;
-        try {
-            const data = await getInboxPage({
-                representedAccountId: accountId,
-                beforeThreadId: null,
-                beforeNoteId: null
-            });
-            if (generation !== this.pageGeneration) return;
-            this.wiredInbox = { data };
-            this.refreshFailed = false;
-            this.applyPage(data, false);
-        } catch (error) {
-            if (generation !== this.pageGeneration) return;
-            this.wiredInbox = { error };
-            this.threads = [];
-            this.recentthreads = [];
-            this.hasMore = false;
-            this.refreshFailed = true;
-            console.error('Could not refresh inbox:', error);
-        } finally {
-            if (generation === this.pageGeneration) this.inboxLoadPending = false;
-        }
-    };
-
-    handleVisibility = () => {
-        if (document.visibilityState === 'visible') this.refreshInbox();
-    };
-
     connectedCallback() {
         window.addEventListener('pageshow', this.refreshInbox);
         window.addEventListener('focus', this.refreshInbox);
@@ -84,9 +50,15 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         this.refreshInbox();
     }
 
+    renderedCallback() {
+        setDecoratorParams('Innboks', 'Innboks', '');
+    }
+
     disconnectedCallback() {
         this.pageGeneration++;
         this.inboxLoadPending = false;
+        this.loadingAccountId = undefined;
+        this.refreshQueued = false;
         window.removeEventListener('pageshow', this.refreshInbox);
         window.removeEventListener('focus', this.refreshInbox);
         window.removeEventListener(READ_STATE_EVENT, this.refreshInbox);
@@ -123,10 +95,6 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         this.selectPerson(this.requestedPersonValue);
     }
 
-    renderedCallback() {
-        setDecoratorParams('Innboks', 'Innboks', '');
-    }
-
     @wire(getRecord, { recordId: USER_ID, fields: [USER_NAME_FIELD] })
     wiredCurrentUser({ data, error }) {
         if (data) {
@@ -136,6 +104,52 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
             console.error('Could not load current user name:', error);
         }
     }
+
+    refreshInbox = async () => {
+        if (!this.isConnected || !this.isOnInbox) return;
+        const accountId = this.representedAccountId;
+        if (this.inboxLoadPending && this.loadingAccountId === accountId) {
+            this.refreshQueued = true;
+            return;
+        }
+        const generation = ++this.pageGeneration;
+        this.refreshQueued = false;
+        this.inboxLoadPending = true;
+        this.loadingAccountId = accountId;
+        this.loadingMore = false;
+        try {
+            const data = await getInboxPage({
+                representedAccountId: accountId,
+                beforeThreadId: null,
+                beforeNoteId: null
+            });
+            if (generation !== this.pageGeneration) return;
+            this.wiredInbox = { data };
+            this.refreshFailed = false;
+            this.applyPage(data, false);
+        } catch (error) {
+            if (generation !== this.pageGeneration) return;
+            this.wiredInbox = { error };
+            this.threads = [];
+            this.recentthreads = [];
+            this.hasMore = false;
+            this.refreshFailed = true;
+            console.error('Could not refresh inbox:', error);
+        } finally {
+            if (generation === this.pageGeneration) {
+                this.inboxLoadPending = false;
+                this.loadingAccountId = undefined;
+                if (this.refreshQueued) {
+                    this.refreshQueued = false;
+                    this.refreshInbox();
+                }
+            }
+        }
+    };
+
+    handleVisibility = () => {
+        if (document.visibilityState === 'visible') this.refreshInbox();
+    };
 
     applyPage(page, append) {
         // ToDo(backend): Return recent/older arrays, both cursors and hasMore, with viewer-specific unread/sender fields.
@@ -246,6 +260,9 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         this.beforeNoteId = undefined;
         this.hasMore = false;
         this.pageGeneration++;
+        this.inboxLoadPending = false;
+        this.loadingAccountId = undefined;
+        this.refreshQueued = false;
         this.loadingMore = false;
         this.refreshFailed = false;
         this.pageLoadFailed = false;
