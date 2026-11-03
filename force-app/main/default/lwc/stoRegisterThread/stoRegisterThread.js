@@ -107,6 +107,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     acceptedTerms = false;
     newsList = [];
     errorList = { title: '', errors: [] };
+    focusErrorSummary = false;
+    validationStarted = false;
+    validationRefreshPending = false;
     message;
     modalOpen = false;
     maxLength = 2000;
@@ -327,6 +330,13 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.template.querySelector('c-ds-loader')?.focus();
         }
 
+        this.refreshPendingValidation();
+
+        if (this.focusErrorSummary) {
+            this.focusErrorSummary = false;
+            this.template.querySelector('.errorSummary')?.focusHeader();
+        }
+
         document.title = this.tabName;
         setDecoratorParams(this.threadTypeToMake, this.title, this.themeToShow);
     }
@@ -448,6 +458,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
 
         this.errorList = { title: '', errors: [] };
+        this.validationStarted = false;
+        this.validationRefreshPending = false;
+        this.focusErrorSummary = false;
         this.openThreadList = [];
         this.registerNewThread = false;
         this.threadLoadFailed = false;
@@ -485,6 +498,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.themeRadioButtonSelected = undefined;
         this.showBTOConfirmation = false;
         this.errorList = { title: '', errors: [] };
+        this.validationStarted = false;
+        this.validationRefreshPending = false;
+        this.focusErrorSummary = false;
     }
 
     setThemeToShow() {
@@ -544,6 +560,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     togglechecked() {
         this.acceptedTerms = !this.acceptedTerms;
+        this.queueValidationRefresh();
     }
 
     showTerms() {
@@ -573,6 +590,79 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.sendChecked();
     }
 
+    buildValidationErrors() {
+        const errors = [];
+        if (this.template.querySelector('c-ds-textarea')) {
+            if (!this.message || this.message.length == null) {
+                errors.push({
+                    Id: 1,
+                    EventItem: '.inputTextbox',
+                    Text: 'Tekstboksen kan ikke være tom.'
+                });
+            } else if (this.message.length > this.maxLength) {
+                errors.push({
+                    Id: 2,
+                    EventItem: '.inputTextbox',
+                    Text: 'Det er for mange tegn i tekstboksen.'
+                });
+            }
+        }
+        if (this.refs.themeRadioButton && this.refs.themeRadioButton.getValue() == null) {
+            errors.push({
+                Id: 3,
+                EventItem: '.themeRadioButton',
+                Text: 'Du må velge et av alternativene.'
+            });
+        }
+        if (this.refs.medskrivRadiobuttons && this.refs.medskrivRadiobuttons.getValue() == null) {
+            errors.push({
+                Id: 4,
+                EventItem: '.medskriv',
+                Text: 'Du må velge et av alternativene.'
+            });
+        }
+        if (this.template.querySelector('c-ds-checkbox') && !this.acceptedTerms) {
+            errors.push({
+                Id: 5,
+                EventItem: '.checkboxContainer',
+                Text: 'For å sende meldingen må du godta vilkårene.'
+            });
+        }
+        return errors;
+    }
+
+    validateForm() {
+        let fieldsValid = true;
+        this.template.querySelectorAll('c-ds-textarea, c-ds-radio, c-ds-checkbox').forEach((field) => {
+            if (!field.reportValidity()) {
+                fieldsValid = false;
+            }
+        });
+        const errors = this.buildValidationErrors();
+        this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors };
+        return fieldsValid && errors.length === 0;
+    }
+
+    queueValidationRefresh() {
+        if (!this.validationStarted) return;
+        this.validationRefreshPending = true;
+        // Conditional fields must finish rendering before reading their values.
+        Promise.resolve().then(() => this.refreshPendingValidation());
+    }
+
+    refreshPendingValidation() {
+        if (
+            !this.validationStarted ||
+            !this.validationRefreshPending ||
+            !this.shouldShowTextArea ||
+            this.shouldShowSpinner
+        ) {
+            return;
+        }
+        this.validationRefreshPending = false;
+        this.validateForm();
+    }
+
     /**
      * Creates a Thread record, with an message attached, and then navigates the user to the record page
      * @Author Lars Petter Johnsen
@@ -591,9 +681,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             return;
         }
 
+        this.validationStarted = true;
+        this.validationRefreshPending = false;
+        const formValid = this.validateForm();
+
         const medskriv = this.refs.medskrivRadiobuttons?.getValue();
         const radioButtonValue = this.refs.themeRadioButton?.getValue();
-        const radioButtonExists = this.refs.themeRadioButton != null;
         const disabilityCampaign = radioButtonValue === 'true';
 
         let theme = this.category;
@@ -614,14 +707,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             }
         }
 
-        if (
-            this.acceptedTerms &&
-            this.message &&
-            this.message?.length != null &&
-            this.message?.length <= this.maxLength &&
-            medskriv != null &&
-            (!radioButtonExists || radioButtonValue != null)
-        ) {
+        if (formValid) {
             this.errorList = null;
             this.showSpinner = true;
             this.spinnerText = spinnerReasonTextMap.send;
@@ -666,43 +752,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     this.showSpinner = false;
                 });
         } else {
-            this.errorList = { title: 'Du må fikse disse feilene før du kan sende inn meldingen.', errors: [] };
-            if ((!this.message || this.message?.length == null) && this.showInputTextArea) {
-                this.errorList.errors.push({
-                    Id: 1,
-                    EventItem: '.inputTextbox',
-                    Text: 'Tekstboksen kan ikke være tom.'
-                });
-            } else if (this.message?.length > this.maxLength && this.showInputTextArea) {
-                this.errorList.errors.push({
-                    Id: 2,
-                    EventItem: '.inputTextbox',
-                    Text: 'Det er for mange tegn i tekstboksen.'
-                });
-            }
-            if (radioButtonExists && radioButtonValue == null) {
-                this.errorList.errors.push({
-                    Id: 3,
-                    EventItem: '.themeRadioButton',
-                    Text: 'Du må velge et av alternativene.'
-                });
-            }
-            if (medskriv == null) {
-                this.errorList.errors.push({
-                    Id: 4,
-                    EventItem: '.medskriv',
-                    Text: 'Du må velge et av alternativene.'
-                });
-            }
-            if (!this.acceptedTerms) {
-                this.errorList.errors.push({
-                    Id: 5,
-                    EventItem: '.checkboxContainer',
-                    Text: 'For å sende meldingen må du godta vilkårene.'
-                });
-            }
-            let errorSummary = this.template.querySelector('.errorSummary');
-            errorSummary.focusHeader();
+            this.focusErrorSummary = true;
         }
     }
 
@@ -740,18 +790,22 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     handleTextChange(event) {
         this.message = event.detail;
+        this.queueValidationRefresh();
     }
 
     sendChecked() {
         const checkbox = this.template.querySelector('c-ds-checkbox');
         checkbox.setChecked(this.acceptedTerms);
+        this.queueValidationRefresh();
     }
 
     handleChecked(event) {
         this.acceptedTerms = event.detail;
+        this.queueValidationRefresh();
     }
 
     handleRadioChange(event) {
+        this.queueValidationRefresh();
         logFilterEvent(
             'Godtar du at vi kan bruke samtalen din til opplæring av veiledere i Nav?',
             event.detail.text,
@@ -784,6 +838,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
         if (this.title === 'Skriv til oss' && this.originalThemeToShow === 'Ufør') {
             this.themeRadioButtonSelected = event.detail.value === 'true';
+            this.queueValidationRefresh();
             return;
         }
         const mappingKey = this.originalThemeToShow;
@@ -810,6 +865,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         }
 
         this.loadOpenThreads();
+        this.queueValidationRefresh();
         logFilterEvent(
             this.radioButtonMap[this.title]?.[this.themeToShow]?.text,
             event.detail.text,

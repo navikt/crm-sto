@@ -16,10 +16,6 @@
                     </p>
                 </div>
             </template>
-            <div class="errorBox">
-                <c-ds-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
-                </c-ds-error-summary>
-            </div>
             <!-- TODO(backend-ready): Surface optional lookup failure without hiding the authenticated user's own form. -->
             <template lwc:if={showRepresentationLoadError}>
                 <c-ds-alert alert-type="danger" class="load-error">
@@ -141,6 +137,10 @@
                     <button onclick={showTerms} class="aksel-link vilkar-link" tabindex="0">
                         <span class="aksel-label">{labels.SHOW_TERM_TEXT}</span>
                     </button>
+                </div>
+                <div class="errorBox">
+                    <c-ds-error-summary error-list={errorList} onclickedevent={handleErrorClick} class="errorSummary">
+                    </c-ds-error-summary>
                 </div>
                 <button
                     data-variant="primary"
