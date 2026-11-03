@@ -314,6 +314,16 @@ public with sharing class stoHelperClass {
     }
 
     @AuraEnabled(cacheable=true)
+    public static Map<String, Object> getReplyContext(Id threadId) {
+        // ToDo(backend): Authorize thread access and return verified canReply, isWritingForChild,
+        // wasStartedOnBehalfOfOwner, representedLabel, senderName and representedName.
+        // Keep the frontend fail-closed until this contract and Apex reply/close enforcement are implemented.
+        AuraHandledException error = new AuraHandledException('Reply context backend is not implemented yet.');
+        error.setMessage('Reply context backend is not implemented yet.');
+        throw error;
+    }
+
+    @AuraEnabled(cacheable=true)
     public static Thread__c getThread(String recordId) {
         return [
             SELECT

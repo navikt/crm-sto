@@ -26,6 +26,8 @@ Lesestatus bruker foreløpig den eksisterende, delte logikken: `CRM_MessageHelpe
 
 **Forutsetning for full testing:** Det eksisterende oppslaget av barn er beholdt. Tilhørende backend-støtte for opprettelse på vegne av barn, samtaletilgang, svarrett og ruting må være ferdig og integrert før hele løsningen deployes. Testdata og scratch-oppsett erstatter ikke denne funksjonaliteten. Manglende støtte er markert med `ToDo(backend)` i koden.
 
+`stoHelperClass.getReplyContext` finnes foreløpig som en eksplisitt feilkastende plassholder for at frontend-referansene skal kunne valideres. Frontend er beholdt, men svar- og avslutningskontroller forblir utilgjengelige, og kontekstavhengige representasjonstekster vises ikke før backend-kontrakten er implementert. Plassholderen gir ingen midlertidig svarrett.
+
 ## Dependencies
 
 This package is dependant on the following packages

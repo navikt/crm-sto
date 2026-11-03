@@ -53,6 +53,18 @@ public with sharing class stoHelperClass_Test {
     }
 
     @isTest
+    static void getReplyContextNotImplementedTest() {
+        Test.startTest();
+        try {
+            stoHelperClass.getReplyContext(null);
+            Assert.fail('The placeholder must not grant reply or close access.');
+        } catch (AuraHandledException error) {
+            Assert.areEqual('Reply context backend is not implemented yet.', error.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    @isTest
     static void getThemesTest() {
         Test.startTest();
         List<STO_Category__mdt> themes = stoHelperClass.getThemes('no');

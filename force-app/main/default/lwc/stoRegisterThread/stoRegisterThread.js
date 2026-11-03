@@ -698,7 +698,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                 this.errorList.errors.push({
                     Id: 5,
                     EventItem: '.checkboxContainer',
-                    Text: 'Du må godta vilkårene.'
+                    Text: 'For å sende meldingen må du godta vilkårene.'
                 });
             }
             let errorSummary = this.template.querySelector('.errorSummary');
