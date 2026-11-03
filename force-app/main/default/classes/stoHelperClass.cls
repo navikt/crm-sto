@@ -175,6 +175,19 @@ public with sharing class stoHelperClass {
     }
 
     @AuraEnabled(cacheable=true)
+    public static List<stoInboxHelper.thread> getAccessibleOpenThreadsForPerson(
+        String category,
+        String threadType,
+        Id representedAccountId
+    ) {
+        // ToDo(backend): Authorize self/represented Account access, query open threads by category/type,
+        // and return sender/unread DTO fields. Never treat missing support as an empty thread list.
+        AuraHandledException error = new AuraHandledException('Accessible open threads backend is not implemented yet.');
+        error.setMessage('Accessible open threads backend is not implemented yet.');
+        throw error;
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
         List<String> ALLOWED_THREAD_TYPES;
         if (THREAD_TYPE_MAP.containsKey(threadType)) {

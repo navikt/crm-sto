@@ -28,6 +28,8 @@ Lesestatus bruker foreløpig den eksisterende, delte logikken: `CRM_MessageHelpe
 
 `stoHelperClass.getReplyContext` finnes foreløpig som en eksplisitt feilkastende plassholder for at frontend-referansene skal kunne valideres. Frontend er beholdt, men svar- og avslutningskontroller forblir utilgjengelige, og kontekstavhengige representasjonstekster vises ikke før backend-kontrakten er implementert. Plassholderen gir ingen midlertidig svarrett.
 
+`stoHelperClass.getAccessibleOpenThreadsForPerson` er også en eksplisitt feilkastende plassholder med parametrene `category`, `threadType` og `representedAccountId`. Frontend er beholdt, men registreringsskjemaet viser feil ved henting av samtaler og blokkerer innsending inntil autorisert henting for egen eller representert person er implementert. Plassholderen returnerer ikke en tom samtaleliste.
+
 ## Dependencies
 
 This package is dependant on the following packages
