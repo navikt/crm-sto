@@ -1,6 +1,6 @@
 import { LightningElement, wire, api } from 'lwc';
-// ToDo(backend): Include CreatedDate and Id on grouped messages in crm-henvendelse for stable displayed read positions.
 import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExperience.getGroupedMessagesFromThread';
+import markAsRead from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 // ToDo(backend): Enforce original-sender-only replies in Apex, including direct/legacy message creation.
@@ -15,12 +15,11 @@ import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c'
 import THREAD_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
 import THREAD_TYPE_FIELD from '@salesforce/schema/Thread__c.CRM_Type__c';
 import CATEGORY_FIELD from '@salesforce/schema/Thread__c.STO_Category__c';
-import { latestDisplayedMessage, markMessagesRead } from 'c/stoReadState';
 
 const fields = [THREAD_NAME_FIELD, THREAD_CLOSED_FIELD, THREAD_TYPE_FIELD, CATEGORY_FIELD];
 
 export default class CommunityThreadViewer extends LightningElement {
-    _recordId;
+    @api recordId;
     @api openAlertText;
     @api maxLength;
     @api overrideValidation = false;
@@ -39,25 +38,6 @@ export default class CommunityThreadViewer extends LightningElement {
     referrer;
     replyContext;
     replyContextError;
-    readStateError;
-    readPositionPending = false;
-    readPositionGeneration = 0;
-    lastReadMessageId;
-
-    @api
-    get recordId() {
-        return this._recordId;
-    }
-
-    set recordId(value) {
-        if (value === this._recordId) return;
-        this._recordId = value;
-        this.messageGroups = undefined;
-        this.lastReadMessageId = undefined;
-        this.readStateError = undefined;
-        this.readPositionPending = false;
-        this.readPositionGeneration++;
-    }
 
     @wire(getReplyContext, { threadId: '$recordId' })
     wiredReplyContext({ data, error }) {
@@ -70,12 +50,9 @@ export default class CommunityThreadViewer extends LightningElement {
 
     connectedCallback() {
         this.referrer = document.referrer.toLowerCase();
-        this.saveDisplayedReadPosition();
-    }
-
-    disconnectedCallback() {
-        this.readPositionGeneration++;
-        this.readPositionPending = false;
+        markAsRead({ threadId: this.recordId }).catch((error) => {
+            console.error('Could not mark thread as read:', error);
+        });
     }
 
     renderedCallback() {
@@ -117,44 +94,6 @@ export default class CommunityThreadViewer extends LightningElement {
             console.error('Problem getting message groups: ', error);
         } else if (data) {
             this.messageGroups = result.data;
-            this.saveDisplayedReadPosition();
-        }
-    }
-
-    async saveDisplayedReadPosition() {
-        const threadId = this.recordId;
-        const latest = latestDisplayedMessage(this.messageGroups || []);
-        if (
-            !this.isConnected ||
-            !threadId ||
-            !latest ||
-            latest.Id === this.lastReadMessageId ||
-            this.readPositionPending
-        ) {
-            return;
-        }
-        const generation = this.readPositionGeneration;
-        const isCurrentRequest = () =>
-            this.isConnected && generation === this.readPositionGeneration && threadId === this.recordId;
-        this.readPositionPending = true;
-        try {
-            await markMessagesRead(threadId, latest.Id);
-            if (!isCurrentRequest()) return;
-            this.lastReadMessageId = latest.Id;
-            this.readStateError = undefined;
-        } catch (error) {
-            console.error('Could not save thread read position:', error);
-            if (isCurrentRequest()) {
-                this.readStateError = 'Lesestatus kunne ikke lagres. Oppdater siden og prøv på nytt.';
-            }
-        } finally {
-            if (isCurrentRequest()) {
-                this.readPositionPending = false;
-                const currentMessageId = latestDisplayedMessage(this.messageGroups || [])?.Id;
-                if (currentMessageId && currentMessageId !== latest.Id) {
-                    this.saveDisplayedReadPosition();
-                }
-            }
         }
     }
 

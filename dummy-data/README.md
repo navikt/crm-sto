@@ -2,9 +2,9 @@
 
 ## STO scratch testing
 
-These fixtures support manual testing of personal inboxes, messages written on behalf of a child, separate readers' unread status, and internal STO/BTO handling. This guide explains the test scenarios and why their files are retained.
+These fixtures support manual testing of personal inboxes, messages written on behalf of a child, legacy shared read status, and internal STO/BTO handling. This guide explains the test scenarios and why their files are retained.
 
-**Prerequisite:** Integrate the real backend support before deploying the whole project. Test setup supplies synthetic records and logins, not missing responsibility checks, conversation access, sender authorization, read positions or production routing.
+**Prerequisite:** Integrate the real backend support before deploying the whole project. Test setup supplies synthetic records and logins, not missing responsibility checks, conversation access, sender authorization or production routing.
 
 Child selection retains the existing real `barn()` lookup. The service returns child identities, which are matched to accessible Person Accounts; displayed ages use the stored `Person__c.INT_DateOfBirth__c` birth dates, accounting for whether this year's birthday has occurred. Fixture relationships do not replace service responses.
 
@@ -18,11 +18,11 @@ Import `data\plan.json` followed by `sto\plan.json`. The family scenario contain
 | Beate Normann | 12345678904 | Self only; born 2018-10-18 |
 | Ola Normann | 12345678905 | Self only; born 2014-10-18 |
 
-Check that Far/Mor can select both children, Medmor can select only Beate, and each child can use their own inbox without representation. When a child opens a conversation started by a parent, check that they see the same sender-on-behalf-of-child banner and open-conversation read-only notice as another parent. A child who started their own conversation keeps the ordinary reply view without a representation banner. Check original-sender-only replies/closure and that reading as one person does not clear another's unread status. Actual responsibility results, not the fixture family map, must control access.
+Check that Far/Mor can select both children, Medmor can select only Beate, and each child can use their own inbox without representation. When a child opens a conversation started by a parent, check that they see the same sender-on-behalf-of-child banner and open-conversation read-only notice as another parent. A child who started their own conversation keeps the ordinary reply view without a representation banner. Check original-sender-only replies/closure. Read status temporarily uses the existing shared `CRM_MessageHelperExperience.markAsRead` action when a conversation opens, so one reader can clear another reader's unread status. Per-reader tracking is deferred to a separate PR. Actual responsibility results, not the fixture family map, must control access.
 
 Under both Helse and Familie, check that the pleiepenger-for-sykt-barn question is available when writing for yourself but absent when writing on behalf of a child. The child's message stays in the selected Helse/Familie topic, without a hidden or previously selected pleiepenger answer.
 
-When a read-state update arrives while the inbox is loading, check that a follow-up refresh brings in the latest unread count. Updates received during one request should be coalesced; switching person must ignore the old person's response, and leaving the component must cancel queued work. Request failures must remain visible.
+After opening a conversation, return to the inbox and check that refreshing shows the legacy unread count. Inbox refresh requests received during one request should be coalesced; switching person must ignore the old person's response, and leaving the component must cancel queued work. Request failures must remain visible.
 
 ### Automated child-selection coverage
 
@@ -100,7 +100,7 @@ The following paths are relative to `force-app\scratch-org`. Older generated log
 
 `unpackaged\queues\*.queue-meta.xml` defines the existing topic-specific STO/BTO queues and protected/closed-case variants. `unpackaged\assignmentRules\Case.assignmentRules-meta.xml` assigns cases to those queues by origin/topic. They are deployed for the routing scenario, not replaced by custom fixture routing.
 
-<!-- ToDo(backend): Supply real responsibility checks/responses, permissions, conversation access, sender rules, read positions and production routing. Test fixtures must not reproduce these functions. -->
+<!-- ToDo(backend): Supply real responsibility checks/responses, permissions, conversation access, sender rules and production routing. Test fixtures must not reproduce these functions. -->
 
 ## Exporting with record types
 

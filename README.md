@@ -22,9 +22,9 @@ Ved skriving på vegne av et barn vises ikke spørsmålet om **pleiepenger for s
 
 Innbokskort viser hvem som startet samtalen når det var en annen enn den innloggede. Inne i samtalen ser innsenderen barnets navn og alder. Andre foreldre og barnet ser hvem som skrev på vegne av barnet, og i en åpen samtale får de samme informasjon om at bare innsenderen kan svare. Et barn som startet sin egen samtale får ikke et representasjonsbanner. Saksbehandlerens svarhilsen rettes til originale innsender, ikke automatisk til barnet.
 
-Lesestatus skal være personlig: at en annen forelder eller barnet leser en samtale, skal ikke fjerne den innloggedes ulest-merke. Feil ved henting av personvalg, samtaler, svarrett eller lesestatus skal vises tydelig.
+Lesestatus bruker foreløpig den eksisterende, delte logikken: `CRM_MessageHelperExperience.markAsRead` markerer uleste meldinger som lest når samtalen åpnes. Lesing som én person kan derfor også fjerne ulest-merket for andre som har tilgang til samtalen. Personlig lesestatus håndteres i en separat PR. Feil ved henting av personvalg, samtaler eller svarrett skal vises tydelig.
 
-**Forutsetning for full testing:** Det eksisterende oppslaget av barn er beholdt. Tilhørende backend-støtte for opprettelse på vegne av barn, samtaletilgang, svarrett, ruting og personlig lesestatus må være ferdig og integrert før hele løsningen deployes. Testdata og scratch-oppsett erstatter ikke denne funksjonaliteten. Manglende støtte er markert med `ToDo(backend)` i koden.
+**Forutsetning for full testing:** Det eksisterende oppslaget av barn er beholdt. Tilhørende backend-støtte for opprettelse på vegne av barn, samtaletilgang, svarrett og ruting må være ferdig og integrert før hele løsningen deployes. Testdata og scratch-oppsett erstatter ikke denne funksjonaliteten. Manglende støtte er markert med `ToDo(backend)` i koden.
 
 ## Dependencies
 
@@ -113,7 +113,7 @@ Familiedataene oppretter bare testpersoner og nødvendig tilgang til de syntetis
 
 <!-- ToDo(backend): Provide the fixture responsibility responses, production permissions and conversation sharing through the real backend. -->
 
-Fixture-tilgang til testpersonpostene beholdes fordi syntetiske personer ikke allerede har den recordtilgangen som finnes i et ferdig miljø. Oppsettet gir ikke ekstra svarrett eller lokal autorisasjon. Kontroll av ansvar, alder og gradering, tilgang til samtaler og personlig lesestatus må håndteres av backend.
+Fixture-tilgang til testpersonpostene beholdes fordi syntetiske personer ikke allerede har den recordtilgangen som finnes i et ferdig miljø. Oppsettet gir ikke ekstra svarrett eller lokal autorisasjon. Kontroll av ansvar, alder og gradering og tilgang til samtaler må håndteres av backend.
 
 ### STO/BTO i verktøylinjen
 

@@ -9,7 +9,6 @@ import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inbo
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
-import { READ_STATE_EVENT } from 'c/stoReadState';
 
 const SELF_PERSON_VALUE = 'self';
 // TODO(backend-ready): All children and their threads now come from Apex; do not restore client fixtures.
@@ -45,7 +44,6 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     connectedCallback() {
         window.addEventListener('pageshow', this.refreshInbox);
         window.addEventListener('focus', this.refreshInbox);
-        window.addEventListener(READ_STATE_EVENT, this.refreshInbox);
         document.addEventListener('visibilitychange', this.handleVisibility);
         this.refreshInbox();
     }
@@ -61,7 +59,6 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         this.refreshQueued = false;
         window.removeEventListener('pageshow', this.refreshInbox);
         window.removeEventListener('focus', this.refreshInbox);
-        window.removeEventListener(READ_STATE_EVENT, this.refreshInbox);
         document.removeEventListener('visibilitychange', this.handleVisibility);
     }
 
@@ -152,7 +149,7 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     };
 
     applyPage(page, append) {
-        // ToDo(backend): Return recent/older arrays, both cursors and hasMore, with viewer-specific unread/sender fields.
+        // ToDo(backend): Return recent/older arrays, both cursors and hasMore, with legacy unread counts and sender fields.
         const incomingIds = new Set([...page.older, ...page.recent].map((thread) => thread.recordId));
         this.threads = [
             ...(append ? (this.threads || []).filter((thread) => !incomingIds.has(thread.recordId)) : []),

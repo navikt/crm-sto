@@ -34,9 +34,6 @@
             <div class="representation-banner aksel-body-long aksel-body-long--medium">{representationLabel}</div>
         </template>
         <c-community-message-container message-groups={messageGroups}></c-community-message-container>
-        <template lwc:if={readStateError}>
-            <c-ds-alert alert-type="danger" alert-text={readStateError} class="load-error"></c-ds-alert>
-        </template>
         <slot name="messageArea">
             <template lwc:if={replyContextError}>
                 <c-ds-alert alert-type="danger" alert-text={replyContextError} class="load-error"></c-ds-alert>
