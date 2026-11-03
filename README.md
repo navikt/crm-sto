@@ -30,6 +30,10 @@ Lesestatus bruker foreløpig den eksisterende, delte logikken: `CRM_MessageHelpe
 
 `stoHelperClass.getAccessibleOpenThreadsForPerson` er også en eksplisitt feilkastende plassholder med parametrene `category`, `threadType` og `representedAccountId`. Frontend er beholdt, men registreringsskjemaet viser feil ved henting av samtaler og blokkerer innsending inntil autorisert henting for egen eller representert person er implementert. Plassholderen returnerer ikke en tom samtaleliste.
 
+`stoInboxHelper.getAccessibleInboxPage` og `getNextInboxPage` er feilkastende plassholdere med parametrene `representedAccountId`, `beforeThreadId` og `beforeNoteId`. Innboksen viser lastefeil inntil autorisert sidehenting er implementert; plassholderne returnerer ikke falske tomme sider. Backend må returnere `recent`, `older`, begge markører og `hasMore`.
+
+`STO_RecordInfoController.getReplyRecipientFirstName` er en feilkastende plassholder med parameteren `threadId`. Den interne meldingskomponenten viser mottakerfeil og holder skrivefeltet utilgjengelig til backend kan bekrefte originale innsenders fornavn.
+
 ## Dependencies
 
 This package is dependant on the following packages

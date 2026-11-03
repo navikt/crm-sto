@@ -32,6 +32,30 @@ public with sharing class stoInboxHelperTest {
     }
 
     @isTest
+    static void getAccessibleInboxPageNotImplementedTest() {
+        Test.startTest();
+        try {
+            stoInboxHelper.getAccessibleInboxPage(null, null, null);
+            Assert.fail('The placeholder must not return a fake empty or unauthorized inbox page.');
+        } catch (AuraHandledException error) {
+            Assert.areEqual('Accessible inbox page backend is not implemented yet.', error.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    @isTest
+    static void getNextInboxPageNotImplementedTest() {
+        Test.startTest();
+        try {
+            stoInboxHelper.getNextInboxPage(null, null, null);
+            Assert.fail('The placeholder must not return a fake next page.');
+        } catch (AuraHandledException error) {
+            Assert.areEqual('Next inbox page backend is not implemented yet.', error.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    @isTest
     static void getThreadsTest() {
         User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         stoHelperClass.ThreadData threadData = getThreadData('12345678910');

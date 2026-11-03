@@ -14,6 +14,32 @@ public with sharing class stoInboxHelper {
     }
 
     @AuraEnabled(cacheable=true)
+    public static Map<String, Object> getAccessibleInboxPage(
+        Id representedAccountId,
+        Id beforeThreadId,
+        Id beforeNoteId
+    ) {
+        // ToDo(backend): Authorize self/represented Account access and Read sharing; return recent/older arrays,
+        // both cursors and hasMore with legacy unread counts and sender fields. Never return a fake empty page.
+        AuraHandledException error = new AuraHandledException('Accessible inbox page backend is not implemented yet.');
+        error.setMessage('Accessible inbox page backend is not implemented yet.');
+        throw error;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<String, Object> getNextInboxPage(
+        Id representedAccountId,
+        Id beforeThreadId,
+        Id beforeNoteId
+    ) {
+        // ToDo(backend): Apply the same Account authorization and page contract as getAccessibleInboxPage,
+        // with bounded keyset pagination and validated thread/note cursors.
+        AuraHandledException error = new AuraHandledException('Next inbox page backend is not implemented yet.');
+        error.setMessage('Next inbox page backend is not implemented yet.');
+        throw error;
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<thread> getThreads() {
         List<thread> inboxlist = new List<thread>();
         List<Thread__c> threadList = [
