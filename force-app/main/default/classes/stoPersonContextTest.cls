@@ -72,6 +72,8 @@ public with sharing class stoPersonContextTest {
             Label = 'STO person context test access'
         );
         insert fixtureAccess;
+        // Person Accounts require Contact read access before Account read access can be granted.
+        insert new ObjectPermissions(ParentId = fixtureAccess.Id, SObjectType = 'Contact', PermissionsRead = true);
         insert new List<ObjectPermissions>{
             new ObjectPermissions(ParentId = fixtureAccess.Id, SObjectType = 'Account', PermissionsRead = true),
             new ObjectPermissions(ParentId = fixtureAccess.Id, SObjectType = 'Person__c', PermissionsRead = true),
