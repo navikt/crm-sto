@@ -3,9 +3,13 @@ import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExpe
 import markAsRead from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+// ToDo(backend): Enforce original-sender-only replies in Apex, including direct/legacy message creation.
 import createThreadMessage from '@salesforce/apex/CRM_MessageHelperExperience.createThreadMessage';
+// ToDo(backend): Enforce the same original-sender rule when closing a thread.
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import getCloseIntent from '@salesforce/apex/stoHelperClass.getCloseIntent';
+// ToDo(backend): Add getReplyContext with verified canReply and sender/represented names for every reader, including the child.
+import getReplyContext from '@salesforce/apex/stoHelperClass.getReplyContext';
 
 import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import THREAD_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
@@ -24,6 +28,7 @@ export default class CommunityThreadViewer extends LightningElement {
 
     wiredMessages;
     buttonDisabled = false;
+    isSending = false;
     messageValue;
     thread;
     wiredThread;
@@ -31,16 +36,28 @@ export default class CommunityThreadViewer extends LightningElement {
     showSpinner = false;
     showCloseButton = false;
     referrer;
+    replyContext;
+    replyContextError;
+
+    @wire(getReplyContext, { threadId: '$recordId' })
+    wiredReplyContext({ data, error }) {
+        this.replyContext = data;
+        this.replyContextError = error
+            ? 'Vi kunne ikke hente hvem som kan svare i samtalen. Oppdater siden og prøv på nytt.'
+            : undefined;
+        if (error) console.error('Problem getting reply access:', error);
+    }
 
     connectedCallback() {
         this.referrer = document.referrer.toLowerCase();
-
-        markAsRead({ threadId: this.recordId });
+        markAsRead({ threadId: this.recordId }).catch((error) => {
+            console.error('Could not mark thread as read:', error);
+        });
     }
 
     renderedCallback() {
         if (this.showSpinner) {
-            this.template.querySelector('.spinner')?.focus();
+            this.template.querySelector('c-ds-loader')?.focus();
         }
     }
 
@@ -81,13 +98,12 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     /**
-     * Blanks out all text fields, and enables the submit-button again.
+     * Blanks out all text fields and refreshes the messages.
      * @Author lars Petter Johnsen
      */
     handlesuccess() {
-        const textBoks = this.template.querySelector('c-community-textarea');
+        const textBoks = this.template.querySelector('c-ds-textarea');
         textBoks.clearText();
-        this.buttonDisabled = false;
         return refreshApex(this.wiredMessages);
     }
 
@@ -109,26 +125,58 @@ export default class CommunityThreadViewer extends LightningElement {
         errorSummary.focusHeader();
     }
 
-    createMessage(validation) {
+    async createMessage(validation) {
+        if (!this.canReply || this.isSending) return;
         if (!validation) {
             this.buttonDisabled = false;
             return;
         }
-        createThreadMessage({ threadId: this.recordId, messageText: this.messageValue })
-            .then((result) => {
-                if (result) {
-                    this.handlesuccess();
-                } else {
-                    this.handleMessageFailed();
-                }
-            })
-            .catch((error) => {
-                console.error('Problem sending message: ', error);
-                this.template.querySelector('c-alertdialog').showModal();
-            });
+
+        this.isSending = true;
+        this.buttonDisabled = true;
+        try {
+            const result = await createThreadMessage({ threadId: this.recordId, messageText: this.messageValue });
+            if (result) {
+                await this.handlesuccess();
+                this.buttonDisabled = false;
+            } else {
+                this.handleMessageFailed();
+            }
+        } catch (error) {
+            console.error('Problem sending message: ', error);
+            this.buttonDisabled = false;
+            this.template.querySelector('c-alertdialog').showModal();
+        } finally {
+            this.isSending = false;
+        }
+    }
+
+    get canReply() {
+        return this.replyContext?.canReply === true;
+    }
+
+    get showReadOnlyNotice() {
+        return this.closed === false && this.replyContext?.canReply === false;
+    }
+
+    get representationLabel() {
+        const context = this.replyContext;
+        if (context?.representedLabel) {
+            return context.representedLabel;
+        }
+        if (
+            context?.canReply === false &&
+            context.wasStartedOnBehalfOfOwner === true &&
+            context.senderName &&
+            context.representedName
+        ) {
+            return `${context.senderName} på vegne av ${context.representedName}`;
+        }
+        return '';
     }
 
     handleSendButtonClick() {
+        if (!this.canReply || this.buttonDisabled || this.isSending) return;
         this.buttonDisabled = true;
         // Sending out event to parent to handle any needed validation
         if (this.overrideValidation) {
@@ -177,15 +225,17 @@ export default class CommunityThreadViewer extends LightningElement {
     }
 
     handleClick() {
+        if (!this.canReply) return;
         this.refs.childRef.openModal();
     }
 
     handleCloseThread() {
+        if (!this.canReply) return;
         this.refs.childRef.closeModal();
         this.showSpinner = true;
         closeThread({ id: this.recordId })
             .then(() => {
-                return refreshApex(this.wireThread);
+                return refreshApex(this.wiredThread);
             })
             .then(() => {
                 this.showSpinner = false;
@@ -195,6 +245,7 @@ export default class CommunityThreadViewer extends LightningElement {
             .catch((err) => {
                 console.error(err);
                 this.showSpinner = false;
+                this.template.querySelector('c-alertdialog').showModal();
             });
     }
 
@@ -248,5 +299,22 @@ export default class CommunityThreadViewer extends LightningElement {
 
     get category() {
         return getFieldValue(this.thread, CATEGORY_FIELD);
+    }
+
+    get isWritingForChild() {
+        return this.replyContext?.isWritingForChild === true;
+    }
+
+    // TODO(backend-ready): Preserve both readability and session-loss notices with perspective-correct wording.
+    get descriptionTextArea() {
+        const description =
+            'Teksten lagres ikke automatisk. Hvis du er på denne siden i mer enn 30 minutter, kan du bli logget ut og miste det du har skrevet.';
+        if (this.isWritingForChild) {
+            return `Personen du sender melding på vegne av kan lese meldingen i fremtiden. Hvis en annen person har foreldreansvar, vil den personen kunne lese meldingene også. ${description}`;
+        }
+        if (this.replyContext?.wasStartedOnBehalfOfOwner === true) {
+            return `Denne samtalen ble startet på vegne av deg. Hvis noen har foreldreansvar for deg, kan de også lese meldingene. ${description}`;
+        }
+        return description;
     }
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Underlying scratch inbox site and existing login/error handling required to open the family's community sessions. -->
 <CustomSite xmlns="http://soap.sforce.com/2006/04/metadata">
     <active>true</active>
     <allowHomePage>false</allowHomePage>

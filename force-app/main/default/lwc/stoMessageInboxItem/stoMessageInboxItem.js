@@ -3,30 +3,13 @@ import basepath from '@salesforce/community/basePath';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class StoMessageInboxItem extends LightningElement {
+    // ToDo(backend): Extend the inbox DTO with viewer-specific inboxSenderLabel; retain the legacy numberOfUnreadMessages.
     @api thread;
     @api closeIntent = false;
+    @api inboxPersonValue = 'self';
 
-    latestText;
-    objectName;
-    isExternal;
-    isOpen;
-    hasUnread = true;
-    unreadMessage = 'lest';
-
-    connectedCallback() {
-        this.objectName = this.thread.objectName;
-
-        if (this.thread.status === 'Åpen') {
-            this.isOpen = true;
-        }
-
-        if (Number(this.thread.numberOfUnreadMessages) > 0) {
-            this.hasUnread = true;
-            this.unreadMessage = 'Ulest';
-        }
-
-        this.latestText = this.thread.latestmessage.messageText;
-        this.isExternal = this.thread.latestmessage.isExternal;
+    get inboxSenderLabel() {
+        return this.thread?.inboxSenderLabel;
     }
 
     handleNavigation(event) {
@@ -37,8 +20,9 @@ export default class StoMessageInboxItem extends LightningElement {
         if (this.objectName === 'samtalereferat') return this.thread.name;
 
         if (['skriv-til-oss', 'beskjed-til-oss', 'chat'].includes(this.objectName)) {
-            const sender = this.isExternal ? 'Du sendte en melding' : 'Nav sendte en melding';
-            return this.isOpen ? `${this.thread.name}: ${sender}` : this.thread.name;
+            //const sender = this.isExternal ? 'Du sendte en melding' : 'Nav sendte en melding';
+            // return this.isOpen ? `${this.thread.name}` : this.thread.name;
+            return this.thread.name;
         }
 
         return this.thread.name;
@@ -56,11 +40,8 @@ export default class StoMessageInboxItem extends LightningElement {
         return this.thread.status;
     }
 
-    get statusClass() {
-        return (
-            'navds-tag navds-tag--success navds-tag--small navds-body-short navds-body-short--small ' +
-            (this.thread.status === 'Åpen' ? 'navds-tag--success' : 'navds-tag--alt1')
-        );
+    get statusDataColor() {
+        return this.thread.status === 'Åpen' ? 'success' : 'meta-purple';
     }
 
     get linkUrl() {
@@ -77,6 +58,9 @@ export default class StoMessageInboxItem extends LightningElement {
                 this.thread.recordName.replace(/[ -]+/g, '-');
         } else {
             url += '/chat?id=' + this.thread.recordId;
+        }
+        if (this.inboxPersonValue && this.inboxPersonValue !== 'self') {
+            url += `${url.includes('?') ? '&' : '?'}c__inboxPerson=${encodeURIComponent(this.inboxPersonValue)}`;
         }
         return url;
     }
@@ -98,6 +82,26 @@ export default class StoMessageInboxItem extends LightningElement {
     }
 
     get linkSummary() {
-        return `${this.formattedLatestMessageDate}. ${this.showReadStatus ? this.unreadMessage : ''} . ${this.showStatus ? this.statusText : ''} . ${this.itemTitle} . ${this.latestText}`;
+        return `${this.formattedLatestMessageDate}. ${this.showReadStatus ? this.unreadMessage : ''} . ${this.showStatus ? this.statusText : ''} . ${this.inboxSenderLabel ? this.inboxSenderLabel + '. ' : ''}${this.itemTitle} . ${this.latestText}`;
+    }
+
+    get latestText() {
+        return this.thread?.latestmessage?.messageText || '';
+    }
+
+    get objectName() {
+        return this.thread?.objectName;
+    }
+
+    get isExternal() {
+        return this.thread?.latestmessage?.isExternal === true;
+    }
+
+    get isOpen() {
+        return this.thread?.status === 'Åpen';
+    }
+
+    get unreadMessage() {
+        return Number(this.thread?.numberOfUnreadMessages) > 0 ? 'Ulest' : 'lest';
     }
 }

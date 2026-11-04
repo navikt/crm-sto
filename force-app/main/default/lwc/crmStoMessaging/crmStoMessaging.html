@@ -2,8 +2,11 @@
     <lightning-layout lwc:if={isThreadIdNull} class="threadNotFound">
         <lightning-layout-item> Du har ikke tilgang til dialogen </lightning-layout-item>
     </lightning-layout>
+    <template lwc:elseif={recipientError}>
+        <p role="alert">Vi kunne ikke hente mottakeren av svaret. Oppdater siden og prøv på nytt.</p>
+    </template>
     <c-crm-messaging-message-component
-        lwc:else
+        lwc:elseif={recipientReady}
         tabindex="0"
         record-id={threadId}
         single-thread={singleThread}
@@ -39,4 +42,7 @@
             <slot name="flowSection"></slot>
         </div>
     </c-crm-messaging-message-component>
+    <template lwc:else>
+        <lightning-spinner alternative-text="Henter mottaker" size="small"></lightning-spinner>
+    </template>
 </template>

@@ -9,4 +9,14 @@ export default class NavButton extends LightningElement {
             this.dispatchEvent(new CustomEvent('logevent'));
         }
     }
+
+    handleKeyDown(event) {
+        if (event.key === ' ') event.preventDefault();
+    }
+
+    handleKeyUp(event) {
+        if (event.key !== ' ') return;
+        event.preventDefault();
+        event.currentTarget.click();
+    }
 }

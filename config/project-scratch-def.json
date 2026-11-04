@@ -23,6 +23,7 @@
         "FieldServiceDispatcherUser:5",
         "FieldServiceMobileUser:5",
         "FieldServiceSchedulingUser:5",
+        "EmbeddedServiceMessaging",
         "LiveMessage"
     ],
     "country": "NO",

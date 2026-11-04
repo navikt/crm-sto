@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Member-based community license for Doktor's scratch login; preserves ordinary access, not parental authorization. -->
 <Profile xmlns="http://soap.sforce.com/2006/04/metadata">
     <applicationVisibilities>
         <application>STO</application>
@@ -126,6 +127,7 @@
         <enabled>false</enabled>
     </classAccesses>
     <custom>true</custom>
+    <!-- ToDo(backend): Supply endpoint and read-only Person/identity access through STO_Experience, not scratch authorization grants. -->
     <fieldPermissions>
         <editable>false</editable>
         <field>Case.NKS_Conversation_Stored__c</field>

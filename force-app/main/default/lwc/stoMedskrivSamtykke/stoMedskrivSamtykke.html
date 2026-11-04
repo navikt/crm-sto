@@ -1,16 +1,12 @@
 <template>
     <template lwc:if={showPanel}>
-        <div class="navds-panel">
-            <h2 class="navds-heading navds-heading--xsmall navds-typo--spacing">{title}</h2>
-            <p class="navds-body-long navds-body-long--small">{text}</p>
+        <div class="aksel-panel">
+            <h2 class="aksel-heading aksel-heading--xsmall aksel-typo--spacing">{title}</h2>
+            <p class="aksel-body-long aksel-body-long--small">{text}</p>
             <div class="button">
-                <c-ds-button
-                    class={btnClasses}
-                    variant="secondary"
-                    size="medium"
-                    onclick={revokeMedskriv}
-                    text="Fjern min godkjenning"
-                ></c-ds-button>
+                <button class={btnClasses} data-variant="secondary" onclick={revokeMedskriv}>
+                    <span class="aksel-label"> Fjern min godkjenning </span>
+                </button>
             </div>
         </div>
     </template>

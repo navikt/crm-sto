@@ -45,6 +45,19 @@ public with sharing class STO_RecordInfoControllerTest {
     }
 
     @isTest
+    static void getReplyRecipientFirstNameNotImplementedTest() {
+        Id threadId = [SELECT Id FROM Thread__c LIMIT 1].Id;
+        Test.startTest();
+        try {
+            STO_RecordInfoController.getReplyRecipientFirstName(threadId);
+            Assert.fail('The placeholder must not return an unverified recipient.');
+        } catch (AuraHandledException error) {
+            Assert.areEqual('Reply recipient backend is not implemented yet.', error.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    @isTest
     static void testGetByApiReference() {
         String apiRef = [SELECT CRM_API_Reference__c FROM Thread__c LIMIT 1]?.CRM_API_Reference__c;
 
