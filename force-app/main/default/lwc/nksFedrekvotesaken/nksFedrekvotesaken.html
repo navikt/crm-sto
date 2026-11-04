@@ -6,7 +6,7 @@
             </div>
             <div class="text-center sizeAround">
                 <template lwc:if={loading}>
-                    <c-ds-loader size="3xlarge" title="Venter..."></c-ds-loader>
+                    <c-ds-loader class="spinner" tabindex="-1" size="3xlarge" title="Venter..."></c-ds-loader>
                 </template>
                 <template lwc:else>
                     <template lwc:if={hasNavTask}>

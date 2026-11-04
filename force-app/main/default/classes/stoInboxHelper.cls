@@ -13,7 +13,7 @@ public with sharing class stoInboxHelper {
         return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static Map<String, Object> getAccessibleInboxPage(
         Id representedAccountId,
         Id beforeThreadId,
@@ -27,11 +27,7 @@ public with sharing class stoInboxHelper {
     }
 
     @AuraEnabled(cacheable=true)
-    public static Map<String, Object> getNextInboxPage(
-        Id representedAccountId,
-        Id beforeThreadId,
-        Id beforeNoteId
-    ) {
+    public static Map<String, Object> getNextInboxPage(Id representedAccountId, Id beforeThreadId, Id beforeNoteId) {
         // ToDo(backend): Apply the same Account authorization and page contract as getAccessibleInboxPage,
         // with bounded keyset pagination and validated thread/note cursors.
         AuraHandledException error = new AuraHandledException('Next inbox page backend is not implemented yet.');
