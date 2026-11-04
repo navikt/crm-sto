@@ -67,6 +67,19 @@ public with sharing class stoPersonContextTest {
 
     @TestSetup
     static void setup() {
+        List<Profile> fixtureProfiles = [
+            SELECT Id
+            FROM Profile
+            WHERE
+                Name = 'STO Test Community Login Profile'
+                AND UserType = 'PowerCustomerSuccess'
+                AND PermissionsViewAllData = FALSE
+        ];
+        Assert.areEqual(
+            1,
+            fixtureProfiles.size(),
+            'Deploy the community test profile from force-app/test/profiles before running these tests'
+        );
         PermissionSet fixtureAccess = new PermissionSet(
             Name = 'STO_Person_Context_Test_Access',
             Label = 'STO person context test access'
@@ -172,16 +185,7 @@ public with sharing class stoPersonContextTest {
                 LastName = 'Parent',
                 Alias = 'stoctx',
                 CommunityNickname = 'sto-context-' + parentAccount.Id,
-                ProfileId = [
-                    SELECT Id
-                    FROM Profile
-                    WHERE
-                        Name = 'Scratch Community Login Profile'
-                        AND UserType = 'PowerCustomerSuccess'
-                        AND PermissionsViewAllData = FALSE
-                    LIMIT 1
-                ]
-                .Id,
+                ProfileId = fixtureProfiles[0].Id,
                 ContactId = parentAccount.PersonContactId,
                 TimeZoneSidKey = owner.TimeZoneSidKey,
                 LocaleSidKey = 'no_NO',
