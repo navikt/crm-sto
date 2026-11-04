@@ -67,6 +67,58 @@ public with sharing class stoPersonContextTest {
 
     @TestSetup
     static void setup() {
+        PermissionSet fixtureAccess = new PermissionSet(
+            Name = 'STO_Person_Context_Test_Access',
+            Label = 'STO person context test access'
+        );
+        insert fixtureAccess;
+        insert new List<ObjectPermissions>{
+            new ObjectPermissions(ParentId = fixtureAccess.Id, SObjectType = 'Account', PermissionsRead = true),
+            new ObjectPermissions(ParentId = fixtureAccess.Id, SObjectType = 'Person__c', PermissionsRead = true),
+            new ObjectPermissions(
+                ParentId = fixtureAccess.Id,
+                SObjectType = 'Thread__c',
+                PermissionsRead = true,
+                PermissionsCreate = true
+            )
+        };
+        List<FieldPermissions> fixtureFields = new List<FieldPermissions>();
+        for (
+            String field : new List<String>{
+                'Account.CRM_Person__c',
+                'Account.INT_PersonIdent__c',
+                'Person__c.INT_DateOfBirth__c',
+                'Person__c.INT_Confidential__c'
+            }
+        ) {
+            fixtureFields.add(
+                new FieldPermissions(
+                    ParentId = fixtureAccess.Id,
+                    SObjectType = field.substringBefore('.'),
+                    Field = field,
+                    PermissionsRead = true
+                )
+            );
+        }
+        for (
+            String field : new List<String>{
+                'Thread__c.CRM_Contact__c',
+                'Thread__c.CRM_Account__c',
+                'Thread__c.CRM_Thread_Type__c',
+                'Thread__c.STO_Category__c'
+            }
+        ) {
+            fixtureFields.add(
+                new FieldPermissions(
+                    ParentId = fixtureAccess.Id,
+                    SObjectType = 'Thread__c',
+                    Field = field,
+                    PermissionsRead = true,
+                    PermissionsEdit = true
+                )
+            );
+        }
+        insert fixtureFields;
         UserRole ownerRole = new UserRole(Name = 'STO context ' + STO_TestDataFactory.generateRandomString(8));
         insert ownerRole;
         User owner = (User) STO_TestDataFactory.createRecord(
@@ -87,21 +139,31 @@ public with sharing class stoPersonContextTest {
                 }
             );
             Account firstChild = account(FIRST_CHILD_IDENT);
+            Map<Id, Schema.RecordTypeInfo> accountRecordTypes = Account.SObjectType.getDescribe()
+                .getRecordTypeInfosById();
+            Id businessRecordTypeId;
+            for (RecordType recordType : [
+                SELECT Id
+                FROM RecordType
+                WHERE SObjectType = 'Account' AND IsPersonType = FALSE AND IsActive = TRUE
+            ]) {
+                if (accountRecordTypes.get(recordType.Id).isAvailable()) {
+                    businessRecordTypeId = recordType.Id;
+                    break;
+                }
+            }
+            Assert.isNotNull(
+                businessRecordTypeId,
+                'The fixture owner must have an available business Account record type'
+            );
             insert new Account(
                 Name = 'Business candidate',
-                RecordTypeId = [
-                    SELECT Id
-                    FROM RecordType
-                    WHERE SObjectType = 'Account' AND IsPersonType = FALSE AND IsActive = TRUE
-                    LIMIT 1
-                ]
-                .Id,
+                RecordTypeId = businessRecordTypeId,
                 INT_PersonIdent__c = BUSINESS_IDENT,
                 CRM_Person__c = firstChild.CRM_Person__c
             );
             Account parentAccount = account(PARENT_IDENT);
-            parentAccount.OwnerId = owner.Id;
-            update parentAccount;
+            update new Account(Id = parentAccount.Id, OwnerId = owner.Id);
             User parent = new User(
                 Username = 'sto.context.' + UserInfo.getOrganizationId() + '.' + parentAccount.Id + '@example.test',
                 Email = 'parent@example.test',
@@ -111,7 +173,10 @@ public with sharing class stoPersonContextTest {
                 ProfileId = [
                     SELECT Id
                     FROM Profile
-                    WHERE UserType = 'PowerCustomerSuccess' AND PermissionsViewAllData = FALSE
+                    WHERE
+                        Name = 'Scratch Community Login Profile'
+                        AND UserType = 'PowerCustomerSuccess'
+                        AND PermissionsViewAllData = FALSE
                     LIMIT 1
                 ]
                 .Id,
@@ -124,8 +189,22 @@ public with sharing class stoPersonContextTest {
             // Setup-record DML is isolated with runAs, as in the existing community-user tests.
             System.runAs(new User(Id = owner.Id)) {
                 insert parent;
+                // Schema access does not grant record access; the explicit Read shares below remain required.
+                insert new List<PermissionSetAssignment>{
+                    new PermissionSetAssignment(AssigneeId = parent.Id, PermissionSetId = fixtureAccess.Id),
+                    new PermissionSetAssignment(
+                        AssigneeId = parent.Id,
+                        PermissionSetId = [SELECT Id FROM PermissionSet WHERE Name = 'STO_Experience' LIMIT 1]
+                        .Id
+                    )
+                };
             }
-            insert new API_Controller_Mock_Settings__c(SetupOwnerId = parent.Id, Use_Mock__c = false);
+            insert new API_Controller_Mock_Settings__c(
+                SetupOwnerId = parent.Id,
+                Use_Mock__c = false,
+                Status__c = 'OK',
+                Status_Code__c = '200'
+            );
 
             Set<String> sharedIdents = new Set<String>{
                 FIRST_CHILD_IDENT,
@@ -435,6 +514,13 @@ public with sharing class stoPersonContextTest {
         for (String confidentiality : new List<String>{ 'FORTROLIG', 'STRENGT_FORTROLIG', 'UGRADERT' }) {
             child.INT_Confidential__c = confidentiality;
             update child;
+            // Protection changes can revoke manual Person shares; restore only the unprotected fixture's access.
+            if (
+                confidentiality == 'UGRADERT' &&
+                [SELECT COUNT() FROM Person__Share WHERE ParentId = :child.Id AND UserOrGroupId = :viewer.Id] == 0
+            ) {
+                insert new Person__Share(ParentId = child.Id, UserOrGroupId = viewer.Id, AccessLevel = 'Read');
+            }
             System.runAs(viewer) {
                 assertReturnedAccounts(
                     stoPersonContext.getRepresentableChildren(),
@@ -554,6 +640,18 @@ public with sharing class stoPersonContextTest {
             stoHelperClass.ThreadData info = representedThreadData();
             info.representedPersonIdentifier = null;
             Assert.isTrue(info.validateRepresentation());
+            Thread__c thread = stoHelperClass.createThreadWithCaseV2(
+                info.theme,
+                info.msgText,
+                info.medskriv,
+                info.type,
+                info.inboxTitle,
+                info.inboxTheme,
+                info.disabilityCampaign
+            );
+            Assert.areEqual(viewer.AccountId, thread.CRM_Account__c);
+            Assert.areEqual(viewer.ContactId, thread.CRM_Contact__c);
+            Assert.areEqual(1, [SELECT COUNT() FROM Message__c WHERE CRM_Thread__c = :thread.Id]);
             Assert.areEqual(0, Limits.getCallouts());
         }
         Test.stopTest();

@@ -19,16 +19,25 @@ public with sharing class stoInboxHelperTest {
         insert cn;
     }
 
-    private static stoHelperClass.ThreadData getThreadData(String representedPersonIdentifier) {
-        stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
-        info.theme = 'Arbeid';
-        info.msgText = 'This is the message';
-        info.medskriv = true;
-        info.type = 'STO';
-        info.inboxTitle = 'Skriv til oss';
-        info.inboxTheme = 'Arbeid';
-        info.representedPersonIdentifier = representedPersonIdentifier;
-        return info;
+    private static Thread__c createInboxThread(Boolean read) {
+        User viewer = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
+        Thread__c thread = (Thread__c) STO_TestDataFactory.createRecord(
+            new Thread__c(
+                CRM_Account__c = viewer.AccountId,
+                CRM_Contact__c = viewer.ContactId,
+                CRM_Thread_Type__c = 'STO',
+                STO_Category__c = 'Arbeid',
+                NKS_Inbox_Title__c = 'Skriv til oss',
+                NKS_Inbox_Theme__c = 'Arbeid'
+            )
+        );
+        insert new Message__c(
+            CRM_Thread__c = thread.Id,
+            CRM_Message_Text__c = 'Dette er en test melding',
+            CRM_Type__c = 'Message',
+            CRM_Read__c = read
+        );
+        return thread;
     }
 
     @isTest
@@ -57,16 +66,13 @@ public with sharing class stoInboxHelperTest {
 
     @isTest
     static void getThreadsTest() {
-        User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        stoHelperClass.ThreadData threadData = getThreadData('12345678910');
-        threadData.msgText = 'Dette er en test melding';
-        threadData.cachedContactId = u.ContactId;
-        threadData.cachedAccountId = u.AccountId;
-        Thread__c t = stoHelperClass.createThread(threadData);
+        Id viewerAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+        Thread__c t = createInboxThread(true);
         t.CRM_Closed_Date__c = Date.today().addDays(-1);
         update t;
 
         Conversation_Note__c cn = new Conversation_Note__c(
+            CRM_Account__c = viewerAccountId,
             CRM_Is_Read__c = true,
             CRM_Created_by_Ident__c = 'A123456',
             CRM_Conversation_Note__c = 'this is a test message again'
@@ -79,16 +85,20 @@ public with sharing class stoInboxHelperTest {
 
         Assert.areEqual(false, tList.isEmpty());
         Assert.areEqual(2, tList.size());
+        Assert.areEqual(
+            new Set<Id>{ t.Id, cn.Id },
+            new Set<Id>{ tList[0].recordId, tList[1].recordId },
+            'The older inbox must contain the read thread and conversation note'
+        );
     }
 
     @isTest
     static void getRecentThreadsTest() {
-        Thread__c t = stoHelperClass.createThread(getThreadData('12345678910'));
-        Message__c m = new Message__c();
-        m.CRM_Thread__c = t.Id;
-        insert m;
+        Id viewerAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+        Thread__c t = createInboxThread(false);
 
         Conversation_Note__c cn = new Conversation_Note__c(
+            CRM_Account__c = viewerAccountId,
             CRM_Is_Read__c = false,
             CRM_Created_by_Ident__c = 'A123456',
             CRM_Conversation_Note__c = 'this is a test message again'
@@ -100,6 +110,12 @@ public with sharing class stoInboxHelperTest {
         Test.stopTest();
 
         Assert.areEqual(false, tList.isEmpty());
+        Assert.areEqual(2, tList.size());
+        Assert.areEqual(
+            new Set<Id>{ t.Id, cn.Id },
+            new Set<Id>{ tList[0].recordId, tList[1].recordId },
+            'The recent inbox must contain the unread thread and conversation note'
+        );
     }
 
     @isTest
