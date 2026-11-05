@@ -79,19 +79,24 @@ Set<Id> userIds = new Set<Id>();
 for (User communityUser : usersByContact.values()) {
     userIds.add(communityUser.Id);
 }
-PermissionSet permSet = [SELECT Id FROM PermissionSet WHERE Name = 'STO_experience'];
-Set<Id> assignedUserIds = new Set<Id>();
+Set<String> permissionNames = new Set<String>{ 'STO_Experience', 'STO_Scratch_Fixtures' };
+List<PermissionSet> permSets = [SELECT Id FROM PermissionSet WHERE Name IN :permissionNames];
+System.assertEquals(permissionNames.size(), permSets.size(), 'Deploy the scratch fixture permission set first.');
+Set<Id> permissionIds = new Map<Id, PermissionSet>(permSets).keySet();
+Set<String> existingAssignments = new Set<String>();
 for (PermissionSetAssignment assignment : [
-    SELECT AssigneeId
+    SELECT AssigneeId, PermissionSetId
     FROM PermissionSetAssignment
-    WHERE PermissionSetId = :permSet.Id AND AssigneeId IN :userIds
+    WHERE PermissionSetId IN :permissionIds AND AssigneeId IN :userIds
 ]) {
-    assignedUserIds.add(assignment.AssigneeId);
+    existingAssignments.add(assignment.AssigneeId + ':' + assignment.PermissionSetId);
 }
 List<PermissionSetAssignment> assignmentsToInsert = new List<PermissionSetAssignment>();
 for (Id userId : userIds) {
-    if (!assignedUserIds.contains(userId)) {
-        assignmentsToInsert.add(new PermissionSetAssignment(PermissionSetId = permSet.Id, AssigneeId = userId));
+    for (PermissionSet permSet : permSets) {
+        if (!existingAssignments.contains(userId + ':' + permSet.Id)) {
+            assignmentsToInsert.add(new PermissionSetAssignment(PermissionSetId = permSet.Id, AssigneeId = userId));
+        }
     }
 }
 insert assignmentsToInsert;

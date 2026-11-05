@@ -15,10 +15,15 @@ public with sharing class stoPersonContext {
         if (parent == null) {
             return false;
         }
-        HttpResponse response = NKS_ForeldreansvarService.verifiser(
-            parent.CRM_Person__r?.Name,
-            representedPersonIdentifier
-        );
+        HttpResponse response = stoScratchSupport.isEnabled()
+            ? (HttpResponse) stoScratchSupport.invoke(
+                  'verifiser',
+                  new Map<String, Object>{
+                      'parentIdent' => parent.CRM_Person__r?.Name,
+                      'childIdent' => representedPersonIdentifier
+                  }
+              )
+            : NKS_ForeldreansvarService.verifiser(parent.CRM_Person__r?.Name, representedPersonIdentifier);
         if (response.getStatusCode() == 204 || response.getStatusCode() == 404) {
             return false;
         }
@@ -71,7 +76,12 @@ public with sharing class stoPersonContext {
         if (parent == null) {
             return new Set<String>();
         }
-        HttpResponse response = NKS_ForeldreansvarService.barn(parent.CRM_Person__r?.Name);
+        HttpResponse response = stoScratchSupport.isEnabled()
+            ? (HttpResponse) stoScratchSupport.invoke(
+                  'barn',
+                  new Map<String, Object>{ 'parentIdent' => parent.CRM_Person__r?.Name }
+              )
+            : NKS_ForeldreansvarService.barn(parent.CRM_Person__r?.Name);
         Set<String> childIdents = new Set<String>();
         if (response.getStatusCode() != 204 && response.getStatusCode() != 404) {
             if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {

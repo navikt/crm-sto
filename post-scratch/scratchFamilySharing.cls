@@ -76,7 +76,7 @@ for (String parentIdent : family.keySet()) {
 }
 insert familyShares;
 
-// Account sharing alone does not expose the Person lookup needed for birth date/confidentiality.
+// Account sharing alone does not expose Person identity, birth date and confidentiality.
 Set<String> existingPersonShares = new Set<String>();
 for (Person__Share existingShare : [
     SELECT ParentId, UserOrGroupId
@@ -103,7 +103,7 @@ for (String parentIdent : family.keySet()) {
         }
     }
 }
-for (String childIdent : new Set<String>{ '12345678904', '12345678905' }) {
+for (String childIdent : personIdents) {
     Id childUserId = usersByContact.get(accountsByIdent.get(childIdent).PersonContactId).Id;
     Id childPersonId = accountsByIdent.get(childIdent).CRM_Person__c;
     if (!existingPersonShares.contains(childUserId + ':' + childPersonId)) {
