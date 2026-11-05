@@ -3,9 +3,7 @@ import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import createThread from '@salesforce/apex/stoHelperClass.createThread';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
-// ToDo(backend): Add stoHelperClass.getAccessibleOpenThreadsForPerson with authorized child access and sender/unread DTO fields.
-import getOpenThreads from '@salesforce/apex/stoHelperClass.getAccessibleOpenThreadsForPerson';
-// ToDo(backend): Enforce original-sender-only closure in Apex; frontend visibility is not authorization.
+import getOpenThreads from '@salesforce/apex/stoInboxHelper.getAccessibleOpenThreadsForPerson';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';

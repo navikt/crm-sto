@@ -4,8 +4,7 @@ import getURL from '@salesforce/apex/STO_SurveyHelper.getURL';
 import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
-// ToDo(backend): Add stoHelperClass.getReplyContext with verified canReply for the authenticated viewer.
-import getReplyContext from '@salesforce/apex/stoHelperClass.getReplyContext';
+import getReplyContext from '@salesforce/apex/stoReplyContext.getReplyContext';
 import { CurrentPageReference } from 'lightning/navigation';
 
 export default class StoInboxInformation extends LightningElement {

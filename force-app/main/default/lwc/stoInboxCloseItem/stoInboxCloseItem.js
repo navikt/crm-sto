@@ -1,6 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
-// ToDo(backend): Add stoHelperClass.getReplyContext; canReply also gates closure, which Apex must enforce independently.
-import getReplyContext from '@salesforce/apex/stoHelperClass.getReplyContext';
+import getReplyContext from '@salesforce/apex/stoReplyContext.getReplyContext';
 
 export default class StoInboxCloseItem extends LightningElement {
     @api thread;

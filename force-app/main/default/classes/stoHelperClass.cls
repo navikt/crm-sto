@@ -13,15 +13,8 @@ public with sharing class stoHelperClass {
     private static Id cachedAccountId;
     private static Id accountId {
         get {
-            if (cachedAccountId == null) {
-                cachedAccountId = getAccountIdOfCurrentUser();
-            }
-            return cachedAccountId;
+            return cachedAccountId != null ? cachedAccountId : stoPersonContext.currentUser().AccountId;
         }
-    }
-
-    private static Id getAccountIdOfCurrentUser() {
-        return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
     }
 
     @AuraEnabled(cacheable=true)
@@ -112,8 +105,7 @@ public with sharing class stoHelperClass {
     private static void createMessage(Thread__c thread, ThreadData info) {
         Message__c msg = new Message__c();
         msg.CRM_Message_Text__c = info.msgText;
-        // ToDo: Replace with actual logic for who will be the sender of the message
-        msg.CRM_From_Contact__c = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
+        msg.CRM_From_Contact__c = stoPersonContext.currentUser().ContactId;
         msg.CRM_Thread__c = thread.Id;
         msg.CRM_Read__c = true;
         msg.CRM_Read_Datetime__c = DateTime.now();
@@ -131,7 +123,7 @@ public with sharing class stoHelperClass {
         // Implement the logic to insert FamilieShare record related to the thread
         Thread__Share share = new Thread__Share();
         share.ParentId = thread.Id;
-        share.AccessLevel = 'Write';
+        share.AccessLevel = 'Edit';
         share.RowCause = Schema.Thread__Share.RowCause.Manual;
         share.UserOrGroupId = UserInfo.getUserId();
         try {
@@ -180,59 +172,17 @@ public with sharing class stoHelperClass {
         String threadType,
         Id representedAccountId
     ) {
-        // ToDo(backend): Authorize self/represented Account access, query open threads by category/type,
-        // and return sender/unread DTO fields. Never treat missing support as an empty thread list.
-        AuraHandledException error = new AuraHandledException('Accessible open threads backend is not implemented yet.');
-        error.setMessage('Accessible open threads backend is not implemented yet.');
-        throw error;
+        return stoInboxHelper.getAccessibleOpenThreadsForPerson(category, threadType, representedAccountId);
     }
 
     @AuraEnabled(cacheable=true)
     public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
-        List<String> ALLOWED_THREAD_TYPES;
-        if (THREAD_TYPE_MAP.containsKey(threadType)) {
-            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(threadType);
-        } else {
-            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get('ALL');
-        }
+        return stoInboxHelper.getOpenThreadsForAccount(category, threadType, accountId);
+    }
 
-        List<Thread__c> openThreads = [
-            SELECT
-                Id,
-                LastModifiedDate,
-                CRM_Number_of_unread_Messages__c,
-                CRM_Latest_Message_Datetime__c,
-                CRM_Closed_Date__c,
-                STO_ExternalName__c,
-                CRM_Is_Closed__c,
-                CRM_Thread_Type__c,
-                CRM_Related_Object__c,
-                Name,
-                NKS_Inbox_Title__c,
-                NKS_Inbox_Theme__c,
-                (
-                    SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
-                    FROM Messages__r
-                    WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
-                    ORDER BY CRM_Sent_Datetime_Formula__c DESC
-                    LIMIT 1
-                )
-            FROM Thread__c
-            WHERE
-                CRM_Is_Closed__C = FALSE
-                AND CRM_Thread_Type__c IN :ALLOWED_THREAD_TYPES
-                AND STO_Category__c = :category
-                AND CRM_Account__c = :accountId
-            ORDER BY CRM_Latest_Message_Datetime__c DESC
-        ];
-        if (openThreads.size() > 0) {
-            List<stoInboxHelper.thread> threadList = new List<stoInboxHelper.thread>();
-            for (Thread__c t : openThreads) {
-                threadList.add(stoInboxHelper.formatThread(t));
-            }
-            return threadList;
-        }
-        return null;
+    public static List<String> threadTypesFor(String threadType) {
+        return (THREAD_TYPE_MAP.containsKey(threadType) ? THREAD_TYPE_MAP.get(threadType) : THREAD_TYPE_MAP.get('ALL'))
+            .clone();
     }
 
     @AuraEnabled
@@ -247,6 +197,7 @@ public with sharing class stoHelperClass {
         } catch (DmlException e) {
             LOGGER.exception(e, CRM_ApplicationDomain.Domain.NKS);
             LOGGER.publish();
+            throw new AuraHandledException(e.getDmlMessage(0));
         }
     }
 
@@ -278,12 +229,7 @@ public with sharing class stoHelperClass {
     }
 
     private static Boolean isMaxThreadCount(ThreadData info) {
-        List<String> ALLOWED_THREAD_TYPES;
-        if (THREAD_TYPE_MAP.containsKey(info.type)) {
-            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get(info.type);
-        } else {
-            ALLOWED_THREAD_TYPES = THREAD_TYPE_MAP.get('ALL');
-        }
+        List<String> ALLOWED_THREAD_TYPES = threadTypesFor(info.type);
 
         List<Thread__c> openThreads = [
             SELECT
@@ -324,16 +270,6 @@ public with sharing class stoHelperClass {
     }
 
     public class NoAccountFoundException extends Exception {
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static Map<String, Object> getReplyContext(Id threadId) {
-        // ToDo(backend): Authorize thread access and return verified canReply, isWritingForChild,
-        // wasStartedOnBehalfOfOwner, representedLabel, senderName and representedName.
-        // Keep the frontend fail-closed until this contract and Apex reply/close enforcement are implemented.
-        AuraHandledException error = new AuraHandledException('Reply context backend is not implemented yet.');
-        error.setMessage('Reply context backend is not implemented yet.');
-        throw error;
     }
 
     @AuraEnabled(cacheable=true)
@@ -430,7 +366,7 @@ public with sharing class stoHelperClass {
 
         private void populateAccountAndContactIds() {
             if (representedPersonIdentifier == null) {
-                User usr = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+                User usr = stoPersonContext.currentUser();
                 cachedAccountId = usr?.AccountId;
                 cachedContactId = usr?.ContactId;
             } else {

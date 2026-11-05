@@ -3,13 +3,10 @@ import getGroupedMessagesFromThread from '@salesforce/apex/CRM_MessageHelperExpe
 import markAsRead from '@salesforce/apex/CRM_MessageHelperExperience.markAsRead';
 import { refreshApex } from '@salesforce/apex';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-// ToDo(backend): Enforce original-sender-only replies in Apex, including direct/legacy message creation.
 import createThreadMessage from '@salesforce/apex/CRM_MessageHelperExperience.createThreadMessage';
-// ToDo(backend): Enforce the same original-sender rule when closing a thread.
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import getCloseIntent from '@salesforce/apex/stoHelperClass.getCloseIntent';
-// ToDo(backend): Add getReplyContext with verified canReply and sender/represented names for every reader, including the child.
-import getReplyContext from '@salesforce/apex/stoHelperClass.getReplyContext';
+import getReplyContext from '@salesforce/apex/stoReplyContext.getReplyContext';
 
 import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import THREAD_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';

@@ -1,5 +1,37 @@
 public with sharing class stoPersonContext {
+    private static Map<Id, User> viewersById = new Map<Id, User>();
     private static Map<Id, Set<String>> childIdentsByUser = new Map<Id, Set<String>>();
+
+    public static User currentUser() {
+        Id viewerId = UserInfo.getUserId();
+        if (!viewersById.containsKey(viewerId)) {
+            // Preserve legacy identity-field access, restricted to the authenticated actor, across class API versions.
+            viewersById.put(
+                viewerId,
+                [
+                    SELECT AccountId, ContactId, IsActive, IsPortalEnabled, UserType
+                    FROM User
+                    WHERE Id = :viewerId
+                    WITH SYSTEM_MODE
+                ]
+            );
+        }
+        return viewersById.get(viewerId);
+    }
+
+    private static Id currentPersonAccountId() {
+        User viewer = currentUser();
+        if (!viewer.IsActive || viewer.AccountId == null || viewer.ContactId == null) {
+            return null;
+        }
+        List<Account> accounts = [
+            SELECT Id
+            FROM Account
+            WHERE Id = :viewer.AccountId AND IsPersonAccount = TRUE AND PersonContactId = :viewer.ContactId
+            WITH SYSTEM_MODE
+        ];
+        return accounts.isEmpty() ? null : accounts[0].Id;
+    }
 
     @AuraEnabled(cacheable=true)
     public static List<PersonOption> getRepresentableChildren() {
@@ -8,6 +40,28 @@ public with sharing class stoPersonContext {
             options.add(new PersonOption(child));
         }
         return options;
+    }
+
+    public static Id resolveAccountId(Id representedAccountId) {
+        Id ownAccountId = currentPersonAccountId();
+        if (ownAccountId != null) {
+            if (representedAccountId == null || representedAccountId == ownAccountId) {
+                return ownAccountId;
+            }
+            for (PersonOption child : getRepresentableChildren()) {
+                if (child.value == representedAccountId) {
+                    return child.value;
+                }
+            }
+        }
+        AuraHandledException error = new AuraHandledException('Du har ikke tilgang til samtalene for denne personen.');
+        error.setMessage('Du har ikke tilgang til samtalene for denne personen.');
+        throw error;
+    }
+
+    public static Integer ageInYears(Date birthDate) {
+        Integer age = Date.today().year() - birthDate.year();
+        return birthDate.addYears(age) > Date.today() ? age - 1 : age;
     }
 
     public static Boolean verifyRepresentation(String representedPersonIdentifier) {
@@ -108,7 +162,7 @@ public with sharing class stoPersonContext {
     }
 
     private static Account authenticatedParent() {
-        Id accountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+        Id accountId = currentUser().AccountId;
         if (accountId == null) {
             return null;
         }
@@ -154,12 +208,7 @@ public with sharing class stoPersonContext {
             label = child.Name;
             String birthDateValue = child.CRM_Person__r?.INT_DateOfBirth__c;
             if (String.isNotBlank(birthDateValue)) {
-                Date birthDate = Date.valueOf(birthDateValue);
-                Integer age = Date.today().year() - birthDate.year();
-                if (birthDate.addYears(age) > Date.today()) {
-                    age--;
-                }
-                label += ' (' + age + ' år)';
+                label += ' (' + ageInYears(Date.valueOf(birthDateValue)) + ' år)';
             }
             value = child.Id;
             representedPersonIdentifier = child.CRM_Person__r?.Name;

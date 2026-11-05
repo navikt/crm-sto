@@ -2,7 +2,7 @@
  * @description
  * Controller class to get related record
  */
-public class STO_RecordInfoController {
+public with sharing class STO_RecordInfoController {
     /**
      * @description
      * @author Stian Ruud Schikora | 09-14-2020
@@ -16,22 +16,21 @@ public class STO_RecordInfoController {
         String query = 'SELECT ' + relationshipField + ' FROM ' + objectApiName;
         query += ' WHERE Id =\'' + parentId + '\'';
 
-        sObject returnObject = Database.query(query)[0];
-
-        return returnObject;
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static String getReplyRecipientFirstName(Id threadId) {
-        // ToDo(backend): Authorize thread access and return the original sender's first name,
-        // not the represented child's name. Keep the composer blocked until the recipient is verified.
-        AuraHandledException error = new AuraHandledException('Reply recipient backend is not implemented yet.');
-        error.setMessage('Reply recipient backend is not implemented yet.');
-        throw error;
+        List<SObject> records = Database.query(query);
+        if (records.isEmpty()) {
+            throw unavailableRecord();
+        }
+        return records[0];
     }
 
     @AuraEnabled
     public static string getThreadIdByApiReference(String apiRef) {
         return [SELECT Id FROM Thread__c WHERE CRM_API_Reference__c = :apiRef LIMIT 1]?.Id;
+    }
+
+    private static AuraHandledException unavailableRecord() {
+        AuraHandledException error = new AuraHandledException('Vi kunne ikke hente posten.');
+        error.setMessage('Vi kunne ikke hente posten.');
+        return error;
     }
 }
