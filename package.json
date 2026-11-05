@@ -16,7 +16,7 @@
         "activateMock": "sf apex run -f post-scratch/activateMock.cls",
         "deactivateMock": "sf apex run -f post-scratch/deactivateMock.cls",
         "scratchRoutingSetup": "sf apex run -f post-scratch/serviceResource.cls && sf project deploy start --source-dir unpackaged/queues --source-dir unpackaged/assignmentRules --wait 10 && sf apex run -f post-scratch/scratchRoutingData.cls",
-        "scratchSetup": "sf apex run -f post-scratch/scratchSetup.cls && sf apex run -f post-scratch/scratchFamilySharing.cls && sf apex run -f dummy-data/GenerateData.apex && npm run scratchRoutingSetup",
+        "scratchSetup": "sf apex run -f post-scratch/scratchSetup.cls && sf apex run -f post-scratch/scratchFamilySharing.cls && sf apex run -f dummy-data/GenerateData.apex && npm run scratchRoutingSetup && sf apex run -f post-scratch/scratchInboxSharing.cls",
         "prepare": "husky install",
         "mac:build": "bash bin/install-scratch.sh"
     },

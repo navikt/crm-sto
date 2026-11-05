@@ -19,6 +19,9 @@ public with sharing class stoInboxHelper {
         Id beforeThreadId,
         Id beforeNoteId
     ) {
+        if (stoScratchSupport.isEnabled()) {
+            return scratchPage(representedAccountId, beforeThreadId, beforeNoteId);
+        }
         // ToDo(backend): Authorize self/represented Account access and Read sharing; return recent/older arrays,
         // both cursors and hasMore with legacy unread counts and sender fields. Never return a fake empty page.
         AuraHandledException error = new AuraHandledException('Accessible inbox page backend is not implemented yet.');
@@ -28,11 +31,25 @@ public with sharing class stoInboxHelper {
 
     @AuraEnabled(cacheable=true)
     public static Map<String, Object> getNextInboxPage(Id representedAccountId, Id beforeThreadId, Id beforeNoteId) {
+        if (stoScratchSupport.isEnabled()) {
+            return scratchPage(representedAccountId, beforeThreadId, beforeNoteId);
+        }
         // ToDo(backend): Apply the same Account authorization and page contract as getAccessibleInboxPage,
         // with bounded keyset pagination and validated thread/note cursors.
         AuraHandledException error = new AuraHandledException('Next inbox page backend is not implemented yet.');
         error.setMessage('Next inbox page backend is not implemented yet.');
         throw error;
+    }
+
+    private static Map<String, Object> scratchPage(Id representedAccountId, Id beforeThreadId, Id beforeNoteId) {
+        return (Map<String, Object>) stoScratchSupport.invoke(
+            'inbox',
+            new Map<String, Object>{
+                'accountId' => representedAccountId,
+                'threadId' => beforeThreadId,
+                'noteId' => beforeNoteId
+            }
+        );
     }
 
     @AuraEnabled(cacheable=true)
