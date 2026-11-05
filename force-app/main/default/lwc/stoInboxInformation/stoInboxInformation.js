@@ -5,6 +5,7 @@ import checkResponse from '@salesforce/apex/STO_SurveyHelper.checkResponse';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
 import { CurrentPageReference } from 'lightning/navigation';
+import { resolveNavUrls } from 'c/navUrl';
 
 export default class StoInboxInformation extends LightningElement {
     @api recordId;
@@ -20,7 +21,7 @@ export default class StoInboxInformation extends LightningElement {
     connectedCallback() {
         getURL()
             .then((url) => {
-                this.url = url;
+                this.url = resolveNavUrls(url);
             })
             .catch((error) => {
                 console.error('Problem getting Base URL for Feedback Community: ' + JSON.stringify(error, null, 2));
@@ -52,7 +53,7 @@ export default class StoInboxInformation extends LightningElement {
     @wire(getSurvey, { caseId: '$caseId' })
     wiredLink({ data, error }) {
         if (data && this.caseId) {
-            this.surveyLink = data;
+            this.surveyLink = resolveNavUrls(data);
         } else if (error) {
             console.error('Problem getting surveyLink: ' + error);
         }
@@ -86,7 +87,9 @@ export default class StoInboxInformation extends LightningElement {
 
     get infoText() {
         return this.closed
-            ? 'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/skriv-til-oss" target="_self">sende en ny melding</a>, kan du gjøre det her.'
+            ? resolveNavUrls(
+                  'Samtalen er avsluttet. Vil du <a href="https://www.nav.no/skriv-til-oss" target="_self">sende en ny melding</a>, kan du gjøre det her.'
+              )
             : 'Du kan svare på denne samtalen innen syv dager. Samtalen avsluttes automatisk dersom du ikke har flere spørsmål, og lagres i din innboks.';
     }
 

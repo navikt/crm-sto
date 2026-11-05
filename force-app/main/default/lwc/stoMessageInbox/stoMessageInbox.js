@@ -3,9 +3,13 @@ import { refreshApex } from '@salesforce/apex';
 import getThreads from '@salesforce/apex/stoInboxHelper.getThreads';
 import getRecentThreads from '@salesforce/apex/stoInboxHelper.getRecentThreads';
 import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inboxAmplitude';
+import { resolveNavUrls } from 'c/navUrl';
 
 export default class StoMessageInbox extends LightningElement {
     @api title;
+
+    contactUsUrl = resolveNavUrls('https://www.nav.no/kontaktoss');
+    documentArchiveUrl = resolveNavUrls('https://www.nav.no/dokumentarkiv');
 
     threads;
     recentthreads;
@@ -72,18 +76,13 @@ export default class StoMessageInbox extends LightningElement {
         logNavigationEvent(
             getComponentName(this.template),
             'brev og vedtak',
-            'https://www.nav.no/dokumentarkiv',
+            this.documentArchiveUrl,
             'brev og vedtak'
         );
     }
 
     handleContactUsClick() {
-        logNavigationEvent(
-            getComponentName(this.template),
-            'kontakt oss',
-            'https://www.nav.no/kontaktoss',
-            'Kontakt oss'
-        );
+        logNavigationEvent(getComponentName(this.template), 'kontakt oss', this.contactUsUrl, 'Kontakt oss');
     }
 
     get noItems() {
