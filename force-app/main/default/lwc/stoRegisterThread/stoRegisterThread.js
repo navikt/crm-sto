@@ -25,6 +25,7 @@ import {
 import registerThreadTemplate from './registerThreadTemplate.html';
 import badUrlTemplate from './badUrlTemplate.html';
 import putCloseIntent from '@salesforce/apex/stoHelperClass.putCloseIntent';
+import { resolveNavUrls } from 'c/navUrl';
 
 import ACCEPT_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Accept_terms_text';
 import SHOW_TERM_TEXT from '@salesforce/label/c.Skriv_til_oss_Show_terms';
@@ -92,6 +93,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     @api threadTypeToMake;
 
     representationInformation = REPRESENTATION_INFORMATION;
+    homeUrl = resolveNavUrls('https://www.nav.no/');
     isLoading = true;
     spinnerText = spinnerReasonTextMap.load;
     showSpinner = false;
@@ -911,7 +913,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get termsContentText() {
-        return this.labels.SERVICE_TERMS + this.labels.SERVICE_TERMS_2;
+        return resolveNavUrls(this.labels.SERVICE_TERMS + this.labels.SERVICE_TERMS_2);
     }
 
     get showOpenThreadWarning() {

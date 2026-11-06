@@ -7,6 +7,7 @@ import getThread from '@salesforce/apex/stoHelperClass.getThread';
 // ToDo(backend): Add stoHelperClass.getReplyContext with verified canReply for the authenticated viewer.
 import getReplyContext from '@salesforce/apex/stoHelperClass.getReplyContext';
 import { CurrentPageReference } from 'lightning/navigation';
+import { resolveNavUrls } from 'c/navUrl';
 
 export default class StoInboxInformation extends LightningElement {
     @api recordId;
@@ -23,7 +24,7 @@ export default class StoInboxInformation extends LightningElement {
     connectedCallback() {
         getURL()
             .then((url) => {
-                this.url = url;
+                this.url = resolveNavUrls(url);
             })
             .catch((error) => {
                 console.error('Problem getting Base URL for Feedback Community: ' + JSON.stringify(error, null, 2));

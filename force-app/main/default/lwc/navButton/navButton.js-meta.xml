@@ -9,7 +9,7 @@
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
             <property name="title" label="Title" type="String" default="Title" />
-            <property name="url" label="URL" type="String" default="www.nav.no" />
+            <property name="url" label="URL" type="String" default="https://www.nav.no" />
         </targetConfig>
     </targetConfigs>
     <isExposed>true</isExposed>
