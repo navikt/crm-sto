@@ -9,6 +9,7 @@ import { logNavigationEvent, getComponentName, setDecoratorParams } from 'c/inbo
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
+import { resolveNavUrls } from 'c/navUrl';
 
 const SELF_PERSON_VALUE = 'self';
 // TODO(backend-ready): All children and their threads now come from Apex; do not restore client fixtures.
@@ -16,6 +17,9 @@ const ALL_CATEGORIES_VALUE = 'all';
 
 export default class StoMessageInbox extends NavigationMixin(LightningElement) {
     @api title;
+
+    contactUsUrl = resolveNavUrls('https://www.nav.no/kontaktoss');
+    documentArchiveUrl = resolveNavUrls('https://www.nav.no/dokumentarkiv');
 
     threads;
     recentthreads;
@@ -196,18 +200,13 @@ export default class StoMessageInbox extends NavigationMixin(LightningElement) {
         logNavigationEvent(
             getComponentName(this.template),
             'brev og vedtak',
-            'https://www.nav.no/dokumentarkiv',
+            this.documentArchiveUrl,
             'brev og vedtak'
         );
     }
 
     handleContactUsClick() {
-        logNavigationEvent(
-            getComponentName(this.template),
-            'kontakt oss',
-            'https://www.nav.no/kontaktoss',
-            'Kontakt oss'
-        );
+        logNavigationEvent(getComponentName(this.template), 'kontakt oss', this.contactUsUrl, 'Kontakt oss');
     }
 
     handleCategoryChange(event) {

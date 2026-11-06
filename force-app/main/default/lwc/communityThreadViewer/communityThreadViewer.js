@@ -7,6 +7,7 @@ import createThreadMessage from '@salesforce/apex/CRM_MessageHelperExperience.cr
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import getCloseIntent from '@salesforce/apex/stoHelperClass.getCloseIntent';
 import getReplyContext from '@salesforce/apex/stoReplyContext.getReplyContext';
+import { resolveNavUrls } from 'c/navUrl';
 
 import THREAD_NAME_FIELD from '@salesforce/schema/Thread__c.STO_ExternalName__c';
 import THREAD_CLOSED_FIELD from '@salesforce/schema/Thread__c.CRM_Is_Closed__c';
@@ -114,7 +115,9 @@ export default class CommunityThreadViewer extends LightningElement {
                 {
                     Id: 1,
                     EventItem: '',
-                    Text: 'Vil du <a href="https://www.nav.no/skriv-til-oss" target="_self">sende en ny melding</a>, kan du gjøre det her. Husk å kopiere det du har skrevet.'
+                    Text: resolveNavUrls(
+                        'Vil du <a href="https://www.nav.no/skriv-til-oss" target="_self">sende en ny melding</a>, kan du gjøre det her. Husk å kopiere det du har skrevet.'
+                    )
                 }
             ]
         };
