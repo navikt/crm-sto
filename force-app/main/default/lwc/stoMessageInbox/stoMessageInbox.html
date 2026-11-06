@@ -2,7 +2,7 @@
     <div class="inbox-wrapper">
         <h1 class="navds-heading navds-heading--xlarge header">{title}</h1>
         <c-nav-Button
-            url="https://www.nav.no/kontaktoss"
+            url={contactUsUrl}
             title="Kontakt oss"
             log-amplitude-event
             onlogevent={handleContactUsClick}
@@ -11,7 +11,7 @@
             <p class="navds-body-long navds-body-long--large">
                 For meldinger om dokumenter og/eller informasjonsbrev se&#32;
                 <a
-                    href="https://www.nav.no/dokumentarkiv"
+                    href={documentArchiveUrl}
                     target="_self"
                     class="navds-link navds-link--action archive-link"
                     onclick={handleDocumentArchiveClick}

@@ -21,13 +21,6 @@
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:communityBreadCrumbV2",
-          "id" : "f44ace02-edcd-4678-8f7e-57afc46ac3d7",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
         } ],
         "id" : "19619964-83c5-4179-a835-9a2fa38e03f4",
         "regionLabel" : "Column 1",

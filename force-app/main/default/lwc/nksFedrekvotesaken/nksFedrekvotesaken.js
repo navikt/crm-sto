@@ -3,6 +3,7 @@ import PlusCircle from '@salesforce/resourceUrl/PlusCircle';
 import LoggerUtility from 'c/loggerUtility';
 import postTask from '@salesforce/apex/NKS_FedrekvotesakenController.postTask';
 import hasExistingNavTasks from '@salesforce/apex/NKS_FedrekvotesakenController.hasExistingNavTasks';
+import { resolveNavUrls } from 'c/navUrl';
 
 const textMapping = {
     name: 'Barn mangler navn',
@@ -14,6 +15,9 @@ const textMapping = {
 };
 
 export default class NksFedrekvotesaken extends LightningElement {
+    contactUsUrl = resolveNavUrls('https://www.nav.no/kontaktoss');
+    processingTimesUrl = resolveNavUrls('https://www.nav.no/saksbehandlingstider#foreldrepenger');
+
     childCount = 1;
     plusCircle = `${PlusCircle}#PlusCircle`;
     errorList;
