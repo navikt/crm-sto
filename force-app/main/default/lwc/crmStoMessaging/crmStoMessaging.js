@@ -6,8 +6,7 @@ import { subscribe, MessageContext } from 'lightning/messageService';
 import TAB_REFRESH from '@salesforce/messageChannel/tabRefresh__c';
 
 import getThreadId from '@salesforce/apex/STO_RecordInfoController.getThreadIdByApiReference';
-// ToDo(backend): Add STO_RecordInfoController.getReplyRecipientFirstName for the original sender, not the represented child.
-import getReplyRecipientFirstName from '@salesforce/apex/STO_RecordInfoController.getReplyRecipientFirstName';
+import getReplyRecipientFirstName from '@salesforce/apex/stoReplyContext.getReplyRecipientFirstName';
 
 import NKS_FULL_NAME from '@salesforce/schema/User.NKS_FullName__c';
 import COMPANY_NAME from '@salesforce/schema/User.CompanyName';

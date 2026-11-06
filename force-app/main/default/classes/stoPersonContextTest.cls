@@ -686,6 +686,181 @@ public with sharing class stoPersonContextTest {
         Test.stopTest();
     }
 
+    private static Thread__c lookupThread(Account subject, String category, String type, Boolean withMessage) {
+        stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
+        info.cachedAccountId = subject.Id;
+        info.cachedContactId = subject.PersonContactId;
+        info.theme = category;
+        info.type = type;
+        info.msgText = 'Open thread lookup test';
+        info.medskriv = true;
+        Thread__c thread = info.toThread();
+        insert thread;
+        if (type == 'STB') {
+            thread.CRM_Thread_Type__c = type;
+            update thread;
+        }
+        if (withMessage) {
+            stoHelperClass.createMessage(thread, info);
+        }
+        return thread;
+    }
+
+    @isTest
+    static void openThreadLookupForSelfFiltersAndPreservesLegacyTypesTest() {
+        User viewer = parent();
+        Account self = account(PARENT_IDENT);
+        System.runAs(viewer) {
+            Thread__c sto = lookupThread(self, 'Familie', 'STO', true);
+            Thread__c legacy = lookupThread(self, 'Familie', 'STB', true);
+            Thread__c bto = lookupThread(self, 'Familie', 'BTO', true);
+
+            Test.startTest();
+            List<stoInboxHelper.thread> threads = stoHelperClass.getAccessibleOpenThreadsForPerson(
+                'Familie',
+                'STO',
+                null
+            );
+            Set<Id> actualIds = new Set<Id>();
+            for (stoInboxHelper.thread item : threads) {
+                actualIds.add(item.recordId);
+                Assert.isNotNull(item.latestmessage);
+                Assert.areEqual('Åpen', item.status);
+                Assert.isNull(item.inboxSenderLabel, 'The sender does not need a label for their own threads');
+            }
+            Assert.areEqual(new Set<Id>{ sto.Id, legacy.Id }, actualIds);
+            List<stoInboxHelper.thread> btoThreads = stoHelperClass.getAccessibleOpenThreadsForPerson(
+                'Familie',
+                'BTO',
+                self.Id
+            );
+            Assert.areEqual(1, btoThreads.size());
+            Assert.areEqual(bto.Id, btoThreads[0].recordId);
+            Assert.areEqual(3, stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'ALL', self.Id).size());
+            Assert.areEqual(0, Limits.getCallouts(), 'Self lookup must not call the family service');
+            Test.stopTest();
+        }
+    }
+
+    @isTest
+    static void openThreadLookupExcludesClosedOtherCategoryAndOtherPersonTest() {
+        User viewer = parent();
+        Account self = account(PARENT_IDENT);
+        Account child = account(FIRST_CHILD_IDENT);
+        System.runAs(viewer) {
+            Thread__c closed = lookupThread(self, 'Familie', 'STO', true);
+            stoHelperClass.closeThread(closed.Id);
+            lookupThread(self, 'Arbeid', 'STO', true);
+            lookupThread(child, 'Familie', 'STO', true);
+            Test.startTest();
+            Assert.areEqual(0, stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', null).size());
+            Test.stopTest();
+        }
+    }
+
+    @isTest
+    static void openThreadLookupReturnsEmptyListButLegacyKeepsNullTest() {
+        User viewer = parent();
+        System.runAs(viewer) {
+            Test.startTest();
+            Assert.areEqual(0, stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', null).size());
+            Assert.isNull(stoHelperClass.getOpenThreads('Familie', 'STO'));
+            lookupThread(account(PARENT_IDENT), 'Familie', 'STO', false);
+            Assert.areEqual(
+                0,
+                stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', viewer.AccountId).size(),
+                'A thread without a displayable message must not leave a null card'
+            );
+            Test.stopTest();
+        }
+    }
+
+    @isTest
+    static void openThreadLookupAuthorizesSelectedChildTest() {
+        User viewer = parent();
+        Account child = account(FIRST_CHILD_IDENT);
+        BarnMock mock = new BarnMock(200, barnBody(new List<String>{ FIRST_CHILD_IDENT }));
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(viewer) {
+            // Resolve the child before message DML; subsequent lookups reuse the transaction's service response.
+            stoPersonContext.getRepresentableChildren();
+            Thread__c childThread = lookupThread(child, 'Familie', 'STO', true);
+            lookupThread(account(PARENT_IDENT), 'Familie', 'STO', true);
+            List<stoInboxHelper.thread> threads = stoHelperClass.getAccessibleOpenThreadsForPerson(
+                'Familie',
+                'STO',
+                child.Id
+            );
+            Assert.areEqual(1, threads.size());
+            Assert.areEqual(childThread.Id, threads[0].recordId);
+        }
+        Assert.areEqual(1, mock.calls);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void openThreadLookupRejectsUnrelatedAndInvisibleAccountsTest() {
+        User viewer = parent();
+        Set<Id> rejectedAccountIds = new Set<Id>{
+            account(UNRETURNED_CHILD_IDENT).Id,
+            account(UNSHARED_CHILD_IDENT).Id,
+            account(BUSINESS_IDENT).Id
+        };
+        BarnMock mock = new BarnMock(
+            200,
+            barnBody(new List<String>{ FIRST_CHILD_IDENT, UNSHARED_CHILD_IDENT, BUSINESS_IDENT })
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(viewer) {
+            for (Id selectedAccountId : rejectedAccountIds) {
+                try {
+                    stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', selectedAccountId);
+                    Assert.fail('Visibility or a caller-supplied ID alone must not authorize a selected person');
+                } catch (AuraHandledException error) {
+                    Assert.areEqual('Du har ikke tilgang til samtalene for denne personen.', error.getMessage());
+                }
+            }
+        }
+        Assert.areEqual(1, mock.calls);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void openThreadLookupDoesNotHideFamilyServiceFailureTest() {
+        User viewer = parent();
+        Id childId = account(FIRST_CHILD_IDENT).Id;
+        Test.setMock(HttpCalloutMock.class, new BarnMock(500, '{"error":"unavailable"}'));
+        Test.startTest();
+        System.runAs(viewer) {
+            try {
+                stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', childId);
+                Assert.fail('A service failure must surface instead of allowing an empty-list submission');
+            } catch (NKS_ForeldreansvarService.ForeldreansvarException expected) {
+                Assert.isNotNull(expected.getMessage());
+            }
+        }
+        Test.stopTest();
+    }
+
+    @isTest
+    static void currentUserCacheIsScopedToTheAuthenticatedActor() {
+        User parentUser = parent();
+        Id originalUserId = UserInfo.getUserId();
+        Test.startTest();
+        Assert.areEqual(originalUserId, stoPersonContext.currentUser().Id);
+        System.runAs(parentUser) {
+            Assert.areEqual(parentUser.Id, stoPersonContext.currentUser().Id);
+            Assert.areEqual(account(PARENT_IDENT).PersonContactId, stoPersonContext.currentUser().ContactId);
+            Integer beforeRepeat = Limits.getQueries();
+            stoPersonContext.currentUser();
+            Assert.areEqual(beforeRepeat, Limits.getQueries(), 'Repeated identity reads must not run SOQL');
+        }
+        Assert.areEqual(originalUserId, stoPersonContext.currentUser().Id);
+        Test.stopTest();
+    }
+
     @isTest
     static void personOptionAgeTest() {
         Map<Date, Integer> expectedAges = new Map<Date, Integer>{

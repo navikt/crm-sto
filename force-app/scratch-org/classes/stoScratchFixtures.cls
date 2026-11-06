@@ -108,6 +108,7 @@ public with sharing class stoScratchFixtures implements System.Callable {
         }
         List<Object> recent = new List<Object>();
         List<Object> older = new List<Object>();
+        Map<Id, String> senderLabels = stoReplyContext.inboxSenderLabels(new Map<Id, Thread__c>(threads).keySet());
         for (Thread__c record : threads) {
             threadId = record.Id;
             stoInboxHelper.Thread formatted = stoInboxHelper.formatThread(record);
@@ -115,6 +116,7 @@ public with sharing class stoScratchFixtures implements System.Callable {
                 continue;
             }
             Map<String, Object> item = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(formatted));
+            item.put('inboxSenderLabel', senderLabels.get(record.Id));
             item.put(
                 'category',
                 record.CRM_Thread_Type__c == 'CHAT' ? record.CRM_Theme_Group_Name__c : record.STO_Category__c

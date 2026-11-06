@@ -3,7 +3,6 @@ import basepath from '@salesforce/community/basePath';
 import { logNavigationEvent, getComponentName } from 'c/inboxAmplitude';
 
 export default class StoMessageInboxItem extends LightningElement {
-    // ToDo(backend): Extend the inbox DTO with viewer-specific inboxSenderLabel; retain the legacy numberOfUnreadMessages.
     @api thread;
     @api closeIntent = false;
     @api inboxPersonValue = 'self';
