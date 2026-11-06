@@ -120,12 +120,17 @@ public with sharing class stoHelperClass {
 
     @TestVisible
     private static void insertFamilieShare(Thread__c thread) {
-        // Implement the logic to insert FamilieShare record related to the thread
+        Id currentUserId = UserInfo.getUserId();
+        Thread__c persistedThread = [SELECT OwnerId FROM Thread__c WHERE Id = :thread.Id];
+        if (persistedThread.OwnerId == currentUserId) {
+            return;
+        }
+
         Thread__Share share = new Thread__Share();
         share.ParentId = thread.Id;
         share.AccessLevel = 'Edit';
         share.RowCause = Schema.Thread__Share.RowCause.Manual;
-        share.UserOrGroupId = UserInfo.getUserId();
+        share.UserOrGroupId = currentUserId;
         try {
             insert share;
         } catch (DmlException e) {
