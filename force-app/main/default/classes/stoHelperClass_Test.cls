@@ -12,6 +12,22 @@ public with sharing class stoHelperClass_Test {
         STO_TestDataFactory.createRecord(
             new Common_Code__c(Name = 'Spørsmål og Svar', CRM_Code__c = 'SPM_OG_SVR', CRM_Code_Set__c = 'Oppgavetyper')
         );
+        insert new List<CRM_FAQ__c>{
+            new CRM_FAQ__c(
+                CRM_Title__c = 'STO news',
+                CRM_Content__c = 'STO content',
+                CRM_Theme__c = 'Arbeid',
+                CRM_Shown__c = 'Skriv til oss',
+                CRM_Ordering__c = 1
+            ),
+            new CRM_FAQ__c(
+                CRM_Title__c = 'BTO news',
+                CRM_Content__c = 'BTO content',
+                CRM_Theme__c = 'Sykepenger',
+                CRM_Shown__c = 'Gi beskjed',
+                CRM_Ordering__c = 1
+            )
+        };
     }
 
     private static Contact getContactBasedOnPersonIdent(String personIdent) {
@@ -52,14 +68,12 @@ public with sharing class stoHelperClass_Test {
         Test.stopTest();
     }
 
-    @isTest
-    static void getThemesTest() {
-        Test.startTest();
-        List<STO_Category__mdt> themes = stoHelperClass.getThemes('no');
-        List<STO_Category__mdt> themesEn = stoHelperClass.getThemes('en-US');
-        Test.stopTest();
-
-        Assert.areEqual(themes.isEmpty(), false, 'Missing metadata setup - initiate STO Category Themes');
+    @IsTest
+    static void themesAcceptNullLanguageAndKeepAvailableCategories() {
+        List<STO_Category__mdt> themes = stoHelperClass.getThemes(null);
+        Assert.isFalse(themes.isEmpty());
+        Assert.areEqual(themes.size(), stoHelperClass.getThemes('no').size());
+        Assert.areEqual(themes.size(), stoHelperClass.getThemes('en-US').size());
     }
 
     @isTest
@@ -163,22 +177,17 @@ public with sharing class stoHelperClass_Test {
         Assert.areNotEqual(null, ex, 'Exception expected when creating more than three threads');
     }
 
-    @isTest
-    static void getNewsBasedOnThemeSTOTest() {
-        Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Skriv til oss', 'Pensjon');
-        Test.stopTest();
-
-        Assert.isTrue(!newsList.isEmpty(), 'Expected at least one news item for STO theme');
-    }
-
-    @isTest
-    static void getNewsBasedOnThemeBTOTest() {
-        Test.startTest();
-        List<stoHelperClass.News> newsList = stoHelperClass.getNewsBasedOnTheme('Beskjed til oss', 'Pensjon');
-        Test.stopTest();
-
-        Assert.isTrue(!newsList.isEmpty(), 'Expected at least one news item for BTO theme');
+    @IsTest
+    static void faqUsesRealDataAndEmptyResultsStayEmpty() {
+        List<stoHelperClass.News> stoNews = stoHelperClass.getNewsBasedOnTheme('Skriv til oss', 'Arbeid');
+        Assert.areEqual(1, stoNews.size());
+        Assert.areEqual('STO news', stoNews[0].header);
+        Assert.areEqual('STO content', stoNews[0].body);
+        Assert.isNotNull(stoNews[0].id);
+        List<stoHelperClass.News> btoNews = stoHelperClass.getNewsBasedOnTheme('Gi beskjed', 'Sykepenger');
+        Assert.areEqual(1, btoNews.size());
+        Assert.areEqual('BTO news', btoNews[0].header);
+        Assert.areEqual(0, stoHelperClass.getNewsBasedOnTheme('Skriv til oss', 'Missing theme').size());
     }
 
     @isTest

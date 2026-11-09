@@ -60,20 +60,9 @@ public with sharing class stoHelperClass {
         return result;
     }
 
-    /**
-     * Get themes from custom metadata
-     * @Author Lars Petter Johnsen
-     */
     @AuraEnabled(cacheable=true)
     public static List<STO_Category__mdt> getThemes(String language) {
-        String lang;
-        if (language.equals('no')) {
-            lang = 'Norwegian';
-        } else if (language.equals('en-US')) {
-            lang = 'English';
-        }
-
-        return [SELECT Id, Label, STO_Category__c FROM STO_Category__mdt ORDER BY Id];
+        return [SELECT Id, Label, STO_Category__c FROM STO_Category__mdt ORDER BY Label, DeveloperName];
     }
 
     /**
@@ -168,18 +157,13 @@ public with sharing class stoHelperClass {
     @AuraEnabled(cacheable=true)
     public static List<News> getNewsBasedOnTheme(String pageTitle, String pageTheme) {
         List<News> news = new List<News>();
-
-        for (CRM_FAQ__c rec : [
+        for (CRM_FAQ__c record : [
             SELECT Id, CRM_Content__c, CRM_Title__c
             FROM CRM_FAQ__c
             WHERE CRM_Theme__c = :pageTheme AND CRM_Shown__c = :pageTitle
-            ORDER BY CRM_Ordering__c ASC
+            ORDER BY CRM_Ordering__c ASC, Id
         ]) {
-            news.add(new News(rec.CRM_Title__c, rec.CRM_Content__c, rec.Id));
-        }
-
-        if (news.size() == 0 && Test.isRunningTest()) {
-            news.add(new News('header test', 'body test', '123'));
+            news.add(new News(record.CRM_Title__c, record.CRM_Content__c, record.Id));
         }
         return news;
     }
