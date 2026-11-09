@@ -556,7 +556,10 @@ public with sharing class stoPersonContextTest {
         Test.setMock(HttpCalloutMock.class, mock);
         Test.startTest();
         System.runAs(viewer) {
-            Assert.areEqual(expected, representedThreadData().validateRepresentation());
+            Assert.areEqual(
+                expected,
+                stoPersonContext.verifyRepresentation(representedThreadData().representedPersonIdentifier)
+            );
         }
         Assert.areEqual(1, mock.calls);
         Test.stopTest();
@@ -603,7 +606,7 @@ public with sharing class stoPersonContextTest {
         Test.startTest();
         System.runAs(viewer) {
             try {
-                representedThreadData().validateRepresentation();
+                stoPersonContext.verifyRepresentation(representedThreadData().representedPersonIdentifier);
                 Assert.fail('Malformed verification must surface an error, not authorize a submission');
             } catch (AuraHandledException expected) {
                 Assert.isNotNull(expected.getMessage());
@@ -645,7 +648,6 @@ public with sharing class stoPersonContextTest {
         System.runAs(viewer) {
             stoHelperClass.ThreadData info = representedThreadData();
             info.representedPersonIdentifier = null;
-            Assert.isTrue(info.validateRepresentation());
             Thread__c thread = stoHelperClass.createThreadWithCaseV2(
                 info.theme,
                 info.msgText,
@@ -667,14 +669,14 @@ public with sharing class stoPersonContextTest {
     static void representedChildRemainsSubjectButParentIsMessageSenderTest() {
         User viewer = parent();
         Account child = account(FIRST_CHILD_IDENT);
+        VerificationMock mock = new VerificationMock(200, '{"kanRepresentere":true}');
+        Test.setMock(HttpCalloutMock.class, mock);
         Test.startTest();
         System.runAs(viewer) {
             stoHelperClass.ThreadData info = representedThreadData();
-            Thread__c thread = info.toThread();
+            Thread__c thread = stoHelperClass.createThread(info);
             Assert.areEqual(child.Id, thread.CRM_Account__c);
             Assert.areEqual(child.PersonContactId, thread.CRM_Contact__c);
-            insert thread;
-            stoHelperClass.createMessage(thread, info);
             Message__c message = [
                 SELECT CRM_From_Contact__c
                 FROM Message__c
@@ -687,21 +689,28 @@ public with sharing class stoPersonContextTest {
     }
 
     private static Thread__c lookupThread(Account subject, String category, String type, Boolean withMessage) {
-        stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
-        info.cachedAccountId = subject.Id;
-        info.cachedContactId = subject.PersonContactId;
-        info.theme = category;
-        info.type = type;
-        info.msgText = 'Open thread lookup test';
-        info.medskriv = true;
-        Thread__c thread = info.toThread();
+        Id recordTypeId = Thread__c.SObjectType.getDescribe()
+            .getRecordTypeInfosByDeveloperName()
+            .get('NKS_Thread')
+            .getRecordTypeId();
+        Thread__c thread = new Thread__c(
+            CRM_Account__c = subject.Id,
+            CRM_Contact__c = subject.PersonContactId,
+            Name = type == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss',
+            CRM_Thread_Type__c = type,
+            STO_Category__c = category,
+            STO_Medskriv__c = true,
+            RecordTypeId = recordTypeId
+        );
         insert thread;
-        if (type == 'STB') {
-            thread.CRM_Thread_Type__c = type;
-            update thread;
-        }
         if (withMessage) {
-            stoHelperClass.createMessage(thread, info);
+            Id currentUserContactId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
+            insert new Message__c(
+                CRM_Thread__c = thread.Id,
+                CRM_Message_Text__c = 'Open thread lookup test',
+                CRM_From_Contact__c = currentUserContactId,
+                CRM_Type__c = 'Message'
+            );
         }
         return thread;
     }

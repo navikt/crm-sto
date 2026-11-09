@@ -31,13 +31,13 @@ public with sharing class STO_ThreadService {
             insert thread;
             insert new Message__c(
                 CRM_Message_Text__c = info.msgText,
-                CRM_From_Contact__c = threadAccountIdentity.contactId,
+                CRM_From_Contact__c = STO_ThreadIdentity.getCurrentUserAccountIdentity().contactId,
                 CRM_Thread__c = thread.Id,
                 CRM_Read__c = true,
                 CRM_Read_Datetime__c = DateTime.now()
             );
             if (String.isNotBlank(representedIdentifier)) {
-                new RepresentationSharing().grantSubmitterAccess(thread.Id);
+                grantSubmitterAccess(thread.Id);
             }
         } catch (DmlException e) {
             Database.rollback(savepoint);
@@ -45,6 +45,11 @@ public with sharing class STO_ThreadService {
             throw new stoHelperClass.ThreadOrMessageException('Unable to create the thread and its message.');
         }
         return thread;
+    }
+
+    @TestVisible
+    private static void grantSubmitterAccess(Id threadId) {
+        new RepresentationSharing().grantSubmitterAccess(threadId);
     }
 
     public static STO_ThreadIdentity.AccountIdentity resolveThreadAccountIdentity(String representedIdentifier) {

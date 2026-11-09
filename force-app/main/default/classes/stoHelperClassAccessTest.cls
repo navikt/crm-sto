@@ -111,14 +111,19 @@ private with sharing class stoHelperClassAccessTest {
     }
 
     private static Thread__c newThread(Account subject, String threadType) {
-        stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
-        info.cachedAccountId = subject.Id;
-        info.cachedContactId = subject.PersonContactId;
-        info.type = threadType;
-        info.theme = 'Familie';
-        info.medskriv = true;
-        Thread__c thread = info.toThread();
-        thread.CRM_Thread_Type__c = threadType;
+        Id recordTypeId = Thread__c.SObjectType.getDescribe()
+            .getRecordTypeInfosByDeveloperName()
+            .get('NKS_Thread')
+            .getRecordTypeId();
+        Thread__c thread = new Thread__c(
+            CRM_Account__c = subject.Id,
+            CRM_Contact__c = subject.PersonContactId,
+            Name = threadType == 'BTO' ? 'Beskjed til oss' : 'Skriv til oss',
+            CRM_Thread_Type__c = threadType,
+            STO_Category__c = 'Familie',
+            STO_Medskriv__c = true,
+            RecordTypeId = recordTypeId
+        );
         insert as system thread;
         return thread;
     }
@@ -290,7 +295,7 @@ private with sharing class stoHelperClassAccessTest {
         Account child = subject(CHILD_IDENT);
         Thread__c thread = newThread(child, 'STO');
         Test.startTest();
-        stoHelperClass.insertFamilieShare(thread);
+        STO_ThreadService.grantSubmitterAccess(thread.Id);
         Assert.areEqual(
             0,
             [SELECT COUNT() FROM Thread__Share WHERE ParentId = :thread.Id AND RowCause = 'Manual'],
@@ -298,7 +303,7 @@ private with sharing class stoHelperClassAccessTest {
         );
         Id differentOwner = [SELECT OwnerId FROM Account WHERE Id = :child.Id].OwnerId;
         update new Thread__c(Id = thread.Id, OwnerId = differentOwner);
-        stoHelperClass.insertFamilieShare(thread);
+        STO_ThreadService.grantSubmitterAccess(thread.Id);
         Assert.areEqual(
             'Edit',
             [
