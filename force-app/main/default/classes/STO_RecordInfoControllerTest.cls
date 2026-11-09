@@ -50,4 +50,16 @@ public with sharing class STO_RecordInfoControllerTest {
 
         System.assertNotEquals(null, STO_RecordInfoController.getThreadIdByApiReference(apiRef));
     }
+
+    @isTest
+    static void missingRelatedRecordReportsAnExplicitError() {
+        Test.startTest();
+        try {
+            STO_RecordInfoController.getRelatedRecord(UserInfo.getUserId(), 'Id', 'Thread__c');
+            Assert.fail('An absent record must not cause an unhandled list-index exception');
+        } catch (AuraHandledException expected) {
+            Assert.areEqual('Vi kunne ikke hente posten.', expected.getMessage());
+        }
+        Test.stopTest();
+    }
 }

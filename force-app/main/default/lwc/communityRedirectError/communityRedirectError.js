@@ -1,10 +1,11 @@
 import { LightningElement } from 'lwc';
+import { resolveNavUrls } from 'c/navUrl';
 
 import { NavigationMixin } from 'lightning/navigation';
 
 export default class CommunityRedirectError extends NavigationMixin(LightningElement) {
     connectedCallback() {
-        this.handleNavigate('https://www.nav.no/error');
+        this.handleNavigate(resolveNavUrls('https://www.nav.no/error'));
     }
 
     handleNavigate(url) {

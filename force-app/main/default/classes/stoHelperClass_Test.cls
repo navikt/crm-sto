@@ -73,6 +73,21 @@ private class stoHelperClass_Test {
     }
 
     @IsTest
+    static void getAccessibleOpenThreadsRequiresPersonContextTest() {
+        Id representedAccountId = getContact('12345678910').AccountId;
+        Test.startTest();
+        for (Id selectedAccountId : new List<Id>{ null, representedAccountId }) {
+            try {
+                stoHelperClass.getAccessibleOpenThreadsForPerson('Arbeid', 'STO', selectedAccountId);
+                Assert.fail('An internal user without a Person Account must not use the citizen lookup.');
+            } catch (AuraHandledException error) {
+                Assert.areEqual('Du har ikke tilgang til samtalene for denne personen.', error.getMessage());
+            }
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
     static void createThreadAndMessageForCurrentUser() {
         stoHelperClass.ThreadData info = getThreadData();
         Test.startTest();

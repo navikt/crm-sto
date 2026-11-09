@@ -1,17 +1,113 @@
 public with sharing class stoInboxHelper {
-    @TestVisible
-    private static Id cachedAccountId;
     private static Id accountId {
         get {
-            if (cachedAccountId == null) {
-                cachedAccountId = getAccountIdOfCurrentUser();
-            }
-            return cachedAccountId;
+            return stoPersonContext.currentUser().AccountId;
         }
     }
 
-    private static Id getAccountIdOfCurrentUser() {
-        return [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()]?.AccountId;
+    @AuraEnabled
+    public static Map<String, Object> getAccessibleInboxPage(
+        Id representedAccountId,
+        Id beforeThreadId,
+        Id beforeNoteId
+    ) {
+        if (stoScratchSupport.isEnabled()) {
+            return scratchPage(representedAccountId, beforeThreadId, beforeNoteId);
+        }
+        // ToDo(backend): Authorize self/represented Account access and Read sharing; return recent/older arrays,
+        // both cursors and hasMore with legacy unread counts and sender fields. Never return a fake empty page.
+        AuraHandledException error = new AuraHandledException('Accessible inbox page backend is not implemented yet.');
+        error.setMessage('Accessible inbox page backend is not implemented yet.');
+        throw error;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<String, Object> getNextInboxPage(Id representedAccountId, Id beforeThreadId, Id beforeNoteId) {
+        if (stoScratchSupport.isEnabled()) {
+            return scratchPage(representedAccountId, beforeThreadId, beforeNoteId);
+        }
+        // ToDo(backend): Apply the same Account authorization and page contract as getAccessibleInboxPage,
+        // with bounded keyset pagination and validated thread/note cursors.
+        AuraHandledException error = new AuraHandledException('Next inbox page backend is not implemented yet.');
+        error.setMessage('Next inbox page backend is not implemented yet.');
+        throw error;
+    }
+
+    private static Map<String, Object> scratchPage(Id representedAccountId, Id beforeThreadId, Id beforeNoteId) {
+        return (Map<String, Object>) stoScratchSupport.invoke(
+            'inbox',
+            new Map<String, Object>{
+                'accountId' => representedAccountId,
+                'threadId' => beforeThreadId,
+                'noteId' => beforeNoteId
+            }
+        );
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<thread> getAccessibleOpenThreadsForPerson(
+        String category,
+        String threadType,
+        Id representedAccountId
+    ) {
+        Id selectedAccountId = stoPersonContext.resolveAccountId(representedAccountId);
+        List<thread> matches = getOpenThreadsForAccount(category, threadType, selectedAccountId);
+        List<thread> result = new List<thread>();
+        Set<Id> threadIds = new Set<Id>();
+        if (matches != null) {
+            for (thread item : matches) {
+                if (item != null) {
+                    result.add(item);
+                    threadIds.add(item.recordId);
+                }
+            }
+        }
+        Map<Id, String> senderLabels = stoReplyContext.inboxSenderLabels(threadIds);
+        for (thread item : result) {
+            item.inboxSenderLabel = senderLabels.get(item.recordId);
+        }
+        return result;
+    }
+
+    public static List<thread> getOpenThreadsForAccount(String category, String threadType, Id selectedAccountId) {
+        List<String> allowedTypes = stoHelperClass.threadTypesFor(threadType);
+        List<Thread__c> openThreads = [
+            SELECT
+                Id,
+                LastModifiedDate,
+                CRM_Number_of_unread_Messages__c,
+                CRM_Latest_Message_Datetime__c,
+                CRM_Closed_Date__c,
+                STO_ExternalName__c,
+                CRM_Is_Closed__c,
+                CRM_Thread_Type__c,
+                CRM_Related_Object__c,
+                Name,
+                NKS_Inbox_Title__c,
+                NKS_Inbox_Theme__c,
+                (
+                    SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
+                    FROM Messages__r
+                    WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
+                    ORDER BY CRM_Sent_Datetime_Formula__c DESC
+                    LIMIT 1
+                )
+            FROM Thread__c
+            WHERE
+                CRM_Is_Closed__c = FALSE
+                AND CRM_Thread_Type__c IN :allowedTypes
+                AND STO_Category__c = :category
+                AND CRM_Account__c = :selectedAccountId
+            ORDER BY CRM_Latest_Message_Datetime__c DESC
+        ];
+        if (openThreads.isEmpty()) {
+            return null;
+        }
+        List<thread> result = new List<thread>();
+        for (Thread__c record : openThreads) {
+            result.add(formatThread(record));
+        }
+        return result;
     }
 
     @AuraEnabled(cacheable=true)
@@ -46,8 +142,13 @@ public with sharing class stoInboxHelper {
                 AND CRM_Account__c = :accountId
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
+        Map<Id, String> senderLabels = stoReplyContext.inboxSenderLabels(new Map<Id, Thread__c>(threadList).keySet());
         for (Thread__c t : threadList) {
-            inboxlist.add(formatThread(t));
+            thread item = formatThread(t);
+            if (item != null) {
+                item.inboxSenderLabel = senderLabels.get(t.Id);
+            }
+            inboxlist.add(item);
         }
         List<Conversation_Note__c> noteList = [
             SELECT
@@ -99,8 +200,13 @@ public with sharing class stoInboxHelper {
                 AND CRM_Account__c = :accountId
             ORDER BY CRM_Latest_Message_Datetime__c DESC
         ];
+        Map<Id, String> senderLabels = stoReplyContext.inboxSenderLabels(new Map<Id, Thread__c>(threadList).keySet());
         for (Thread__c t : threadList) {
-            inboxlist.add(formatThread(t));
+            thread item = formatThread(t);
+            if (item != null) {
+                item.inboxSenderLabel = senderLabels.get(t.Id);
+            }
+            inboxlist.add(item);
         }
         List<Conversation_Note__c> noteList = [
             SELECT
@@ -193,6 +299,8 @@ public with sharing class stoInboxHelper {
         public String inboxTitle;
         @AuraEnabled
         public String inboxTheme;
+        @AuraEnabled
+        public String inboxSenderLabel;
     }
 
     public class Message {

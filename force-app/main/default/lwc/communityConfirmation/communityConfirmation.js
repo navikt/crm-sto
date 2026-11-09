@@ -1,5 +1,6 @@
 import { api, LightningElement } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import { resolveNavUrls } from 'c/navUrl';
 
 import NAV_SVG_LOGOS from '@salesforce/resourceUrl/navsvglogos';
 
@@ -11,7 +12,7 @@ export default class CommunityConfirmation extends NavigationMixin(LightningElem
         const config = {
             type: 'standard__webPage',
             attributes: {
-                url: 'https://www.nav.no/minside'
+                url: resolveNavUrls('https://www.nav.no/minside')
             }
         };
         this[NavigationMixin.Navigate](config);

@@ -1,10 +1,46 @@
 # crm-sto
 
-Metadata supporting the general STO functionality at NAV. This includes components both for external and internal handling of sending and receiving messages through the thread-message solution
+Skriv til oss og Beskjed til oss støtter meldingsdialog mellom innbyggere og Nav, med innboks for innbyggeren og behandling av samtaler hos Nav.
 
 [![Build](https://github.com/navikt/crm-sto/workflows/%5BPUSH%5D%20Create%20Package/badge.svg)](https://github.com/navikt/crm-sto/actions?query=workflow%3Acreate)
 [![GitHub version](https://badgen.net/github/release/navikt/crm-sto/stable)](https://github.com/navikt/crm-sto)
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/navikt/crm-sto/blob/master/LICENSE)
+
+## Funksjonalitet
+
+**Skriv til oss (STO)** lar innbyggeren sende spørsmål til Nav og følge opp svaret i samme samtale. **Beskjed til oss (BTO)** brukes til å melde fra om endringer, trekke en søknad eller gi en bestemt beskjed. Temaet i inngangslenken avgjør hvilket skjema brukeren får.
+
+Innboksen samler siste og tidligere meldinger og lar brukeren filtrere på tema. Åpne eller uleste samtaler vises under **Siste meldinger**, mens avsluttede og leste samtaler vises under **Tidligere meldinger**. Eldre innhold kan lastes inn ved behov.
+
+Der personvalget er tilgjengelig, kan brukeren velge **Deg** eller et barn vedkommende har foreldreansvar for. Et nytt besøk starter på Deg; tilbakeknappen beholder personen man kom fra. Barn som har fylt 18 år eller har beskyttede opplysninger skal ikke være tilgjengelige for representasjon.
+
+Personvalget bruker det eksisterende `barn()`-kallet til foreldreansvarstjenesten. Returnerte personidenter kobles til tilgjengelige personkontoer. Alder beregnes fra personens lagrede fødselsdato som hele år, med ett år trukket fra dersom årets fødselsdag ikke har vært ennå.
+
+Informasjon om representasjon vises før brukeren går videre til meldingsskjemaet. Når en forelder skriver for et barn, gjelder samtalen barnet, mens forelderen fortsatt er den originale innsenderen. Andre med foreldreansvar og barnet kan lese, men bare den som startet samtalen kan svare eller avslutte den.
+
+Ved skriving på vegne av et barn vises ikke spørsmålet om **pleiepenger for sykt barn**, verken under **Helse og sykdom** eller **Familie og barn**. Spørsmålet beholdes når brukeren skriver for seg selv.
+
+Innbokskort viser hvem som startet samtalen når det var en annen enn den innloggede. Inne i samtalen ser innsenderen barnets navn og alder. Andre foreldre og barnet ser hvem som skrev på vegne av barnet, og i en åpen samtale får de samme informasjon om at bare innsenderen kan svare. Et barn som startet sin egen samtale får ikke et representasjonsbanner. Saksbehandlerens svarhilsen rettes til originale innsender, ikke automatisk til barnet.
+
+Lesestatus bruker foreløpig den eksisterende, delte logikken: `CRM_MessageHelperExperience.markAsRead` markerer uleste meldinger som lest når samtalen åpnes. Lesing som én person kan derfor også fjerne ulest-merket for andre som har tilgang til samtalen. Personlig lesestatus håndteres i en separat PR. Feil ved henting av personvalg, samtaler eller svarrett skal vises tydelig.
+
+**Forutsetning for full testing:** Det eksisterende oppslaget av barn er beholdt. Tilhørende backend-støtte for opprettelse på vegne av barn, samtaletilgang og ruting må være ferdig og integrert før hele løsningen deployes. Testdata og scratch-oppsett erstatter ikke denne funksjonaliteten. Manglende støtte er markert med `ToDo(backend)` i koden.
+
+`stoReplyContext` samler DTO-feltene, samtale- og avsenderoppslag, svarrett, svarmottaker og etiketter i samme klasse. Komponentene kaller `stoReplyContext.getReplyContext` direkte. Bare opprinnelig innsender kan svare eller avslutte STO-, STB- og BTO-samtaler fra innbyggersiden. Interne Nav-brukere beholder eksisterende arbeidsflyt. Reglene håndheves også i `stoReplyContext` før innsetting av meldinger og før avslutning av samtaler gjennom de tynne `stoMessageAccessHandler` og `stoThreadAccessHandler`; lesetilgang eller eldre Edit-shares gir ikke svarrett. Avslutning kontrolleres både når aktiv-flagget fjernes og når avslutningsdato settes. Backend-feil ved avslutning returneres til frontend.
+
+DTO-typen er flyttet til `stoReplyContext`; Apex-kallere i repoet er oppdatert. De syv serialiserte feltene og metodeparametrene er uendret. De gamle svarrelaterte metodene i `stoHelperClass` og mottakerinngangen i `STO_RecordInfoController` er fjernet, ikke beholdt som videresendinger. Eventuelle Apex-kallere utenfor repoet må oppdateres før utrulling.
+
+Opprinnelig innsender bestemmes av første innbyggermelding, sortert på sendt tidspunkt, opprettet tidspunkt og ID. Uten en slik melding brukes oppretterens kontakt, alternativt samtalens kontakt for eldre internt opprettede samtaler. En eksisterende opprinnelig melding uten avsender gir ikke automatisk svarrett til personen samtalen gjelder. Hendelsesmeldinger og oppdatering av lesestatus endres ikke.
+
+Skriveskjemaet bruker `stoInboxHelper.getAccessibleOpenThreadsForPerson` til oppslag og formatering av åpne samtaler, filtrert på `category`, `threadType` og valgt person. Den eldre inngangen i `stoHelperClass` beholdes som delegat. `stoPersonContext.resolveAccountId` autoriserer egen personkonto eller et barn fra `getRepresentableChildren`. Oppslaget respekterer eksisterende Salesforce-deling og oppretter ingen nye delinger. Resultatet inneholder eksisterende uleststatus og avsenderetiketter. Ingen treff gir en tom liste, mens autorisasjons- og tjenestefeil fortsatt vises og blokkerer innsending.
+
+`stoInboxHelper.getAccessibleInboxPage` og `getNextInboxPage` er feilkastende plassholdere med parametrene `representedAccountId`, `beforeThreadId` og `beforeNoteId`. Innboksen viser lastefeil inntil autorisert sidehenting er implementert; plassholderne returnerer ikke falske tomme sider. Backend må returnere `recent`, `older`, begge markører og `hasMore`.
+
+`crmStoMessaging` kaller `stoReplyContext.getReplyRecipientFirstName` direkte. Metoden bruker samme tilgjengelige avsenderkontekst som `getReplyContext`, slik at svarhilsenen ikke automatisk bruker barnets fornavn. `STO_Experience`, `Skriv_til_Oss` og `Skriv_til_oss_Service_Cloud_tilgang` gir tilgang til den nye Apex-klassen; objekt-, felt- og recordtilgang utvides ikke. Skrivefeltet forblir utilgjengelig hvis mottakeren ikke kan hentes.
+
+`stoPersonContext` eier brukeridentitet, personautorisasjon og felles aldersberegning. Innlogget bruker hentes én gang per aktør per transaksjon. `STO_RecordInfoController` beholder bare generiske postoppslag. `stoInboxHelper` henter og formaterer innboksen og bruker `stoReplyContext` til avsenderetiketter. Samtalekontekst caches ikke, slik at første innbyggermelding fortsatt kan endre avsendergrunnlaget i samme transaksjon. Triggerreglene henter samtalene samlet, mens innboksen bevisst skiller siste melding fra opprinnelig innsender.
+
+Repoets faste agentføringer ligger i [`.github/copilot-instructions.md`](.github/copilot-instructions.md). Ferdighetene [Nav Salesforce development](.github/skills/nav-salesforce-development/SKILL.md) og [Nav Salesforce release runbook](.github/skills/nav-salesforce-release-runbook/SKILL.md) brukes ved relevante oppgaver. Miljøhandlinger krever ny godkjenning av eksakt mål og handling; produksjon er alltid NO GO for agenten. Se [runbooken](docs/runbooks/original-sender-permissions.md) for validering, ansvar og eventuell metadataopprydding.
 
 ## Dependencies
 
@@ -65,25 +101,84 @@ Interne henvendelser kan sendes via Slack i kanalen #crm-nks.
 
 ## Experience setup
 
-To set up the "innboks" experience you need to go through a couple of easy steps.
+Scratch-testene bruker tre syntetiske foreldre og to barn for å kontrollere personvalg, lesetilgang og dialog på vegne av barn. Integrer nødvendig backend-støtte og deploy prosjektets scratch-oppsett før testene tas i bruk. Se `dummy-data\README.md` for hvorfor de enkelte testfilene finnes.
 
-1. Kjør scratchSetup filen med kommandone `npm run scratchSetup`
+1. Importer `dummy-data\data\plan.json` og deretter `dummy-data\sto\plan.json`, hvis dette ikke allerede er gjort.
+1. Kjør `npm run scratchSetup` mot riktig scratch org. Det oppretter testinnlogginger, fixture-tilgang til Account/Person og eksempelsamtaler/ruting, ikke produksjonsfunksjonalitet.
 1. Aktiver community
     1. Gå til Setup -> All Sites -> Workspaces -> Administration
     1. I settings så trykk Activate
     1. I members legg til Permissionsettet Skriv til Oss - Experience Cloud Access
     1. Gå tilbake til All Sites og åpne builderen
     1. Publish siden
-1. Gå til kontoen Doktor Proktor for å logge inn i innboksen
+1. Åpne en av testpersonkontoene og velg **Log in to Experience as User**.
+
+| Testperson | Syntetisk personident | Forventet backend-ansvar |
+| --- | --- | --- |
+| Doktor Proktor (Far) | 12345678901 | Beate og Ola |
+| Kari Normann (Mor) | 12345678902 | Beate og Ola |
+| Anne Normann (Medmor) | 12345678903 | Bare Beate |
+| Beate Normann | 12345678904 | Egen innboks, ingen representasjon |
+| Ola Normann | 12345678905 | Egen innboks, ingen representasjon |
+
+Testpersonene får separate community-innlogginger, slik at man kan bytte mellom Far, Mor, Medmor og barna. Doktor bruker den ene medlemsbaserte Plus-lisensen; de øvrige bruker login-baserte Plus-lisenser. Alle får ordinær tilgang til innboksen, uten passord i kildekoden.
+
+`scratchSetup.cls` og `scratchFamilySharing.cls` må kjøres i separate transaksjoner for å unngå `MIXED_DML_OPERATION`. Bruker-/permissionset-oppsett og Account/Person-shares er idempotente. Full `scratchSetup` kjører også den eksisterende generatoren av eksempelsamtaler; kjør bare de to skriptene ved oppdatering av eksisterende innlogginger/fixture-tilgang.
+
+Familiedataene oppretter bare testpersoner og nødvendig tilgang til de syntetiske personpostene. De avgjør ikke hvem som kan representere et barn. Ansvar og tilgang til samtaler må komme fra den ordinære backend-løsningen, også i test.
+
+<!-- ToDo(backend): Provide the fixture responsibility responses, production permissions and conversation sharing through the real backend. -->
+
+Fixture-tilgang til testpersonpostene beholdes fordi syntetiske personer ikke allerede har den recordtilgangen som finnes i et ferdig miljø. Oppsettet gir ikke ekstra svarrett eller lokal autorisasjon. Kontroll av ansvar, alder og gradering og tilgang til samtaler må håndteres av backend.
+
+### STO/BTO i verktøylinjen
+
+`npm run scratchRoutingSetup` setter opp den interne scratch-brukerens Service Resource og ferdigheter, deployer eksisterende kø-/fordelingsregelmetadata og oppretter én navngitt STO/Familie og én BTO/Helse fixture med Case, Thread og Message for Doktor Proktor. `npm run scratchSetup` og testdatasteget i `npm run mac:build` bruker samme kommando.
+
+Ruting av disse navngitte testpostene bruker vanlige assignment rules. Oppsettet synkroniserer `Case.NKS_Henvendelse_BehandlingsId__c` med `Thread.CRM_API_Reference__c` for både nye og eksisterende navngitte fixtures, slik at samtalene kan åpnes fra verktøylinjen. Gjentatte kjøringer dupliserer ikke dem eller åpner ferdige fixtures på nytt. Oppsettet flytter eller reparerer ikke ekte innsendinger eller andre eksisterende saker; backend må rute ekte STO/BTO. Skriptene avbryter utenfor scratch org.
+
+<!-- ToDo(backend): Complete real case routing/contact handling; do not reintroduce post-setup re-routing of community submissions. -->
 
 ## Sider i innboksen
 
-Liste over alle sidene (der BASE_URL er miljøet, eks: https://ruby-data-3845.scratch.my.site.com/Innboks/s/, https://sit2-navdialog.cs162.force.com/Innboks/s/, https://innboks.nav.no/s/):
+`{BASE_URL}` er adressen til innboksen i valgt miljø, uten avsluttende skråstrek. I produksjon er den `https://innboks.nav.no/s`; i scratch org er den for eksempel `https://<org>.scratch.my.site.com/Innboks/s`. Sidene krever innlogging.
 
-| Navn                  | URl                               | Parametere                                                                                                                                                                                      |
-| --------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Innboksen             | {BASE_URL}                        |                                                                                                                                                                                                 |
-| Skriv ny STO          | {BASE_URL}/skriv-til-oss?category | Category: Forteller hvilket tema/kategori STOen skal lages på, se [metadata filen](force-app/main/default/objects/STO_Category__mdt/fields/STO_Category__c.field-meta.xml) for gyldige verdier. |
-| Vis en STO/STB        | {BASE_URL}/skriv-til-oss/&lt;id>  | Id: Id til en STO/STB thread.                                                                                                                                                                   |
-| Vis en chat           | {BASE_URL}/chat/&lt;id>           | Id: Id til en chat-thread.                                                                                                                                                                      |
-| Vis et samtalereferat | {BASE_URL}/samtalereferat/&lt;id> | Id: Id til et samtalereferat.                                                                                                                                                                   |
+| Funksjon | URL | Beskrivelse |
+| --- | --- | --- |
+| Innboksen | `{BASE_URL}` | Se siste og tidligere meldinger. |
+| Skriv ny STO | `{BASE_URL}/skriv-til-oss?category=<tema>` | Still et spørsmål innen valgt tema. |
+| Meld fra om endring (BTO) | `{BASE_URL}/beskjed-til-oss?category=endring-<tema>` | Meld fra om en endring. |
+| Trekk en søknad (BTO) | `{BASE_URL}/beskjed-til-oss?category=trekke-soknad-<tema>` | Trekk en søknad. |
+| Gi beskjed (BTO) | `{BASE_URL}/beskjed-til-oss?category=beskjed-<tema>` | Gi en beskjed. |
+| Vis en STO/STB | `{BASE_URL}/skriv-til-oss/<id>` | Åpne en eksisterende samtale. |
+| Vis en BTO | `{BASE_URL}/beskjed-til-oss/visning?samtale=<id>` | Åpne en tidligere innsendt beskjed. |
+| Vis en chat | `{BASE_URL}/chat/<id>` | Åpne en chat. |
+| Vis et samtalereferat | `{BASE_URL}/samtalereferat/<id>` | Åpne et samtalereferat. |
+
+### Temaer for STO
+
+Bruk verdien som `category`, for eksempel `category=familie`.
+
+| Tema | `category` |
+| --- | --- |
+| Arbeid | `arbeid` |
+| Familie og barn | `familie` |
+| Helse og sykdom | `helse` |
+| Hjelpemidler og tilrettelegging | `hjelpemidler` |
+| Bor eller jobber i utlandet | `internasjonal` |
+| Pensjon | `pensjon` |
+| Pleiepenger for sykt barn | `pleiepenger` |
+| Ufør | `uf%C3%B8r` (URL-kodet `ufør`) |
+| Andre hjelpemidler | `andre-hjelpemidler` |
+
+### Temaer for BTO
+
+Sett sammen prefikset og et tema fra samme rad. `category=endring-aap` gjelder endring for arbeidsavklaringspenger; et STO-tema alene er ikke nok.
+
+| Formål | Prefiks | Støttede temaer |
+| --- | --- | --- |
+| Meld fra om endring | `endring-` | `dagpenger`, `tiltakspenger`, `ventelonn`, `grunn-og-hjelpestonad`, `yrkesskadetrygd`, `omsorg-fosterhjem`, `arbeidsevne`, `enslig`, `barnetrygd`, `kontantstotte`, `bidrag`, `uforetrygd`, `tilleggsstonader`, `aap`, `foreldre`, `sykdom-familien`, `afp-offentlig`, `supplerende-stonad-flyktninger`, `supplerende-stonad-over-67`, `alderspensjon`, `gjenlevende`, `sykepenger`, `utland`, `yrkesskade` |
+| Trekk en søknad | `trekke-soknad-` | `arbeid`, `helse`, `utland`, `familie`, `pensjon`, `hjelpemidler`, `ufor` |
+| Gi beskjed | `beskjed-` | `trygdeavgift`, `sykepenger`, `menerstatning`, `afp-offentlig`, `afp-privat`, `kontor`, `fullmakt-lege`, `klage`, `taushetsplikt` |
+
+En manglende eller ukjent `category` viser en feilside i stedet for meldingsskjemaet.

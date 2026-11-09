@@ -2,36 +2,11 @@
     <div style="margin-bottom: 4rem">
         <div>
             <div class="header">
-                <h1 class="navds-heading navds-heading--2xlarge">{title}</h1>
+                <h1 class="aksel-heading aksel-heading--xlarge">{title}</h1>
             </div>
             <div class="text-center sizeAround">
                 <template lwc:if={loading}>
-                    <svg
-                        tabindex="0"
-                        aria-labelledby="loader-navds-id-4"
-                        class="navds-loader navds-loader--3xlarge navds-loader--neutral spinner"
-                        focusable="false"
-                        viewBox="0 0 50 50"
-                        preserveAspectRatio="xMidYMid"
-                    >
-                        <title id="loader-navds-id-4">Laster</title>
-                        <circle
-                            class="navds-loader__background"
-                            xmlns="http://www.w3.org/2000/svg"
-                            cx="25"
-                            cy="25"
-                            r="20"
-                            fill="none"
-                        ></circle>
-                        <circle
-                            class="navds-loader__foreground"
-                            cx="25"
-                            cy="25"
-                            r="20"
-                            fill="none"
-                            stroke-dasharray="50 155"
-                        ></circle>
-                    </svg>
+                    <c-ds-loader class="spinner" tabindex="-1" size="3xlarge" title="Venter..."></c-ds-loader>
                 </template>
                 <template lwc:else>
                     <template lwc:if={hasNavTask}>
@@ -40,28 +15,26 @@
                             <br />
                             <br />
                             Trenger du å endre på informasjonen som du allerede har sendt inn, ber vi om at du&nbsp;
-                            <a href="https://www.nav.no/kontaktoss" target="_self">kontakter oss</a>. Du finner&nbsp;
-                            <a href="https://www.nav.no/saksbehandlingstider#foreldrepenger" target="_self"
-                                >saksbehandlingstiden på nav.no</a
-                            >
+                            <a href={contactUsUrl} target="_self">kontakter oss</a>. Du finner&nbsp;
+                            <a href={processingTimesUrl} target="_self">saksbehandlingstiden på nav.no</a>
                             &nbsp;eller i brev fra Nav.
                         </p>
                     </template>
                     <template lwc:else>
                         <div class="descholder slds-var-m-bottom_large">
-                            <p class="navds-body-short navds-body-short--small blokk-xs description">
+                            <p class="aksel-body-short aksel-body-short--small blokk-xs description">
                                 For at vi skal kunne vurdere saken på nytt, ber vi om at du fyller ut dette skjemaet. Du
                                 blir kontaktet hvis vi trenger flere opplysninger fra deg.
                             </p>
                         </div>
-                        <div class="text-start addMargin navds-form-field navds-form-field--medium">
-                            <c-community-error-summary
+                        <div class="text-start addMargin aksel-form-field aksel-form-field--medium">
+                            <c-ds-error-summary
                                 error-list={errorList}
                                 onclickedevent={handleErrorClick}
                                 class="errorSummary"
                                 style="text-align: left"
                             >
-                            </c-community-error-summary>
+                            </c-ds-error-summary>
                             <div class="childWrap">
                                 <template for:each={childList} for:item="child">
                                     <div key={child} class="spacing">
@@ -72,29 +45,27 @@
                                     </div>
                                 </template>
                             </div>
-                            <c-ds-button
-                                class="removeMargin"
-                                variant="tertiary"
-                                size="medium"
-                                text="Legg til et barn til"
-                                icon={plusCircle}
-                                onbuttonclick={addChild}
-                            ></c-ds-button>
-
+                            <button
+                                data-variant="tertiary"
+                                class="aksel-button aksel-button--medium"
+                                onclick={addChild}
+                            >
+                                <span class="aksel-label"> Legg til et barn til </span>
+                            </button>
                             <c-ds-text-field
                                 type="tel"
                                 maxlength="12"
-                                class="phoneNumber"
+                                class="phone-number"
                                 required="true"
                                 label="Ditt telefonnummer"
-                                style="width: 195.2px; margin-bottom: 1rem; margin-top: 2rem"
                             ></c-ds-text-field>
-                            <c-ds-button
-                                variant="primary"
-                                size="medium"
-                                text="Send"
-                                onbuttonclick={validateInputs}
-                            ></c-ds-button>
+                            <button
+                                data-variant="primary"
+                                class="aksel-button aksel-button--medium"
+                                onclick={validateInputs}
+                            >
+                                <span class="aksel-label"> Send </span>
+                            </button>
                         </div>
                     </template>
                 </template>

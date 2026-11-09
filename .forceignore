@@ -7,6 +7,7 @@
 # NOTE!! Do NOT use **/ before
 !unpackagable/profiles/*
 !force-app/scratch-org/profiles/*
+!force-app/test/profiles/STO Test Community Login Profile.profile-meta.xml
 # NOTE!! Do NOT use **/ before
 
 

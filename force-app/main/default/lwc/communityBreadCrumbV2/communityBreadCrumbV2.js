@@ -5,6 +5,7 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import { CurrentPageReference } from 'lightning/navigation';
 import { updateBreadcrumbs } from 'c/inboxAmplitude';
 import getThread from '@salesforce/apex/stoHelperClass.getThread';
+import { resolveNavUrls } from 'c/navUrl';
 
 const NAV_URLS = {
     home: 'https://nav.no',
@@ -29,6 +30,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
     leafnode;
     breadcrumbs = [];
     name;
+    inboxPersonValue;
 
     renderedCallback() {
         Promise.all([loadStyle(this, index), loadStyle(this, navStyling)]).catch((error) =>
@@ -42,6 +44,7 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
 
         const { attributes, state } = currentPageReference;
         this.name = attributes?.name || '';
+        this.inboxPersonValue = state?.c__inboxPerson;
 
         const { samtale, category } = state || {};
 
@@ -50,8 +53,8 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
         } else if (this.name === 'Home') {
             this.leafnode = 'Innboks';
             this.breadcrumbs = [
-                { url: NAV_URLS.home, title: 'Privatperson' },
-                { url: NAV_URLS.minSide, title: 'Min side' },
+                { url: resolveNavUrls(NAV_URLS.home), title: 'Privatperson' },
+                { url: resolveNavUrls(NAV_URLS.minSide), title: 'Min side' },
                 { url: '/', title: this.leafnode }
             ];
             this.retryBreadcrumbUpdate();
@@ -94,9 +97,9 @@ export default class CommunityBreadCrumbV2 extends LightningElement {
 
     setBreadcrumbs() {
         this.breadcrumbs = [
-            { url: NAV_URLS.home, title: 'Privatperson' },
-            { url: NAV_URLS.minSide, title: 'Min side' },
-            { url: NAV_URLS.inbox, title: 'Innboks' },
+            { url: resolveNavUrls(NAV_URLS.home), title: 'Privatperson' },
+            { url: resolveNavUrls(NAV_URLS.minSide), title: 'Min side' },
+            { url: resolveNavUrls(NAV_URLS.inbox), title: 'Innboks' },
             { url: '/', title: this.leafnode }
         ];
         this.retryBreadcrumbUpdate();

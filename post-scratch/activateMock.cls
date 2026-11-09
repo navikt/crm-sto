@@ -1,4 +1,5 @@
-//Script to activate mock settings for all profiles
+// Optional legacy switch for testing integrations with the existing profile-level mock mechanism.
+// Applies to all profiles, supplies no response implementation and is not part of family setup.
 for (Profile p : [SELECT Id FROM Profile]) {
     API_Controller_Mock_Settings__c mockSetting = API_Controller_Mock_Settings__c.getInstance(p.Id);
     mockSetting.Status__c = 'OK';

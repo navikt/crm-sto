@@ -19,29 +19,60 @@ public with sharing class stoInboxHelperTest {
         insert cn;
     }
 
-    private static Thread__c createThread() {
-        Contact person = [SELECT Id, AccountId FROM Contact WHERE Account.CRM_Person__r.Name = '12345678910' LIMIT 1];
-        stoInboxHelper.cachedAccountId = person.AccountId;
-        Thread__c thread = new Thread__c(
-            Name = 'Skriv til oss',
-            CRM_Account__c = person.AccountId,
-            CRM_Contact__c = person.Id,
-            CRM_Thread_Type__c = 'STO',
-            STO_Category__c = 'Arbeid'
+    private static Thread__c createInboxThread(Boolean read) {
+        User viewer = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
+        Thread__c thread = (Thread__c) STO_TestDataFactory.createRecord(
+            new Thread__c(
+                CRM_Account__c = viewer.AccountId,
+                CRM_Contact__c = viewer.ContactId,
+                CRM_Thread_Type__c = 'STO',
+                STO_Category__c = 'Arbeid',
+                NKS_Inbox_Title__c = 'Skriv til oss',
+                NKS_Inbox_Theme__c = 'Arbeid'
+            )
         );
-        insert thread;
-        insert new Message__c(CRM_Thread__c = thread.Id, CRM_Message_Text__c = 'Test message', CRM_Read__c = true);
+        insert new Message__c(
+            CRM_Thread__c = thread.Id,
+            CRM_Message_Text__c = 'Dette er en test melding',
+            CRM_Type__c = 'Message',
+            CRM_Read__c = read
+        );
         return thread;
     }
 
     @isTest
+    static void getAccessibleInboxPageNotImplementedTest() {
+        Test.startTest();
+        try {
+            stoInboxHelper.getAccessibleInboxPage(null, null, null);
+            Assert.fail('The placeholder must not return a fake empty or unauthorized inbox page.');
+        } catch (AuraHandledException error) {
+            Assert.areEqual('Accessible inbox page backend is not implemented yet.', error.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    @isTest
+    static void getNextInboxPageNotImplementedTest() {
+        Test.startTest();
+        try {
+            stoInboxHelper.getNextInboxPage(null, null, null);
+            Assert.fail('The placeholder must not return a fake next page.');
+        } catch (AuraHandledException error) {
+            Assert.areEqual('Next inbox page backend is not implemented yet.', error.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    @isTest
     static void getThreadsTest() {
-        Thread__c t = createThread();
+        Id viewerAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+        Thread__c t = createInboxThread(true);
         t.CRM_Closed_Date__c = Date.today().addDays(-1);
         update t;
 
         Conversation_Note__c cn = new Conversation_Note__c(
-            CRM_Account__c = stoInboxHelper.cachedAccountId,
+            CRM_Account__c = viewerAccountId,
             CRM_Is_Read__c = true,
             CRM_Created_by_Ident__c = 'A123456',
             CRM_Conversation_Note__c = 'this is a test message again'
@@ -54,17 +85,20 @@ public with sharing class stoInboxHelperTest {
 
         Assert.areEqual(false, tList.isEmpty());
         Assert.areEqual(2, tList.size());
+        Assert.areEqual(
+            new Set<Id>{ t.Id, cn.Id },
+            new Set<Id>{ tList[0].recordId, tList[1].recordId },
+            'The older inbox must contain the read thread and conversation note'
+        );
     }
 
     @isTest
     static void getRecentThreadsTest() {
-        Thread__c t = createThread();
-        Message__c m = new Message__c();
-        m.CRM_Thread__c = t.Id;
-        insert m;
+        Id viewerAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+        Thread__c t = createInboxThread(false);
 
         Conversation_Note__c cn = new Conversation_Note__c(
-            CRM_Account__c = stoInboxHelper.cachedAccountId,
+            CRM_Account__c = viewerAccountId,
             CRM_Is_Read__c = false,
             CRM_Created_by_Ident__c = 'A123456',
             CRM_Conversation_Note__c = 'this is a test message again'
@@ -76,6 +110,12 @@ public with sharing class stoInboxHelperTest {
         Test.stopTest();
 
         Assert.areEqual(false, tList.isEmpty());
+        Assert.areEqual(2, tList.size());
+        Assert.areEqual(
+            new Set<Id>{ t.Id, cn.Id },
+            new Set<Id>{ tList[0].recordId, tList[1].recordId },
+            'The recent inbox must contain the unread thread and conversation note'
+        );
     }
 
     @isTest

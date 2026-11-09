@@ -61,6 +61,6 @@ export default class StoMedskrivSamtykke extends LightningElement {
     }
 
     get btnClasses() {
-        return this.buttonPushed ? 'slds-hide' : '';
+        return 'aksel-button aksel-button--medium ' + (this.buttonPushed ? 'slds-hide' : '');
     }
 }

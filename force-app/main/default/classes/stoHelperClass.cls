@@ -95,6 +95,21 @@ public with sharing class stoHelperClass {
         );
     }
 
+    @AuraEnabled(cacheable=true)
+    public static List<stoInboxHelper.thread> getAccessibleOpenThreadsForPerson(
+        String category,
+        String threadType,
+        Id representedAccountId
+    ) {
+        String validCategory = STO_ThreadPolicy.validateCategory(category);
+        STO_ThreadPolicy.getThreadTypes(threadType);
+        return stoInboxHelper.getAccessibleOpenThreadsForPerson(validCategory, threadType, representedAccountId);
+    }
+
+    public static List<String> threadTypesFor(String threadType) {
+        return STO_ThreadPolicy.getThreadTypes(threadType);
+    }
+
     @AuraEnabled
     public static List<stoInboxHelper.thread> getOpenThreadsForPerson(
         String category,

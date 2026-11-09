@@ -10,6 +10,7 @@
 # NOTE!! USE **/ before
 !**/unpackagable/profiles/* 
 !**/scratch-org/profiles/* 
+!force-app/test/profiles/STO Test Community Login Profile.profile-meta.xml
 # NOTE!! USE **/ before
 
 .sf/*

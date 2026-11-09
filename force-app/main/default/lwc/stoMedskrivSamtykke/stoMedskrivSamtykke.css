@@ -1,8 +1,8 @@
 .button {
-    margin-top: var(--a-spacing-5);
+    margin-top: var(--ax-space-20);
 }
 
-.navds-panel {
+.aksel-panel {
     padding: 0;
-    margin-bottom: var(--a-spacing-10);
+    margin-bottom: var(--ax-space-40);
 }
