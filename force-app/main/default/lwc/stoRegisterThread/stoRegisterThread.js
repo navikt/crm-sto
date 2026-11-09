@@ -4,6 +4,7 @@ import createThread from '@salesforce/apex/stoHelperClass.createThread';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoHelperClass.getOpenThreads';
+import getOpenThreadsForPerson from '@salesforce/apex/stoHelperClass.getOpenThreadsForPerson';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import { refreshApex } from '@salesforce/apex';
 import { publish, MessageContext } from 'lightning/messageService';
@@ -55,6 +56,20 @@ const spinnerReasonTextMap = {
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api threadTypeToMake;
+    _representedPersonIdentifier = null;
+    threadRequestId = 0;
+
+    @api
+    get representedPersonIdentifier() {
+        return this._representedPersonIdentifier;
+    }
+
+    set representedPersonIdentifier(value) {
+        this._representedPersonIdentifier = value?.trim() || null;
+        if (this.category && this.threadTypeToMake) {
+            this.refreshOpenThreads();
+        }
+    }
 
     isLoading = true;
     showSpinner = false;
@@ -298,6 +313,9 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.setTitleAndCategory();
             this.setThemeToShow();
             this.originalThemeToShow = this.themeToShow;
+            if (this.representedPersonIdentifier) {
+                this.refreshOpenThreads();
+            }
         }
     }
 
@@ -314,23 +332,62 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     @wire(getOpenThreads, { category: '$category', threadType: '$threadTypeToMake' })
     openThread(result) {
+        this.wireThreadData = result;
+        if (this.representedPersonIdentifier) {
+            return;
+        }
         this.isThreadDataLoading = true;
         this.spinnerText = spinnerReasonTextMap.load;
         const { error, data } = result;
-        this.wireThreadData = result;
         if (data) {
-            this.openThreadList = data;
-            putCloseIntent({ count: this.openThreadList.length });
-            this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
-        } else {
-            this.openThreadList = [];
-            putCloseIntent({ count: 0 });
-            this.registerNewThread = true;
-            if (error) {
-                console.error(error);
-            }
+            this.applyOpenThreads(data);
+        } else if (error) {
+            this.handleThreadError(error);
         }
         this.isThreadDataLoading = false;
+    }
+
+    applyOpenThreads(threads) {
+        this.openThreadList = threads;
+        this.registerNewThread = threads.length === 0 || this.showBtoTextArea;
+        if (!this.representedPersonIdentifier) {
+            putCloseIntent({ count: threads.length }).catch((error) => this.handleThreadError(error));
+        }
+    }
+
+    async refreshOpenThreads() {
+        const requestId = ++this.threadRequestId;
+        this.isThreadDataLoading = true;
+        try {
+            if (this.representedPersonIdentifier) {
+                const threads = await getOpenThreadsForPerson({
+                    category: this.category,
+                    threadType: this.threadTypeToMake,
+                    representedPersonIdentifier: this.representedPersonIdentifier
+                });
+                if (requestId === this.threadRequestId) {
+                    this.applyOpenThreads(threads);
+                }
+            } else if (this.wireThreadData) {
+                await refreshApex(this.wireThreadData);
+                if (requestId === this.threadRequestId && this.wireThreadData.data) {
+                    this.applyOpenThreads(this.wireThreadData.data);
+                }
+            }
+        } catch (error) {
+            if (requestId === this.threadRequestId) {
+                this.handleThreadError(error);
+            }
+        } finally {
+            if (requestId === this.threadRequestId) {
+                this.isThreadDataLoading = false;
+            }
+        }
+    }
+
+    handleThreadError(error) {
+        console.error(error);
+        this.template.querySelector('c-alertdialog')?.showModal();
     }
 
     setThemeToShow() {
@@ -467,7 +524,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
                     type: this.threadTypeToMake,
                     inboxTitle: this.title,
                     inboxTheme: inboxTheme,
-                    disabilityCampaign: disabilityCampaign
+                    disabilityCampaign: disabilityCampaign,
+                    representedPersonIdentifier: this.representedPersonIdentifier
                 }
             })
                 .then((thread) => {
@@ -550,17 +608,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.showSpinner = true;
         this.spinnerText = spinnerReasonTextMap.close;
         closeThread({ id: selectedThreadId })
-            .then(() => {
-                refreshApex(this.wireThreadData)
-                    .then(() => {
-                        this.showSpinner = false;
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                    });
-            })
-            .catch((err) => {
-                console.error(err);
+            .then(() => this.refreshOpenThreads())
+            .catch((error) => this.handleThreadError(error))
+            .finally(() => {
+                this.showSpinner = false;
             });
     }
 

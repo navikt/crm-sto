@@ -1,4 +1,5 @@
 public with sharing class stoInboxHelper {
+    @TestVisible
     private static Id cachedAccountId;
     private static Id accountId {
         get {

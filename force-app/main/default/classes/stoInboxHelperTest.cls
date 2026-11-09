@@ -19,30 +19,29 @@ public with sharing class stoInboxHelperTest {
         insert cn;
     }
 
-    private static stoHelperClass.ThreadData getThreadData(String representedPersonIdentifier) {
-        stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
-        info.theme = 'Arbeid';
-        info.msgText = 'This is the message';
-        info.medskriv = true;
-        info.type = 'STO';
-        info.inboxTitle = 'Skriv til oss';
-        info.inboxTheme = 'Arbeid';
-        info.representedPersonIdentifier = representedPersonIdentifier;
-        return info;
+    private static Thread__c createThread() {
+        Contact person = [SELECT Id, AccountId FROM Contact WHERE Account.CRM_Person__r.Name = '12345678910' LIMIT 1];
+        stoInboxHelper.cachedAccountId = person.AccountId;
+        Thread__c thread = new Thread__c(
+            Name = 'Skriv til oss',
+            CRM_Account__c = person.AccountId,
+            CRM_Contact__c = person.Id,
+            CRM_Thread_Type__c = 'STO',
+            STO_Category__c = 'Arbeid'
+        );
+        insert thread;
+        insert new Message__c(CRM_Thread__c = thread.Id, CRM_Message_Text__c = 'Test message', CRM_Read__c = true);
+        return thread;
     }
 
     @isTest
     static void getThreadsTest() {
-        User u = [SELECT ContactId, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        stoHelperClass.ThreadData threadData = getThreadData('12345678910');
-        threadData.msgText = 'Dette er en test melding';
-        threadData.cachedContactId = u.ContactId;
-        threadData.cachedAccountId = u.AccountId;
-        Thread__c t = stoHelperClass.createThread(threadData);
+        Thread__c t = createThread();
         t.CRM_Closed_Date__c = Date.today().addDays(-1);
         update t;
 
         Conversation_Note__c cn = new Conversation_Note__c(
+            CRM_Account__c = stoInboxHelper.cachedAccountId,
             CRM_Is_Read__c = true,
             CRM_Created_by_Ident__c = 'A123456',
             CRM_Conversation_Note__c = 'this is a test message again'
@@ -59,12 +58,13 @@ public with sharing class stoInboxHelperTest {
 
     @isTest
     static void getRecentThreadsTest() {
-        Thread__c t = stoHelperClass.createThread(getThreadData('12345678910'));
+        Thread__c t = createThread();
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         insert m;
 
         Conversation_Note__c cn = new Conversation_Note__c(
+            CRM_Account__c = stoInboxHelper.cachedAccountId,
             CRM_Is_Read__c = false,
             CRM_Created_by_Ident__c = 'A123456',
             CRM_Conversation_Note__c = 'this is a test message again'
