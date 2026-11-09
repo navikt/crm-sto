@@ -7,14 +7,14 @@ import USER_ID from '@salesforce/user/Id';
 import USER_NAV_IDENT_FIELD from '@salesforce/schema/User.CRM_NAV_Ident__c';
 import getAllAssignedOpenOppgaver from '@salesforce/apex/OppgaveManager.getAllAssignedOpenOppgaver';
 import getPersonInfo from '@salesforce/apex/OppgaveManager.getPersonInfo';
-import getCodeToNameMap from '@salesforce/apex/stoHelperClass.getCodeToNameMap';
+import getCodeToNameMaps from '@salesforce/apex/stoHelperClass.getCodeToNameMaps';
 
 const DATE_FORMAT = { day: '2-digit', month: '2-digit', year: 'numeric' };
 
 export default class NksOppgaveListHome extends NavigationMixin(LightningElement) {
     oppgaver = [];
     personData = {};
-    codeToNameMap = {};
+    codeToNameMaps = {};
     isRefreshDisabled = false;
     isLoading = false;
     navIdent;
@@ -22,9 +22,9 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
 
     @wire(MessageContext) messageContext;
 
-    @wire(getCodeToNameMap)
+    @wire(getCodeToNameMaps)
     wiredCodeToNameMap({ data, error }) {
-        if (data) this.codeToNameMap = data;
+        if (data) this.codeToNameMaps = data;
         else if (error) console.error('Error fetching code to name map:', error);
     }
 
@@ -79,8 +79,8 @@ export default class NksOppgaveListHome extends NavigationMixin(LightningElement
                     fristFormatted: oppgave.fristFerdigstillelse
                         ? new Date(oppgave.fristFerdigstillelse).toLocaleDateString('nb-NO', DATE_FORMAT)
                         : '',
-                    tema: this.codeToNameMap[oppgave.tema] ?? oppgave.tema,
-                    oppgavetype: this.codeToNameMap[oppgave.oppgavetype] ?? oppgave.oppgavetype,
+                    tema: this.codeToNameMaps.Tema?.[oppgave.tema] ?? oppgave.tema,
+                    oppgavetype: this.codeToNameMaps.Oppgavetyper?.[oppgave.oppgavetype] ?? oppgave.oppgavetype,
                     brukerIdent:
                         oppgave.bruker?.type === 'PERSON' ? oppgave.bruker.ident : (oppgave.personIdent ?? null)
                 }));

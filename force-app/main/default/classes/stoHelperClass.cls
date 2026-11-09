@@ -25,16 +25,39 @@ public with sharing class stoHelperClass {
     }
 
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getCodeToNameMap() {
-        Map<String, String> codeToName = new Map<String, String>();
+    public static Map<String, Map<String, String>> getCodeToNameMaps() {
+        Map<String, Map<String, String>> codeSets = new Map<String, Map<String, String>>();
         for (Common_Code__c code : [
-            SELECT CRM_Code__c, Name
+            SELECT CRM_Code_Set__c, CRM_Code__c, Name
             FROM Common_Code__c
             WHERE CRM_Code_Set__c IN ('Tema', 'Oppgavetyper', 'Behandlingstema', 'Behandlingstype')
+            ORDER BY CRM_Code_Set__c, CRM_Code__c, Id
         ]) {
-            codeToName.put(code.CRM_Code__c, code.Name);
+            if (!codeSets.containsKey(code.CRM_Code_Set__c)) {
+                codeSets.put(code.CRM_Code_Set__c, new Map<String, String>());
+            }
+            Map<String, String> codes = codeSets.get(code.CRM_Code_Set__c);
+            if (codes.containsKey(code.CRM_Code__c) && codes.get(code.CRM_Code__c) != code.Name) {
+                throw handledError('Conflicting names in a code set.');
+            }
+            codes.put(code.CRM_Code__c, code.Name);
         }
-        return codeToName;
+        return codeSets;
+    }
+
+    // TODO: Remove after deploy, legacy method just used for backwards compatibility
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getCodeToNameMap() {
+        Map<String, String> result = new Map<String, String>();
+        for (Map<String, String> codes : getCodeToNameMaps().values()) {
+            for (String code : codes.keySet()) {
+                if (result.containsKey(code) && result.get(code) != codes.get(code)) {
+                    throw handledError('Code is ambiguous across code sets. Use getCodeToNameMaps.');
+                }
+                result.put(code, codes.get(code));
+            }
+        }
+        return result;
     }
 
     /**
@@ -359,6 +382,12 @@ public with sharing class stoHelperClass {
             WHERE CRM_Is_Closed__c = FALSE AND STO_Category__c = :category AND CRM_Type__c = 'STO'
         ];
         return count >= 3;
+    }
+
+    public static AuraHandledException handledError(String message) {
+        AuraHandledException error = new AuraHandledException(message);
+        error.setMessage(message);
+        return error;
     }
 
     public class ThreadData {

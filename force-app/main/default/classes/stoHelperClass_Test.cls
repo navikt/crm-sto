@@ -297,14 +297,31 @@ public with sharing class stoHelperClass_Test {
         }
     }
 
-    @isTest
-    static void getCodeToNameMapTest() {
-        Test.startTest();
-        Map<String, String> result = stoHelperClass.getCodeToNameMap();
-        Test.stopTest();
-
-        Assert.isFalse(result.isEmpty());
+    @IsTest
+    static void codeMapsPreserveCodeSetBoundaries() {
+        Assert.areEqual('Kontakt NAV', stoHelperClass.getCodeToNameMap().get('KNA'));
+        insert new Common_Code__c(Name = 'Different name', CRM_Code__c = 'KNA', CRM_Code_Set__c = 'Oppgavetyper');
+        Map<String, Map<String, String>> maps = stoHelperClass.getCodeToNameMaps();
+        Assert.areEqual('Kontakt NAV', maps.get('Tema').get('KNA'));
+        Assert.areEqual('Different name', maps.get('Oppgavetyper').get('KNA'));
+        try {
+            stoHelperClass.getCodeToNameMap();
+            Assert.fail('The legacy map must not silently overwrite an ambiguous code.');
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().contains('ambiguous'));
+        }
     }
+
+    // TODO: Replace the method above after removing the legacy getCodeToNameMap method.
+    /*
+    @IsTest
+    static void codeMapsPreserveCodeSetBoundaries() {
+        insert new Common_Code__c(Name = 'Different name', CRM_Code__c = 'KNA', CRM_Code_Set__c = 'Oppgavetyper');
+        Map<String, Map<String, String>> maps = stoHelperClass.getCodeToNameMaps();
+        Assert.areEqual('Kontakt NAV', maps.get('Tema').get('KNA'));
+        Assert.areEqual('Different name', maps.get('Oppgavetyper').get('KNA'));
+    }
+    */
 
     @isTest
     static void testGetThread() {
