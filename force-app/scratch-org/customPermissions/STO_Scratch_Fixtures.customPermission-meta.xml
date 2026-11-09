@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Explicitly enables synthetic family integration responses and fixture inbox queries in scratch orgs only.</description>
+    <description>Explicitly enables synthetic family responses and fixture inbox queries in scratch orgs only.</description>
     <label>STO scratch fixtures</label>
 </CustomPermission>

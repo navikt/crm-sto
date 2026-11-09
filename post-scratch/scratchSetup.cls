@@ -102,5 +102,5 @@ for (Id userId : userIds) {
 insert assignmentsToInsert;
 
 // ToDo(backend): Extend STO_Experience with read-state class access and the necessary read-only Person/identity fields.
-// ToDo(backend): Supply barn()/verifiser() responses for the synthetic family through the backend integration, not a local provider.
+// Scratch-only barn()/verifiser() use the fixture family roster; production uses the backend integration.
 // Run scratchFamilySharing.cls in a separate transaction after this script to avoid mixed setup/record DML.

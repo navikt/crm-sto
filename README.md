@@ -14,7 +14,9 @@ Innboksen samler siste og tidligere meldinger og lar brukeren filtrere på tema.
 
 Der personvalget er tilgjengelig, kan brukeren velge **Deg** eller et barn vedkommende har foreldreansvar for. Et nytt besøk starter på Deg; tilbakeknappen beholder personen man kom fra. Barn som har fylt 18 år eller har beskyttede opplysninger skal ikke være tilgjengelige for representasjon.
 
-Personvalget bruker det eksisterende `barn()`-kallet til foreldreansvarstjenesten. Returnerte personidenter kobles til tilgjengelige personkontoer. Alder beregnes fra personens lagrede fødselsdato som hele år, med ett år trukket fra dersom årets fødselsdag ikke har vært ennå.
+Personvalget i både skriveskjemaet og innboksen bruker det eksisterende `barn()`-kallet til foreldreansvarstjenesten via `stoPersonContext.getRepresentableChildren()`, som returnerer barnelisten direkte. Navn og alder i nedtrekkslisten hentes fra `fornavn`, `etternavn` og `alder` i svaret, og listen sorteres etter disse navnene. Aldersgrensen på 18 år bruker også tjenestens `alder`, ikke fødselsdato lagret i Salesforce. Returnerte personidenter kobles fortsatt til tilgjengelige, ugraderte personkontoer for konto-ID og samtaletilgang. Barn med mangelfulle eller ugyldige opplysninger utelates fra personvalget og logges som datakvalitetsfeil, uten egne varsler til brukeren. Øvrige barn og valget av deg selv er fortsatt tilgjengelige, også når alle barna mangler nødvendige opplysninger. Tjenestefeil eller et ugyldig svarformat gir fortsatt en synlig lastefeil. Det midlertidige `getRepresentableChildrenWithWarnings()`-endepunktet og varseltypene er fjernet; begge LWC-ene bruker liste-endepunktet.
+
+Den eksisterende familiesimuleringen beholdes i scratch org når brukeren har `STO_Scratch_Fixtures`. `barn()` og `verifiser()` følger fortsatt relasjonene i `STO_Foreldreansvar_Family`: Far og Mor har begge barna, Medmor har bare Beate, og barna har ingen barn de kan representere. Det simulerte barnesvaret bruker de komplette barneopplysningene fra tjenestens konfigurerte `POST_FORELDREANSVAR_BARN`-mocksvar i `crm-nks-integration`, filtrert etter familien. Navn og alder hentes ikke fra Salesforce. Uten scratch-opt-in brukes `NKS_ForeldreansvarService` som før. Ingen endringer i integrasjonstjenesten eller det delte mockrammeverket er nødvendige.
 
 Informasjon om representasjon vises før brukeren går videre til meldingsskjemaet. Når en forelder skriver for et barn, gjelder samtalen barnet, mens forelderen fortsatt er den originale innsenderen. Andre med foreldreansvar og barnet kan lese, men bare den som startet samtalen kan svare eller avslutte den.
 
@@ -121,15 +123,37 @@ Scratch-testene bruker tre syntetiske foreldre og to barn for å kontrollere per
 | Beate Normann | 12345678904 | Egen innboks, ingen representasjon |
 | Ola Normann | 12345678905 | Egen innboks, ingen representasjon |
 
+Med `STO_Scratch_Fixtures` aktivert simuleres relasjonene i tabellen for den innloggede testpersonen. Den faste integrasjonsmocken inneholder opplysningene om Beate og Ola, men scratch-adapteren returnerer bare barna i vedkommendes familie. Beate og Ola får tom barneliste og dermed ingen nedtrekksliste for representasjon. Salesforce-deling og gradering kontrolleres fortsatt. Hvis et barn i familiefixturen mangler i det konfigurerte mocksvargrunnlaget, vises en feil i stedet for at barnets opplysninger hentes fra Salesforce.
+
 Testpersonene får separate community-innlogginger, slik at man kan bytte mellom Far, Mor, Medmor og barna. Doktor bruker den ene medlemsbaserte Plus-lisensen; de øvrige bruker login-baserte Plus-lisenser. Alle får ordinær tilgang til innboksen, uten passord i kildekoden.
 
 `scratchSetup.cls` og `scratchFamilySharing.cls` må kjøres i separate transaksjoner for å unngå `MIXED_DML_OPERATION`. Bruker-/permissionset-oppsett og Account/Person-shares er idempotente. Full `scratchSetup` kjører også den eksisterende generatoren av eksempelsamtaler; kjør bare de to skriptene ved oppdatering av eksisterende innlogginger/fixture-tilgang.
 
-Familiedataene oppretter bare testpersoner og nødvendig tilgang til de syntetiske personpostene. De avgjør ikke hvem som kan representere et barn. Ansvar og tilgang til samtaler må komme fra den ordinære backend-løsningen, også i test.
+Familiedataene brukes til testpersoner, fixture-tilgang og den eksplisitt aktiverte scratch-familiesimuleringen. Simuleringen gjelder bare de fem syntetiske community-brukerne, ikke ekte foreldreansvar. Utenfor denne simuleringen må ansvar komme fra den ordinære backend-løsningen.
 
-<!-- ToDo(backend): Provide the fixture responsibility responses, production permissions and conversation sharing through the real backend. -->
+<!-- ToDo(backend): Complete production permissions and conversation sharing through the real backend. -->
 
-Fixture-tilgang til testpersonpostene beholdes fordi syntetiske personer ikke allerede har den recordtilgangen som finnes i et ferdig miljø. Oppsettet gir ikke ekstra svarrett eller lokal autorisasjon. Kontroll av ansvar, alder og gradering og tilgang til samtaler må håndteres av backend.
+Fixture-tilgang til testpersonpostene beholdes fordi syntetiske personer ikke allerede har den recordtilgangen som finnes i et ferdig miljø. Recordtilgang alene gir ikke foreldreansvar eller ekstra svarrett. De eksisterende kontrollene av alder, gradering, samtaletilgang og originale innsender beholdes.
+
+### Integrasjonsmocker for community-brukere
+
+Denne delen gjelder andre integrasjonskall, eller foreldreansvar når scratch-familiesimuleringen ikke er aktivert. Med `STO_Scratch_Fixtures` i en scratch org går `barn()` og `verifiser()` gjennom den lokale adapteren uten tjenestekall eller tjenestetoken. Adapteren leser de konfigurerte barneopplysningene direkte; `API_Controller_Mock_Settings__c` aktiverer ikke familiesimuleringen og endrer ikke relasjonene.
+
+**Mock aktivert for den interne brukeren «User User» gjelder ikke automatisk i innboksen.** Ved **Log in to Experience as User** kjører forespørslene som den valgte community-brukeren, for eksempel Doktor eller Kari. `ApiController.setSystemContext()` velger tjenesteautentisering, men bytter ikke Salesforce-bruker.
+
+`ApiController` leser først `API_Controller_Mock_Settings__c` for innlogget bruker. Bare hvis det ikke finnes en brukerbasert post, brukes innstillingen for brukerens profil. En brukerbasert post med `Use_Mock__c = false` overstyrer derfor en profil med mocks aktivert.
+
+For testing av integrasjonsmocker i en godkjent scratch org må innstillingen gjelde de aktuelle community-brukerne, for eksempel **Doktor, Kari, Anne, Beate og Ola**, eller profilene deres. En scratch-administrator/testansvarlig kan opprette eller oppdatere brukerbaserte poster via **Setup → Custom Settings → API Controller Mock Settings → Manage**, med aktuell community-bruker som eier (`SetupOwnerId`) og disse verdiene:
+
+| Felt | Verdi |
+| --- | --- |
+| `Use_Mock__c` | `true` |
+| `Status_Code__c` | `200` |
+| `Status__c` | `OK` |
+
+Dette gjelder integrasjoner som bruker `ApiController` for de aktuelle brukerne, ikke bare foreldreansvar. Mocksvarene for `POST_FORELDREANSVAR_BARN` og `POST_FORELDREANSVAR_VERIFISER` må være deployet fra `crm-nks-integration`. `scratchSetup` og permissionsettet `STO_Scratch_Fixtures` aktiverer ikke disse integrasjonsmockene. Det eksisterende `post-scratch\activateMock.cls` aktiverer mocks for **alle profiler**, men endrer ikke brukerbaserte overstyringer.
+
+Etter endringen kontrolleres verdiene på hver brukerbaserte post, og innboksen lastes på nytt som den aktuelle community-brukeren. Feilen `Trying to add blank service token to Authorization header.` betyr at kallet forsøkte å bruke et ekte tjenestetoken; kontroller mockinnstillingen for community-brukeren og eventuelle feil i mockkonfigurasjonen, ikke bare innstillingen for administratoren. Aktive integrasjonsmocker trenger ikke et ekte tjenestetoken. Ta vare på tidligere innstillinger før endringer, slik at de kan gjenopprettes når mocktestingen er ferdig. Denne fremgangsmåten gjelder bare scratch-testing, ikke produksjon.
 
 ### STO/BTO i verktøylinjen
 

@@ -279,9 +279,21 @@ public with sharing class stoPersonContextTest {
     private static String barnBody(List<String> idents) {
         List<Object> children = new List<Object>();
         for (String ident : idents) {
-            children.add(new Map<String, Object>{ 'ident' => ident });
+            children.add(childData(ident, ident == SECOND_CHILD_IDENT ? 12 : 8));
         }
         return JSON.serialize(new Map<String, Object>{ 'barn' => children });
+    }
+
+    private static Map<String, Object> childData(String ident, Integer age) {
+        Date birthDate = Date.today().addYears(-age);
+        return new Map<String, Object>{
+            'ident' => ident,
+            'fornavn' => ident == SECOND_CHILD_IDENT ? 'Ola' : 'Beate',
+            'etternavn' => 'Normann',
+            'foedselsdato' => String.valueOf(birthDate),
+            'foedselsaar' => birthDate.year(),
+            'alder' => age
+        };
     }
 
     private static void assertReturnedAccounts(List<stoPersonContext.PersonOption> options, Set<String> idents) {
@@ -328,14 +340,40 @@ public with sharing class stoPersonContextTest {
             Assert.areEqual(0, [SELECT COUNT() FROM Account WHERE INT_PersonIdent__c = :UNSHARED_CHILD_IDENT]);
             List<stoPersonContext.PersonOption> options = stoPersonContext.getRepresentableChildren();
             assertReturnedAccounts(options, new Set<String>{ FIRST_CHILD_IDENT, SECOND_CHILD_IDENT });
-            Assert.areEqual(firstChild.Id, options[0].value, 'Options remain sorted by Salesforce account name');
-            Assert.areEqual(firstChild.Name + ' (8 år)', options[0].label);
+            Assert.areEqual(firstChild.Id, options[0].value);
+            Assert.areEqual('Beate Normann (8 år)', options[0].label, 'Use the service name, not the Account name');
+            Assert.areEqual('Ola Normann (12 år)', options[1].label);
             assertReturnedAccounts(
                 stoPersonContext.getRepresentableChildren(),
                 new Set<String>{ FIRST_CHILD_IDENT, SECOND_CHILD_IDENT }
             );
         }
         Assert.areEqual(1, mock.calls, 'Reuse the service response within the same user transaction');
+        Test.stopTest();
+    }
+
+    @isTest
+    static void optionsAreSortedByServiceNameTest() {
+        User viewer = parent();
+        Account secondChild = account(SECOND_CHILD_IDENT);
+        Map<String, Object> first = childData(FIRST_CHILD_IDENT, 8);
+        first.put('fornavn', 'Zoe');
+        Test.setMock(
+            HttpCalloutMock.class,
+            new BarnMock(
+                200,
+                JSON.serialize(
+                    new Map<String, Object>{ 'barn' => new List<Object>{ first, childData(SECOND_CHILD_IDENT, 12) } }
+                )
+            )
+        );
+        Test.startTest();
+        System.runAs(viewer) {
+            List<stoPersonContext.PersonOption> options = stoPersonContext.getRepresentableChildren();
+            Assert.areEqual(secondChild.Id, options[0].value, 'Sort by service names instead of Account names');
+            Assert.areEqual('Ola Normann (12 år)', options[0].label);
+            Assert.areEqual('Zoe Normann (8 år)', options[1].label);
+        }
         Test.stopTest();
     }
 
@@ -426,18 +464,105 @@ public with sharing class stoPersonContextTest {
     }
 
     @isTest
-    static void nullChildIsAnErrorTest() {
-        assertInvalidBarnResponse('{"barn":[null]}');
+    static void nullChildIsSkippedTest() {
+        assertInvalidChildSkipped(null);
     }
 
     @isTest
-    static void missingChildIdentIsAnErrorTest() {
-        assertInvalidBarnResponse('{"barn":[{"ident":"12345678904"},{}]}');
+    static void missingChildIdentIsSkippedTest() {
+        Map<String, Object> child = childData(FIRST_CHILD_IDENT, 8);
+        child.remove('ident');
+        assertInvalidChildSkipped(child);
     }
 
     @isTest
-    static void blankChildIdentIsAnErrorTest() {
-        assertInvalidBarnResponse('{"barn":[{"ident":" "}]}');
+    static void blankChildIdentIsSkippedTest() {
+        assertInvalidChildField('ident', ' ');
+    }
+
+    private static void assertInvalidChildSkipped(Object invalidChild) {
+        User viewer = parent();
+        BarnMock mock = new BarnMock(
+            200,
+            JSON.serialize(
+                new Map<String, Object>{ 'barn' => new List<Object>{ invalidChild, childData(SECOND_CHILD_IDENT, 12) } }
+            )
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(viewer) {
+            List<stoPersonContext.PersonOption> result = stoPersonContext.getRepresentableChildren();
+            assertReturnedAccounts(result, new Set<String>{ SECOND_CHILD_IDENT });
+            Assert.areEqual('Ola Normann (12 år)', result[0].label);
+            assertReturnedAccounts(stoPersonContext.getRepresentableChildren(), new Set<String>{ SECOND_CHILD_IDENT });
+        }
+        Assert.areEqual(1, mock.calls, 'Partial child responses are cached for the same actor');
+        Test.stopTest();
+    }
+
+    private static void assertInvalidChildField(String field, Object value) {
+        Map<String, Object> child = childData(FIRST_CHILD_IDENT, 8);
+        child.put(field, value);
+        assertInvalidChildSkipped(child);
+    }
+
+    @isTest
+    static void missingFirstNameIsSkippedTest() {
+        assertInvalidChildField('fornavn', null);
+    }
+
+    @isTest
+    static void blankLastNameIsSkippedTest() {
+        assertInvalidChildField('etternavn', ' ');
+    }
+
+    @isTest
+    static void missingAgeIsSkippedTest() {
+        assertInvalidChildField('alder', null);
+    }
+
+    @isTest
+    static void negativeAgeIsSkippedTest() {
+        assertInvalidChildField('alder', -1);
+    }
+
+    @isTest
+    static void invalidAgeTypeIsSkippedTest() {
+        assertInvalidChildField('alder', 'not an age');
+    }
+
+    @isTest
+    static void nonObjectChildIsSkippedTest() {
+        assertInvalidChildSkipped('invalid child');
+    }
+
+    @isTest
+    static void allIncompleteChildrenAreSkippedAndSelfRemainsAccessibleTest() {
+        User viewer = parent();
+        Map<String, Object> missingAge = childData(FIRST_CHILD_IDENT, 8);
+        missingAge.remove('alder');
+        Map<String, Object> missingName = childData(SECOND_CHILD_IDENT, 12);
+        missingName.remove('fornavn');
+        missingName.remove('etternavn');
+        BarnMock mock = new BarnMock(
+            200,
+            JSON.serialize(new Map<String, Object>{ 'barn' => new List<Object>{ missingAge, missingName } })
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(viewer) {
+            List<stoPersonContext.PersonOption> result = stoPersonContext.getRepresentableChildren();
+            Assert.areEqual(0, result.size(), 'Incomplete children must not be selectable');
+            Assert.areEqual(viewer.AccountId, stoPersonContext.resolveAccountId(null), 'Self remains authorized');
+            try {
+                stoPersonContext.resolveAccountId(account(FIRST_CHILD_IDENT).Id);
+                Assert.fail('An incomplete child must not become an authorized selection');
+            } catch (AuraHandledException expected) {
+                Assert.areEqual('Du har ikke tilgang til samtalene for denne personen.', expected.getMessage());
+            }
+        }
+        Assert.areEqual(1, mock.calls);
+        Test.stopTest();
     }
 
     @isTest
@@ -459,32 +584,41 @@ public with sharing class stoPersonContextTest {
     }
 
     @isTest
-    static void eighteenthBirthdayBoundaryTest() {
+    static void serviceAgeDeterminesEligibilityTest() {
         User viewer = parent();
-        Person__c child = [SELECT Id, INT_DateOfBirth__c FROM Person__c WHERE Name = :FIRST_CHILD_IDENT];
-        BarnMock mock = new BarnMock(200, barnBody(new List<String>{ FIRST_CHILD_IDENT }));
+        BarnMock mock = new BarnMock(
+            200,
+            JSON.serialize(
+                new Map<String, Object>{
+                    'barn' => new List<Object>{
+                        childData(FIRST_CHILD_IDENT, 17),
+                        childData(SECOND_CHILD_IDENT, 18),
+                        childData(UNRETURNED_CHILD_IDENT, 0)
+                    }
+                }
+            )
+        );
         Test.setMock(HttpCalloutMock.class, mock);
         Test.startTest();
         System.runAs(viewer) {
-            assertReturnedAccounts(stoPersonContext.getRepresentableChildren(), new Set<String>{ FIRST_CHILD_IDENT });
-        }
-        Date adultBirthDate = Date.today().addYears(-18);
-        for (Date birthDate : new List<Date>{ adultBirthDate.addDays(1), adultBirthDate, adultBirthDate.addDays(-1) }) {
-            child.INT_DateOfBirth__c = String.valueOf(birthDate);
-            update child;
-            System.runAs(viewer) {
-                assertReturnedAccounts(
-                    stoPersonContext.getRepresentableChildren(),
-                    birthDate > adultBirthDate ? new Set<String>{ FIRST_CHILD_IDENT } : new Set<String>()
+            List<stoPersonContext.PersonOption> options = stoPersonContext.getRepresentableChildren();
+            assertReturnedAccounts(options, new Set<String>{ FIRST_CHILD_IDENT, UNRETURNED_CHILD_IDENT });
+            for (stoPersonContext.PersonOption option : options) {
+                Assert.areEqual(
+                    option.representedPersonIdentifier == FIRST_CHILD_IDENT
+                        ? 'Beate Normann (17 år)'
+                        : 'Beate Normann (0 år)',
+                    option.label,
+                    'Both eligibility and the displayed age must come from the service'
                 );
             }
         }
-        Assert.areEqual(1, mock.calls, 'Each call rechecks the real eligibility query, not cached test children');
+        Assert.areEqual(1, mock.calls);
         Test.stopTest();
     }
 
     @isTest
-    static void birthDateMustNotBeFutureOrMissingTest() {
+    static void dropdownDoesNotDependOnSalesforceBirthDateTest() {
         User viewer = parent();
         Person__c child = [SELECT Id, INT_DateOfBirth__c FROM Person__c WHERE Name = :FIRST_CHILD_IDENT];
         BarnMock mock = new BarnMock(200, barnBody(new List<String>{ FIRST_CHILD_IDENT }));
@@ -493,13 +627,16 @@ public with sharing class stoPersonContextTest {
         System.runAs(viewer) {
             assertReturnedAccounts(stoPersonContext.getRepresentableChildren(), new Set<String>{ FIRST_CHILD_IDENT });
         }
-        for (Date birthDate : new List<Date>{ Date.today(), Date.today().addDays(1), null }) {
+        for (Date birthDate : new List<Date>{ Date.today().addYears(-18), Date.today().addDays(1), null }) {
             child.INT_DateOfBirth__c = birthDate == null ? null : String.valueOf(birthDate);
             update child;
             System.runAs(viewer) {
-                assertReturnedAccounts(
-                    stoPersonContext.getRepresentableChildren(),
-                    birthDate == Date.today() ? new Set<String>{ FIRST_CHILD_IDENT } : new Set<String>()
+                List<stoPersonContext.PersonOption> options = stoPersonContext.getRepresentableChildren();
+                assertReturnedAccounts(options, new Set<String>{ FIRST_CHILD_IDENT });
+                Assert.areEqual(
+                    'Beate Normann (8 år)',
+                    options[0].label,
+                    'A stale or missing Salesforce birth date must not override service data'
                 );
             }
         }

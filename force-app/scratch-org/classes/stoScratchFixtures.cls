@@ -45,11 +45,7 @@ public with sharing class stoScratchFixtures implements System.Callable {
             children = new List<String>();
         }
         if (action == 'barn') {
-            List<Object> result = new List<Object>();
-            for (String ident : children) {
-                result.add(new Map<String, Object>{ 'ident' => ident });
-            }
-            return response(new Map<String, Object>{ 'barn' => result });
+            return childrenResponse(children);
         }
         if (action == 'verifiser') {
             return response(
@@ -62,6 +58,26 @@ public with sharing class stoScratchFixtures implements System.Callable {
     private static Map<String, List<String>> family() {
         StaticResource fixture = [SELECT Body FROM StaticResource WHERE Name = 'STO_Foreldreansvar_Family' LIMIT 1];
         return (Map<String, List<String>>) JSON.deserialize(fixture.Body.toString(), Map<String, List<String>>.class);
+    }
+
+    private static HttpResponse childrenResponse(List<String> children) {
+        List<Object> result = new List<Object>();
+        if (!children.isEmpty()) {
+            HttpResponse configured = new ApiMock().initMock('POST_FORELDREANSVAR_BARN', 200, 'OK').respond();
+            Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(configured.getBody());
+            Map<String, Object> detailsByIdent = new Map<String, Object>();
+            for (Object child : (List<Object>) body.get('barn')) {
+                Map<String, Object> details = (Map<String, Object>) child;
+                detailsByIdent.put((String) details.get('ident'), details);
+            }
+            for (String ident : children) {
+                if (!detailsByIdent.containsKey(ident)) {
+                    throw new AuraHandledException('The configured child service mock is missing a fixture child.');
+                }
+                result.add(detailsByIdent.get(ident));
+            }
+        }
+        return response(new Map<String, Object>{ 'barn' => result });
     }
 
     private static HttpResponse response(Map<String, Object> body) {

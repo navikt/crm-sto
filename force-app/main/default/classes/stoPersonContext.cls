@@ -1,6 +1,6 @@
 public with sharing class stoPersonContext {
     private static Map<Id, User> viewersById = new Map<Id, User>();
-    private static Map<Id, Set<String>> childIdentsByUser = new Map<Id, Set<String>>();
+    private static Map<Id, Map<String, Barn>> childrenByUser = new Map<Id, Map<String, Barn>>();
 
     public static User currentUser() {
         Id viewerId = UserInfo.getUserId();
@@ -35,10 +35,16 @@ public with sharing class stoPersonContext {
 
     @AuraEnabled(cacheable=true)
     public static List<PersonOption> getRepresentableChildren() {
+        Map<String, Barn> children = verifiedChildren();
         List<PersonOption> options = new List<PersonOption>();
-        for (Account child : authorizedChildren()) {
-            options.add(new PersonOption(child));
+        for (Account child : authorizedChildren(children.keySet())) {
+            Barn details = children.get(child.CRM_Person__r.Name);
+            // ToDo: Check if this check is already done in foreldreansvar app
+            if (details.alder < 18) {
+                options.add(new PersonOption(child.Id, details));
+            }
         }
+        options.sort();
         return options;
     }
 
@@ -100,35 +106,28 @@ public with sharing class stoPersonContext {
         return (Boolean) canRepresent;
     }
 
-    private static List<Account> authorizedChildren() {
-        Set<String> childIdents = verifiedChildIdents();
+    private static List<Account> authorizedChildren(Set<String> childIdents) {
         if (childIdents.isEmpty()) {
             return new List<Account>();
         }
-        // PersonHandler stores birth dates as ISO strings, not Account.PersonBirthdate.
-        String adultBirthDate = String.valueOf(Date.today().addYears(-18));
-        String today = String.valueOf(Date.today());
         return [
-            SELECT Id, Name, PersonContactId, CRM_Person__r.Name, CRM_Person__r.INT_DateOfBirth__c
+            SELECT Id, CRM_Person__r.Name
             FROM Account
             WHERE
                 IsPersonAccount = TRUE
                 AND CRM_Person__r.Name IN :childIdents
                 AND CRM_Person__r.INT_Confidential__c = 'UGRADERT'
-                AND CRM_Person__r.INT_DateOfBirth__c > :adultBirthDate
-                AND CRM_Person__r.INT_DateOfBirth__c <= :today
-            ORDER BY Name
         ];
     }
 
-    private static Set<String> verifiedChildIdents() {
+    private static Map<String, Barn> verifiedChildren() {
         Id actorId = UserInfo.getUserId();
-        if (childIdentsByUser.containsKey(actorId)) {
-            return childIdentsByUser.get(actorId);
+        if (childrenByUser.containsKey(actorId)) {
+            return childrenByUser.get(actorId);
         }
         Account parent = authenticatedParent();
         if (parent == null) {
-            return new Set<String>();
+            return new Map<String, Barn>();
         }
         HttpResponse response = stoScratchSupport.isEnabled()
             ? (HttpResponse) stoScratchSupport.invoke(
@@ -136,29 +135,61 @@ public with sharing class stoPersonContext {
                   new Map<String, Object>{ 'parentIdent' => parent.CRM_Person__r?.Name }
               )
             : NKS_ForeldreansvarService.barn(parent.CRM_Person__r?.Name);
-        Set<String> childIdents = new Set<String>();
+        Map<String, Barn> lookup = new Map<String, Barn>();
+        Boolean hasInvalidChildren = false;
         if (response.getStatusCode() != 204 && response.getStatusCode() != 404) {
             if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
                 throw invalidResponse();
             }
-            BarnResponse body;
+            Object body;
             try {
-                body = (BarnResponse) JSON.deserialize(response.getBody(), BarnResponse.class);
+                body = JSON.deserializeUntyped(response.getBody());
             } catch (System.JSONException error) {
                 throw invalidResponse();
             }
-            if (body == null || body.barn == null) {
+            if (!(body instanceof Map<String, Object>)) {
                 throw invalidResponse();
             }
-            for (Barn child : body.barn) {
-                if (child == null || String.isBlank(child.ident)) {
-                    throw invalidResponse();
+            Object children = ((Map<String, Object>) body).get('barn');
+            if (!(children instanceof List<Object>)) {
+                throw invalidResponse();
+            }
+            for (Object rawChild : (List<Object>) children) {
+                if (!(rawChild instanceof Map<String, Object>)) {
+                    hasInvalidChildren = true;
+                    continue;
                 }
-                childIdents.add(child.ident);
+                Barn child;
+                try {
+                    child = (Barn) JSON.deserialize(JSON.serialize(rawChild), Barn.class);
+                } catch (System.JSONException error) {
+                    hasInvalidChildren = true;
+                    continue;
+                }
+                if (
+                    String.isBlank(child.ident) ||
+                    String.isBlank(child.fornavn) ||
+                    String.isBlank(child.etternavn) ||
+                    child.alder == null ||
+                    child.alder < 0
+                ) {
+                    hasInvalidChildren = true;
+                    continue;
+                }
+                lookup.put(child.ident, child);
             }
         }
-        childIdentsByUser.put(actorId, childIdents);
-        return childIdents;
+        if (hasInvalidChildren) {
+            LoggerUtility logger = new LoggerUtility('Foreldreansvar');
+            logger.error(
+                'Ufullstendige opplysninger om barn fra nks-foreldreansvar',
+                null,
+                CRM_ApplicationDomain.Domain.NKS
+            );
+            logger.publish();
+        }
+        childrenByUser.put(actorId, lookup);
+        return lookup;
     }
 
     private static Account authenticatedParent() {
@@ -188,21 +219,30 @@ public with sharing class stoPersonContext {
         return new AuraHandledException('Kunne ikke hente barn du kan representere. Prøv igjen senere.');
     }
 
-    private class BarnResponse {
-        public List<Barn> barn;
-    }
-
     private class Barn {
         public String ident;
+        public String fornavn;
+        public String etternavn;
+        public Integer alder;
     }
 
-    public class PersonOption {
+    public class PersonOption implements Comparable {
         @AuraEnabled
         public String label;
         @AuraEnabled
         public Id value;
         @AuraEnabled
         public String representedPersonIdentifier;
+
+        private PersonOption(Id accountId, Barn child) {
+            label = child.fornavn.trim() + ' ' + child.etternavn.trim() + ' (' + child.alder + ' år)';
+            value = accountId;
+            representedPersonIdentifier = child.ident;
+        }
+
+        public Integer compareTo(Object other) {
+            return label.compareTo(((PersonOption) other).label);
+        }
 
         public PersonOption(Account child) {
             label = child.Name;

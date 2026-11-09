@@ -6,7 +6,9 @@ These fixtures support manual testing of personal inboxes, messages written on b
 
 **Prerequisite:** Integrate the real backend support before deploying the whole project. Test setup supplies synthetic records and logins, not missing responsibility checks, conversation access, sender authorization or production routing.
 
-Outside the explicit scratch fixture mode described below, child selection uses the real `barn()` lookup. The service returns child identities, which are matched to accessible Person Accounts; displayed ages use the stored `Person__c.INT_DateOfBirth__c` birth dates, accounting for whether this year's birthday has occurred. Production authorization never uses the fixture relationships.
+The existing scratch family simulation is retained. On a scratch hostname with `STO_Scratch_Fixtures`, child selection and parental verification follow `STO_Foreldreansvar_Family` for the signed-in synthetic person. The adapter filters the complete child entries from the configured `POST_FORELDREANSVAR_BARN` service mock in `crm-nks-integration` by those relationships. Names and ages come from that response, not Salesforce; no service or shared mock-framework changes are needed. Child identities are still matched to accessible, unprotected Person Accounts. Incomplete child entries are omitted and logged as data-quality errors without user-facing warnings or hiding valid children. Both LWCs consume the list returned by `getRepresentableChildren()`; the temporary warning endpoint and DTOs have been removed. Without scratch opt-in, `NKS_ForeldreansvarService` is used as before.
+
+**Integration mocks are separate from the scratch family simulation.** The simulated `barn()` and `verifiser()` responses need no callouts, service token or user-level integration mock setting. For other integrations, or child-service calls without scratch opt-in, enable integration mocks for the community users, not just the internal administrator. Logging in through **Log in to Experience as User** changes the current Salesforce user. `ApiController` checks that user's mock-setting record first, then their profile only when no user-level record exists; a user-level `Use_Mock__c = false` overrides an enabled profile. Applicable integration mock settings are `Use_Mock__c = true`, `Status_Code__c = 200`, and `Status__c = OK`. Neither `scratchSetup` nor `STO_Scratch_Fixtures` enables these settings. See [the root README's community mock guidance](../README.md#integrasjonsmocker-for-community-brukere) for configuration scope, verification, and the blank-service-token error.
 
 Import `data\plan.json` followed by `sto\plan.json`. The family scenario contains three parents and two children:
 
@@ -18,7 +20,7 @@ Import `data\plan.json` followed by `sto\plan.json`. The family scenario contain
 | Beate Normann | 12345678904 | Self only; born 2018-10-18 |
 | Ola Normann | 12345678905 | Self only; born 2014-10-18 |
 
-Check that Far/Mor can select both children, Medmor can select only Beate, and each child can use their own inbox without representation. When a child opens a conversation started by a parent, check that they see the same sender-on-behalf-of-child banner and open-conversation read-only notice as another parent. A child who started their own conversation keeps the ordinary reply view without a representation banner. Check original-sender-only replies/closure once those backend endpoints are implemented; the scratch adapter only supplies inbox loading and family lookup/verification, not thread actions. Read status temporarily uses the existing shared `CRM_MessageHelperExperience.markAsRead` action when a conversation opens, so one reader can clear another reader's unread status. Per-reader tracking is deferred to a separate PR. Outside opted-in scratch testing, actual responsibility results, not the fixture family map, must control access.
+With scratch fixtures enabled, check that Far/Mor can select both children, Medmor can select only Beate, and each child can use their own inbox without a representation dropdown. Both the simulated child lookup and verification follow the table; Salesforce visibility alone does not grant fixture responsibility. The configured service mock supplies the child details, not the relationships. Missing configured child entries cause a visible error rather than a Salesforce demographic fallback. When a child opens a conversation started by a parent, check that they see the same sender-on-behalf-of-child banner and open-conversation read-only notice as another parent. A child who started their own conversation keeps the ordinary reply view without a representation banner. Check original-sender-only replies/closure once those backend endpoints are implemented; the scratch adapter supplies family responses and inbox loading, not thread actions. Read status temporarily uses the existing shared `CRM_MessageHelperExperience.markAsRead` action when a conversation opens, so one reader can clear another reader's unread status. Per-reader tracking is deferred to a separate PR.
 
 Under both Helse and Familie, check that the pleiepenger-for-sykt-barn question is available when writing for yourself but absent when writing on behalf of a child. The child's message stays in the selected Helse/Familie topic, without a hidden or previously selected pleiepenger answer.
 
@@ -26,7 +28,7 @@ After opening a conversation, return to the inbox and check that refreshing show
 
 ### Automated child-selection coverage
 
-The child-selection Apex tests use isolated synthetic Person Accounts and a community parent with explicit Read shares. Mocked HTTP responses exercise the real `barn()` call and eligibility query, including empty/error responses, duplicate or unmatched identities, non-person and unshared accounts, the 18th-birthday boundary, protected children, and future/missing birth dates. Existing name/age/identity formatting checks remain. These tests do not use a test-only eligibility bypass, scratch-family authorization, or live service responses; Salesforce rolls back their test records.
+The child-selection Apex tests use isolated synthetic Person Accounts and a community parent with explicit Read shares. Mocked HTTP responses exercise the real `barn()` call and eligibility query, including empty/error responses, duplicate or unmatched identities, non-person and unshared accounts, the service age boundary at 18, protected children, and stale/missing Salesforce birth dates. They also cover skipping invalid entries while retaining valid children, caching partial responses, and preserving self access for all-invalid lists. Existing name/age/identity formatting checks remain. These tests do not use a test-only eligibility bypass, scratch-family authorization, or live service responses; Salesforce rolls back their test records.
 
 The fixture uses `STO Test Community Login Profile` from `force-app\test\profiles`, assigns `STO_Experience`, and adds a test-only permission set for Account/Person field reads and the fields needed to create a thread. The minimal custom profile declares only the Customer Community Plus Login license; test permissions are assigned separately. It is explicitly included by `.gitignore` and `.forceignore` and lives outside `scratch-org`, which the shared CI workflow deletes before deploying source. Deploy this profile together with the tests; the manual-testing scratch profiles are not test dependencies.
 
@@ -38,11 +40,11 @@ User/permission setup and Account/Person sharing run in separate transactions to
 
 Activate/publish the Experience site as described in the root README, then use **Log in to Experience as User** from the selected test Person Account. For internal handling, use **Skriv til oss > Hent ny melding** to retrieve the named STO/Familie and BTO/Helse samples.
 
-### Scratch-only inbox and family mocks
+### Scratch-only family simulation and inbox support
 
-Deploy `stoScratchSupport` and the updated `stoInboxHelper`/`stoPersonContext` together with the classes, custom permission and `STO_Scratch_Fixtures` permission set under `force-app\scratch-org`. The setup command assigns that permission set to the five synthetic community users. It enables the fixture adapter only on `.scratch.my.salesforce.com`; other orgs retain the existing backend behaviour. It does not enable general integration mocks or turn a failed live call into a mock success.
+Deploy `stoScratchSupport` and the updated `stoInboxHelper`/`stoPersonContext` together with the classes, custom permission and `STO_Scratch_Fixtures` permission set under `force-app\scratch-org`. The setup command assigns that permission set to the five synthetic community users. It enables family responses and the inbox adapter only on `.scratch.my.salesforce.com`; other orgs retain the existing backend behaviour. The complete configured `POST_FORELDREANSVAR_BARN` mock must already be deployed from `crm-nks-integration`. This opt-in selects simulation before any service call; it does not enable general integration mocks or mask failed live calls.
 
-The adapter supplies `barn`/`verifiser` responses from `STO_Foreldreansvar_Family` and reads the imported inbox records with sharing, bounded pagination and the existing shared unread state. Only the five synthetic actors are accepted. Represented inboxes must also pass the existing child eligibility and visible Account checks. This is scratch testing support, not an implementation of production parental authorization, inbox sharing or read-state tracking.
+The adapter reads imported inbox records with sharing, bounded pagination and the existing shared unread state. `STO_Foreldreansvar_Family` remains the setup/sharing roster, actor allowlist and simulated family relationship source. Represented inboxes must pass child eligibility and visible Account checks. The simulated `barn` response carries all configured child fields, while the dropdown consumes `fornavn`, `etternavn` and `alder`; Salesforce supplies only account mapping and access checks. This is scratch testing support, not an implementation of production parental authorization, inbox sharing or read-state tracking.
 
 For an already populated scratch org, after deploying the changes, run the following from the repository root (replace the target alias as needed):
 
@@ -54,7 +56,7 @@ sf apex run --file post-scratch\scratchInboxSharing.cls --target-org stoscratcho
 
 The last script grants Read access to existing threads/notes associated with the five fixture accounts, for their own users and the fixture parents. Run it again after generating additional test conversations. It preserves existing shares and does not create messages or duplicate the generic sample conversation. The complete `npm run scratchSetup` runs it after generating all samples.
 
-The mock implementation lives in `scratch-org`, which production CI excludes. The main classes discover it dynamically only after checking both the scratch hostname and the explicit custom permission. Without that permission, the real child integration and unfinished production inbox endpoints are unchanged.
+The adapter lives in `scratch-org`, which production CI excludes. `stoInboxHelper` and `stoPersonContext` discover it dynamically only after checking both the scratch hostname and the explicit custom permission. Without that permission, the production child-service path and unfinished inbox endpoints are unchanged.
 
 ### Why the dummy-data files exist
 
@@ -105,7 +107,7 @@ The following paths are relative to `force-app\scratch-org`. Older generated log
 | --- | --- |
 | `profiles\Scratch Community Profile.profile-meta.xml` | Member-based community login for Doktor, retaining the original scratch access. It does not grant parental responsibility. |
 | `profiles\Scratch Community Login Profile.profile-meta.xml` | Login-based licenses for the other four family members, avoiding the scratch org's single member-based Plus-license limit. |
-| `staticresources\STO_Foreldreansvar_Family.resource` | A JSON roster describing only synthetic relationships for Account/Person setup. It cannot authorize child selection or supply integration responses. |
+| `staticresources\STO_Foreldreansvar_Family.resource` | The unchanged synthetic family relationships for Account/Person setup and opted-in scratch child/verification responses. |
 | `staticresources\STO_Foreldreansvar_Family.resource-meta.xml` | Registers that JSON fixture as a private static resource, making it available to the scratch setup scripts. |
 | `applications\STO.app-meta.xml` | The internal test console where testers inspect people, cases and threads and retrieve work from the STO utility. |
 | `flexipages\Account_Record_Page.flexipage-meta.xml` | The console's person-account inspection view, including the actions used to enter a test person's community session. |
@@ -119,10 +121,10 @@ The following paths are relative to `force-app\scratch-org`. Older generated log
 | `layouts\PersonAccount-Person Account Layout.layout-meta.xml` | Standard scratch person-account details/actions for inspecting imported people before logging in as them. |
 | `objects\Account\listViews\All_person_accounts.listView-meta.xml` | A list of person-linked accounts, helping testers find the synthetic family. |
 | `permissionsets\Scratch_Permissions.permissionset-meta.xml` | Existing internal-test rights for the STO console, sample cases and FAQ records, separate from citizen/parent access. |
-| `permissionsets\STO_Scratch_Fixtures.permissionset-meta.xml` | Explicit opt-in and read-only schema access for scratch inbox testing; no View All or Modify All access. |
+| `permissionsets\STO_Scratch_Fixtures.permissionset-meta.xml` | Explicit opt-in and read-only schema access for scratch family/inbox testing; no View All or Modify All access. |
 | `customPermissions\STO_Scratch_Fixtures.customPermission-meta.xml` | Enables the adapter only when the runtime scratch-hostname check also passes. |
-| `classes\stoScratchFixtures.cls` | Scratch-only family responses and bounded inbox queries over shared Salesforce records. |
-| `classes\stoScratchFixturesTest.cls` | Exercises explicit opt-in, actor validation, child lookup, shared message access and pagination. |
+| `classes\stoScratchFixtures.cls` | Scratch-only family responses using configured service child details, plus bounded inbox queries over shared Salesforce records. |
+| `classes\stoScratchFixturesTest.cls` | Covers all five users' documented relationships, response-sourced names/ages, zero simulated callouts, opt-in and actor checks, shared message access and pagination. |
 | `settings\BusinessHours.settings-meta.xml` | The default and STO calendars required to exercise the existing case/service timing setup in the scratch environment. |
 
 `unpackaged\queues\*.queue-meta.xml` defines the existing topic-specific STO/BTO queues and protected/closed-case variants. `unpackaged\assignmentRules\Case.assignmentRules-meta.xml` assigns cases to those queues by origin/topic. They are deployed for the routing scenario, not replaced by custom fixture routing.

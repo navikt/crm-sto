@@ -9,75 +9,90 @@ private class stoScratchFixturesTest {
             new User(UserRoleId = role.Id, ProfileId = UserInfo.getProfileId(), TimeZoneSidKey = 'Europe/Oslo')
         );
         System.runAs(owner) {
-            STO_TestDataFactory.createRecord(
-                new Person__c(
-                    Name = '12345678901',
-                    INT_FirstName__c = 'Fixture',
-                    INT_LastName__c = 'Parent',
-                    INT_Confidential__c = 'UGRADERT',
-                    INT_DateOfBirth__c = '1980-01-01'
-                )
-            );
-            for (String ident : new List<String>{ '12345678904', '12345678905' }) {
+            Set<String> identities = new Set<String>{
+                '12345678901',
+                '12345678902',
+                '12345678903',
+                '12345678904',
+                '12345678905'
+            };
+            Set<String> childIdentities = new Set<String>{ '12345678904', '12345678905' };
+            for (String ident : identities) {
                 STO_TestDataFactory.createRecord(
                     new Person__c(
                         Name = ident,
                         INT_FirstName__c = 'Fixture',
-                        INT_LastName__c = 'Child',
+                        INT_LastName__c = 'Person',
                         INT_Confidential__c = 'UGRADERT',
-                        INT_DateOfBirth__c = '2018-01-01'
+                        INT_DateOfBirth__c = childIdentities.contains(ident) ? '2018-01-01' : '1980-01-01'
                     )
                 );
             }
-            Account account = [SELECT Id, PersonContactId FROM Account WHERE INT_PersonIdent__c = '12345678901'];
-            User viewer = new User(
-                Username = 'scratch-fixture.' + account.Id + '@example.test',
-                Email = 'fixture@example.test',
-                LastName = 'Fixture',
-                Alias = 'fixture',
-                CommunityNickname = 'fixture-' + account.Id,
-                ContactId = account.PersonContactId,
-                ProfileId = [SELECT Id FROM Profile WHERE Name = 'Scratch Community Login Profile']
-                .Id,
-                TimeZoneSidKey = 'Europe/Oslo',
-                LocaleSidKey = 'en_US',
-                EmailEncodingKey = 'UTF-8',
-                LanguageLocaleKey = 'en_US'
-            );
+            Id profileId = [SELECT Id FROM Profile WHERE Name = 'Scratch Community Login Profile'].Id;
+            List<Account> accounts = [
+                SELECT Id, PersonContactId, INT_PersonIdent__c, CRM_Person__c
+                FROM Account
+                WHERE INT_PersonIdent__c IN :identities
+            ];
+            List<User> viewers = new List<User>();
+            for (Account account : accounts) {
+                viewers.add(
+                    new User(
+                        Username = 'scratch-fixture.' + account.Id + '@example.test',
+                        Email = 'fixture@example.test',
+                        LastName = 'Fixture',
+                        Alias = account.INT_PersonIdent__c == '12345678901' ? 'fixture' : 'fx' + viewers.size(),
+                        CommunityNickname = 'fixture-' + account.Id,
+                        ContactId = account.PersonContactId,
+                        ProfileId = profileId,
+                        TimeZoneSidKey = 'Europe/Oslo',
+                        LocaleSidKey = 'en_US',
+                        EmailEncodingKey = 'UTF-8',
+                        LanguageLocaleKey = 'en_US'
+                    )
+                );
+            }
             System.runAs(new User(Id = owner.Id)) {
-                insert viewer;
+                insert viewers;
                 List<PermissionSetAssignment> assignments = new List<PermissionSetAssignment>();
                 for (PermissionSet permission : [
                     SELECT Id
                     FROM PermissionSet
                     WHERE Name IN ('STO_Experience', 'STO_Scratch_Fixtures')
                 ]) {
-                    assignments.add(
-                        new PermissionSetAssignment(AssigneeId = viewer.Id, PermissionSetId = permission.Id)
-                    );
+                    for (User viewer : viewers) {
+                        assignments.add(
+                            new PermissionSetAssignment(AssigneeId = viewer.Id, PermissionSetId = permission.Id)
+                        );
+                    }
                 }
                 insert assignments;
             }
             List<AccountShare> accountShares = new List<AccountShare>();
             List<Person__Share> personShares = new List<Person__Share>();
-            for (Account fixture : [
-                SELECT Id, CRM_Person__c
-                FROM Account
-                WHERE INT_PersonIdent__c IN ('12345678901', '12345678904', '12345678905')
-            ]) {
-                personShares.add(
-                    new Person__Share(ParentId = fixture.CRM_Person__c, UserOrGroupId = viewer.Id, AccessLevel = 'Read')
-                );
-                if (fixture.Id != account.Id) {
-                    accountShares.add(
-                        new AccountShare(
-                            AccountId = fixture.Id,
-                            UserOrGroupId = viewer.Id,
-                            AccountAccessLevel = 'Read',
-                            OpportunityAccessLevel = 'None',
-                            CaseAccessLevel = 'None'
-                        )
-                    );
+            for (User viewer : viewers) {
+                for (Account fixture : accounts) {
+                    Boolean ownAccount = fixture.PersonContactId == viewer.ContactId;
+                    if (ownAccount || childIdentities.contains(fixture.INT_PersonIdent__c)) {
+                        personShares.add(
+                            new Person__Share(
+                                ParentId = fixture.CRM_Person__c,
+                                UserOrGroupId = viewer.Id,
+                                AccessLevel = 'Read'
+                            )
+                        );
+                        if (!ownAccount) {
+                            accountShares.add(
+                                new AccountShare(
+                                    AccountId = fixture.Id,
+                                    UserOrGroupId = viewer.Id,
+                                    AccountAccessLevel = 'Read',
+                                    OpportunityAccessLevel = 'None',
+                                    CaseAccessLevel = 'None'
+                                )
+                            );
+                        }
+                    }
                 }
             }
             insert accountShares;
@@ -96,25 +111,32 @@ private class stoScratchFixturesTest {
         Test.startTest();
         System.runAs(viewer) {
             Assert.isTrue(stoScratchSupport.isEnabled());
-            HttpResponse children = (HttpResponse) stoScratchSupport.invoke(
+            List<stoPersonContext.PersonOption> children = stoPersonContext.getRepresentableChildren();
+            Assert.areEqual(2, children.size());
+            Assert.areEqual(
+                'Beate Normann (8 år)',
+                children[0].label,
+                'Scratch responses must contain service mock details, not the differently named Salesforce fixtures'
+            );
+            Assert.areEqual('Ola Normann (12 år)', children[1].label);
+            Assert.isTrue(stoPersonContext.verifyRepresentation('12345678904'));
+            Assert.isFalse(stoPersonContext.verifyRepresentation('99999999999'));
+            Assert.areEqual(
+                0,
+                Limits.getCallouts(),
+                'Opted-in scratch fixtures must retain simulated family responses'
+            );
+            HttpResponse response = (HttpResponse) stoScratchSupport.invoke(
                 'barn',
                 new Map<String, Object>{ 'parentIdent' => '12345678901' }
             );
-            Assert.areEqual(200, children.getStatusCode());
-            Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(children.getBody());
-            Assert.areEqual(2, ((List<Object>) body.get('barn')).size());
-            HttpResponse verification = (HttpResponse) stoScratchSupport.invoke(
-                'verifiser',
-                new Map<String, Object>{ 'parentIdent' => '12345678901', 'childIdent' => '12345678904' }
-            );
-            Assert.areEqual('{"kanRepresentere":true}', verification.getBody());
-            HttpResponse denied = (HttpResponse) stoScratchSupport.invoke(
-                'verifiser',
-                new Map<String, Object>{ 'parentIdent' => '12345678901', 'childIdent' => '99999999999' }
-            );
-            Assert.areEqual('{"kanRepresentere":false}', denied.getBody());
-            Assert.areEqual(2, stoPersonContext.getRepresentableChildren().size());
-            Assert.isTrue(stoPersonContext.verifyRepresentation('12345678904'));
+            Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
+            Map<String, Object> firstChild = (Map<String, Object>) ((List<Object>) body.get('barn'))[0];
+            Assert.areEqual('Beate', firstChild.get('fornavn'));
+            Assert.areEqual('Normann', firstChild.get('etternavn'));
+            Assert.areEqual('2018-10-18', firstChild.get('foedselsdato'));
+            Assert.areEqual(2018, firstChild.get('foedselsaar'));
+            Assert.areEqual(8, firstChild.get('alder'));
             Map<String, Object> page = stoInboxHelper.getAccessibleInboxPage(null, null, null);
             Assert.areEqual(0, ((List<Object>) page.get('recent')).size());
             Assert.areEqual(0, ((List<Object>) page.get('older')).size());
@@ -130,24 +152,74 @@ private class stoScratchFixturesTest {
     static void rejectsDisabledAdapterAndForgedActor() {
         Assert.isFalse(stoScratchSupport.isEnabled(), 'The internal admin is not opted in.');
         try {
-            new stoScratchFixtures().call('barn', new Map<String, Object>{ 'parentIdent' => '12345678901' });
+            new stoScratchFixtures().call('inbox', new Map<String, Object>());
             Assert.fail('A direct call must not bypass opt-in.');
         } catch (AuraHandledException expected) {
             Assert.isNotNull(expected);
         }
         System.runAs(viewer()) {
-            try {
-                stoScratchSupport.invoke('barn', new Map<String, Object>{ 'parentIdent' => '12345678902' });
-                Assert.fail('The caller cannot impersonate another fixture parent.');
-            } catch (AuraHandledException expected) {
-                Assert.isNotNull(expected);
+            for (String action : new List<String>{ 'barn', 'verifiser' }) {
+                try {
+                    stoScratchSupport.invoke(
+                        action,
+                        new Map<String, Object>{ 'parentIdent' => '12345678902', 'childIdent' => '12345678904' }
+                    );
+                    Assert.fail('The caller cannot impersonate another fixture parent.');
+                } catch (AuraHandledException expected) {
+                    Assert.isNotNull(expected);
+                }
             }
         }
     }
 
     @IsTest
+    static void allFiveUsersFollowDocumentedRelationships() {
+        Map<String, Set<String>> expected = new Map<String, Set<String>>{
+            '12345678901' => new Set<String>{ '12345678904', '12345678905' },
+            '12345678902' => new Set<String>{ '12345678904', '12345678905' },
+            '12345678903' => new Set<String>{ '12345678904' },
+            '12345678904' => new Set<String>(),
+            '12345678905' => new Set<String>()
+        };
+        List<User> viewers = [
+            SELECT Id, AccountId, Account.INT_PersonIdent__c
+            FROM User
+            WHERE IsPortalEnabled = TRUE AND Account.INT_PersonIdent__c IN :expected.keySet()
+        ];
+        Assert.areEqual(5, viewers.size());
+        Test.startTest();
+        for (User viewer : viewers) {
+            System.runAs(viewer) {
+                Set<String> expectedChildren = expected.get(viewer.Account.INT_PersonIdent__c);
+                Assert.areEqual(
+                    2,
+                    [SELECT COUNT() FROM Account WHERE INT_PersonIdent__c IN ('12345678904', '12345678905')],
+                    'Record visibility alone must not grant fixture responsibility'
+                );
+                List<stoPersonContext.PersonOption> result = stoPersonContext.getRepresentableChildren();
+                Set<String> actualChildren = new Set<String>();
+                for (stoPersonContext.PersonOption child : result) {
+                    actualChildren.add(child.representedPersonIdentifier);
+                }
+                Assert.areEqual(expectedChildren, actualChildren, 'Follow the README family for each signed-in person');
+                for (String childIdent : new List<String>{ '12345678904', '12345678905' }) {
+                    Assert.areEqual(
+                        expectedChildren.contains(childIdent),
+                        stoPersonContext.verifyRepresentation(childIdent),
+                        'Verification and dropdown options must use the same family relationships'
+                    );
+                }
+                Assert.areEqual(viewer.AccountId, stoPersonContext.resolveAccountId(null), 'Self remains accessible');
+            }
+        }
+        Assert.areEqual(0, Limits.getCallouts());
+        Test.stopTest();
+    }
+
+    @IsTest
     static void readsSharedThreadsAndRejectsForeignInbox() {
         User reader = viewer();
+        Test.startTest();
         Thread__c thread = new Thread__c(CRM_Account__c = reader.AccountId, CRM_IsActive__c = true);
         insert thread;
         thread.CRM_Thread_Type__c = 'STO';
@@ -185,6 +257,7 @@ private class stoScratchFixturesTest {
                 Assert.isNotNull(expected);
             }
         }
+        Test.stopTest();
     }
 
     @IsTest
