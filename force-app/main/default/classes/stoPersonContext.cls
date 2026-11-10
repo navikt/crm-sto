@@ -39,10 +39,7 @@ public with sharing class stoPersonContext {
         List<PersonOption> options = new List<PersonOption>();
         for (Account child : authorizedChildren(children.keySet())) {
             Barn details = children.get(child.CRM_Person__r.Name);
-            // ToDo: Check if this check is already done in foreldreansvar app
-            if (details.alder < 18) {
-                options.add(new PersonOption(child.Id, details));
-            }
+            options.add(new PersonOption(child.Id, details));
         }
         options.sort();
         return options;
@@ -113,10 +110,7 @@ public with sharing class stoPersonContext {
         return [
             SELECT Id, CRM_Person__r.Name
             FROM Account
-            WHERE
-                IsPersonAccount = TRUE
-                AND CRM_Person__r.Name IN :childIdents
-                AND CRM_Person__r.INT_Confidential__c = 'UGRADERT'
+            WHERE IsPersonAccount = TRUE AND CRM_Person__r.Name IN :childIdents
         ];
     }
 

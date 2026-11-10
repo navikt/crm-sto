@@ -584,7 +584,7 @@ public with sharing class stoPersonContextTest {
     }
 
     @isTest
-    static void serviceAgeDeterminesEligibilityTest() {
+    static void serviceReturnedChildrenAreNotFilteredByAgeTest() {
         User viewer = parent();
         BarnMock mock = new BarnMock(
             200,
@@ -593,7 +593,7 @@ public with sharing class stoPersonContextTest {
                     'barn' => new List<Object>{
                         childData(FIRST_CHILD_IDENT, 17),
                         childData(SECOND_CHILD_IDENT, 18),
-                        childData(UNRETURNED_CHILD_IDENT, 0)
+                        childData(UNRETURNED_CHILD_IDENT, 19)
                     }
                 }
             )
@@ -602,15 +602,22 @@ public with sharing class stoPersonContextTest {
         Test.startTest();
         System.runAs(viewer) {
             List<stoPersonContext.PersonOption> options = stoPersonContext.getRepresentableChildren();
-            assertReturnedAccounts(options, new Set<String>{ FIRST_CHILD_IDENT, UNRETURNED_CHILD_IDENT });
+            assertReturnedAccounts(
+                options,
+                new Set<String>{ FIRST_CHILD_IDENT, SECOND_CHILD_IDENT, UNRETURNED_CHILD_IDENT }
+            );
+            Map<String, String> expectedLabels = new Map<String, String>{
+                FIRST_CHILD_IDENT => 'Beate Normann (17 år)',
+                SECOND_CHILD_IDENT => 'Ola Normann (18 år)',
+                UNRETURNED_CHILD_IDENT => 'Beate Normann (19 år)'
+            };
             for (stoPersonContext.PersonOption option : options) {
                 Assert.areEqual(
-                    option.representedPersonIdentifier == FIRST_CHILD_IDENT
-                        ? 'Beate Normann (17 år)'
-                        : 'Beate Normann (0 år)',
+                    expectedLabels.get(option.representedPersonIdentifier),
                     option.label,
-                    'Both eligibility and the displayed age must come from the service'
+                    'Display the service age without applying a local age limit'
                 );
+                Assert.areEqual(option.value, stoPersonContext.resolveAccountId(option.value));
             }
         }
         Assert.areEqual(1, mock.calls);
@@ -645,7 +652,7 @@ public with sharing class stoPersonContextTest {
     }
 
     @isTest
-    static void protectedChildrenAreNotRepresentableTest() {
+    static void serviceReturnedChildrenAreNotFilteredByConfidentialityTest() {
         User viewer = parent();
         Person__c child = [SELECT Id, INT_Confidential__c FROM Person__c WHERE Name = :FIRST_CHILD_IDENT];
         BarnMock mock = new BarnMock(200, barnBody(new List<String>{ FIRST_CHILD_IDENT }));
@@ -657,17 +664,18 @@ public with sharing class stoPersonContextTest {
         for (String confidentiality : new List<String>{ 'FORTROLIG', 'STRENGT_FORTROLIG', 'UGRADERT' }) {
             child.INT_Confidential__c = confidentiality;
             update child;
-            // Protection changes can revoke manual Person shares; restore only the unprotected fixture's access.
-            if (
-                confidentiality == 'UGRADERT' &&
-                [SELECT COUNT() FROM Person__Share WHERE ParentId = :child.Id AND UserOrGroupId = :viewer.Id] == 0
-            ) {
+            // Protection changes can revoke manual Person shares; keep record access for this filter test.
+            if ([SELECT COUNT() FROM Person__Share WHERE ParentId = :child.Id AND UserOrGroupId = :viewer.Id] == 0) {
                 insert new Person__Share(ParentId = child.Id, UserOrGroupId = viewer.Id, AccessLevel = 'Read');
             }
             System.runAs(viewer) {
                 assertReturnedAccounts(
                     stoPersonContext.getRepresentableChildren(),
-                    confidentiality == 'UGRADERT' ? new Set<String>{ FIRST_CHILD_IDENT } : new Set<String>()
+                    new Set<String>{ FIRST_CHILD_IDENT }
+                );
+                Assert.areEqual(
+                    account(FIRST_CHILD_IDENT).Id,
+                    stoPersonContext.resolveAccountId(account(FIRST_CHILD_IDENT).Id)
                 );
             }
         }
