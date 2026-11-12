@@ -1,5 +1,62 @@
 @isTest
 public with sharing class nksGetStoUtilityControllerTest {
+    @isTest
+    static void testExecutionTiming_AtOrBelowThresholdLogsInfoWithoutBreakdown() {
+        for (Long durationMs : new List<Long>{ 9999, 10000 }) {
+            nksGetStoUtilityController.ExecutionTiming timing = new nksGetStoUtilityController.ExecutionTiming(
+                'getSto'
+            );
+            timing.startStep('query', true);
+            timing.currentStepStartedAt = timing.executionStartedAt;
+            timing.logExecution(timing.executionStartedAt + durationMs);
+
+            Application_Event__e event = nksGetStoUtilityController.logger.peek();
+            Assert.areEqual('Info', event.Log_Level__c);
+            Assert.areEqual(
+                'getSto took ' + durationMs + ' ms; queries took ' + durationMs + ' ms',
+                event.Log_Messages__c
+            );
+            Assert.isNull(event.Payload__c, 'Fast requests should not include a detailed breakdown');
+        }
+    }
+
+    @isTest
+    static void testExecutionTiming_AboveThresholdLogsWarningWithExactQueryDuration() {
+        nksGetStoUtilityController.ExecutionTiming timing = new nksGetStoUtilityController.ExecutionTiming(
+            'getStoWithSkill'
+        );
+        timing.startStep('getPendingServiceRouting.candidatesQuery', true);
+        timing.currentStepStartedAt = timing.executionStartedAt;
+        timing.logExecution(timing.executionStartedAt + 10001);
+
+        Application_Event__e event = nksGetStoUtilityController.logger.peek();
+        Assert.areEqual('Warning', event.Log_Level__c);
+        Assert.areEqual('getStoWithSkill took 10001 ms; queries took 10001 ms', event.Log_Messages__c);
+        List<Object> steps = (List<Object>) JSON.deserializeUntyped(event.Payload__c);
+        Assert.areEqual(1, steps.size());
+        Map<String, Object> step = (Map<String, Object>) steps[0];
+        Assert.areEqual('getPendingServiceRouting.candidatesQuery', step.get('step'));
+        Assert.areEqual(10001, step.get('durationMs'));
+    }
+
+    @isTest
+    static void testExecutionTiming_PreservesRepeatedStepsAndUnfinishedStep() {
+        nksGetStoUtilityController.ExecutionTiming timing = new nksGetStoUtilityController.ExecutionTiming('getSto');
+        timing.startStep('takeOwnership.lockQuery', true);
+        timing.startStep('takeOwnership.lockQuery', true);
+        timing.startStep('takeOwnership.update', false);
+        timing.currentStepStartedAt = timing.executionStartedAt + 10000;
+        timing.logExecution(timing.executionStartedAt + 12000);
+
+        Application_Event__e event = nksGetStoUtilityController.logger.peek();
+        List<Object> steps = (List<Object>) JSON.deserializeUntyped(event.Payload__c);
+        Assert.areEqual(3, steps.size(), 'Each ownership attempt should have a separate timing');
+        Assert.areEqual('takeOwnership.lockQuery', ((Map<String, Object>) steps[0]).get('step'));
+        Assert.areEqual('takeOwnership.lockQuery', ((Map<String, Object>) steps[1]).get('step'));
+        Assert.areEqual('takeOwnership.update', ((Map<String, Object>) steps[2]).get('step'));
+        Assert.areEqual(2000, ((Map<String, Object>) steps[2]).get('durationMs'));
+    }
+
     @TestSetup
     static void makeData() {
         myTriggers.disable(PersonAccessHandler.class);

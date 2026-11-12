@@ -6,8 +6,71 @@
  * @last modified by  : Sara Mohammadi
  **/
 public without sharing class nksGetStoUtilityController {
+    @TestVisible
     private static LoggerUtility logger = new LoggerUtility('GET_STO');
     private final static Integer MAX_ATTEMPTS = 5;
+    private static final Long SLOW_EXECUTION_THRESHOLD_MS = 10000;
+    private static ExecutionTiming executionTiming;
+
+    @TestVisible
+    private class ExecutionTiming {
+        private String methodName;
+        @TestVisible
+        private Long executionStartedAt = System.now().getTime();
+        @TestVisible
+        private Long currentStepStartedAt = executionStartedAt;
+        private String currentStepName;
+        private Boolean isCurrentStepQuery = false;
+        private Long queryDurationMs = 0;
+        private List<Map<String, Object>> completedSteps = new List<Map<String, Object>>();
+
+        public ExecutionTiming(String methodName) {
+            this.methodName = methodName;
+        }
+
+        public void startStep(String nextStepName, Boolean isNextStepQuery) {
+            Long stepTransitionAt = System.now().getTime();
+            completeCurrentStep(stepTransitionAt);
+            currentStepName = nextStepName;
+            isCurrentStepQuery = isNextStepQuery;
+            currentStepStartedAt = stepTransitionAt;
+        }
+
+        private void completeCurrentStep(Long currentStepEndedAt) {
+            if (currentStepName != null) {
+                Long completedStepDurationMs = currentStepEndedAt - currentStepStartedAt;
+                completedSteps.add(
+                    new Map<String, Object>{ 'step' => currentStepName, 'durationMs' => completedStepDurationMs }
+                );
+                if (isCurrentStepQuery) {
+                    queryDurationMs += completedStepDurationMs;
+                }
+                currentStepName = null;
+            }
+        }
+
+        public void logExecution(Long executionEndedAt) {
+            completeCurrentStep(executionEndedAt);
+            Long durationMs = executionEndedAt - executionStartedAt;
+            Boolean isSlow = durationMs > SLOW_EXECUTION_THRESHOLD_MS;
+            logger.logMessage(
+                isSlow ? LoggerUtility.LogLevel.WARNING : LoggerUtility.LogLevel.INFO,
+                null,
+                null,
+                methodName + ' took ' + durationMs + ' ms; queries took ' + queryDurationMs + ' ms',
+                isSlow ? JSON.serialize(completedSteps) : null,
+                durationMs,
+                CRM_ApplicationDomain.Domain.NKS
+            );
+        }
+    }
+
+    private static void startTimingStep(String nextStepName, Boolean isNextStepQuery) {
+        if (executionTiming != null) {
+            executionTiming.startStep(nextStepName, isNextStepQuery);
+        }
+    }
+
     public class TooManyAttemptsException extends Exception {
     }
     public class NoCasesFoundException extends Exception {
@@ -54,26 +117,46 @@ public without sharing class nksGetStoUtilityController {
     @AuraEnabled
     public static List<Record> getStoWithSkill(Id skillId) {
         filteredSkillId = skillId;
-        return getSto();
+        return getSto('getStoWithSkill');
     }
 
     @AuraEnabled
     public static List<Record> getSto() {
+        return getSto('getSto');
+    }
+
+    private static List<Record> getSto(String methodName) {
+        executionTiming = new ExecutionTiming(methodName);
+        try {
+            return fetchSto();
+        } finally {
+            ExecutionTiming completedTiming = executionTiming;
+            executionTiming = null;
+            completedTiming.logExecution(System.now().getTime());
+            logger.publish();
+        }
+    }
+
+    private static List<Record> fetchSto() {
         List<Record> records = new List<Record>();
+        startTimingStep('hasInProgress', true);
         if (hasInProgress()) {
             throw new AuraHandledException('hasInProgress');
         }
 
+        startTimingStep('getNewSTO.prepare', false);
         Record newStoRecord = new Record();
         newStoRecord.recordId = getNewSTO();
         newStoRecord.status = 'In Progress';
         records.add(newStoRecord);
         Set<Id> relatedStoIds = new Set<Id>();
         try {
+            startTimingStep('getRelatedSTO.flow', false);
             relatedStoIds.addAll(getRelatedSTO(newStoRecord.recordId));
         } catch (Exception e) {
             // exception on finding related stos
         }
+        startTimingStep('getSto.buildRecords', false);
         for (Id relatedStoId : relatedStoIds) {
             Record relatedStoRecord = new Record();
             relatedStoRecord.recordId = relatedStoId;
@@ -88,9 +171,11 @@ public without sharing class nksGetStoUtilityController {
         try {
             Integer attempt = 0;
             Id userId = getCurrentUserId();
+            startTimingStep('getServiceResourceSkillIds.prepare', false);
             allUserSkills = getServiceResourceSkillIds();
 
             do {
+                startTimingStep('getNewSTO.attempt.' + (attempt + 1), false);
                 Id nextCaseId = getNextSTOCase();
                 if (takeOwnership(nextCaseId, userId)) {
                     return nextCaseId;
@@ -105,12 +190,15 @@ public without sharing class nksGetStoUtilityController {
 
     private static Boolean takeOwnership(Id caseId, Id userId) {
         try {
+            startTimingStep('takeOwnership.lockQuery', true);
             Case c = [SELECT Id, OwnerId, Owner.Type, Status FROM Case WHERE Id = :caseId LIMIT 1 FOR UPDATE];
+            startTimingStep('takeOwnership.checkOwner', false);
             if (c.Owner.Type != 'Queue') {
                 return false;
             }
             c.OwnerId = userId;
             c.Status = 'In progress';
+            startTimingStep('takeOwnership.update', false);
             update c;
         } catch (Exception e) {
             return false;
@@ -153,18 +241,23 @@ public without sharing class nksGetStoUtilityController {
         Id userId = getCurrentUserId();
         GroupedSkills userSkills = new GroupedSkills();
         Datetime nowDt = System.now();
+        // Fetch the skills before querying SRS so the don't affect the step timing
+        List<String> relevantSkills = allRelevantSkills;
 
-        for (ServiceResourceSkill srs : [
+        startTimingStep('getServiceResourceSkillIds.query', true);
+        List<ServiceResourceSkill> resourceSkills = [
             SELECT SkillId, Skill.DeveloperName, Skill.MasterLabel
             FROM ServiceResourceSkill
             WHERE
                 ServiceResource.RelatedRecordId = :userId
-                AND Skill.DeveloperName IN :allRelevantSkills
+                AND Skill.DeveloperName IN :relevantSkills
                 AND EffectiveStartDate <= :nowDt
                 AND (EffectiveEndDate = NULL
                 OR EffectiveEndDate >= :nowDt)
                 AND ServiceResource.IsActive = TRUE
-        ]) {
+        ];
+        startTimingStep('getServiceResourceSkillIds.groupSkills', false);
+        for (ServiceResourceSkill srs : resourceSkills) {
             //Separating domain skills and person access skills
             if (additionalSkills.contains(srs.Skill.DeveloperName)) {
                 userSkills.additionalSkillsBySkillId.put(srs.SkillId, srs.Skill.DeveloperName);
@@ -186,13 +279,16 @@ public without sharing class nksGetStoUtilityController {
             if (psr.size() == 0) {
                 throw new NoCasesFoundException('NotFound');
             }
+            startTimingStep('getNextSTOCase.checkStatus', false);
             if (psr[0].workItem.Status == 'Closed') {
+                startTimingStep('getNextSTOCase.closedCaseQuery', true);
                 PendingServiceRouting psrToLog = [
                     SELECT Id, WorkItemId, WorkItem.Status, CreatedDate, CreatedBy.Name, IsPushed, OwnerId
                     FROM PendingServiceRouting
                     WHERE Id = :psr[0].Id
                     LIMIT 1
                 ];
+                startTimingStep('getNextSTOCase.logClosedCase', false);
                 logger.error('PSR pushed where STO Case is status closed.', psrToLog, CRM_ApplicationDomain.Domain.NKS);
                 logger.publish();
             }
@@ -212,16 +308,20 @@ public without sharing class nksGetStoUtilityController {
         String userId = getCurrentUserId();
 
         Set<Id> includedPSRIds = new Set<Id>();
-        for (SkillRequirement sr : [
+        startTimingStep('getPendingServiceRouting.includedSkillsQuery', true);
+        List<SkillRequirement> includedRequirements = [
             SELECT RelatedRecordId
             FROM SkillRequirement
             WHERE SkillId IN :allUserSkills.skillMap.keySet()
-        ]) {
+        ];
+        startTimingStep('getPendingServiceRouting.collectIncludedIds', false);
+        for (SkillRequirement sr : includedRequirements) {
             includedPSRIds.add(sr.RelatedRecordId);
         }
 
         Set<Id> excludedPSRIds = new Set<Id>();
-        for (SkillRequirement sr : [
+        startTimingStep('getPendingServiceRouting.excludedSkillsQuery', true);
+        List<SkillRequirement> excludedRequirements = [
             SELECT RelatedRecordId
             FROM SkillRequirement
             WHERE
@@ -229,10 +329,13 @@ public without sharing class nksGetStoUtilityController {
                 AND Skill.DeveloperName NOT IN :allUserSkills.additionalSkillsBySkillId.values())
                 OR (Skill.DeveloperName IN :originSkills
                 AND Skill.DeveloperName NOT IN :allUserSkills.originSkillsBySkillId.values())
-        ]) {
+        ];
+        startTimingStep('getPendingServiceRouting.collectExcludedIds', false);
+        for (SkillRequirement sr : excludedRequirements) {
             excludedPSRIds.add(sr.RelatedRecordId);
         }
 
+        startTimingStep('getPendingServiceRouting.candidatesQuery', true);
         List<PendingServiceRouting> allCandidates = [
             SELECT Id, WorkItemId, WorkItem.NKS_Incompetent_IDs__c, WorkItem.Status
             FROM PendingServiceRouting
@@ -244,6 +347,7 @@ public without sharing class nksGetStoUtilityController {
             ORDER BY RoutingPriority, SecondaryRoutingPriority DESC NULLS LAST, CreatedDate
         ];
 
+        startTimingStep('getPendingServiceRouting.filterCandidates', false);
         for (PendingServiceRouting psr : allCandidates) {
             // Skip if user lacks required confidentiality/origin skills
             if (excludedPSRIds.contains(psr.Id)) {
