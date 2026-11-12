@@ -76,7 +76,7 @@ public with sharing class STO_ThreadService {
         } catch (CalloutException e) {
             stoHelperClass.logError('Parental responsibility service call failed.');
             throw new stoHelperClass.RepresentationVerificationException('Unable to verify representation.');
-        } catch (NKS_ForeldreansvarService.ForeldreansvarException e) {
+        } catch (Exception e) {
             throw new stoHelperClass.RepresentationVerificationException('Unable to verify representation.');
         }
         if (response == null || response.getStatusCode() != 200) {

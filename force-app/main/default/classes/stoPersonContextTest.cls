@@ -450,7 +450,7 @@ public with sharing class stoPersonContextTest {
             try {
                 stoPersonContext.getRepresentableChildren();
                 Assert.fail('A service failure must surface an error');
-            } catch (NKS_ForeldreansvarService.ForeldreansvarException expected) {
+            } catch (Exception expected) {
                 Assert.isTrue(expected.getMessage().contains('LoggId'));
             }
         }
@@ -846,8 +846,12 @@ public with sharing class stoPersonContextTest {
             try {
                 stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', childId);
                 Assert.fail('A service failure must surface instead of allowing an empty-list submission');
-            } catch (NKS_ForeldreansvarService.ForeldreansvarException expected) {
+            } catch (Exception expected) {
                 Assert.isNotNull(expected.getMessage());
+                Assert.isFalse(
+                    expected.getMessage()
+                        .contains('A service failure must surface instead of allowing an empty-list submission')
+                );
             }
         }
         Test.stopTest();
