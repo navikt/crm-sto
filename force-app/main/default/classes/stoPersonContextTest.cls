@@ -452,7 +452,7 @@ public with sharing class stoPersonContextTest {
                 stoPersonContext.getRepresentableChildren();
                 Assert.fail('A service failure must surface an error');
             } catch (Exception expected) {
-                Assert.isTrue(expected.getMessage().contains('LoggId'));
+                Assert.areEqual('Kunne ikke hente barn du kan representere. Prøv igjen senere.', expected.getMessage());
             }
         }
         Assert.areEqual(1, mock.calls);
@@ -815,7 +815,7 @@ public with sharing class stoPersonContextTest {
             STO_Medskriv__c = true,
             RecordTypeId = recordTypeId
         );
-        insert thread;
+        insert as system thread;
         if (withMessage) {
             Id currentUserContactId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
             insert as system new Message__c(
