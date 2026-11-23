@@ -8,7 +8,9 @@ public with sharing class STO_ThreadService {
             stoHelperClass.logError('Thread creation rejected: represented person identifier is blank.');
             throw new stoHelperClass.InvalidThreadDataException('A represented person identifier is required.');
         }
-        STO_ThreadIdentity.AccountIdentity threadAccountIdentity = resolveThreadAccountIdentity(representedIdentifier);
+        stoPersonContext.AccountIdentity threadAccountIdentity = stoPersonContext.resolveThreadAccountIdentity(
+            representedIdentifier
+        );
         Thread__c thread = toThread(info, threadAccountIdentity, threadType, category);
 
         STO_ThreadPolicy.lockAccount(threadAccountIdentity.accountId);
@@ -31,7 +33,7 @@ public with sharing class STO_ThreadService {
             insert thread;
             insert new Message__c(
                 CRM_Message_Text__c = info.msgText,
-                CRM_From_Contact__c = STO_ThreadIdentity.getCurrentUserAccountIdentity().contactId,
+                CRM_From_Contact__c = stoPersonContext.getCurrentUserAccountIdentity().contactId,
                 CRM_Thread__c = thread.Id,
                 CRM_Read__c = true,
                 CRM_Read_Datetime__c = DateTime.now()
@@ -50,58 +52,6 @@ public with sharing class STO_ThreadService {
     @TestVisible
     private static void grantSubmitterAccess(Id threadId) {
         new RepresentationSharing().grantSubmitterAccess(threadId);
-    }
-
-    public static STO_ThreadIdentity.AccountIdentity resolveThreadAccountIdentity(String representedIdentifier) {
-        STO_ThreadIdentity.AccountIdentity currentUserAccountIdentity = STO_ThreadIdentity.getCurrentUserAccountIdentity();
-        if (String.isBlank(representedIdentifier)) {
-            return currentUserAccountIdentity;
-        }
-        if (String.isBlank(currentUserAccountIdentity.personIdentifier)) {
-            stoHelperClass.logError('Current user person identifier is unavailable for representation verification.');
-            throw new stoHelperClass.RepresentationVerificationException('Unable to verify representation.');
-        }
-        verifyRepresentation(currentUserAccountIdentity.personIdentifier, representedIdentifier);
-        return STO_ThreadIdentity.getRepresentedAccountIdentity(representedIdentifier);
-    }
-
-    // TODO: Change this to use the new verifyRepresentation method from the controller
-    // which returns a boolean instead of the actual response.
-
-    @TestVisible
-    private static void verifyRepresentation(String parentIdentifier, String childIdentifier) {
-        HttpResponse response;
-        try {
-            response = NKS_ForeldreansvarService.verifiser(parentIdentifier, childIdentifier);
-        } catch (CalloutException e) {
-            stoHelperClass.logError('Parental responsibility service call failed.');
-            throw new stoHelperClass.RepresentationVerificationException('Unable to verify representation.');
-        } catch (Exception e) {
-            throw new stoHelperClass.RepresentationVerificationException('Unable to verify representation.');
-        }
-        if (response == null || response.getStatusCode() != 200) {
-            stoHelperClass.logError(
-                'Parental responsibility service returned an unexpected response. HTTP status: ' +
-                    (response == null ? 'unavailable' : String.valueOf(response.getStatusCode())) +
-                    '.'
-            );
-            throw new stoHelperClass.RepresentationVerificationException('Unable to verify representation.');
-        }
-        RepresentationDecision decision;
-        try {
-            decision = (RepresentationDecision) JSON.deserialize(response.getBody(), RepresentationDecision.class);
-        } catch (JSONException e) {
-            stoHelperClass.logError('Parental responsibility service returned an invalid decision.');
-            throw new stoHelperClass.RepresentationVerificationException('Unable to verify representation.');
-        }
-        if (decision == null || decision.kanRepresentere == null) {
-            stoHelperClass.logError('Parental responsibility service omitted its decision.');
-            throw new stoHelperClass.RepresentationVerificationException('Unable to verify representation.');
-        }
-        if (!decision.kanRepresentere) {
-            stoHelperClass.logError('Thread representation rejected: parental responsibility was not confirmed.');
-            throw new stoHelperClass.NoParentalResponsibilityException('Parental responsibility was not confirmed.');
-        }
     }
 
     private static void validateInput(stoHelperClass.ThreadData info) {
@@ -146,7 +96,7 @@ public with sharing class STO_ThreadService {
 
     private static Thread__c toThread(
         stoHelperClass.ThreadData info,
-        STO_ThreadIdentity.AccountIdentity accountIdentity,
+        stoPersonContext.AccountIdentity accountIdentity,
         String threadType,
         String category
     ) {
@@ -169,10 +119,6 @@ public with sharing class STO_ThreadService {
             NKS_Experience_Site_Source__c = info.disabilityCampaign == true ? 'Uforekampanje' : null,
             RecordTypeId = recordType.getRecordTypeId()
         );
-    }
-
-    private class RepresentationDecision {
-        public Boolean kanRepresentere;
     }
 
     private without sharing class RepresentationSharing {

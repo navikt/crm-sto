@@ -91,7 +91,7 @@ public with sharing class stoHelperClass {
         return getOpenThreadsForAccount(
             category,
             threadType,
-            STO_ThreadIdentity.getCurrentUserAccountIdentity().accountId
+            stoPersonContext.getCurrentUserAccountIdentity().accountId
         );
     }
 
@@ -118,7 +118,7 @@ public with sharing class stoHelperClass {
     ) {
         STO_ThreadPolicy.validateCategory(category);
         STO_ThreadPolicy.getThreadTypes(threadType);
-        STO_ThreadIdentity.AccountIdentity accountIdentity = STO_ThreadService.resolveThreadAccountIdentity(
+        stoPersonContext.AccountIdentity accountIdentity = stoPersonContext.resolveThreadAccountIdentity(
             representedPersonIdentifier
         );
         return getOpenThreadsForAccount(category, threadType, accountIdentity.accountId);
@@ -228,7 +228,7 @@ public with sharing class stoHelperClass {
         }
         Boolean closeIntent =
             count >= STO_ThreadPolicy.MAX_THREAD_COUNT_STO &&
-            STO_ThreadPolicy.hasCategoryAtLimit(STO_ThreadIdentity.getCurrentUserAccountIdentity().accountId);
+            STO_ThreadPolicy.hasCategoryAtLimit(stoPersonContext.getCurrentUserAccountIdentity().accountId);
         try {
             update new User(Id = UserInfo.getUserId(), NKS_Close_Intent__c = closeIntent);
         } catch (DmlException e) {
@@ -243,7 +243,7 @@ public with sharing class stoHelperClass {
         User currentUser = [SELECT NKS_Close_Intent__c FROM User WHERE Id = :UserInfo.getUserId()];
         return currentUser.NKS_Close_Intent__c &&
             STO_ThreadPolicy.countOpenThreads(
-                STO_ThreadIdentity.getCurrentUserAccountIdentity().accountId,
+                stoPersonContext.getCurrentUserAccountIdentity().accountId,
                 validCategory,
                 'STO'
             ) >= STO_ThreadPolicy.MAX_THREAD_COUNT_STO;

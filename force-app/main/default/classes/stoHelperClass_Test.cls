@@ -2,8 +2,24 @@
 private class stoHelperClass_Test {
     @TestSetup
     static void makeData() {
-        STO_TestDataFactory.createRecord(new Person__c(Name = '12345678910'));
-        STO_TestDataFactory.createRecord(new Person__c(Name = '12345678911'));
+        STO_TestDataFactory.createRecord(
+            new Person__c(
+                Name = '12345678910',
+                INT_FirstName__c = 'Test',
+                INT_LastName__c = 'Parent',
+                INT_Confidential__c = 'UGRADERT',
+                INT_DateOfBirth__c = String.valueOf(Date.today().addYears(-10))
+            )
+        );
+        STO_TestDataFactory.createRecord(
+            new Person__c(
+                Name = '12345678911',
+                INT_FirstName__c = 'Test',
+                INT_LastName__c = 'Child',
+                INT_Confidential__c = 'UGRADERT',
+                INT_DateOfBirth__c = String.valueOf(Date.today().addYears(-8))
+            )
+        );
         insert new List<Common_Code__c>{
             new Common_Code__c(Name = 'Kontakt NAV', CRM_Code__c = 'KNA', CRM_Code_Set__c = 'Tema'),
             new Common_Code__c(Name = 'Question', CRM_Code__c = 'SPM_OG_SVR', CRM_Code_Set__c = 'Oppgavetyper')
@@ -37,12 +53,27 @@ private class stoHelperClass_Test {
 
     private static void setCurrentUserAccountIdentity(String personIdentifier) {
         Contact contact = getContact(personIdentifier);
-        STO_ThreadIdentity.cachedCurrentUserAccountIdentity = new STO_ThreadIdentity.AccountIdentity(
-            contact.AccountId,
-            contact.Id,
-            personIdentifier
+        stoPersonContext.viewersById.put(
+            UserInfo.getUserId(),
+            (User) JSON.deserialize(
+                JSON.serialize(
+                    new Map<String, Object>{
+                        'Id' => UserInfo.getUserId(),
+                        'AccountId' => contact.AccountId,
+                        'ContactId' => contact.Id,
+                        'IsActive' => true,
+                        'IsPortalEnabled' => false,
+                        'UserType' => 'Standard',
+                        'Account' => new Map<String, Object>{
+                            'IsPersonAccount' => true,
+                            'PersonContactId' => contact.Id,
+                            'CRM_Person__r' => new Map<String, Object>{ 'Name' => personIdentifier }
+                        }
+                    }
+                ),
+                User.class
+            )
         );
-        STO_ThreadIdentity.cachedUserId = UserInfo.getUserId();
     }
 
     private static stoHelperClass.ThreadData getThreadData() {
@@ -327,7 +358,7 @@ private class stoHelperClass_Test {
         Assert.areEqual(child.AccountId, thread.CRM_Account__c);
         Assert.areEqual(child.Id, thread.CRM_Contact__c);
         Assert.areEqual(
-            child.Id,
+            getContact('12345678910').Id,
             [SELECT CRM_From_Contact__c FROM Message__c WHERE CRM_Thread__c = :thread.Id].CRM_From_Contact__c
         );
     }
@@ -348,41 +379,56 @@ private class stoHelperClass_Test {
 
     @IsTest
     static void representationRequiresAnExplicitDecision() {
+        stoHelperClass.ThreadData info = getRepresentationData();
         Test.setMock(HttpCalloutMock.class, new RepresentationMock(200, '{}'));
         Test.startTest();
         try {
-            STO_ThreadService.verifyRepresentation('12345678910', '12345678911');
+            stoHelperClass.createThread(info);
             Assert.fail('Missing approval must be a technical error.');
-        } catch (stoHelperClass.RepresentationVerificationException e) {
-            Assert.isNotNull(e.getMessage());
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().contains('LoggId'));
+            Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
         }
         Test.stopTest();
     }
 
     @IsTest
     static void representationRejectsMalformedJson() {
+        stoHelperClass.ThreadData info = getRepresentationData();
         Test.setMock(HttpCalloutMock.class, new RepresentationMock(200, 'not json'));
         Test.startTest();
         try {
-            STO_ThreadService.verifyRepresentation('12345678910', '12345678911');
+            stoHelperClass.createThread(info);
             Assert.fail('Malformed approval must be a technical error.');
-        } catch (stoHelperClass.RepresentationVerificationException e) {
-            Assert.isNotNull(e.getMessage());
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().contains('LoggId'));
+            Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
+        }
+        Test.stopTest();
+    }
+
+    private static void assertRepresentationStatusIsDenial(Integer statusCode) {
+        stoHelperClass.ThreadData info = getRepresentationData();
+        Test.setMock(HttpCalloutMock.class, new RepresentationMock(statusCode, ''));
+        Test.startTest();
+        try {
+            stoHelperClass.createThread(info);
+            Assert.fail('No content or not found must not authorize creation.');
+        } catch (stoHelperClass.NoParentalResponsibilityException e) {
+            Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
+            Assert.areEqual(0, [SELECT COUNT() FROM Message__c]);
         }
         Test.stopTest();
     }
 
     @IsTest
-    static void representationUnexpectedStatusIsNotParentalDenial() {
-        Test.setMock(HttpCalloutMock.class, new RepresentationMock(204, ''));
-        Test.startTest();
-        try {
-            STO_ThreadService.verifyRepresentation('12345678910', '12345678911');
-            Assert.fail('A service response without a decision must be a technical error.');
-        } catch (stoHelperClass.RepresentationVerificationException e) {
-            Assert.isNotNull(e.getMessage());
-        }
-        Test.stopTest();
+    static void representationNoContentIsDenial() {
+        assertRepresentationStatusIsDenial(204);
+    }
+
+    @IsTest
+    static void representationNotFoundIsDenial() {
+        assertRepresentationStatusIsDenial(404);
     }
 
     @IsTest
@@ -408,7 +454,7 @@ private class stoHelperClass_Test {
     @IsTest
     static void unknownRepresentedAccountHasSpecificError() {
         try {
-            STO_ThreadIdentity.getRepresentedAccountIdentity('12345678999');
+            stoPersonContext.getRepresentedAccountIdentity('12345678999');
             Assert.fail('Expected the missing represented account to be rejected.');
         } catch (stoHelperClass.ChildAccountNotFoundException e) {
             Assert.isFalse(e.getMessage().contains('12345678999'));
@@ -419,11 +465,11 @@ private class stoHelperClass_Test {
     static void changingRequestIdentifierDoesNotReuseResolvedIdentity() {
         stoHelperClass.ThreadData data = new stoHelperClass.ThreadData();
         data.representedPersonIdentifier = '12345678910';
-        STO_ThreadIdentity.AccountIdentity firstAccountIdentity = STO_ThreadIdentity.getRepresentedAccountIdentity(
+        stoPersonContext.AccountIdentity firstAccountIdentity = stoPersonContext.getRepresentedAccountIdentity(
             data.representedPersonIdentifier
         );
         data.representedPersonIdentifier = '12345678911';
-        STO_ThreadIdentity.AccountIdentity secondAccountIdentity = STO_ThreadIdentity.getRepresentedAccountIdentity(
+        stoPersonContext.AccountIdentity secondAccountIdentity = stoPersonContext.getRepresentedAccountIdentity(
             data.representedPersonIdentifier
         );
         Assert.areNotEqual(firstAccountIdentity.accountId, secondAccountIdentity.accountId);
@@ -432,10 +478,8 @@ private class stoHelperClass_Test {
 
     @IsTest
     static void missingCurrentUserAccountFailsWithoutRecursion() {
-        STO_ThreadIdentity.cachedCurrentUserAccountIdentity = new STO_ThreadIdentity.AccountIdentity(null, null, null);
-        STO_ThreadIdentity.cachedUserId = UserInfo.getUserId();
         try {
-            STO_ThreadIdentity.getCurrentUserAccountIdentity();
+            stoPersonContext.getCurrentUserAccountIdentity();
             Assert.fail('A current user without an account must be rejected.');
         } catch (stoHelperClass.NoAccountFoundException e) {
             Assert.isNotNull(e.getMessage());
@@ -445,27 +489,28 @@ private class stoHelperClass_Test {
     @IsTest
     static void identityCacheIsScopedToCurrentUser() {
         setCurrentUserAccountIdentity('12345678910');
-        STO_ThreadIdentity.cachedUserId = UserInfo.getOrganizationId();
+        stoPersonContext.viewersById.put(UserInfo.getOrganizationId(), stoPersonContext.currentUser());
+        stoPersonContext.viewersById.remove(UserInfo.getUserId());
         User currentUser = [SELECT AccountId, ContactId FROM User WHERE Id = :UserInfo.getUserId()];
         if (currentUser.AccountId == null || currentUser.ContactId == null) {
             try {
-                STO_ThreadIdentity.getCurrentUserAccountIdentity();
+                stoPersonContext.getCurrentUserAccountIdentity();
                 Assert.fail('An identity cached for another user must not be used.');
             } catch (stoHelperClass.NoAccountFoundException e) {
                 Assert.isNotNull(e.getMessage());
             }
         } else {
-            STO_ThreadIdentity.AccountIdentity accountIdentity = STO_ThreadIdentity.getCurrentUserAccountIdentity();
+            stoPersonContext.AccountIdentity accountIdentity = stoPersonContext.getCurrentUserAccountIdentity();
             Assert.areEqual(currentUser.AccountId, accountIdentity.accountId);
             Assert.areEqual(currentUser.ContactId, accountIdentity.contactId);
         }
-        Assert.areEqual(UserInfo.getUserId(), STO_ThreadIdentity.cachedUserId);
+        Assert.areEqual(UserInfo.getUserId(), stoPersonContext.currentUser().Id);
     }
 
     @IsTest
     static void identityRejectsBlankRepresentedIdentifier() {
         try {
-            STO_ThreadIdentity.getRepresentedAccountIdentity(' ');
+            stoPersonContext.getRepresentedAccountIdentity(' ');
             Assert.fail('A blank identifier must not fall back to the current user.');
         } catch (stoHelperClass.InvalidThreadDataException e) {
             Assert.isNotNull(e.getMessage());
@@ -473,21 +518,16 @@ private class stoHelperClass_Test {
     }
 
     @IsTest
-    static void failedCreationRollsBackItsWrites() {
+    static void mismatchedActorContactPreventsWrites() {
         stoHelperClass.ThreadData info = getThreadData();
-        Contact person = getContact('12345678910');
-        STO_ThreadIdentity.cachedCurrentUserAccountIdentity = new STO_ThreadIdentity.AccountIdentity(
-            person.AccountId,
-            UserInfo.getUserId(),
-            '12345678910'
-        );
+        stoPersonContext.viewersById.get(UserInfo.getUserId()).ContactId = UserInfo.getUserId();
         Integer threadCount = [SELECT COUNT() FROM Thread__c];
         Integer messageCount = [SELECT COUNT() FROM Message__c];
         try {
             stoHelperClass.createThread(info);
-            Assert.fail('An invalid contact reference must fail creation.');
-        } catch (stoHelperClass.ThreadOrMessageException e) {
-            Assert.areEqual('Unable to create the thread and its message.', e.getMessage());
+            Assert.fail('An invalid actor contact must fail before creation.');
+        } catch (stoHelperClass.NoAccountFoundException e) {
+            Assert.isNotNull(e.getMessage());
         }
         Assert.areEqual(threadCount, [SELECT COUNT() FROM Thread__c]);
         Assert.areEqual(messageCount, [SELECT COUNT() FROM Message__c]);

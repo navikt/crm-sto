@@ -41,6 +41,7 @@ public with sharing class stoPersonContextTest {
         private Integer statusCode;
         private String responseBody;
         public Integer calls = 0;
+        public String childIdentifier = FIRST_CHILD_IDENT;
 
         public VerificationMock(Integer statusCode, String responseBody) {
             this.statusCode = statusCode;
@@ -54,7 +55,7 @@ public with sharing class stoPersonContextTest {
             Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(request.getBody());
             Assert.areEqual(new Set<String>{ 'forelderIdent', 'barnIdent' }, payload.keySet());
             Assert.areEqual(PARENT_IDENT, payload.get('forelderIdent'), 'Verify the authenticated parent');
-            Assert.areEqual(FIRST_CHILD_IDENT, payload.get('barnIdent'));
+            Assert.areEqual(childIdentifier, payload.get('barnIdent'));
             HttpResponse response = new HttpResponse();
             response.setStatusCode(statusCode);
             response.setHeader('Content-Type', 'application/json');
@@ -642,6 +643,117 @@ public with sharing class stoPersonContextTest {
     }
 
     @isTest
+    static void arrayVerificationIsAnErrorTest() {
+        assertInvalidVerification('[]');
+    }
+
+    @isTest
+    static void verificationFailureHasSafeCorrelatedDiagnosticsTest() {
+        User viewer = parent();
+        Test.setMock(HttpCalloutMock.class, new VerificationMock(500, '{"error":"unavailable"}'));
+        String correlationId;
+        Test.startTest();
+        System.runAs(viewer) {
+            try {
+                stoHelperClass.createThread(representedThreadData());
+                Assert.fail('Service failure must prevent creation.');
+            } catch (AuraHandledException expected) {
+                correlationId = expected.getMessage().substringAfter('LoggId: ');
+                Assert.areEqual(32, correlationId.length());
+                Assert.isFalse(expected.getMessage().contains(PARENT_IDENT));
+                Assert.isFalse(expected.getMessage().contains(FIRST_CHILD_IDENT));
+                Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
+                Assert.areEqual(0, [SELECT COUNT() FROM Message__c]);
+            }
+        }
+        Test.getEventBus().deliver();
+        Test.stopTest();
+        Boolean found = false;
+        for (Application_Log__c log : [
+            SELECT Log_Message__c, Pay_Load__c
+            FROM Application_Log__c
+            WHERE Category__c = 'Foreldreansvar'
+        ]) {
+            if (log.Log_Message__c?.contains(correlationId) == true) {
+                found = true;
+                Assert.isFalse(log.Log_Message__c.contains(PARENT_IDENT));
+                Assert.isFalse(log.Log_Message__c.contains(FIRST_CHILD_IDENT));
+                Assert.isTrue(String.isBlank(log.Pay_Load__c) || log.Pay_Load__c == 'null');
+            }
+        }
+        Assert.isTrue(found, 'The user-safe error must correlate to a local diagnostic.');
+    }
+
+    @isTest
+    static void representedIdentityRequiresUniquePersonAccountTest() {
+        Account child = account(FIRST_CHILD_IDENT);
+        Assert.areEqual(child.Id, stoPersonContext.getRepresentedAccountIdentity(FIRST_CHILD_IDENT).accountId);
+        Account duplicate = new Account(
+            RecordTypeId = [SELECT RecordTypeId FROM Account WHERE Id = :child.Id]
+            .RecordTypeId,
+            LastName = 'Duplicate child',
+            CRM_Person__c = child.CRM_Person__c,
+            INT_PersonIdent__c = UNKNOWN_IDENT
+        );
+        insert duplicate;
+        try {
+            stoPersonContext.getRepresentedAccountIdentity(FIRST_CHILD_IDENT);
+            Assert.fail('Two Person Accounts for one person must not resolve arbitrarily.');
+        } catch (stoHelperClass.ChildAccountNotFoundException expected) {
+            Assert.isFalse(expected.getMessage().contains(FIRST_CHILD_IDENT));
+        }
+    }
+
+    @isTest
+    static void representedIdentityRechecksLocalEligibilityTest() {
+        Person__c child = [
+            SELECT Id, INT_DateOfBirth__c, INT_Confidential__c
+            FROM Person__c
+            WHERE Name = :FIRST_CHILD_IDENT
+        ];
+        List<Person__c> ineligibleVersions = new List<Person__c>{
+            new Person__c(Id = child.Id, INT_DateOfBirth__c = String.valueOf(Date.today().addYears(-18))),
+            new Person__c(Id = child.Id, INT_DateOfBirth__c = String.valueOf(Date.today().addDays(1))),
+            new Person__c(Id = child.Id, INT_DateOfBirth__c = null),
+            new Person__c(
+                Id = child.Id,
+                INT_DateOfBirth__c = child.INT_DateOfBirth__c,
+                INT_Confidential__c = 'FORTROLIG'
+            )
+        };
+        for (Person__c version : ineligibleVersions) {
+            update version;
+            try {
+                stoPersonContext.getRepresentedAccountIdentity(FIRST_CHILD_IDENT);
+                Assert.fail('Local eligibility must still be enforced after remote approval.');
+            } catch (stoHelperClass.ChildAccountNotFoundException expected) {
+                Assert.isNotNull(expected.getMessage());
+            }
+        }
+    }
+
+    @isTest
+    static void verifiedIdentityResolutionDoesNotGrantListingAccessTest() {
+        User viewer = parent();
+        Account child = account(UNSHARED_CHILD_IDENT);
+        VerificationMock mock = new VerificationMock(200, '{"kanRepresentere":true}');
+        mock.childIdentifier = UNSHARED_CHILD_IDENT;
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(viewer) {
+            Assert.areEqual(0, [SELECT COUNT() FROM Account WHERE Id = :child.Id]);
+            stoPersonContext.AccountIdentity identity = stoPersonContext.resolveThreadAccountIdentity(
+                UNSHARED_CHILD_IDENT
+            );
+            Assert.areEqual(child.Id, identity.accountId);
+            Assert.areEqual(child.PersonContactId, identity.contactId);
+            Assert.areEqual(0, [SELECT COUNT() FROM Account WHERE Id = :child.Id]);
+        }
+        Assert.areEqual(1, mock.calls);
+        Test.stopTest();
+    }
+
+    @isTest
     static void selfSubmissionSkipsChildVerificationTest() {
         User viewer = parent();
         Test.startTest();
@@ -768,12 +880,12 @@ public with sharing class stoPersonContextTest {
     }
 
     @isTest
-    static void openThreadLookupReturnsEmptyListButLegacyKeepsNullTest() {
+    static void allOpenThreadLookupsReturnEmptyListsTest() {
         User viewer = parent();
         System.runAs(viewer) {
             Test.startTest();
             Assert.areEqual(0, stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', null).size());
-            Assert.isNull(stoHelperClass.getOpenThreads('Familie', 'STO'));
+            Assert.areEqual(0, stoHelperClass.getOpenThreads('Familie', 'STO').size());
             lookupThread(account(PARENT_IDENT), 'Familie', 'STO', false);
             Assert.areEqual(
                 0,
@@ -868,6 +980,7 @@ public with sharing class stoPersonContextTest {
             Assert.areEqual(account(PARENT_IDENT).PersonContactId, stoPersonContext.currentUser().ContactId);
             Integer beforeRepeat = Limits.getQueries();
             stoPersonContext.currentUser();
+            stoPersonContext.getCurrentUserAccountIdentity();
             Assert.areEqual(beforeRepeat, Limits.getQueries(), 'Repeated identity reads must not run SOQL');
         }
         Assert.areEqual(originalUserId, stoPersonContext.currentUser().Id);

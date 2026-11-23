@@ -127,6 +127,30 @@ private class stoScratchFixturesTest {
     }
 
     @IsTest
+    static void scratchCreationUsesTheSameRepresentationProvider() {
+        User viewer = viewer();
+        Test.startTest();
+        System.runAs(viewer) {
+            Assert.areEqual(2, stoPersonContext.getRepresentableChildren().size());
+            stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
+            info.representedPersonIdentifier = '12345678904';
+            info.theme = 'Familie';
+            info.type = 'STO';
+            info.msgText = 'Synthetic child submission';
+            info.medskriv = true;
+            Thread__c thread = stoHelperClass.createThread(info);
+            Account child = [SELECT Id FROM Account WHERE INT_PersonIdent__c = '12345678904'];
+            Assert.areEqual(child.Id, thread.CRM_Account__c);
+            Assert.areEqual(
+                stoPersonContext.currentUser().ContactId,
+                [SELECT CRM_From_Contact__c FROM Message__c WHERE CRM_Thread__c = :thread.Id].CRM_From_Contact__c
+            );
+            Assert.areEqual(0, Limits.getCallouts(), 'Scratch creation must not call the real family service.');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
     static void rejectsDisabledAdapterAndForgedActor() {
         Assert.isFalse(stoScratchSupport.isEnabled(), 'The internal admin is not opted in.');
         try {
