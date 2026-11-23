@@ -291,32 +291,6 @@ private with sharing class stoHelperClassAccessTest {
     }
 
     @IsTest
-    static void senderShareUsesEditAndSkipsExistingOwner() {
-        Account child = subject(CHILD_IDENT);
-        Thread__c thread = newThread(child, 'STO');
-        Test.startTest();
-        STO_ThreadService.grantSubmitterAccess(thread.Id);
-        Assert.areEqual(
-            0,
-            [SELECT COUNT() FROM Thread__Share WHERE ParentId = :thread.Id AND RowCause = 'Manual'],
-            'The owner already has access'
-        );
-        Id differentOwner = [SELECT OwnerId FROM Account WHERE Id = :child.Id].OwnerId;
-        update new Thread__c(Id = thread.Id, OwnerId = differentOwner);
-        STO_ThreadService.grantSubmitterAccess(thread.Id);
-        Assert.areEqual(
-            'Edit',
-            [
-                SELECT AccessLevel
-                FROM Thread__Share
-                WHERE ParentId = :thread.Id AND UserOrGroupId = :UserInfo.getUserId() AND RowCause = 'Manual'
-            ]
-            .AccessLevel
-        );
-        Test.stopTest();
-    }
-
-    @IsTest
     static void legacySelfThreadAndInternalAgentKeepAccess() {
         User child = reader(CHILD_IDENT);
         Thread__c thread = newThread(subject(CHILD_IDENT), 'STO');

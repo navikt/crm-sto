@@ -38,20 +38,12 @@ public with sharing class STO_ThreadService {
                 CRM_Read__c = true,
                 CRM_Read_Datetime__c = DateTime.now()
             );
-            if (String.isNotBlank(representedIdentifier)) {
-                grantSubmitterAccess(thread.Id);
-            }
         } catch (DmlException e) {
             Database.rollback(savepoint);
             stoHelperClass.logError('Thread creation failed: ' + e.getDmlType(0));
             throw new stoHelperClass.ThreadOrMessageException('Unable to create the thread and its message.');
         }
         return thread;
-    }
-
-    @TestVisible
-    private static void grantSubmitterAccess(Id threadId) {
-        new RepresentationSharing().grantSubmitterAccess(threadId);
     }
 
     private static void validateInput(stoHelperClass.ThreadData info) {
@@ -119,19 +111,5 @@ public with sharing class STO_ThreadService {
             NKS_Experience_Site_Source__c = info.disabilityCampaign == true ? 'Uforekampanje' : null,
             RecordTypeId = recordType.getRecordTypeId()
         );
-    }
-
-    private without sharing class RepresentationSharing {
-        public void grantSubmitterAccess(Id threadId) {
-            Thread__c thread = [SELECT OwnerId FROM Thread__c WHERE Id = :threadId];
-            if (thread.OwnerId != UserInfo.getUserId()) {
-                insert new Thread__Share(
-                    ParentId = threadId,
-                    AccessLevel = 'Edit',
-                    RowCause = Schema.Thread__Share.RowCause.Manual,
-                    UserOrGroupId = UserInfo.getUserId()
-                );
-            }
-        }
     }
 }
