@@ -4,7 +4,6 @@ import createThread from '@salesforce/apex/stoHelperClass.createThread';
 import getAcceptedThemes from '@salesforce/apex/stoHelperClass.getThemes';
 import getNews from '@salesforce/apex/stoHelperClass.getNewsBasedOnTheme';
 import getOpenThreads from '@salesforce/apex/stoInboxHelper.getAccessibleOpenThreadsForPerson';
-import getOpenThreadsForPerson from '@salesforce/apex/stoHelperClass.getOpenThreadsForPerson';
 import closeThread from '@salesforce/apex/stoHelperClass.closeThread';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
@@ -90,21 +89,6 @@ const REPRESENTATION_INFORMATION =
 
 export default class StoRegisterThread extends NavigationMixin(LightningElement) {
     @api threadTypeToMake;
-    _externalRepresentedPersonIdentifier;
-
-    @api
-    get representedPersonIdentifier() {
-        return this._externalRepresentedPersonIdentifier === undefined
-            ? this.selectedRepresentedPersonIdentifier
-            : this._externalRepresentedPersonIdentifier;
-    }
-
-    set representedPersonIdentifier(value) {
-        this._externalRepresentedPersonIdentifier = value?.trim() || undefined;
-        if (this.category && this.threadTypeToMake) {
-            this.loadOpenThreads(true);
-        }
-    }
 
     representationInformation = REPRESENTATION_INFORMATION;
     homeUrl = resolveNavUrls('https://www.nav.no/');
@@ -398,12 +382,10 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
 
     async loadOpenThreads(force = false) {
         if (this.threadQueryCategory === undefined) return;
-        const externalPersonIdentifier = this._externalRepresentedPersonIdentifier;
         const params = {
             category: this.threadQueryCategory,
             threadType: this.threadQueryType,
-            representedAccountId: externalPersonIdentifier ? undefined : this.representedPersonId,
-            representedPersonIdentifier: externalPersonIdentifier
+            representedAccountId: this.representedPersonId
         };
         const key = JSON.stringify(params);
         if (!force && key === this.threadRequestKey) return;
@@ -412,22 +394,12 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         this.isThreadDataLoading = true;
         this.spinnerText = spinnerReasonTextMap.load;
         try {
-            const data = externalPersonIdentifier
-                ? await getOpenThreadsForPerson({
-                      category: params.category,
-                      threadType: params.threadType,
-                      representedPersonIdentifier: externalPersonIdentifier
-                  })
-                : await getOpenThreads({
-                      category: params.category,
-                      threadType: params.threadType,
-                      representedAccountId: params.representedAccountId
-                  });
+            const data = await getOpenThreads(params);
             if (generation !== this.threadLoadGeneration) return;
             this.threadLoadFailed = false;
             this.openThreadList = data || [];
             this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
-            if (!externalPersonIdentifier && this.representedPersonId == null) {
+            if (this.representedPersonId == null) {
                 putCloseIntent({ count: this.openThreadList.length }).catch((error) => {
                     console.error('Could not update close intent:', error);
                 });
@@ -1123,10 +1095,8 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
         return (
             this.representationLoaded &&
             (!this.representationLoadFailed || this.selectedPersonValue === SELF_PERSON_VALUE) &&
-            (this._externalRepresentedPersonIdentifier
-                ? this.allowsRepresentation
-                : this.personOptions.some((option) => option.value === this.selectedPersonValue) &&
-                  (!this.allowsRepresentation || this.personSelectionConfirmed))
+            this.personOptions.some((option) => option.value === this.selectedPersonValue) &&
+            (!this.allowsRepresentation || this.personSelectionConfirmed)
         );
     }
 
@@ -1144,7 +1114,7 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             : this.selectedPersonValue;
     }
 
-    get selectedRepresentedPersonIdentifier() {
+    get representedPersonIdentifier() {
         if (this.representedPersonId == null) {
             return this.representedPersonId;
         }
@@ -1171,28 +1141,15 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
     }
 
     get selectedPersonLabel() {
-        if (this._externalRepresentedPersonIdentifier) {
-            return (
-                this.representableChildren.find(
-                    (person) => person.representedPersonIdentifier === this._externalRepresentedPersonIdentifier
-                )?.label || 'Barnet'
-            );
-        }
         return this.personOptions.find((option) => option.value === this.selectedPersonValue)?.label || '';
     }
 
     get showSelectedPerson() {
-        return (
-            this.allowsRepresentation &&
-            (this.personSelectionConfirmed || Boolean(this._externalRepresentedPersonIdentifier))
-        );
+        return this.allowsRepresentation && this.personSelectionConfirmed;
     }
 
     get isWritingForChild() {
-        return (
-            (this.showSelectedPerson && this.selectedPersonValue !== SELF_PERSON_VALUE) ||
-            Boolean(this._externalRepresentedPersonIdentifier)
-        );
+        return this.showSelectedPerson && this.selectedPersonValue !== SELF_PERSON_VALUE;
     }
 
     get personSelectionInvalid() {
