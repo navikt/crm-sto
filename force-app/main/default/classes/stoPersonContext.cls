@@ -256,7 +256,7 @@ public with sharing class stoPersonContext {
         LoggerUtility logger = new LoggerUtility('Foreldreansvar');
         logger.error('Ugyldig svar ved henting av barn fra nks-foreldreansvar', null, CRM_ApplicationDomain.Domain.NKS);
         logger.publish();
-        return new AuraHandledException('Kunne ikke hente barn du kan representere. Prøv igjen senere.');
+        return stoHelperClass.handledError('Kunne ikke hente barn du kan representere. Prøv igjen senere.');
     }
 
     private class BarnResponse {
