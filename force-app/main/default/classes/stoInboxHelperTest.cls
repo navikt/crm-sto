@@ -119,6 +119,87 @@ public with sharing class stoInboxHelperTest {
     }
 
     @isTest
+    static void openThreadEndpointValidatesBeforeResolvingPersonTest() {
+        for (String category : new List<String>{ null, 'Unknown category' }) {
+            try {
+                stoInboxHelper.getAccessibleOpenThreadsForPerson(category, 'STO', null);
+                Assert.fail('The endpoint called by the form must validate categories itself.');
+            } catch (stoHelperClass.InvalidThreadDataException expected) {
+                Assert.isNotNull(expected.getMessage());
+            }
+        }
+        try {
+            stoInboxHelper.getAccessibleOpenThreadsForPerson('Arbeid', 'Unsupported type', null);
+            Assert.fail('Unsupported thread types must fail before person resolution.');
+        } catch (stoHelperClass.InvalidThreadDataException expected) {
+            Assert.isNotNull(expected.getMessage());
+        }
+    }
+
+    @isTest
+    static void openThreadOrderingBreaksTimestampTiesTest() {
+        Account subject = [SELECT Id, PersonContactId FROM Account WHERE CRM_Person__r.Name = '12345678910'];
+        List<Thread__c> threads = new List<Thread__c>();
+        for (Integer i = 0; i < 2; i++) {
+            threads.add(
+                new Thread__c(
+                    Name = 'Skriv til oss',
+                    CRM_Account__c = subject.Id,
+                    CRM_Contact__c = subject.PersonContactId,
+                    CRM_Thread_Type__c = 'STO',
+                    STO_Category__c = 'Arbeid'
+                )
+            );
+        }
+        insert threads;
+        Datetime sentAt = Datetime.newInstance(2026, 1, 1, 12, 0, 0);
+        List<Message__c> messages = new List<Message__c>();
+        for (Thread__c thread : threads) {
+            for (Integer i = 0; i < 2; i++) {
+                messages.add(
+                    new Message__c(
+                        CRM_Thread__c = thread.Id,
+                        CRM_Message_Text__c = 'Tied message ' + i,
+                        CRM_Type__c = 'Message',
+                        CRM_Sent_date__c = sentAt
+                    )
+                );
+            }
+        }
+        insert messages;
+        List<Thread__c> expectedThreads = [
+            SELECT Id, CRM_Latest_Message_Datetime__c
+            FROM Thread__c
+            WHERE Id IN :threads
+            ORDER BY Id DESC
+        ];
+        Assert.areEqual(
+            expectedThreads[0].CRM_Latest_Message_Datetime__c,
+            expectedThreads[1].CRM_Latest_Message_Datetime__c
+        );
+        List<Message__c> expectedMessages = [
+            SELECT Id, CRM_Thread__c
+            FROM Message__c
+            WHERE CRM_Thread__c IN :threads
+            ORDER BY Id DESC
+        ];
+        Map<Id, Id> latestMessageIds = new Map<Id, Id>();
+        for (Message__c message : expectedMessages) {
+            if (!latestMessageIds.containsKey(message.CRM_Thread__c)) {
+                latestMessageIds.put(message.CRM_Thread__c, message.Id);
+            }
+        }
+        Test.startTest();
+        List<stoInboxHelper.thread> cards = stoInboxHelper.getOpenThreadsForAccount('arbeid', 'STO', subject.Id);
+        Test.stopTest();
+        Assert.areEqual(2, cards.size());
+        for (Integer i = 0; i < cards.size(); i++) {
+            Assert.areEqual(expectedThreads[i].Id, cards[i].recordId);
+            Assert.areEqual(latestMessageIds.get(cards[i].recordId), cards[i].latestmessage.recordId);
+        }
+    }
+
+    @isTest
     static void markAsReadTest() {
         Conversation_Note__c cn = [SELECT Id FROM Conversation_Note__c LIMIT 1];
 

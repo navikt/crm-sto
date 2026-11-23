@@ -88,7 +88,7 @@ public with sharing class stoHelperClass {
 
     @AuraEnabled(cacheable=true)
     public static List<stoInboxHelper.thread> getOpenThreads(String category, String threadType) {
-        return getOpenThreadsForAccount(
+        return stoInboxHelper.getOpenThreadsForAccount(
             category,
             threadType,
             stoPersonContext.getCurrentUserAccountIdentity().accountId
@@ -101,9 +101,7 @@ public with sharing class stoHelperClass {
         String threadType,
         Id representedAccountId
     ) {
-        String validCategory = STO_ThreadPolicy.validateCategory(category);
-        STO_ThreadPolicy.getThreadTypes(threadType);
-        return stoInboxHelper.getAccessibleOpenThreadsForPerson(validCategory, threadType, representedAccountId);
+        return stoInboxHelper.getAccessibleOpenThreadsForPerson(category, threadType, representedAccountId);
     }
 
     public static List<String> threadTypesFor(String threadType) {
@@ -116,57 +114,12 @@ public with sharing class stoHelperClass {
         String threadType,
         String representedPersonIdentifier
     ) {
-        STO_ThreadPolicy.validateCategory(category);
+        String validCategory = STO_ThreadPolicy.validateCategory(category);
         STO_ThreadPolicy.getThreadTypes(threadType);
         stoPersonContext.AccountIdentity accountIdentity = stoPersonContext.resolveThreadAccountIdentity(
             representedPersonIdentifier
         );
-        return getOpenThreadsForAccount(category, threadType, accountIdentity.accountId);
-    }
-
-    private static List<stoInboxHelper.thread> getOpenThreadsForAccount(
-        String category,
-        String threadType,
-        Id accountId
-    ) {
-        String validCategory = STO_ThreadPolicy.validateCategory(category);
-        List<String> threadTypes = STO_ThreadPolicy.getThreadTypes(threadType);
-        List<stoInboxHelper.thread> result = new List<stoInboxHelper.thread>();
-        for (Thread__c record : [
-            SELECT
-                Id,
-                LastModifiedDate,
-                CRM_Number_of_unread_Messages__c,
-                CRM_Latest_Message_Datetime__c,
-                CRM_Closed_Date__c,
-                STO_ExternalName__c,
-                CRM_Is_Closed__c,
-                CRM_Thread_Type__c,
-                CRM_Related_Object__c,
-                Name,
-                NKS_Inbox_Title__c,
-                NKS_Inbox_Theme__c,
-                (
-                    SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
-                    FROM Messages__r
-                    WHERE CRM_Type__c IN ('Message', 'Info')
-                    ORDER BY CRM_Sent_Datetime_Formula__c DESC, Id DESC
-                    LIMIT 1
-                )
-            FROM Thread__c
-            WHERE
-                CRM_Is_Closed__c = FALSE
-                AND CRM_Thread_Type__c IN :threadTypes
-                AND STO_Category__c = :validCategory
-                AND CRM_Account__c = :accountId
-            ORDER BY CRM_Latest_Message_Datetime__c DESC, Id DESC
-        ]) {
-            stoInboxHelper.thread formattedThread = stoInboxHelper.formatThread(record);
-            if (formattedThread != null) {
-                result.add(formattedThread);
-            }
-        }
-        return result;
+        return stoInboxHelper.getOpenThreadsForAccount(validCategory, threadType, accountIdentity.accountId);
     }
 
     @AuraEnabled

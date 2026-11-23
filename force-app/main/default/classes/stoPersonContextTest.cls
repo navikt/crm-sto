@@ -748,6 +748,7 @@ public with sharing class stoPersonContextTest {
             Assert.areEqual(child.Id, identity.accountId);
             Assert.areEqual(child.PersonContactId, identity.contactId);
             Assert.areEqual(0, [SELECT COUNT() FROM Account WHERE Id = :child.Id]);
+            Assert.areEqual(0, stoInboxHelper.getOpenThreadsForAccount('Familie', 'STO', identity.accountId).size());
         }
         Assert.areEqual(1, mock.calls);
         Test.stopTest();
@@ -817,7 +818,7 @@ public with sharing class stoPersonContextTest {
         insert thread;
         if (withMessage) {
             Id currentUserContactId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
-            insert new Message__c(
+            insert as system new Message__c(
                 CRM_Thread__c = thread.Id,
                 CRM_Message_Text__c = 'Open thread lookup test',
                 CRM_From_Contact__c = currentUserContactId,
@@ -886,14 +887,51 @@ public with sharing class stoPersonContextTest {
             Test.startTest();
             Assert.areEqual(0, stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', null).size());
             Assert.areEqual(0, stoHelperClass.getOpenThreads('Familie', 'STO').size());
+            Assert.areEqual(0, stoHelperClass.getOpenThreadsForPerson('Familie', 'STO', null).size());
+            Assert.areEqual(0, stoInboxHelper.getAccessibleOpenThreadsForPerson('Familie', 'STO', null).size());
             lookupThread(account(PARENT_IDENT), 'Familie', 'STO', false);
             Assert.areEqual(
                 0,
                 stoHelperClass.getAccessibleOpenThreadsForPerson('Familie', 'STO', viewer.AccountId).size(),
                 'A thread without a displayable message must not leave a null card'
             );
+            Assert.areEqual(0, stoHelperClass.getOpenThreads('Familie', 'STO').size());
+            Assert.areEqual(0, stoHelperClass.getOpenThreadsForPerson('Familie', 'STO', null).size());
             Test.stopTest();
         }
+    }
+
+    @isTest
+    static void accountAndIdentifierLookupsHaveIdenticalSenderCardsTest() {
+        User viewer = parent();
+        Account child = account(FIRST_CHILD_IDENT);
+        Thread__c thread = lookupThread(child, 'Familie', 'STO', false);
+        insert new Message__c(
+            CRM_Thread__c = thread.Id,
+            CRM_Message_Text__c = 'Child started this thread',
+            CRM_From_Contact__c = child.PersonContactId,
+            CRM_Type__c = 'Message'
+        );
+        insert new Thread__Share(ParentId = thread.Id, UserOrGroupId = viewer.Id, AccessLevel = 'Read');
+        Test.startTest();
+        System.runAs(viewer) {
+            Test.setMock(HttpCalloutMock.class, new BarnMock(200, barnBody(new List<String>{ FIRST_CHILD_IDENT })));
+            List<stoInboxHelper.thread> byAccount = stoInboxHelper.getAccessibleOpenThreadsForPerson(
+                'familie',
+                'STO',
+                child.Id
+            );
+            Test.setMock(HttpCalloutMock.class, new VerificationMock(200, '{"kanRepresentere":true}'));
+            List<stoInboxHelper.thread> byIdentifier = stoHelperClass.getOpenThreadsForPerson(
+                'familie',
+                'STO',
+                FIRST_CHILD_IDENT
+            );
+            Assert.areEqual(1, byAccount.size());
+            Assert.areEqual(child.Name + ' startet samtalen', byAccount[0].inboxSenderLabel);
+            Assert.areEqual(JSON.serialize(byAccount), JSON.serialize(byIdentifier));
+        }
+        Test.stopTest();
     }
 
     @isTest
