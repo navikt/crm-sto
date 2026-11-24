@@ -1,4 +1,5 @@
 public with sharing class stoPersonContext {
+    @TestVisible
     private static Map<Id, User> viewersById = new Map<Id, User>();
     private static Map<Id, Set<String>> childIdentsByUser = new Map<Id, Set<String>>();
 
@@ -9,7 +10,15 @@ public with sharing class stoPersonContext {
             viewersById.put(
                 viewerId,
                 [
-                    SELECT AccountId, ContactId, IsActive, IsPortalEnabled, UserType
+                    SELECT
+                        AccountId,
+                        ContactId,
+                        IsActive,
+                        IsPortalEnabled,
+                        UserType,
+                        Account.IsPersonAccount,
+                        Account.PersonContactId,
+                        Account.CRM_Person__r.Name
                     FROM User
                     WHERE Id = :viewerId
                     WITH SYSTEM_MODE
@@ -21,16 +30,70 @@ public with sharing class stoPersonContext {
 
     private static Id currentPersonAccountId() {
         User viewer = currentUser();
-        if (!viewer.IsActive || viewer.AccountId == null || viewer.ContactId == null) {
+        if (
+            !viewer.IsActive ||
+            viewer.AccountId == null ||
+            viewer.ContactId == null ||
+            viewer.Account?.IsPersonAccount != true ||
+            viewer.Account.PersonContactId != viewer.ContactId
+        ) {
             return null;
         }
-        List<Account> accounts = [
-            SELECT Id
-            FROM Account
-            WHERE Id = :viewer.AccountId AND IsPersonAccount = TRUE AND PersonContactId = :viewer.ContactId
-            WITH SYSTEM_MODE
-        ];
-        return accounts.isEmpty() ? null : accounts[0].Id;
+        return viewer.AccountId;
+    }
+
+    public static AccountIdentity getCurrentUserAccountIdentity() {
+        User viewer = currentUser();
+        Id accountId = currentPersonAccountId();
+        if (accountId == null) {
+            throw new stoHelperClass.NoAccountFoundException('Current user account or contact was not found.');
+        }
+        return new AccountIdentity(accountId, viewer.ContactId, viewer.Account?.CRM_Person__r?.Name);
+    }
+
+    public static AccountIdentity resolveThreadAccountIdentity(String representedIdentifier) {
+        AccountIdentity actor = getCurrentUserAccountIdentity();
+        if (representedIdentifier == null) {
+            return actor;
+        }
+        if (String.isBlank(representedIdentifier)) {
+            throw new stoHelperClass.InvalidThreadDataException('A represented person identifier is required.');
+        }
+        Boolean canRepresent;
+        try {
+            canRepresent = NKS_ForeldreansvarController.kanRepresentere(actor.personIdentifier, representedIdentifier);
+        } catch (NKS_ForeldreansvarController.ForeldreansvarException error) {
+            throw stoHelperClass.handledError(error.getMessage());
+        }
+        if (!canRepresent) {
+            throw new stoHelperClass.NoParentalResponsibilityException('Parental responsibility was not confirmed.');
+        }
+        return getRepresentedAccountIdentity(representedIdentifier);
+    }
+
+    public static AccountIdentity getRepresentedAccountIdentity(String personIdentifier) {
+        if (String.isBlank(personIdentifier)) {
+            throw new stoHelperClass.InvalidThreadDataException('A represented person identifier is required.');
+        }
+        String adultBirthDate = String.valueOf(Date.today().addYears(-18));
+        String today = String.valueOf(Date.today());
+        List<Account> accounts = new RepresentedAccounts().find(personIdentifier);
+        if (
+            accounts.size() != 1 ||
+            accounts[0].PersonContactId == null ||
+            accounts[0].CRM_Person__r.INT_Confidential__c != 'UGRADERT' ||
+            String.isBlank(accounts[0].CRM_Person__r.INT_DateOfBirth__c) ||
+            accounts[0].CRM_Person__r.INT_DateOfBirth__c.compareTo(adultBirthDate) <= 0 ||
+            accounts[0].CRM_Person__r.INT_DateOfBirth__c.compareTo(today) > 0
+        ) {
+            stoHelperClass.logError(
+                'Unable to resolve a unique eligible account and contact for the represented person.'
+            );
+            throw new stoHelperClass.ChildAccountNotFoundException(
+                'A unique eligible account and contact for the represented person was not found.'
+            );
+        }
+        return new AccountIdentity(accounts[0].Id, accounts[0].PersonContactId, personIdentifier);
     }
 
     @AuraEnabled(cacheable=true)
@@ -64,42 +127,6 @@ public with sharing class stoPersonContext {
         return birthDate.addYears(age) > Date.today() ? age - 1 : age;
     }
 
-    public static Boolean verifyRepresentation(String representedPersonIdentifier) {
-        Account parent = authenticatedParent();
-        if (parent == null) {
-            return false;
-        }
-        HttpResponse response = stoScratchSupport.isEnabled()
-            ? (HttpResponse) stoScratchSupport.invoke(
-                  'verifiser',
-                  new Map<String, Object>{
-                      'parentIdent' => parent.CRM_Person__r?.Name,
-                      'childIdent' => representedPersonIdentifier
-                  }
-              )
-            : NKS_ForeldreansvarService.verifiser(parent.CRM_Person__r?.Name, representedPersonIdentifier);
-        if (response.getStatusCode() == 204 || response.getStatusCode() == 404) {
-            return false;
-        }
-        if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
-            throw invalidVerificationResponse();
-        }
-        Object body;
-        try {
-            body = JSON.deserializeUntyped(response.getBody());
-        } catch (System.JSONException error) {
-            throw invalidVerificationResponse();
-        }
-        if (!(body instanceof Map<String, Object>)) {
-            throw invalidVerificationResponse();
-        }
-        Object canRepresent = ((Map<String, Object>) body).get('kanRepresentere');
-        if (!(canRepresent instanceof Boolean)) {
-            throw invalidVerificationResponse();
-        }
-        return (Boolean) canRepresent;
-    }
-
     private static List<Account> authorizedChildren() {
         Set<String> childIdents = verifiedChildIdents();
         if (childIdents.isEmpty()) {
@@ -130,70 +157,56 @@ public with sharing class stoPersonContext {
         if (parent == null) {
             return new Set<String>();
         }
-        HttpResponse response = stoScratchSupport.isEnabled()
-            ? (HttpResponse) stoScratchSupport.invoke(
-                  'barn',
-                  new Map<String, Object>{ 'parentIdent' => parent.CRM_Person__r?.Name }
-              )
-            : NKS_ForeldreansvarService.barn(parent.CRM_Person__r?.Name);
+        List<NKS_ForeldreansvarBarn> children;
+        try {
+            children = NKS_ForeldreansvarController.getBarn(parent.CRM_Person__r?.Name);
+        } catch (NKS_ForeldreansvarController.ForeldreansvarException error) {
+            throw stoHelperClass.handledError(error.getMessage());
+        }
         Set<String> childIdents = new Set<String>();
-        if (response.getStatusCode() != 204 && response.getStatusCode() != 404) {
-            if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
+        for (NKS_ForeldreansvarBarn child : children) {
+            if (child == null || String.isBlank(child.ident)) {
                 throw invalidResponse();
             }
-            BarnResponse body;
-            try {
-                body = (BarnResponse) JSON.deserialize(response.getBody(), BarnResponse.class);
-            } catch (System.JSONException error) {
-                throw invalidResponse();
-            }
-            if (body == null || body.barn == null) {
-                throw invalidResponse();
-            }
-            for (Barn child : body.barn) {
-                if (child == null || String.isBlank(child.ident)) {
-                    throw invalidResponse();
-                }
-                childIdents.add(child.ident);
-            }
+            childIdents.add(child.ident);
         }
         childIdentsByUser.put(actorId, childIdents);
         return childIdents;
     }
 
     private static Account authenticatedParent() {
-        Id accountId = currentUser().AccountId;
-        if (accountId == null) {
-            return null;
-        }
-        List<Account> parents = [
-            SELECT CRM_Person__r.Name
-            FROM Account
-            WHERE Id = :accountId AND IsPersonAccount = TRUE
-        ];
-        return parents.isEmpty() ? null : parents[0];
-    }
-
-    private static AuraHandledException invalidVerificationResponse() {
-        LoggerUtility logger = new LoggerUtility('Foreldreansvar');
-        logger.error('Ugyldig svar ved verifisering av foreldreansvar', null, CRM_ApplicationDomain.Domain.NKS);
-        logger.publish();
-        return new AuraHandledException('Kunne ikke verifisere foreldreansvar. Prøv igjen senere.');
+        return currentPersonAccountId() == null ? null : currentUser().Account;
     }
 
     private static AuraHandledException invalidResponse() {
         LoggerUtility logger = new LoggerUtility('Foreldreansvar');
         logger.error('Ugyldig svar ved henting av barn fra nks-foreldreansvar', null, CRM_ApplicationDomain.Domain.NKS);
         logger.publish();
-        return new AuraHandledException('Kunne ikke hente barn du kan representere. Prøv igjen senere.');
+        return stoHelperClass.handledError('Kunne ikke hente barn du kan representere. Prøv igjen senere.');
     }
 
-    private class BarnResponse {
-        public List<Barn> barn;
+    private without sharing class RepresentedAccounts {
+        public List<Account> find(String personIdentifier) {
+            return [
+                SELECT Id, PersonContactId, CRM_Person__r.INT_Confidential__c, CRM_Person__r.INT_DateOfBirth__c
+                FROM Account
+                WHERE IsPersonAccount = TRUE AND CRM_Person__r.Name = :personIdentifier
+                WITH SYSTEM_MODE
+                LIMIT 2
+            ];
+        }
     }
 
-    private class Barn {
-        public String ident;
+    public class AccountIdentity {
+        public Id accountId { get; private set; }
+        public Id contactId { get; private set; }
+        public String personIdentifier { get; private set; }
+
+        public AccountIdentity(Id accountId, Id contactId, String personIdentifier) {
+            this.accountId = accountId;
+            this.contactId = contactId;
+            this.personIdentifier = personIdentifier;
+        }
     }
 
     public class PersonOption {

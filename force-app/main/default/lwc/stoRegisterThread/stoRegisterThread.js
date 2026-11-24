@@ -399,9 +399,11 @@ export default class StoRegisterThread extends NavigationMixin(LightningElement)
             this.threadLoadFailed = false;
             this.openThreadList = data || [];
             this.registerNewThread = this.openThreadList.length === 0 || this.showBtoTextArea;
-            putCloseIntent({ count: this.openThreadList.length }).catch((error) => {
-                console.error('Could not update close intent:', error);
-            });
+            if (this.representedPersonId == null) {
+                putCloseIntent({ count: this.openThreadList.length }).catch((error) => {
+                    console.error('Could not update close intent:', error);
+                });
+            }
         } catch (error) {
             if (generation !== this.threadLoadGeneration) return;
             this.threadLoadFailed = true;

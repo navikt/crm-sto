@@ -50,27 +50,15 @@ public with sharing class stoInboxHelper {
         String threadType,
         Id representedAccountId
     ) {
+        String validCategory = STO_ThreadPolicy.validateCategory(category);
+        STO_ThreadPolicy.getThreadTypes(threadType);
         Id selectedAccountId = stoPersonContext.resolveAccountId(representedAccountId);
-        List<thread> matches = getOpenThreadsForAccount(category, threadType, selectedAccountId);
-        List<thread> result = new List<thread>();
-        Set<Id> threadIds = new Set<Id>();
-        if (matches != null) {
-            for (thread item : matches) {
-                if (item != null) {
-                    result.add(item);
-                    threadIds.add(item.recordId);
-                }
-            }
-        }
-        Map<Id, String> senderLabels = stoReplyContext.inboxSenderLabels(threadIds);
-        for (thread item : result) {
-            item.inboxSenderLabel = senderLabels.get(item.recordId);
-        }
-        return result;
+        return getOpenThreadsForAccount(validCategory, threadType, selectedAccountId);
     }
 
     public static List<thread> getOpenThreadsForAccount(String category, String threadType, Id selectedAccountId) {
-        List<String> allowedTypes = stoHelperClass.threadTypesFor(threadType);
+        String validCategory = STO_ThreadPolicy.validateCategory(category);
+        List<String> allowedTypes = STO_ThreadPolicy.getThreadTypes(threadType);
         List<Thread__c> openThreads = [
             SELECT
                 Id,
@@ -89,23 +77,25 @@ public with sharing class stoInboxHelper {
                     SELECT Id, CRM_Message_Text__c, CRM_External_Message__c
                     FROM Messages__r
                     WHERE CRM_Type__c = 'Message' OR CRM_Type__c = 'Info'
-                    ORDER BY CRM_Sent_Datetime_Formula__c DESC
+                    ORDER BY CRM_Sent_Datetime_Formula__c DESC, Id DESC
                     LIMIT 1
                 )
             FROM Thread__c
             WHERE
                 CRM_Is_Closed__c = FALSE
                 AND CRM_Thread_Type__c IN :allowedTypes
-                AND STO_Category__c = :category
+                AND STO_Category__c = :validCategory
                 AND CRM_Account__c = :selectedAccountId
-            ORDER BY CRM_Latest_Message_Datetime__c DESC
+            ORDER BY CRM_Latest_Message_Datetime__c DESC, Id DESC
         ];
-        if (openThreads.isEmpty()) {
-            return null;
-        }
+        Map<Id, String> senderLabels = stoReplyContext.inboxSenderLabels(new Map<Id, Thread__c>(openThreads).keySet());
         List<thread> result = new List<thread>();
         for (Thread__c record : openThreads) {
-            result.add(formatThread(record));
+            thread item = formatThread(record);
+            if (item != null) {
+                item.inboxSenderLabel = senderLabels.get(record.Id);
+                result.add(item);
+            }
         }
         return result;
     }
