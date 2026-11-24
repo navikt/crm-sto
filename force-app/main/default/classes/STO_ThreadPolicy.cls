@@ -42,7 +42,7 @@ public without sharing class STO_ThreadPolicy {
     }
 
     public static void lockAccount(Id accountId) {
-        List<Account> accounts = [SELECT Id FROM Account WHERE Id = :accountId FOR UPDATE];
+        List<Account> accounts = [SELECT Id FROM Account WHERE Id = :accountId WITH SYSTEM_MODE FOR UPDATE];
         if (accounts.isEmpty()) {
             throw new stoHelperClass.NoAccountFoundException('Thread account was not found.');
         }
@@ -59,6 +59,7 @@ public without sharing class STO_ThreadPolicy {
                 AND CRM_Thread_Type__c IN :types
                 AND CRM_Is_Closed__c = FALSE
                 AND Id IN (SELECT CRM_Thread__c FROM Message__c WHERE CRM_Type__c IN ('Message', 'Info'))
+            WITH SYSTEM_MODE
         ];
     }
 
@@ -72,6 +73,7 @@ public without sharing class STO_ThreadPolicy {
                     AND CRM_Thread_Type__c IN :types
                     AND CRM_Is_Closed__c = FALSE
                     AND Id IN (SELECT CRM_Thread__c FROM Message__c WHERE CRM_Type__c IN ('Message', 'Info'))
+                WITH SYSTEM_MODE
                 GROUP BY STO_Category__c
                 HAVING COUNT(Id) >= :MAX_THREAD_COUNT_STO
                 LIMIT 1

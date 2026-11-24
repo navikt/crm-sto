@@ -715,6 +715,40 @@ public with sharing class stoPersonContextTest {
     }
 
     @isTest
+    static void representedQuotaIncludesThreadsHiddenFromParentTest() {
+        User viewer = parent();
+        Account child = account(UNSHARED_CHILD_IDENT);
+        for (Integer i = 0; i < STO_ThreadPolicy.MAX_THREAD_COUNT_STO; i++) {
+            lookupThread(child, 'Familie', 'STO', true);
+        }
+        VerificationMock mock = new VerificationMock(200, '{"kanRepresentere":true}');
+        mock.childIdentifier = UNSHARED_CHILD_IDENT;
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        System.runAs(viewer) {
+            Assert.areEqual(0, [SELECT COUNT() FROM Account WHERE Id = :child.Id]);
+            Assert.areEqual(0, [SELECT COUNT() FROM Thread__c WHERE CRM_Account__c = :child.Id]);
+            Assert.areEqual(
+                STO_ThreadPolicy.MAX_THREAD_COUNT_STO,
+                STO_ThreadPolicy.countOpenThreads(child.Id, 'Familie', 'STO')
+            );
+            Assert.isTrue(STO_ThreadPolicy.hasCategoryAtLimit(child.Id));
+            stoHelperClass.ThreadData info = representedThreadData();
+            info.representedPersonIdentifier = UNSHARED_CHILD_IDENT;
+            try {
+                stoHelperClass.createThread(info);
+                Assert.fail('Hidden conversations must still count towards the represented child quota.');
+            } catch (stoHelperClass.MaxThreadLimitReachedException expected) {
+                Assert.isNotNull(expected.getMessage());
+            }
+        }
+        Assert.areEqual(1, mock.calls);
+        Assert.areEqual(STO_ThreadPolicy.MAX_THREAD_COUNT_STO, [SELECT COUNT() FROM Thread__c]);
+        Assert.areEqual(STO_ThreadPolicy.MAX_THREAD_COUNT_STO, [SELECT COUNT() FROM Message__c]);
+        Test.stopTest();
+    }
+
+    @isTest
     static void representedChildRemainsSubjectButParentIsMessageSenderTest() {
         User viewer = parent();
         Account child = account(FIRST_CHILD_IDENT);

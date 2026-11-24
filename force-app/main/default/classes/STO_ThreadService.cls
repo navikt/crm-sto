@@ -30,8 +30,8 @@ public with sharing class STO_ThreadService {
 
         Savepoint savepoint = Database.setSavepoint();
         try {
-            insert thread;
-            insert new Message__c(
+            insert as system thread;
+            insert as system new Message__c(
                 CRM_Message_Text__c = info.msgText,
                 CRM_From_Contact__c = stoPersonContext.getCurrentUserAccountIdentity().contactId,
                 CRM_Thread__c = thread.Id,
