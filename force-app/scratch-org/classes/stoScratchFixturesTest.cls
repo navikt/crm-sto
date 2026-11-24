@@ -82,6 +82,12 @@ private class stoScratchFixturesTest {
             }
             insert accountShares;
             insert personShares;
+            insert new API_Controller_Mock_Settings__c(
+                SetupOwnerId = viewer.Id,
+                Use_Mock__c = false,
+                Status__c = 'OK',
+                Status_Code__c = '200'
+            );
         }
         Test.stopTest();
     }
@@ -91,30 +97,15 @@ private class stoScratchFixturesTest {
     }
 
     @IsTest
-    static void mockFamilyAndInbox() {
+    static void emptyInboxForSelfAndAuthorizedChild() {
         User viewer = viewer();
+        Test.setMock(
+            HttpCalloutMock.class,
+            new SingleRequestMock(200, 'OK', '{"barn":[{"ident":"12345678904"},{"ident":"12345678905"}]}', null)
+        );
         Test.startTest();
         System.runAs(viewer) {
             Assert.isTrue(stoScratchSupport.isEnabled());
-            HttpResponse children = (HttpResponse) stoScratchSupport.invoke(
-                'barn',
-                new Map<String, Object>{ 'parentIdent' => '12345678901' }
-            );
-            Assert.areEqual(200, children.getStatusCode());
-            Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(children.getBody());
-            Assert.areEqual(2, ((List<Object>) body.get('barn')).size());
-            HttpResponse verification = (HttpResponse) stoScratchSupport.invoke(
-                'verifiser',
-                new Map<String, Object>{ 'parentIdent' => '12345678901', 'childIdent' => '12345678904' }
-            );
-            Assert.areEqual('{"kanRepresentere":true}', verification.getBody());
-            HttpResponse denied = (HttpResponse) stoScratchSupport.invoke(
-                'verifiser',
-                new Map<String, Object>{ 'parentIdent' => '12345678901', 'childIdent' => '99999999999' }
-            );
-            Assert.areEqual('{"kanRepresentere":false}', denied.getBody());
-            Assert.areEqual(2, stoPersonContext.getRepresentableChildren().size());
-            Assert.isTrue(stoPersonContext.verifyRepresentation('12345678904'));
             Map<String, Object> page = stoInboxHelper.getAccessibleInboxPage(null, null, null);
             Assert.areEqual(0, ((List<Object>) page.get('recent')).size());
             Assert.areEqual(0, ((List<Object>) page.get('older')).size());
@@ -127,51 +118,20 @@ private class stoScratchFixturesTest {
     }
 
     @IsTest
-    static void scratchCreationUsesTheSameRepresentationProvider() {
-        User viewer = viewer();
-        Test.startTest();
-        System.runAs(viewer) {
-            Assert.areEqual(2, stoPersonContext.getRepresentableChildren().size());
-            stoHelperClass.ThreadData info = new stoHelperClass.ThreadData();
-            info.representedPersonIdentifier = '12345678904';
-            info.theme = 'Familie';
-            info.type = 'STO';
-            info.msgText = 'Synthetic child submission';
-            info.medskriv = true;
-            Thread__c thread = stoHelperClass.createThread(info);
-            Account child = [SELECT Id FROM Account WHERE INT_PersonIdent__c = '12345678904'];
-            Assert.areEqual(child.Id, thread.CRM_Account__c);
-            Assert.areEqual(
-                stoPersonContext.currentUser().ContactId,
-                [SELECT CRM_From_Contact__c FROM Message__c WHERE CRM_Thread__c = :thread.Id].CRM_From_Contact__c
-            );
-            Assert.areEqual(0, Limits.getCallouts(), 'Scratch creation must not call the real family service.');
-        }
-        Test.stopTest();
-    }
-
-    @IsTest
-    static void rejectsDisabledAdapterAndForgedActor() {
+    static void rejectsDisabledAdapter() {
         Assert.isFalse(stoScratchSupport.isEnabled(), 'The internal admin is not opted in.');
         try {
-            new stoScratchFixtures().call('barn', new Map<String, Object>{ 'parentIdent' => '12345678901' });
+            new stoScratchFixtures().call('inbox', new Map<String, Object>());
             Assert.fail('A direct call must not bypass opt-in.');
         } catch (AuraHandledException expected) {
             Assert.isNotNull(expected);
-        }
-        System.runAs(viewer()) {
-            try {
-                stoScratchSupport.invoke('barn', new Map<String, Object>{ 'parentIdent' => '12345678902' });
-                Assert.fail('The caller cannot impersonate another fixture parent.');
-            } catch (AuraHandledException expected) {
-                Assert.isNotNull(expected);
-            }
         }
     }
 
     @IsTest
     static void readsSharedThreadsAndRejectsForeignInbox() {
         User reader = viewer();
+        Test.setMock(HttpCalloutMock.class, new SingleRequestMock(200, 'OK', '{"barn":[]}', null));
         Thread__c thread = new Thread__c(CRM_Account__c = reader.AccountId, CRM_IsActive__c = true);
         insert thread;
         thread.CRM_Thread_Type__c = 'STO';

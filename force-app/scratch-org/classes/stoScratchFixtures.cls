@@ -37,39 +37,12 @@ public with sharing class stoScratchFixtures implements System.Callable {
             }
             return inbox(accountId, (Id) arguments.get('threadId'), (Id) arguments.get('noteId'));
         }
-        if ((String) arguments.get('parentIdent') != actor.INT_PersonIdent__c) {
-            throw new AuraHandledException('The fixture identity must match the authenticated user.');
-        }
-        List<String> children = family.get(actor.INT_PersonIdent__c);
-        if (children == null) {
-            children = new List<String>();
-        }
-        if (action == 'barn') {
-            List<Object> result = new List<Object>();
-            for (String ident : children) {
-                result.add(new Map<String, Object>{ 'ident' => ident });
-            }
-            return response(new Map<String, Object>{ 'barn' => result });
-        }
-        if (action == 'verifiser') {
-            return response(
-                new Map<String, Object>{ 'kanRepresentere' => children.contains((String) arguments.get('childIdent')) }
-            );
-        }
         throw new AuraHandledException('Unknown scratch fixture action: ' + action);
     }
 
     private static Map<String, List<String>> family() {
         StaticResource fixture = [SELECT Body FROM StaticResource WHERE Name = 'STO_Foreldreansvar_Family' LIMIT 1];
         return (Map<String, List<String>>) JSON.deserialize(fixture.Body.toString(), Map<String, List<String>>.class);
-    }
-
-    private static HttpResponse response(Map<String, Object> body) {
-        HttpResponse result = new HttpResponse();
-        result.setStatusCode(200);
-        result.setHeader('Content-Type', 'application/json');
-        result.setBody(JSON.serialize(body));
-        return result;
     }
 
     @TestVisible

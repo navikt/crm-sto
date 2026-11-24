@@ -59,7 +59,13 @@ public with sharing class stoPersonContext {
         if (String.isBlank(representedIdentifier)) {
             throw new stoHelperClass.InvalidThreadDataException('A represented person identifier is required.');
         }
-        if (!verifyRepresentation(representedIdentifier)) {
+        Boolean canRepresent;
+        try {
+            canRepresent = NKS_ForeldreansvarController.kanRepresentere(actor.personIdentifier, representedIdentifier);
+        } catch (NKS_ForeldreansvarController.ForeldreansvarException error) {
+            throw stoHelperClass.handledError(error.getMessage());
+        }
+        if (!canRepresent) {
             throw new stoHelperClass.NoParentalResponsibilityException('Parental responsibility was not confirmed.');
         }
         return getRepresentedAccountIdentity(representedIdentifier);
@@ -121,58 +127,6 @@ public with sharing class stoPersonContext {
         return birthDate.addYears(age) > Date.today() ? age - 1 : age;
     }
 
-    public static Boolean verifyRepresentation(String representedPersonIdentifier) {
-        if (String.isBlank(representedPersonIdentifier)) {
-            throw new stoHelperClass.InvalidThreadDataException('A represented person identifier is required.');
-        }
-        Account parent = authenticatedParent();
-        if (parent == null) {
-            return false;
-        }
-        if (String.isBlank(parent.CRM_Person__r?.Name)) {
-            throw invalidVerificationResponse('Actor identifier unavailable');
-        }
-        HttpResponse response;
-        // verifiser also enforces age/confidentiality; keep local eligibility checks as defense in depth.
-        // The installed controller returns HttpResponse; migrate only when its boolean API is available.
-        try {
-            response = stoScratchSupport.isEnabled()
-                ? (HttpResponse) stoScratchSupport.invoke(
-                      'verifiser',
-                      new Map<String, Object>{
-                          'parentIdent' => parent.CRM_Person__r?.Name,
-                          'childIdent' => representedPersonIdentifier
-                      }
-                  )
-                : NKS_ForeldreansvarService.verifiser(parent.CRM_Person__r?.Name, representedPersonIdentifier);
-        } catch (Exception error) {
-            throw invalidVerificationResponse('Dependency failure: ' + error.getTypeName());
-        }
-        if (response == null) {
-            throw invalidVerificationResponse('Missing response');
-        }
-        if (response.getStatusCode() == 204 || response.getStatusCode() == 404) {
-            return false;
-        }
-        if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
-            throw invalidVerificationResponse('Unexpected status or empty body: ' + response.getStatusCode());
-        }
-        Object body;
-        try {
-            body = JSON.deserializeUntyped(response.getBody());
-        } catch (System.JSONException error) {
-            throw invalidVerificationResponse('Malformed JSON');
-        }
-        if (!(body instanceof Map<String, Object>)) {
-            throw invalidVerificationResponse('Invalid response shape');
-        }
-        Object canRepresent = ((Map<String, Object>) body).get('kanRepresentere');
-        if (!(canRepresent instanceof Boolean)) {
-            throw invalidVerificationResponse('Missing boolean decision');
-        }
-        return (Boolean) canRepresent;
-    }
-
     private static List<Account> authorizedChildren() {
         Set<String> childIdents = verifiedChildIdents();
         if (childIdents.isEmpty()) {
@@ -203,32 +157,18 @@ public with sharing class stoPersonContext {
         if (parent == null) {
             return new Set<String>();
         }
-        HttpResponse response = stoScratchSupport.isEnabled()
-            ? (HttpResponse) stoScratchSupport.invoke(
-                  'barn',
-                  new Map<String, Object>{ 'parentIdent' => parent.CRM_Person__r?.Name }
-              )
-            : NKS_ForeldreansvarService.barn(parent.CRM_Person__r?.Name);
+        List<NKS_ForeldreansvarBarn> children;
+        try {
+            children = NKS_ForeldreansvarController.getBarn(parent.CRM_Person__r?.Name);
+        } catch (NKS_ForeldreansvarController.ForeldreansvarException error) {
+            throw stoHelperClass.handledError(error.getMessage());
+        }
         Set<String> childIdents = new Set<String>();
-        if (response.getStatusCode() != 204 && response.getStatusCode() != 404) {
-            if (response.getStatusCode() != 200 || String.isBlank(response.getBody())) {
+        for (NKS_ForeldreansvarBarn child : children) {
+            if (child == null || String.isBlank(child.ident)) {
                 throw invalidResponse();
             }
-            BarnResponse body;
-            try {
-                body = (BarnResponse) JSON.deserialize(response.getBody(), BarnResponse.class);
-            } catch (System.JSONException error) {
-                throw invalidResponse();
-            }
-            if (body == null || body.barn == null) {
-                throw invalidResponse();
-            }
-            for (Barn child : body.barn) {
-                if (child == null || String.isBlank(child.ident)) {
-                    throw invalidResponse();
-                }
-                childIdents.add(child.ident);
-            }
+            childIdents.add(child.ident);
         }
         childIdentsByUser.put(actorId, childIdents);
         return childIdents;
@@ -238,33 +178,11 @@ public with sharing class stoPersonContext {
         return currentPersonAccountId() == null ? null : currentUser().Account;
     }
 
-    private static AuraHandledException invalidVerificationResponse(String reason) {
-        String correlationId = EncodingUtil.convertToHex(Crypto.generateAesKey(128));
-        LoggerUtility logger = new LoggerUtility('Foreldreansvar');
-        logger.error(
-            'Representation verification failed. LoggId: ' + correlationId + '. ' + reason,
-            null,
-            CRM_ApplicationDomain.Domain.NKS
-        );
-        logger.publish();
-        return stoHelperClass.handledError(
-            'Kunne ikke verifisere foreldreansvar. Prøv igjen senere. LoggId: ' + correlationId
-        );
-    }
-
     private static AuraHandledException invalidResponse() {
         LoggerUtility logger = new LoggerUtility('Foreldreansvar');
         logger.error('Ugyldig svar ved henting av barn fra nks-foreldreansvar', null, CRM_ApplicationDomain.Domain.NKS);
         logger.publish();
         return stoHelperClass.handledError('Kunne ikke hente barn du kan representere. Prøv igjen senere.');
-    }
-
-    private class BarnResponse {
-        public List<Barn> barn;
-    }
-
-    private class Barn {
-        public String ident;
     }
 
     private without sharing class RepresentedAccounts {

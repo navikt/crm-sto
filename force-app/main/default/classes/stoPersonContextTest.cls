@@ -360,16 +360,6 @@ public with sharing class stoPersonContextTest {
     }
 
     @isTest
-    static void noContentReturnsNoChildrenTest() {
-        assertNoChildren(204, null);
-    }
-
-    @isTest
-    static void parentNotFoundReturnsNoChildrenTest() {
-        assertNoChildren(404, null);
-    }
-
-    @isTest
     static void unknownChildDoesNotMatchAnAccountTest() {
         assertNoChildren(200, barnBody(new List<String>{ UNKNOWN_IDENT }));
     }
@@ -389,41 +379,6 @@ public with sharing class stoPersonContextTest {
         }
         Assert.areEqual(1, mock.calls);
         Test.stopTest();
-    }
-
-    @isTest
-    static void blankBodyIsAnErrorTest() {
-        assertInvalidBarnResponse(' ');
-    }
-
-    @isTest
-    static void missingBodyIsAnErrorTest() {
-        assertInvalidBarnResponse(null);
-    }
-
-    @isTest
-    static void malformedJsonIsAnErrorTest() {
-        assertInvalidBarnResponse('not json');
-    }
-
-    @isTest
-    static void nullResponseIsAnErrorTest() {
-        assertInvalidBarnResponse('null');
-    }
-
-    @isTest
-    static void missingBarnListIsAnErrorTest() {
-        assertInvalidBarnResponse('{}');
-    }
-
-    @isTest
-    static void nullBarnListIsAnErrorTest() {
-        assertInvalidBarnResponse('{"barn":null}');
-    }
-
-    @isTest
-    static void invalidBarnListTypeIsAnErrorTest() {
-        assertInvalidBarnResponse('{"barn":{}}');
     }
 
     @isTest
@@ -451,8 +406,9 @@ public with sharing class stoPersonContextTest {
             try {
                 stoPersonContext.getRepresentableChildren();
                 Assert.fail('A service failure must surface an error');
-            } catch (Exception expected) {
-                Assert.areEqual('Kunne ikke hente barn du kan representere. Prøv igjen senere.', expected.getMessage());
+            } catch (AuraHandledException expected) {
+                Assert.isTrue(expected.getMessage().contains('Kunne ikke hente barn fra nks-foreldreansvar'));
+                Assert.isTrue(expected.getMessage().contains('LoggId'));
             }
         }
         Assert.areEqual(1, mock.calls);
@@ -551,24 +507,23 @@ public with sharing class stoPersonContextTest {
         return info;
     }
 
-    private static void assertVerificationResult(Integer statusCode, String body, Boolean expected) {
+    @isTest
+    static void representationUsesAuthenticatedParentTest() {
         User viewer = parent();
-        VerificationMock mock = new VerificationMock(statusCode, body);
+        Account child = account(FIRST_CHILD_IDENT);
+        VerificationMock mock = new VerificationMock(200, '{"kanRepresentere":true}');
         Test.setMock(HttpCalloutMock.class, mock);
         Test.startTest();
         System.runAs(viewer) {
-            Assert.areEqual(
-                expected,
-                stoPersonContext.verifyRepresentation(representedThreadData().representedPersonIdentifier)
+            stoPersonContext.AccountIdentity identity = stoPersonContext.resolveThreadAccountIdentity(
+                FIRST_CHILD_IDENT
             );
+            Assert.areEqual(child.Id, identity.accountId);
+            Assert.areEqual(child.PersonContactId, identity.contactId);
+            Assert.areEqual(FIRST_CHILD_IDENT, identity.personIdentifier);
         }
         Assert.areEqual(1, mock.calls);
         Test.stopTest();
-    }
-
-    @isTest
-    static void representationUsesAuthenticatedParentTest() {
-        assertVerificationResult(200, '{"kanRepresentere":true}', true);
     }
 
     @isTest
@@ -591,60 +546,42 @@ public with sharing class stoPersonContextTest {
     }
 
     @isTest
-    static void noVerificationContentDoesNotAuthorizeTest() {
-        assertVerificationResult(204, null, false);
+    static void listedChildStillRequiresApprovalAtSubmissionTest() {
+        User viewer = parent();
+        Test.startTest();
+        System.runAs(viewer) {
+            Test.setMock(HttpCalloutMock.class, new BarnMock(200, barnBody(new List<String>{ FIRST_CHILD_IDENT })));
+            Assert.areEqual(1, stoPersonContext.getRepresentableChildren().size());
+            VerificationMock verification = new VerificationMock(200, '{"kanRepresentere":false}');
+            Test.setMock(HttpCalloutMock.class, verification);
+            try {
+                stoHelperClass.createThread(representedThreadData());
+                Assert.fail('A cached child listing must not replace submission-time approval.');
+            } catch (stoHelperClass.NoParentalResponsibilityException expected) {
+                Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
+                Assert.areEqual(0, [SELECT COUNT() FROM Message__c]);
+            }
+            Assert.areEqual(1, verification.calls);
+        }
+        Test.stopTest();
     }
 
     @isTest
-    static void verificationParentNotFoundDoesNotAuthorizeTest() {
-        assertVerificationResult(404, null, false);
-    }
-
-    private static void assertInvalidVerification(String body) {
+    static void deniedVerificationPreventsRepresentedThreadLookupTest() {
         User viewer = parent();
-        VerificationMock mock = new VerificationMock(200, body);
+        VerificationMock mock = new VerificationMock(200, '{"kanRepresentere":false}');
         Test.setMock(HttpCalloutMock.class, mock);
         Test.startTest();
         System.runAs(viewer) {
             try {
-                stoPersonContext.verifyRepresentation(representedThreadData().representedPersonIdentifier);
-                Assert.fail('Malformed verification must surface an error, not authorize a submission');
-            } catch (AuraHandledException expected) {
+                stoHelperClass.getOpenThreadsForPerson('Familie', 'STO', FIRST_CHILD_IDENT);
+                Assert.fail('A negative verification must reject represented thread lookup.');
+            } catch (stoHelperClass.NoParentalResponsibilityException expected) {
                 Assert.isNotNull(expected.getMessage());
             }
         }
         Assert.areEqual(1, mock.calls);
         Test.stopTest();
-    }
-
-    @isTest
-    static void blankVerificationIsAnErrorTest() {
-        assertInvalidVerification(' ');
-    }
-
-    @isTest
-    static void malformedVerificationIsAnErrorTest() {
-        assertInvalidVerification('not json');
-    }
-
-    @isTest
-    static void nullVerificationIsAnErrorTest() {
-        assertInvalidVerification('null');
-    }
-
-    @isTest
-    static void missingVerificationFlagIsAnErrorTest() {
-        assertInvalidVerification('{}');
-    }
-
-    @isTest
-    static void nonBooleanVerificationFlagIsAnErrorTest() {
-        assertInvalidVerification('{"kanRepresentere":"true"}');
-    }
-
-    @isTest
-    static void arrayVerificationIsAnErrorTest() {
-        assertInvalidVerification('[]');
     }
 
     @isTest
@@ -658,8 +595,10 @@ public with sharing class stoPersonContextTest {
                 stoHelperClass.createThread(representedThreadData());
                 Assert.fail('Service failure must prevent creation.');
             } catch (AuraHandledException expected) {
+                Assert.isTrue(expected.getMessage().contains('LoggId: '));
                 correlationId = expected.getMessage().substringAfter('LoggId: ');
-                Assert.areEqual(32, correlationId.length());
+                Assert.isNotNull(correlationId);
+                Assert.isTrue(String.isNotBlank(correlationId));
                 Assert.isFalse(expected.getMessage().contains(PARENT_IDENT));
                 Assert.isFalse(expected.getMessage().contains(FIRST_CHILD_IDENT));
                 Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
@@ -670,15 +609,12 @@ public with sharing class stoPersonContextTest {
         Test.stopTest();
         Boolean found = false;
         for (Application_Log__c log : [
-            SELECT Log_Message__c, Pay_Load__c
+            SELECT UUID__c
             FROM Application_Log__c
             WHERE Category__c = 'Foreldreansvar'
         ]) {
-            if (log.Log_Message__c?.contains(correlationId) == true) {
+            if (log.UUID__c == correlationId) {
                 found = true;
-                Assert.isFalse(log.Log_Message__c.contains(PARENT_IDENT));
-                Assert.isFalse(log.Log_Message__c.contains(FIRST_CHILD_IDENT));
-                Assert.isTrue(String.isBlank(log.Pay_Load__c) || log.Pay_Load__c == 'null');
             }
         }
         Assert.isTrue(found, 'The user-safe error must correlate to a local diagnostic.');

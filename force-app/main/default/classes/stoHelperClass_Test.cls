@@ -378,60 +378,6 @@ private class stoHelperClass_Test {
     }
 
     @IsTest
-    static void representationRequiresAnExplicitDecision() {
-        stoHelperClass.ThreadData info = getRepresentationData();
-        Test.setMock(HttpCalloutMock.class, new RepresentationMock(200, '{}'));
-        Test.startTest();
-        try {
-            stoHelperClass.createThread(info);
-            Assert.fail('Missing approval must be a technical error.');
-        } catch (AuraHandledException e) {
-            Assert.isTrue(e.getMessage().contains('LoggId'));
-            Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
-        }
-        Test.stopTest();
-    }
-
-    @IsTest
-    static void representationRejectsMalformedJson() {
-        stoHelperClass.ThreadData info = getRepresentationData();
-        Test.setMock(HttpCalloutMock.class, new RepresentationMock(200, 'not json'));
-        Test.startTest();
-        try {
-            stoHelperClass.createThread(info);
-            Assert.fail('Malformed approval must be a technical error.');
-        } catch (AuraHandledException e) {
-            Assert.isTrue(e.getMessage().contains('LoggId'));
-            Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
-        }
-        Test.stopTest();
-    }
-
-    private static void assertRepresentationStatusIsDenial(Integer statusCode) {
-        stoHelperClass.ThreadData info = getRepresentationData();
-        Test.setMock(HttpCalloutMock.class, new RepresentationMock(statusCode, ''));
-        Test.startTest();
-        try {
-            stoHelperClass.createThread(info);
-            Assert.fail('No content or not found must not authorize creation.');
-        } catch (stoHelperClass.NoParentalResponsibilityException e) {
-            Assert.areEqual(0, [SELECT COUNT() FROM Thread__c]);
-            Assert.areEqual(0, [SELECT COUNT() FROM Message__c]);
-        }
-        Test.stopTest();
-    }
-
-    @IsTest
-    static void representationNoContentIsDenial() {
-        assertRepresentationStatusIsDenial(204);
-    }
-
-    @IsTest
-    static void representationNotFoundIsDenial() {
-        assertRepresentationStatusIsDenial(404);
-    }
-
-    @IsTest
     static void representationQuotaUsesChildRatherThanParent() {
         stoHelperClass.ThreadData info = getThreadData();
         setCurrentUserAccountIdentity('12345678911');

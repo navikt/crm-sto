@@ -38,11 +38,11 @@ User/permission setup and Account/Person sharing run in separate transactions to
 
 Activate/publish the Experience site as described in the root README, then use **Log in to Experience as User** from the selected test Person Account. For internal handling, use **Skriv til oss > Hent ny melding** to retrieve the named STO/Familie and BTO/Helse samples.
 
-### Scratch-only inbox and family mocks
+### Scratch-only inbox adapter
 
-Deploy `stoScratchSupport` and the updated `stoInboxHelper`/`stoPersonContext` together with the classes, custom permission and `STO_Scratch_Fixtures` permission set under `force-app\scratch-org`. The setup command assigns that permission set to the five synthetic community users. It enables the fixture adapter only on `.scratch.my.salesforce.com`; other orgs retain the existing backend behaviour. It does not enable general integration mocks or turn a failed live call into a mock success.
+Deploy `stoScratchSupport` and the updated `stoInboxHelper` together with the classes, custom permission and `STO_Scratch_Fixtures` permission set under `force-app\scratch-org`. The setup command assigns that permission set to the five synthetic community users. It enables the inbox adapter only on `.scratch.my.salesforce.com`; other orgs retain the existing backend behaviour. It does not enable general integration mocks or turn a failed live call into a mock success.
 
-The adapter supplies `barn`/`verifiser` responses from `STO_Foreldreansvar_Family` and reads the imported inbox records with sharing, bounded pagination and the existing shared unread state. Only the five synthetic actors are accepted. Represented inboxes must also pass the existing child eligibility and visible Account checks. This is scratch testing support, not an implementation of production parental authorization, inbox sharing or read-state tracking.
+The adapter reads the imported inbox records with sharing, bounded pagination and the existing shared unread state. Only the five synthetic actors are accepted. Child listing and representation verification use `NKS_ForeldreansvarController` in every org; the roster no longer supplies family-service responses. Manual child scenarios therefore require the integration service or its explicitly configured integration mocks. Represented inboxes must also pass the existing child eligibility and visible Account checks. The inbox adapter remains necessary until the production page backend is implemented. Its tests cover opt-in, Account authorization, record sharing and pagination; STO tests cover controller results, local eligibility and submission behavior rather than controller parsing/status rules.
 
 For an already populated scratch org, after deploying the changes, run the following from the repository root (replace the target alias as needed):
 
@@ -121,8 +121,8 @@ The following paths are relative to `force-app\scratch-org`. Older generated log
 | `permissionsets\Scratch_Permissions.permissionset-meta.xml` | Existing internal-test rights for the STO console, sample cases and FAQ records, separate from citizen/parent access. |
 | `permissionsets\STO_Scratch_Fixtures.permissionset-meta.xml` | Explicit opt-in and read-only schema access for scratch inbox testing; no View All or Modify All access. |
 | `customPermissions\STO_Scratch_Fixtures.customPermission-meta.xml` | Enables the adapter only when the runtime scratch-hostname check also passes. |
-| `classes\stoScratchFixtures.cls` | Scratch-only family responses and bounded inbox queries over shared Salesforce records. |
-| `classes\stoScratchFixturesTest.cls` | Exercises explicit opt-in, actor validation, child lookup, shared message access and pagination. |
+| `classes\stoScratchFixtures.cls` | Bounded scratch inbox queries over shared Salesforce records. |
+| `classes\stoScratchFixturesTest.cls` | Exercises explicit opt-in, Account authorization, shared message access and pagination. |
 | `settings\BusinessHours.settings-meta.xml` | The default and STO calendars required to exercise the existing case/service timing setup in the scratch environment. |
 
 `unpackaged\queues\*.queue-meta.xml` defines the existing topic-specific STO/BTO queues and protected/closed-case variants. `unpackaged\assignmentRules\Case.assignmentRules-meta.xml` assigns cases to those queues by origin/topic. They are deployed for the routing scenario, not replaced by custom fixture routing.
