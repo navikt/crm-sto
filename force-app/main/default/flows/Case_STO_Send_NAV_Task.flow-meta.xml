@@ -1,94 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionCalls>
-        <name>Post_Nav_Task_Case</name>
-        <label>Post Nav Task</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <actionName>OppgaveManager</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>Update_Thread_Theme_1</targetReference>
-        </connector>
-        <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters>
-            <name>aktoerId</name>
-            <value>
-                <elementReference>Get_Case.Account.CRM_Person__r.INT_ActorId__c</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>behandlingstema</name>
-            <value>
-                <elementReference>Theme_Categorization_1.subthemeCode</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>behandlingstype</name>
-            <value>
-                <elementReference>Theme_Categorization_1.subtypeCode</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>beskrivelse</name>
-            <value>
-                <elementReference>Task_Description_1</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>eksternHenvendelseId</name>
-            <value>
-                <elementReference>Henvendelse_BehandlingsId_Case</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>methodType</name>
-            <value>
-                <stringValue>POST</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>oppgavetype</name>
-            <value>
-                <elementReference>Task_Type_Selector_1.selectedTaskType</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>opprettetAvEnhetsnr</name>
-            <value>
-                <elementReference>$User.Department</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>prioritet</name>
-            <value>
-                <elementReference>Task_Priority_1</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>tema</name>
-            <value>
-                <elementReference>Theme_Categorization_1.themeCode</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>tildeltEnhetsnr</name>
-            <value>
-                <elementReference>Work_Allocation_1.selectedUnitNumber</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>tilordnetRessurs</name>
-            <value>
-                <elementReference>Work_Allocation_1.assignedResource</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>OppgaveManager</nameSegment>
-        <offset>0</offset>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
-    <actionCalls>
-        <name>Post_Nav_Task_Thread</name>
+        <name>Post_Nav_Task</name>
         <label>Post Nav Task</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -101,7 +14,7 @@
         <inputParameters>
             <name>aktoerId</name>
             <value>
-                <elementReference>Get_Thread.CRM_Account__r.CRM_Person__r.INT_ActorId__c</elementReference>
+                <elementReference>Actor_Id</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -125,7 +38,7 @@
         <inputParameters>
             <name>eksternHenvendelseId</name>
             <value>
-                <elementReference>Henvendelse_BehandlingsId_Thread</elementReference>
+                <elementReference>Henvendelse_BehandlingsId</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -193,56 +106,17 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Set_Publish_Notification_To_True_Thread</name>
-        <label>Set Publish Notification To True</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>Publish_Notification</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Publish_Oppgave_created_LMS_event1</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>Set_Selected_Unit_Number_and_Name_for_Notification</name>
         <label>Set Selected Unit Number and Name for Notification</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignmentItems>
-            <assignToReference>Selected_Unit_Name</assignToReference>
+            <assignToReference>communalQuickTextLabel</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Work_Allocation_1.selectedUnitName</elementReference>
+                <elementReference>Nav_Task_Quick_Text.selectedValueLabel</elementReference>
             </value>
         </assignmentItems>
-        <assignmentItems>
-            <assignToReference>Selected_Unit_Number</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Work_Allocation_1.selectedUnitNumber</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>Selected_Theme_SF_Id</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Theme_Categorization_1.theme</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Post_Nav_Task_Case</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Set_Selected_Unit_Number_and_Name_for_Notification_Thread</name>
-        <label>Set Selected Unit Number and Name for Notification</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>Selected_Unit_Name</assignToReference>
             <operator>Assign</operator>
@@ -265,32 +139,29 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Post_Nav_Task_Thread</targetReference>
+            <targetReference>Post_Nav_Task</targetReference>
         </connector>
     </assignments>
     <decisions>
-        <name>Check_Record_Id</name>
-        <label>Check Record Id</label>
+        <name>Is_communal_quick_text_used</name>
+        <label>Is communal quick text used?</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Get_Thread</targetReference>
-        </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>Is_Case</name>
+            <name>Yes_communal_quick_text</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>recordId</leftValueReference>
-                <operator>StartsWith</operator>
+                <leftValueReference>communalQuickTextLabel</leftValueReference>
+                <operator>IsNull</operator>
                 <rightValue>
-                    <stringValue>500</stringValue>
+                    <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Case</targetReference>
+                <targetReference>Create_reporting_data_for_communal_quick_text</targetReference>
             </connector>
-            <label>Is Case</label>
+            <label>Yes</label>
         </rules>
     </decisions>
     <decisions>
@@ -299,14 +170,14 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>Case_NAV_Task_Input_Screen</targetReference>
+            <targetReference>NAV_Task_Input_Screen</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>No_Account</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Case.AccountId</leftValueReference>
+                <leftValueReference>Account_Id</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -324,14 +195,14 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>Post_Error_Screen_Case</targetReference>
+            <targetReference>Task_Post_Error_Screen</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Post Error</defaultConnectorLabel>
         <rules>
             <name>Success</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Post_Nav_Task_Case.isSuccess</leftValueReference>
+                <leftValueReference>Post_Nav_Task.isSuccess</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -339,31 +210,6 @@
             </conditions>
             <connector>
                 <targetReference>Set_Publish_Notification_To_True</targetReference>
-            </connector>
-            <label>Success</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Verify_Task_Post_Thread</name>
-        <label>Verify Task Post</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Post_Error_Screen_Thread</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Post Error</defaultConnectorLabel>
-        <rules>
-            <name>Success_Thread</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Post_Nav_Task_Thread.isSuccess</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Set_Publish_Notification_To_True_Thread</targetReference>
             </connector>
             <label>Success</label>
         </rules>
@@ -378,22 +224,91 @@
     </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
-        <name>Henvendelse_BehandlingsId_Case</name>
+        <name>Account_Id</name>
         <dataType>String</dataType>
         <expression>IF(
-    {!Theme_Categorization_1.themeCode} &lt;&gt; &quot;KOM&quot;,
-    {!Get_Case.NKS_Henvendelse_BehandlingsId__c},
+    {!Is_Case_Record},
+    {!Get_Case.AccountId},
+    {!Get_Thread.CRM_Account__c}
+)</expression>
+    </formulas>
+    <formulas>
+        <name>Actor_Id</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    {!Is_Case_Record},
+    {!Get_Case.Account.CRM_Person__r.INT_ActorId__c},
+    {!Get_Thread.CRM_Account__r.CRM_Person__r.INT_ActorId__c}
+)</expression>
+    </formulas>
+    <formulas>
+        <name>Case_Record_Id</name>
+        <dataType>String</dataType>
+        <expression>IF({!Is_Case_Record}, {!recordId}, &quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Henvendelse_BehandlingsId</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    {!Theme_Categorization.themeCode} &lt;&gt; &quot;KOM&quot;,
+    IF(
+        {!Is_Case_Record},
+        {!Get_Case.NKS_Henvendelse_BehandlingsId__c},
+        {!Get_Thread.CRM_API_Reference__c}
+    ),
     &quot;&quot;
 )</expression>
     </formulas>
     <formulas>
-        <name>Henvendelse_BehandlingsId_Thread</name>
+        <name>Initial_Theme</name>
         <dataType>String</dataType>
         <expression>IF(
-    {!Theme_Categorization.themeCode} &lt;&gt; &quot;KOM&quot;,
-    {!Get_Thread.CRM_API_Reference__c},
-    &quot;&quot;
+    {!Is_Case_Record},
+    {!Get_Case.NKS_Theme__c},
+    {!Get_Thread.CRM_Theme__c}
 )</expression>
+    </formulas>
+    <formulas>
+        <name>Initial_Theme_Code</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    {!Is_Case_Record},
+    {!Get_Case.NKS_Theme__r.CRM_Code__c},
+    {!Get_Thread.CRM_Theme_Code__c}
+)</expression>
+    </formulas>
+    <formulas>
+        <name>Initial_Theme_Group</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    {!Is_Case_Record},
+    {!Get_Case.NKS_Theme_Group__c},
+    {!Get_Thread.CRM_Theme_Group__c}
+)</expression>
+    </formulas>
+    <formulas>
+        <name>Is_Case_Record</name>
+        <dataType>Boolean</dataType>
+        <expression>BEGINS({!recordId}, &quot;500&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Person_Id</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    {!Is_Case_Record},
+    {!Get_Case.Account.CRM_Person__c},
+    {!Get_Thread.CRM_Account__r.CRM_Person__c}
+)</expression>
+    </formulas>
+    <formulas>
+        <name>Reference_Object</name>
+        <dataType>String</dataType>
+        <expression>IF({!Is_Case_Record}, &quot;Case&quot;, &quot;Thread__c&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>Thread_Record_Id</name>
+        <dataType>String</dataType>
+        <expression>IF({!Is_Case_Record}, &quot;&quot;, {!recordId})</expression>
     </formulas>
     <interviewLabel>Case STO Send NAV Task {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Case STO Send NAV Task</label>
@@ -416,6 +331,29 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_reporting_data_for_communal_quick_text</name>
+        <label>Create reporting data for communal quick text</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Create_App_Log</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>CRM_Category__c</field>
+            <value>
+                <stringValue>Kommunal hurtigtekst</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>communalQuickTextLabel</elementReference>
+            </value>
+        </inputAssignments>
+        <object>ReportingData__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <recordLookups>
         <name>Get_Case</name>
         <label>Get Case</label>
@@ -423,7 +361,7 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Validate_Account</targetReference>
+            <targetReference>Get_Thread</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Create_App_Log</targetReference>
@@ -433,7 +371,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>Case_Record_Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -448,14 +386,17 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Thread_NAV_Task_Input_Screen</targetReference>
+            <targetReference>Validate_Account</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>Create_App_Log</targetReference>
+        </faultConnector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>Thread_Record_Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -463,19 +404,34 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
+        <description>Update only missing themes on the selected Thread or the Case's threads. The populated Case condition prevents Thread launches from matching unrelated threads with no Case.</description>
         <name>Update_Thread_Theme</name>
         <label>Update Thread Theme</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Verify_Task_Post_Thread</targetReference>
+            <targetReference>Verify_Task_Post</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
+        <filterLogic>(1 OR (2 AND 3)) AND 4</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>Thread_Record_Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Case_Record_Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>CRM_Case__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
             </value>
         </filters>
         <filters>
@@ -493,41 +449,10 @@
         </inputAssignments>
         <object>Thread__c</object>
     </recordUpdates>
-    <recordUpdates>
-        <name>Update_Thread_Theme_1</name>
-        <label>Update Thread Theme</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Verify_Task_Post</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Case__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Case.Id</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>CRM_Theme__c</field>
-            <operator>IsNull</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>CRM_Theme__c</field>
-            <value>
-                <elementReference>Theme_Categorization_1.theme</elementReference>
-            </value>
-        </inputAssignments>
-        <object>Thread__c</object>
-    </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
-        <name>Case_NAV_Task_Input_Screen</name>
-        <label>Case NAV Task Input Screen</label>
+        <name>NAV_Task_Input_Screen</name>
+        <label>NAV Task Input Screen</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <allowBack>false</allowBack>
@@ -537,13 +462,13 @@
             <targetReference>Set_Selected_Unit_Number_and_Name_for_Notification</targetReference>
         </connector>
         <fields>
-            <name>Theme_Categorization_1</name>
+            <name>Theme_Categorization</name>
             <extensionName>c:crmThemeCategorization</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>themeGroup</name>
                 <value>
-                    <elementReference>Get_Case.NKS_Theme_Group__c</elementReference>
+                    <elementReference>Initial_Theme_Group</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -555,7 +480,7 @@
             <inputParameters>
                 <name>theme</name>
                 <value>
-                    <elementReference>Get_Case.NKS_Theme__c</elementReference>
+                    <elementReference>Initial_Theme</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -589,7 +514,7 @@
             </styleProperties>
         </fields>
         <fields>
-            <name>Task_Type_Selector_1</name>
+            <name>Task_Type_Selector</name>
             <extensionName>c:crmTaskTypePicklist</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
@@ -601,19 +526,19 @@
             <inputParameters>
                 <name>theme</name>
                 <value>
-                    <elementReference>Get_Case.NKS_Theme__r.CRM_Code__c</elementReference>
+                    <elementReference>Initial_Theme_Code</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
                 <name>selectedTaskType</name>
                 <value>
-                    <elementReference>Task_Type_Selector_1.selectedTaskType</elementReference>
+                    <elementReference>Task_Type_Selector.selectedTaskType</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
                 <name>selectedTaskTypeId</name>
                 <value>
-                    <elementReference>Task_Type_Selector_1.selectedTaskTypeId</elementReference>
+                    <elementReference>Task_Type_Selector.selectedTaskTypeId</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -629,7 +554,7 @@
             </styleProperties>
         </fields>
         <fields>
-            <name>Task_Priority_1</name>
+            <name>Task_Priority</name>
             <choiceReferences>Priority_Picklist</choiceReferences>
             <dataType>String</dataType>
             <defaultValue>
@@ -649,9 +574,25 @@
             </styleProperties>
         </fields>
         <fields>
-            <name>Task_Description_1</name>
+            <name>Nav_Task_Quick_Text</name>
+            <extensionName>c:crmNavTaskCommunalQuickText</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>Task_Description</name>
             <defaultValue>
-                <stringValue>{!Task_Description_1}</stringValue>
+                <stringValue>{!Nav_Task_Quick_Text.selectedValue}</stringValue>
             </defaultValue>
             <fieldText>Oppgave til NAV-enhet</fieldText>
             <fieldType>LargeTextArea</fieldType>
@@ -669,7 +610,7 @@
             </styleProperties>
         </fields>
         <fields>
-            <name>Work_Allocation_1</name>
+            <name>Work_Allocation</name>
             <extensionName>c:crmNavTaskWorkAllocation</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
@@ -687,7 +628,7 @@
             <inputParameters>
                 <name>personId</name>
                 <value>
-                    <elementReference>Get_Case.Account.CRM_Person__c</elementReference>
+                    <elementReference>Person_Id</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -766,8 +707,8 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Post_Error_Screen_Case</name>
-        <label>Post Error Screen Case</label>
+        <name>Task_Post_Error_Screen</name>
+        <label>Task Post Error Screen</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <allowBack>false</allowBack>
@@ -775,7 +716,7 @@
         <allowPause>false</allowPause>
         <connector>
             <isGoTo>true</isGoTo>
-            <targetReference>Case_NAV_Task_Input_Screen</targetReference>
+            <targetReference>NAV_Task_Input_Screen</targetReference>
         </connector>
         <fields>
             <name>Error_Text</name>
@@ -792,7 +733,7 @@
         </fields>
         <fields>
             <name>Oppgave_Post_Failed_No_Retry</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(0, 0, 0);&quot;&gt;Feilmelding: {!Post_Nav_Task_Case.errorMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(0, 0, 0);&quot;&gt;Feilmelding: {!Post_Nav_Task.errorMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -805,14 +746,14 @@
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
-                    <leftValueReference>Post_Nav_Task_Case.isSuccess</leftValueReference>
+                    <leftValueReference>Post_Nav_Task.isSuccess</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <booleanValue>false</booleanValue>
                     </rightValue>
                 </conditions>
                 <conditions>
-                    <leftValueReference>Post_Nav_Task_Case.isRetry</leftValueReference>
+                    <leftValueReference>Post_Nav_Task.isRetry</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <booleanValue>false</booleanValue>
@@ -822,7 +763,7 @@
         </fields>
         <fields>
             <name>Oppgave_Post_Failed_Retry_True</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(0, 0, 0);&quot;&gt;Feilmelding: {!Post_Nav_Task_Case.errorMessage}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(0, 0, 0);&quot;&gt;Oppgaven vil bli automatisk opprettet på et senere tidspunkt.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(0, 0, 0);&quot;&gt;Feilmelding: {!Post_Nav_Task.errorMessage}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(0, 0, 0);&quot;&gt;Oppgaven vil bli automatisk opprettet på et senere tidspunkt.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -835,112 +776,14 @@
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
-                    <leftValueReference>Post_Nav_Task_Case.isSuccess</leftValueReference>
+                    <leftValueReference>Post_Nav_Task.isSuccess</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <booleanValue>false</booleanValue>
                     </rightValue>
                 </conditions>
                 <conditions>
-                    <leftValueReference>Post_Nav_Task_Case.isRetry</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>true</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Post_Error_Screen_Thread</name>
-        <label>Post Error Screen Thread</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <connector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Thread_NAV_Task_Input_Screen</targetReference>
-        </connector>
-        <fields>
-            <name>Error_Header_Thread</name>
-            <extensionName>c:nksHeader</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>input</name>
-                <value>
-                    <stringValue>Oppgaveopprettelse feilet</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Oppgave_Post_Failed_No_Retry_Thread</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 14px; background-color: rgb(255, 255, 255);&quot;&gt;Feilmelding: {!Post_Nav_Task_Thread.errorMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Post_Nav_Task_Thread.isSuccess</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>false</booleanValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>Post_Nav_Task_Thread.isRetry</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>false</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>Oppgave_Post_Failed_Retry_True_Thread</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(0, 0, 0);&quot;&gt;Feilmelding: {!Post_Nav_Task_Thread.errorMessage}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 14px;&quot;&gt;Oppgaven vil bli automatisk opprettet på et senere tidspunkt.&lt;/span&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>Post_Nav_Task_Thread.isSuccess</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>false</booleanValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>Post_Nav_Task_Thread.isRetry</leftValueReference>
+                    <leftValueReference>Post_Nav_Task.isRetry</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <booleanValue>true</booleanValue>
@@ -960,47 +803,11 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Is_communal_quick_text_used</targetReference>
+        </connector>
         <fields>
             <name>nksOppgaveCreatedPublisher</name>
-            <extensionName>c:nksOppgaveCreatedPublisher</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>assignedResource</name>
-                <value>
-                    <elementReference>Work_Allocation_1.assignedResource</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>actorId</name>
-                <value>
-                    <elementReference>Get_Case.Account.CRM_Person__r.INT_ActorId__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>Publish_Oppgave_created_LMS_event1</name>
-        <label>Publish Oppgave created LMS event</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>nksOppgaveCreatedPublisher1</name>
             <extensionName>c:nksOppgaveCreatedPublisher</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
@@ -1012,7 +819,7 @@
             <inputParameters>
                 <name>actorId</name>
                 <value>
-                    <elementReference>Get_Thread.CRM_Account__r.CRM_Person__r.INT_ActorId__c</elementReference>
+                    <elementReference>Actor_Id</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -1030,192 +837,11 @@
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
-    <screens>
-        <name>Thread_NAV_Task_Input_Screen</name>
-        <label>Thread NAV Task Input Screen</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <connector>
-            <targetReference>Set_Selected_Unit_Number_and_Name_for_Notification_Thread</targetReference>
-        </connector>
-        <fields>
-            <name>Theme_Categorization</name>
-            <extensionName>c:crmThemeCategorization</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>themeGroup</name>
-                <value>
-                    <elementReference>Get_Thread.CRM_Theme_Group__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>themeSet</name>
-                <value>
-                    <stringValue>ALL</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>theme</name>
-                <value>
-                    <elementReference>Get_Thread.CRM_Theme__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>autoFocus</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>variant</name>
-                <value>
-                    <stringValue>HIDE_THEME_GROUP</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>checkIfGjelderIsRequired</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Task_Type_Selector</name>
-            <extensionName>c:crmTaskTypePicklist</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>showcomponent</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>theme</name>
-                <value>
-                    <elementReference>Get_Thread.CRM_Theme_Code__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>selectedTaskType</name>
-                <value>
-                    <elementReference>Task_Type_Selector.selectedTaskType</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>selectedTaskTypeId</name>
-                <value>
-                    <elementReference>Task_Type_Selector.selectedTaskTypeId</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Task_Priority</name>
-            <choiceReferences>Priority_Picklist</choiceReferences>
-            <dataType>String</dataType>
-            <defaultValue>
-                <stringValue>LAV</stringValue>
-            </defaultValue>
-            <fieldText>Prioritet</fieldText>
-            <fieldType>RadioButtons</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Task_Description</name>
-            <defaultValue>
-                <stringValue>{!Task_Description}</stringValue>
-            </defaultValue>
-            <fieldText>Oppgave til NAV-enhet</fieldText>
-            <fieldType>LargeTextArea</fieldType>
-            <helpText>&lt;p&gt;Husk at oppgavebeskrivelsen ikke skal inneholde personsensitive
-                opplysninger!&lt;/p&gt;</helpText>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Work_Allocation</name>
-            <extensionName>c:crmNavTaskWorkAllocation</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>hideDelegateToSelf</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>disableConditionalRendering</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>personId</name>
-                <value>
-                    <elementReference>Get_Thread.CRM_Account__r.CRM_Person__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <nextOrFinishButtonLabel>Opprett oppgave</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Check_Record_Id</targetReference>
+            <targetReference>Get_Case</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -1246,7 +872,7 @@
         <inputAssignments>
             <name>Reference_Object</name>
             <value>
-                <stringValue>Case</stringValue>
+                <elementReference>Reference_Object</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -1256,6 +882,13 @@
             </value>
         </inputAssignments>
     </subflows>
+    <variables>
+        <name>communalQuickTextLabel</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <description>The NAV task record to perform the action on.</description>
         <name>NavTask</name>
@@ -1276,7 +909,7 @@
         </value>
     </variables>
     <variables>
-        <description>Record ID if the flow is called with a reference to an existing NAV task.</description>
+        <description>The Case or Thread record ID from which to create the NAV task.</description>
         <name>recordId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
